@@ -216,15 +216,23 @@ def estimate_drift_fast(
     
     if method == 'quantile':
         # Quantile regression (median) - more robust than least squares
-        # Simple implementation using weighted least squares approximation
-        from scipy.optimize import minimize_scalar
+        # Simple implementation using least absolute deviations with intercept
+        from scipy.optimize import minimize
         
-        def quantile_loss(slope):
-            residuals = temp - slope * time_hours
+        def quantile_loss(params):
+            intercept, slope = params
+            residuals = temp - (intercept + slope * time_hours)
             return np.sum(np.abs(residuals))
         
-        result = minimize_scalar(quantile_loss)
-        return result.x
+        # Initial guess: use simple linear regression for starting point
+        X = np.column_stack([np.ones(len(time_hours)), time_hours])
+        try:
+            initial_params = np.linalg.lstsq(X, temp, rcond=None)[0]
+        except:
+            initial_params = [np.mean(temp), 0.0]
+        
+        result = minimize(quantile_loss, initial_params, method='Nelder-Mead')
+        return result.x[1]  # Return slope only
         
     elif method == 'huber':
         # Huber regression - robust to outliers, faster than Theil-Sen
