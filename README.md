@@ -1,10 +1,10 @@
-# tVNS Modeling Playground - Signal Processing
+# Lamina - Physiological Signal Processing Python Library
 
-A robust signal processing library for transcutaneous Vagus Nerve Stimulation (tVNS) research, designed for production machine learning and physiological simulation applications.
+A robust signal processing library for processing physiological data from sensors for designed for production machine learning and physiological simulation applications.
 
 ## Overview
 
-This project provides production-ready signal processing functions for tVNS modeling, focusing on robust handling of physiological signals with comprehensive artifact removal, normalization, and quality assessment. The library is optimized for real-world data challenges including motion artifacts, sensor drift, and cross-subject variability.
+This project provides production-ready signal processing functions focusing on robust handling of physiological signals with comprehensive artifact removal, normalization, and quality assessment. The library is optimized for real-world data challenges including motion artifacts, sensor drift, and cross-subject variability.
 
 ## Features
 
