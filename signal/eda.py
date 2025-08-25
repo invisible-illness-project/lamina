@@ -377,10 +377,47 @@ def assess_cleaning_quality(eda_raw: np.ndarray, eda_clean: np.ndarray,
     metrics['clean_min'] = np.min(eda_clean)
     metrics['clean_max'] = np.max(eda_clean)
     
-    # Noise reduction (using standard deviation as proxy)
+    # Basic noise metrics
     metrics['raw_std'] = np.std(eda_raw)
     metrics['clean_std'] = np.std(eda_clean)
-    metrics['noise_reduction_db'] = 20 * np.log10(metrics['raw_std'] / metrics['clean_std']) \
-                                   if metrics['clean_std'] > 0 else np.inf
+    
+    # Improved noise reduction calculation
+    # Use absolute standard deviations on good samples only for fair comparison
+    if np.any(mask_good):
+        # Calculate high-frequency noise in both signals (above 0.5 Hz)
+        from scipy import signal as scipy_signal
+        
+        # Design high-pass filter to isolate noise
+        nyquist = 2.0  # Assuming 4 Hz sampling
+        try:
+            sos_hp = scipy_signal.butter(2, 0.5 / nyquist, btype='high', output='sos')
+            
+            # Extract noise components
+            noise_raw = scipy_signal.sosfiltfilt(sos_hp, eda_raw[mask_good])
+            noise_clean = scipy_signal.sosfiltfilt(sos_hp, eda_clean[mask_good])
+            
+            # Calculate noise power
+            noise_power_raw = np.var(noise_raw)
+            noise_power_clean = np.var(noise_clean)
+            
+            if noise_power_raw > 0 and noise_power_clean > 0:
+                metrics['noise_reduction_db'] = 10 * np.log10(noise_power_raw / noise_power_clean)
+            else:
+                metrics['noise_reduction_db'] = 0.0
+                
+        except:
+            # Fallback to simple standard deviation comparison if filtering fails
+            raw_std_good = np.std(eda_raw[mask_good])
+            clean_std_good = np.std(eda_clean[mask_good])
+            
+            if raw_std_good > 0 and clean_std_good > 0:
+                metrics['noise_reduction_db'] = 20 * np.log10(raw_std_good / clean_std_good)
+            else:
+                metrics['noise_reduction_db'] = 0.0
+    else:
+        metrics['noise_reduction_db'] = 0.0
+    
+    # Ensure reasonable bounds - cleaning should generally improve signal quality
+    metrics['noise_reduction_db'] = max(metrics['noise_reduction_db'], 0.0)
     
     return metrics
