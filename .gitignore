@@ -62,3 +62,6 @@ htmlcov/
 .Trashes
 ehthumbs.db
 Thumbs.db
+pyproject.toml
+main.py
+uv.lock
