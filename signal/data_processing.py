@@ -4,8 +4,6 @@ import pandas as pd
 
 class DataProcessing:
 
-
-
     def load_data(data_path: str, file_type: str) -> pd.DataFrame:
         """Load any data as long as the file type is supported."""
         if file_type == ".csv" or file_type == "csv":
@@ -55,10 +53,42 @@ class DataProcessing:
     def get_specific_subject_df(per_subject: dict, s_id: str = 'S7') -> pd.DataFrame:
         return per_subject[s_id]
     
-    def get_specific_health_measure_df(df: pd.DataFrame, health_measure: str) -> pd.DataFrame: 
+    def get_specific_health_measure_df(df: pd.DataFrame, health_measure_name: str) -> pd.DataFrame: 
         health_measures = DataProcessing.get_health_measures()
-        if health_measure in health_measures:
-            health_measure_df = df.loc[:, [health_measure]]
+        if health_measure_name in health_measures:
+            health_measure_df = df.loc[:, [health_measure_name]]
             return health_measure_df
         else: 
-            return f"Health Measure {health_measure} is not support (yet). Choose from {health_measures}"
+            return f"Health Measure {health_measure_name} is not support (yet). Choose from {health_measures}"
+        
+    def create_time_df(df: pd.DataFrame, sampling_rate: int):
+        """Go from indicies to time based on sampling rate"""
+        milliseconds_per_sample = (1000 / sampling_rate)
+
+        # Elapsed time from start
+        df['Milliseconds'] = (df.index * milliseconds_per_sample).round(2)
+
+        # ✅ Numeric seconds for masks & segmentation
+        df['Seconds'] = (df['Milliseconds'] / 1000.0).round(2)
+
+        # Optional: display-only Timedelta (rounded to 10 ms so it matches two-decimal seconds)
+        df['Time'] = pd.to_timedelta(df['Seconds'], unit='s').dt.round('10ms')
+        return df
+
+    def get_segments_by_duration(df, window_size_sec: int):
+        # Work on a copy to avoid chained assignment issues
+        out = df.copy()
+
+        # window_id from numeric seconds
+        out['window_id'] = (out['Seconds'] // window_size_sec).astype(int) + 1
+
+        # window start/end in seconds (numeric)
+        out['window_start_seconds'] = out['window_id'] * window_size_sec
+        out['window_end_seconds']   = out['window_start_seconds'] + window_size_sec
+
+        # Per-window sample counts (sanity check)
+        samples_per_window = out.groupby('window_id').size()
+
+        return out, samples_per_window
+
+    
