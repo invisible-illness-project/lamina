@@ -95,4 +95,7 @@ class DataProcessing:
 
         return out, samples_per_window
 
-    
+    def get_specific_label(df, label: int) -> list[pd.DataFrame]:
+        """Baseline is label 0"""
+        filt_label = (df['label'] == label)
+        return df[filt_label]
