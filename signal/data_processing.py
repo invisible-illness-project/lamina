@@ -4,10 +4,14 @@ import pandas as pd
 
 class DataProcessing:
 
-    def load_data(data_path: str, file_type: str) -> pd.DataFrame:
+    def load_base_data_path(input_dir: str) -> str:
+        """Path to data/"""
+        return os.path.join(input_dir, "../../data")
+    
+    def load_from_file(data_path: str, file_type: str, **kwargs) -> pd.DataFrame:
         """Load any data as long as the file type is supported."""
         if file_type == ".csv" or file_type == "csv":
-            df = pd.read_csv(data_path)
+            df = pd.read_csv(data_path, **kwargs)
             return df
         else:
             return f"File type {file_type} is not support (yet). Choose from [.csv]"
