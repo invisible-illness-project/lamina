@@ -1,6 +1,7 @@
 import os 
 
 import pandas as pd
+import neurokit2 as nk
 
 class DataProcessing:
 
@@ -35,28 +36,33 @@ class DataProcessing:
 
         return df
 
-    def get_data_per_subject(df: pd.DataFrame, s_id: str = 'S7') -> dict:
-        """Store each subject (key) and their data (value) into a dict: {s_id : data_df}. 
-        If s_id exists, then return the actual subject data as well. 
+    def reset_rows(df: pd.DataFrame) -> pd.DataFrame:
+        """Start each subject's row at 0.
         """
         per_subject = {}
         subject_ids = DataProcessing.get_s_ids(df)
         for subject_id in subject_ids:
             filt_subject = (df['subject'] == subject_id)
             subject_df = df[filt_subject]
-            subject_df.reset_index(inplace=True)
+            subject_df = subject_df.reset_index(drop=True)
             per_subject[subject_id] = subject_df
 
-        
-        if s_id in subject_ids:
-            s_df = DataProcessing.get_specific_subject_df(per_subject, s_id)
-            return per_subject, s_df
-        
-        return per_subject
+        reset_rows_df = pd.concat(per_subject.values())
+
+        return reset_rows_df
     
-    def get_specific_subject_df(per_subject: dict, s_id: str = 'S7') -> pd.DataFrame:
-        return per_subject[s_id]
+    def get_specific_subject_df(df: pd.DataFrame, subject_id: str = 'S7') -> pd.DataFrame:
+        filt_subject = (df['subject'] == subject_id)
+        subject_df = df[filt_subject]
+        return subject_df
     
+    def get_cleaned_data(df, col_name, hz: int = 700):
+        df = df.copy()
+        cleaned_series = nk.ecg_clean(df[col_name], hz)
+        df[f'Cleaned {col_name}'] = cleaned_series
+
+        return df
+
     def get_specific_health_measure_df(df: pd.DataFrame, health_measure_name: str) -> pd.DataFrame: 
         health_measures = DataProcessing.get_health_measures()
         if health_measure_name in health_measures:
@@ -67,13 +73,15 @@ class DataProcessing:
         
     def create_time_df(df: pd.DataFrame, sampling_rate: int):
         """Go from indicies to time based on sampling rate"""
+        df = df.copy()
+        
         milliseconds_per_sample = (1000 / sampling_rate)
 
         # Elapsed time from start
         df['Milliseconds'] = (df.index * milliseconds_per_sample).round(2)
 
         # ✅ Numeric seconds for masks & segmentation
-        df['Seconds'] = (df['Milliseconds'] / 1000.0).round(2)
+        df['Seconds'] = (df['Milliseconds'] / 1000.0)
 
         # Optional: display-only Timedelta (rounded to 10 ms so it matches two-decimal seconds)
         df['Time'] = pd.to_timedelta(df['Seconds'], unit='s').dt.round('10ms')
@@ -84,7 +92,7 @@ class DataProcessing:
         out = df.copy()
 
         # window_id from numeric seconds
-        out['window_id'] = (out['Seconds'] // window_size_sec).astype(int) + 1
+        out['window_id'] = (out['Seconds'] // window_size_sec).astype(int)
 
         # window start/end in seconds (numeric)
         out['window_start_seconds'] = out['window_id'] * window_size_sec
@@ -95,7 +103,18 @@ class DataProcessing:
 
         return out, samples_per_window
 
-    def get_specific_label(df, label: int) -> list[pd.DataFrame]:
-        """Baseline is label 0"""
+    def get_specific_label(df, label: int) -> pd.DataFrame:
+        """Baseline is label 1"""
         filt_label = (df['label'] == label)
         return df[filt_label]
+    
+    def get_all_labels(df) -> list[pd.DataFrame]:
+        dfs_by_label = []
+        
+        labels = df['label'].unique()
+
+        for label in labels:
+            label_df = DataProcessing.get_specific_label(df, label=label)
+            dfs_by_label.append(label_df)
+
+        return dfs_by_label
