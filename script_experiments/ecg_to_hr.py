@@ -31,9 +31,9 @@ def load_dataset(script_dir, dataset_path, filter_by_subjects: list):
 
     print(f"Dataset path: {data_path}")
     
-    df = DataProcessing.load_from_file(data_path, file_type='csv', index_col=0)
-    if 'Unnamed: 0' in df.columns:
-        df.drop(['Unnamed: 0'], axis=1, inplace=True)
+    df = DataProcessing.load_from_file(data_path, file_type='csv', index_col=0, sep=',')
+    # if 'Unnamed: 0' in df.columns:
+    #     df.drop(['Unnamed: 0'], axis=1, inplace=True)
 
     if filter_by_subjects is None:
         print(f"Shape: {df.shape}")
@@ -50,6 +50,24 @@ def load_dataset(script_dir, dataset_path, filter_by_subjects: list):
         print(f"\nPreview Labels and Count:\n{subjects_df['label'].values}\n")
         return subjects_df
 
+def separate_subjects(df):
+    subject_ids = df['subject'].unique()
+    # print(labels)
+
+    for subject_id in subject_ids:
+        s_df = DataProcessing.get_specific_subject_df(df, subject_id)
+        order = DataProcessing.check_labels_order(s_df)
+
+        if np.array_equal(order, [3, 4]):
+            print(f"Normal: {order} --- {subject_id}")
+            df.loc[df['subject'] == subject_id, "Labels Order"] = "Normal"
+
+        if np.array_equal(order, [4, 3, 4]):
+            print(f"Abnormal: {order} --- {subject_id}")
+            df.loc[df['subject'] == subject_id, "Labels Order"] = "Abnormal"
+    
+    return df
+
 def _get_label_name(label_val):
 
     labels = {
@@ -60,23 +78,38 @@ def _get_label_name(label_val):
     }
     return labels.get(str(label_val))
 
-def convert_to_time(labels_dfs, sampling_rate):
+def convert_to_time(df, sampling_rate):
 
-    timed_dfs = []
+    timed_subject_dfs = []
 
-    for i, labels_df in enumerate(labels_dfs):
-        label_val = labels_df['label'].iloc[0]
-        label_name = _get_label_name(label_val)
-        print("\n" + "="*60)
-        print(f"Creating time component for label {label_val}---{label_name}")
-        print("="*60)
-        timed_df = DataProcessing.create_time_df(labels_df, sampling_rate=sampling_rate)
-        print(f"Shape: {timed_df.shape}")
-        print(f"\nPreview:\n{timed_df.head(7)}")
-        print(f"\nPreview:\n{timed_df.tail(7)}\n")
-        timed_dfs.append(timed_df)
+    subject_ids = df['subject'].unique()
+    labels = sorted(df['label'].unique())
+
+    for subject_id in subject_ids:
+        specifc_subject_dfs = []
+        specific_subject_df = DataProcessing.get_specific_subject_df(df, subject_id)
+        for label in labels:
+            filt_labels = (specific_subject_df['label'] == label)
+            subject_label_df = specific_subject_df[filt_labels]
+            subject_label_df = subject_label_df.reset_index(drop=True)
+            print("\n" + "="*60)
+            print(f"Creating time component for subject {subject_id} --- label {label}")
+            print("="*60)
+
+            timed_subject_df = DataProcessing.create_time_df(subject_label_df, sampling_rate=sampling_rate)
+            # if subject_id == "S4":
+            #     print(f"Shape: {timed_subject_df.shape}")
+            #     print(f"\nPreview:\n{timed_subject_df[timed_subject_df['subject'] == "S4"].head(7)}")
+            #     print(f"\nPreview:\n{timed_subject_df[timed_subject_df['subject'] == "S4"].tail(7)}\n")
+            print(f"\nPreview:\n{timed_subject_df.head(7)}")
+            print(f"\nPreview:\n{timed_subject_df.tail(7)}\n")
+            specifc_subject_dfs.append(timed_subject_df)
+    timed_subject_dfs.append(specifc_subject_dfs)
+
+
+    timed_subject_df = pd.DataFrame(timed_subject_dfs)
     
-    return timed_dfs
+    return timed_subject_df
 
 # def split_into_segments(time_dfs, sampling_rate):
 #     segment_dfs = []
@@ -125,7 +158,7 @@ if __name__ == "__main__":
     default_save_path = os.path.join(base_data_path, 'ecg_to_hr')
     default_output_name = 'data.csv'
     default_sampling_rate = 700
-    default_subjects = 'all'
+    default_ecg_col_name = 'ECG'
 
     parser = argparse.ArgumentParser(
         description='Convert from ecg to hr.'
@@ -155,20 +188,26 @@ if __name__ == "__main__":
     # subjects
     parser.add_argument(
         "--subjects",
-        default=default_subjects,
+        default=None,
         help="Use all subjects, or filter by specific subject."
     )
     args = parser.parse_args()
     
     os.makedirs(args.save_path, exist_ok=True)
-
-    df = load_dataset(script_dir, args.dataset, args.subjects)
     
-    get_all_labels = DataProcessing.get_all_labels(df)
-    # print(get_all_labels)
-    # sys.exit(1)
+    df = load_dataset(script_dir, args.dataset, args.subjects)
+    normal_abnormal_df = separate_subjects(df)
 
-    time_dfs = convert_to_time(get_all_labels, default_sampling_rate)
+    filt_normal = (normal_abnormal_df["Labels Order"] == "Normal")
+    normal_df = normal_abnormal_df[filt_normal]
+    print(f"Shape: {normal_df.shape}")
+    print(f"\nPreview:\n{normal_df.head(7)}")
+    print(f"\nPreview:\n{normal_df.tail(7)}\n")
+    print(f"\nPreview Labels and Count:\n{normal_df['label'].values}\n")
+
+    get_all_labels = DataProcessing.get_all_labels(normal_df)
+
+
+    time_subject_dfs = convert_to_time(normal_df, default_sampling_rate)
     # segment_dfs = split_into_segments(time_dfs, default_sampling_rate)
     # plot_rmssd_per_label(segment_dfs)
-    
