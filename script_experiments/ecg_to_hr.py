@@ -92,57 +92,94 @@ def convert_to_time(df, sampling_rate):
             filt_labels = (specific_subject_df['label'] == label)
             subject_label_df = specific_subject_df[filt_labels]
             subject_label_df = subject_label_df.reset_index(drop=True)
-            print("\n" + "="*60)
-            print(f"Creating time component for subject {subject_id} --- label {label}")
-            print("="*60)
 
             timed_subject_df = DataProcessing.create_time_df(subject_label_df, sampling_rate=sampling_rate)
-            # if subject_id == "S4":
-            #     print(f"Shape: {timed_subject_df.shape}")
-            #     print(f"\nPreview:\n{timed_subject_df[timed_subject_df['subject'] == "S4"].head(7)}")
-            #     print(f"\nPreview:\n{timed_subject_df[timed_subject_df['subject'] == "S4"].tail(7)}\n")
-            print(f"\nPreview:\n{timed_subject_df.head(7)}")
-            print(f"\nPreview:\n{timed_subject_df.tail(7)}\n")
+            if subject_id == "S4":
+                print("\n" + "="*60)
+                print(f"Creating time component for subject {subject_id} --- label {label}")
+                print("="*60)
+
+                print(f"Shape: {timed_subject_df.shape}")
+                print(f"\nPreview:\n{timed_subject_df[timed_subject_df['subject'] == "S4"].head(7)}")
+                print(f"\nPreview:\n{timed_subject_df[timed_subject_df['subject'] == "S4"].tail(7)}\n")
+            # print(f"\nPreview:\n{timed_subject_df.head(7)}")
+            # print(f"\nPreview:\n{timed_subject_df.tail(7)}\n")
             specifc_subject_dfs.append(timed_subject_df)
-    timed_subject_dfs.append(specifc_subject_dfs)
+    timed_subject_dfs.extend(specifc_subject_dfs)
 
 
-    timed_subject_df = pd.DataFrame(timed_subject_dfs)
+    timed_subject_label_df = pd.concat(timed_subject_dfs, ignore_index=True)
+    print(f"\nPreview:\n{timed_subject_label_df.head(7)}")
+    print(f"\nPreview:\n{timed_subject_label_df.tail(7)}\n")
     
-    return timed_subject_df
+    return timed_subject_label_df
 
-# def split_into_segments(time_dfs, sampling_rate):
-#     segment_dfs = []
-#     for idx, row in time_dfs.
-#         print("\n" + "="*60)
-#         print(f"[Segmenting label {label_val} into 5-minute windows]")
-#         print("="*60)
-#         segmented_df, samples_per_window = DataProcessing.get_segments_by_duration(timed_df, 300)
-#         print(f"Shape: {segmented_df.shape}")
-#         print(f"\nPreview:\n{segmented_df.head(7)}\n")
-#         print(f"\nSamples per window:\n{samples_per_window}\n")
-#         print(f"\nPreview Labels and Count:\n{segmented_df['label'].value_counts()}\n")
+def split_into_segments(time_dfs, sampling_rate):
+    segment_dfs = []
 
-#         segment_dfs.append(segmented_df)
+    labels = time_dfs['label'].unique()
 
-#     return segment_dfs
+    for label in labels:
+        filt_label = (time_dfs['label'] == label)
+        label_df = time_dfs[filt_label]
+
+        segmented_df, samples_per_window = DataProcessing.get_segments_by_duration(label_df, 300)
+
+        if label == 1:
+            print("\n" + "="*60)
+            print(f"[Segmenting label {label} into 5-minute windows]")
+            print("="*60)
+            print(f"Shape: {segmented_df.shape}")
+            print(f"\nPreview:\n{segmented_df.head(7)}\n")
+            print(f"\nSamples per window:\n{samples_per_window}\n")
+            print(f"\nPreview Labels and Count:\n{segmented_df['label'].value_counts()}\n")
+
+
+            # ==========================
+            # 4.3 VISUALIZE (POST-SEGMENTS)
+            # ==========================
+            plot_per_label(
+                df=segmented_df, 
+                s_id=args.subjects,
+                pre_title="Post-Segmenting"
+                )
+
+        segment_dfs.append(segmented_df)
+
+    segmented_by_label_df = pd.concat(segment_dfs, ignore_index=True)
+    print(f"\nPreview:\n{segmented_by_label_df.head(7)}")
+    print(f"\nPreview:\n{segmented_by_label_df.tail(7)}\n")
+
+    return segmented_by_label_df
 
 # Create a visualization class
-# def plot_rmssd_per_label(segment_dfs):
-#     for segmented_df in segment_dfs:
-#         label_val = segmented_df['label'].iloc[0]
-#         label_name = _get_label_name(label_val)
-#         print("\n" + "="*60)
-#         print(f"Plotting Segment for label: {label_val}---{label_name}")
-#         print("="*60)
+def plot_per_label(df, s_id, pre_title):
+    labels = sorted(df['label'].unique())
+    fig, axes = plt.subplots(len(labels), 1, figsize=(14, 4 * len(labels)), sharex=False)
+    if len(labels) == 1:
+        axes = [axes]
 
-#         plt.figure(figsize=(12, 4))
-#         plt.plot(segmented_df['Seconds'], segmented_df['ECG'], linewidth=0.5)
-#         plt.title(f"ECG Signal — Label {label_val}")
-#         plt.xlabel("Seconds")
-#         plt.ylabel("ECG")
-#         plt.tight_layout()
-#         plt.show()
+    for ax, label in zip(axes, labels):
+        filt_label = (df['label'] == label)
+        label_df = df[filt_label]
+        label_name = _get_label_name(label)
+
+        # Plot the ECG signal
+        ax.plot(label_df['Seconds'], label_df['Cleaned ECG'], linewidth=0.5, label='ECG')
+
+        # Get the unique end times for each segment
+        segment_ends = label_df['window_end_seconds'].unique()
+
+        # Draw a vertical line at the end of each segment
+        for end_time in segment_ends:
+            ax.axvline(x=end_time, color='r', linestyle='--', linewidth=1)
+
+        ax.set_title(f"{pre_title} --- {s_id} --- Label {label} ({label_name})")
+        ax.set_xlabel("Seconds")
+        ax.set_ylabel("Cleaned ECG")
+
+    plt.tight_layout()
+    plt.show()
 
 if __name__ == "__main__":
     print("\n" + "="*60)
@@ -188,16 +225,19 @@ if __name__ == "__main__":
     # subjects
     parser.add_argument(
         "--subjects",
-        default=None,
+        default="S4",
         help="Use all subjects, or filter by specific subject."
     )
     args = parser.parse_args()
     
     os.makedirs(args.save_path, exist_ok=True)
     
+    # ==========================
+    # 2. LOAD DF + NORMAL (3 -> 4) AND ABNORMAL (4 -> 3 -> 4)
+    # ==========================
     df = load_dataset(script_dir, args.dataset, args.subjects)
+    
     normal_abnormal_df = separate_subjects(df)
-
     filt_normal = (normal_abnormal_df["Labels Order"] == "Normal")
     normal_df = normal_abnormal_df[filt_normal]
     print(f"Shape: {normal_df.shape}")
@@ -205,9 +245,30 @@ if __name__ == "__main__":
     print(f"\nPreview:\n{normal_df.tail(7)}\n")
     print(f"\nPreview Labels and Count:\n{normal_df['label'].values}\n")
 
-    get_all_labels = DataProcessing.get_all_labels(normal_df)
-
-
+    # ==========================
+    # 3. CONVERTED TO TIME: SUBJECT | LABEL | T0 - TN
+    # ==========================
     time_subject_dfs = convert_to_time(normal_df, default_sampling_rate)
-    # segment_dfs = split_into_segments(time_dfs, default_sampling_rate)
-    # plot_rmssd_per_label(segment_dfs)
+
+    # ==========================
+    # 4.1 VISUALIZE (PRE-SEGMENTS)
+    # ==========================
+    # plot_per_label(
+    #     df=time_subject_dfs, 
+    #     s_id=args.subjects,
+    #     pre_title="Pre-Segmenting"
+    #     )
+    
+    # ==========================
+    # 4.2 SEGMENT
+    # ==========================
+    segment_dfs = split_into_segments(time_subject_dfs, default_sampling_rate)
+
+    # ==========================
+    # 4.3 VISUALIZE (POST-SEGMENTS)
+    # ==========================
+    plot_per_label(
+        df=segment_dfs, 
+        s_id=args.subjects,
+        pre_title="Post-Segmenting"
+        )
