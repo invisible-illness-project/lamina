@@ -111,10 +111,29 @@ class DataProcessing:
     def get_all_labels(df) -> list[pd.DataFrame]:
         dfs_by_label = []
         
-        labels = df['label'].unique()
+        labels = sorted(df['label'].unique())
 
         for label in labels:
             label_df = DataProcessing.get_specific_label(df, label=label)
             dfs_by_label.append(label_df)
 
         return dfs_by_label
+    
+    def check_labels_order(s_df):
+        """Check order of labels (1, 2, 3, 4)
+
+        s_df: pd.DataFrame
+            Specific subject data
+        
+        Notes:
+        if order is 3 -> 4, do X
+        if order is 4 -> 3 -> 4, do Y
+        """
+        filt = s_df['label'].isin([3, 4]) # filter for labels 3 and 4
+        filt_df = s_df.loc[filt, 'label'] # filterd 3 and 4 df
+        run_starts = filt_df[filt_df.ne(filt_df.shift())]
+        run_order = run_starts.to_numpy()
+
+        return run_order
+    
+
