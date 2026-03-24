@@ -115,7 +115,7 @@ def convert_to_time(df, sampling_rate):
     return timed_subject_label_df
 
 def split_into_segments(time_dfs, window_size):
-    print(window_size)
+    # print(window_size)
     segment_dfs = []
 
     labels = time_dfs['label'].unique()
@@ -124,12 +124,12 @@ def split_into_segments(time_dfs, window_size):
         filt_label = (time_dfs['label'] == label)
         label_df = time_dfs[filt_label]
 
-        print(label_df.info())
+        # print(label_df.info())
         segmented_df, samples_per_window = DataProcessing.get_segments_by_duration(label_df, window_size)
-        min_windo_size = window_size // 60
+        min_window_size = window_size // 60
         if label == 1:
             print("\n" + "="*60)
-            print(f"[Segmenting label {label} into {window_size} seconds = {min_windo_size}]")
+            print(f"[Segmenting label {label} into {window_size} seconds = {min_window_size}]")
             print("="*60)
             print(f"Shape: {segmented_df.shape}")
             print(f"\nPreview:\n{segmented_df.head(7)}\n")
@@ -153,6 +153,112 @@ def split_into_segments(time_dfs, window_size):
     print(f"\nPreview:\n{segmented_by_label_df.tail(7)}\n")
 
     return segmented_by_label_df
+
+def get_r_peaks(segments_df, sampling_rate):
+
+    windows_df = segments_df[['window_id', 'window_start_seconds', 'window_end_seconds']].drop_duplicates()
+    windows_df = windows_df.sort_values('window_id').reset_index(drop=True)
+
+    # Choose the signal column
+    signal_col = 'Cleaned ECG' if 'Cleaned ECG' in segments_df.columns else 'ECG'
+
+    # For fast slicing, use a sorted numeric seconds array once
+    seconds = segments_df['Seconds'].to_numpy()
+    print(seconds)
+    signal  = segments_df[signal_col].to_numpy()
+    print(len(signal))
+
+    r_peaks = []
+
+    for _, segment in tqdm(windows_df.iterrows(), total=len(windows_df)):
+        start_time = float(segment['window_start_seconds'])
+        end_time   = float(segment['window_end_seconds'])
+        segment_idx =  segment['window_id']
+        # print(f"Segment ({segment_idx})\n start time: {start_time} | end time: {end_time}")
+        
+        # Use the time window to get the index
+        start_index = seconds.searchsorted(start_time, side='left')
+        end_index   = seconds.searchsorted(end_time,   side='left')
+        # print(f" start idx: {start_index} | end idx: {end_index}")
+
+        # Use the indicies to get the signal's segment
+        segment_ecg = signal[start_index:end_index]
+        # print(f" segment idx: ({start_index} : {end_index}) | segment length: {len(segment_ecg)}\n\tsegment: {segment_ecg}")
+
+        if segment_idx < 3:
+            print(f"Segment ({segment_idx})\n start time: {start_time} | end time: {end_time}")
+            print(f" start idx: {start_index} | end idx: {end_index}")
+            print(f" segment idx: ({start_index} : {end_index}) | segment length: {len(segment_ecg)}\n\tsegment values: {segment_ecg}")
+
+        # If segment is empty
+        if segment_ecg.size == 0:
+            r_peaks.append({
+                'window_id': int(segment['window_id']),
+                'window_start_seconds': start_time,
+                'window_end_seconds': end_time,
+                'n_samples': 0,
+                'n_r_peaks': 0,
+                'r_peaks_samples': np.array([], dtype=int),
+                'note': 'empty window',
+            })
+            continue
+
+        # If segment is NOT empty
+        info = nk.ecg_findpeaks(segment_ecg, sampling_rate=sampling_rate)
+        peaks = info.get('ECG_R_Peaks', np.array([], dtype=int))
+
+        if segment_idx < 3:
+            print(f"\t#peaks: {len(peaks)}")
+
+        r_peaks.append({
+            'window_id': int(segment['window_id']),
+            'window_start_seconds': start_time,
+            'window_end_seconds': end_time,
+            'n_samples': int(segment_ecg.size),
+            'n_r_peaks': int(peaks.size),
+            'r_peaks_samples': peaks,  # indices are relative to the segment
+        })
+
+    return r_peaks
+
+def get_hrv(r_peaks, sampling_rate):
+    hrv_stats = []
+    for r_peaks_idx in range(len(r_peaks)):
+        r_peaks_info = r_peaks[r_peaks_idx]
+        r_preak_name = r_peaks_info['window_id']
+        r_peaks_per_segment = r_peaks_info['r_peaks_samples']
+
+        # Add this check:
+        # We need at least 2 peaks to compute 1 R-R interval.
+        if len(r_peaks_per_segment) < 2:
+            print(f"Skipping window {r_preak_name}: Not enough R-peaks found ({len(r_peaks_per_segment)}).")
+            continue  # Skip to the next segment
+
+        # computes time-domain indices of Heart Rate Variability (HRV)
+        hrv_segment_stats = nk.hrv_time(r_peaks_per_segment, sampling_rate, show=False)
+        
+        # Add window_id to the stats for easy tracking
+        hrv_segment_stats['window_id'] = r_preak_name
+        
+        if r_peaks_idx < 2:
+            print(f"R-peaks segment ({r_peaks_idx}): {r_peaks_per_segment}")
+            print(f"\tstats: {hrv_segment_stats.to_dict()}\n")
+            
+        hrv_stats.append(hrv_segment_stats)
+
+    if not hrv_stats:
+        print("No valid HRV stats were computed.")
+        return pd.DataFrame()
+
+    segment_stats_df = pd.concat(hrv_stats)
+    segment_stats_df.reset_index(drop=True, inplace=True) # Use drop=True
+    print("\n" + "="*60)
+    print(f"HRV Stats per segment")
+    print("="*60)
+    print(f"Shape: {segment_stats_df.shape}")
+    print(f"\nPreview:\n{segment_stats_df.head(7)}")
+    print(f"\nPreview:\n{segment_stats_df.tail(7)}\n")
+    return segment_stats_df
 
 # Create a visualization class
 def plot_per_label(df, s_id, pre_title):
@@ -231,6 +337,7 @@ if __name__ == "__main__":
         help="Use all subjects, or filter by specific subject."
     )
 
+    # window_size
     parser.add_argument(
         "--window_size",
         type=int,
@@ -280,3 +387,6 @@ if __name__ == "__main__":
         s_id=args.subjects,
         pre_title="Post-Segmenting"
         )
+    
+    r_peaks = get_r_peaks(segment_dfs, default_sampling_rate)
+    hrv_df = get_hrv(r_peaks, default_sampling_rate)
