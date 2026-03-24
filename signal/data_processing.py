@@ -88,19 +88,19 @@ class DataProcessing:
         return df
 
     def get_segments_by_duration(df, window_size_sec: int):
+        # If the input dataframe is empty, return empty results immediately
+        if df.empty:
+            return df.copy(), pd.Series(dtype='int64')
+
         # Work on a copy to avoid chained assignment issues
         out = df.copy()
-
         # window_id from numeric seconds
         out['window_id'] = (out['Seconds'] // window_size_sec).astype(int)
-
         # window start/end in seconds (numeric)
         out['window_start_seconds'] = out['window_id'] * window_size_sec
         out['window_end_seconds']   = out['window_start_seconds'] + window_size_sec
-
         # Per-window sample counts (sanity check)
         samples_per_window = out.groupby('window_id').size()
-
         return out, samples_per_window
 
     def get_specific_label(df, label: int) -> pd.DataFrame:

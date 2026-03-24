@@ -114,7 +114,8 @@ def convert_to_time(df, sampling_rate):
     
     return timed_subject_label_df
 
-def split_into_segments(time_dfs, sampling_rate):
+def split_into_segments(time_dfs, window_size):
+    print(window_size)
     segment_dfs = []
 
     labels = time_dfs['label'].unique()
@@ -123,11 +124,12 @@ def split_into_segments(time_dfs, sampling_rate):
         filt_label = (time_dfs['label'] == label)
         label_df = time_dfs[filt_label]
 
-        segmented_df, samples_per_window = DataProcessing.get_segments_by_duration(label_df, 300)
-
+        print(label_df.info())
+        segmented_df, samples_per_window = DataProcessing.get_segments_by_duration(label_df, window_size)
+        min_windo_size = window_size // 60
         if label == 1:
             print("\n" + "="*60)
-            print(f"[Segmenting label {label} into 5-minute windows]")
+            print(f"[Segmenting label {label} into {window_size} seconds = {min_windo_size}]")
             print("="*60)
             print(f"Shape: {segmented_df.shape}")
             print(f"\nPreview:\n{segmented_df.head(7)}\n")
@@ -228,6 +230,12 @@ if __name__ == "__main__":
         default="S4",
         help="Use all subjects, or filter by specific subject."
     )
+
+    parser.add_argument(
+        "--window_size",
+        type=int,
+        help="How to segment data across time (e.g. 60 secs (1 min), 300 secs (5 mins), etc)"
+    )
     args = parser.parse_args()
     
     os.makedirs(args.save_path, exist_ok=True)
@@ -262,7 +270,7 @@ if __name__ == "__main__":
     # ==========================
     # 4.2 SEGMENT
     # ==========================
-    segment_dfs = split_into_segments(time_subject_dfs, default_sampling_rate)
+    segment_dfs = split_into_segments(time_subject_dfs, args.window_size)
 
     # ==========================
     # 4.3 VISUALIZE (POST-SEGMENTS)
