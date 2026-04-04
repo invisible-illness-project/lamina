@@ -88,6 +88,7 @@ class DataProcessing:
         return df
 
     def get_segments_by_duration(df, window_size_sec: int):
+        # print(type(window_size_sec))
         # If the input dataframe is empty, return empty results immediately
         if df.empty:
             return df.copy(), pd.Series(dtype='int64')

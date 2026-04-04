@@ -129,7 +129,7 @@ def split_into_segments(time_dfs, window_size):
         min_window_size = window_size // 60
         if label == 1:
             print("\n" + "="*60)
-            print(f"[Segmenting label {label} into {window_size} seconds = {min_window_size}]")
+            print(f"[Segmenting label {label} into {window_size} seconds = {min_window_size} minutes each]")
             print("="*60)
             print(f"Shape: {segmented_df.shape}")
             print(f"\nPreview:\n{segmented_df.head(7)}\n")
@@ -154,111 +154,80 @@ def split_into_segments(time_dfs, window_size):
 
     return segmented_by_label_df
 
-def get_r_peaks(segments_df, sampling_rate):
+def get_r_peaks_and_hrv(segments_df, sampling_rate, no_hrv=False):
+    """Finds R-peaks and optionally calculates HRV, printing verification for each."""
+    print("\n" + "="*60)
+    print("=== R-PEAK & HRV ANALYSIS ===")
+    print("="*60)
+
+    if segments_df.empty:
+        print("Input dataframe is empty. Skipping analysis.")
+        return [], pd.DataFrame()
 
     windows_df = segments_df[['window_id', 'window_start_seconds', 'window_end_seconds']].drop_duplicates()
     windows_df = windows_df.sort_values('window_id').reset_index(drop=True)
-
-    # Choose the signal column
+    
+    s_id = segments_df['subject'].iloc[0]
+    label_val = segments_df['label'].iloc[0]
+    label_name = _get_label_name(label_val)
+    
     signal_col = 'Cleaned ECG' if 'Cleaned ECG' in segments_df.columns else 'ECG'
-
-    # For fast slicing, use a sorted numeric seconds array once
     seconds = segments_df['Seconds'].to_numpy()
-    print(seconds)
     signal  = segments_df[signal_col].to_numpy()
-    print(len(signal))
-
-    r_peaks = []
-
-    for _, segment in tqdm(windows_df.iterrows(), total=len(windows_df)):
+    
+    r_peaks_list = []
+    hrv_stats_list = []
+    
+    pbar = tqdm(windows_df.iterrows(), total=len(windows_df), desc=f"Analyzing {s_id} - {label_name}")
+    
+    for _, segment in pbar:
+        segment_idx = segment['window_id']
         start_time = float(segment['window_start_seconds'])
-        end_time   = float(segment['window_end_seconds'])
-        segment_idx =  segment['window_id']
-        # print(f"Segment ({segment_idx})\n start time: {start_time} | end time: {end_time}")
+        end_time = float(segment['window_end_seconds'])
         
-        # Use the time window to get the index
         start_index = seconds.searchsorted(start_time, side='left')
-        end_index   = seconds.searchsorted(end_time,   side='left')
-        # print(f" start idx: {start_index} | end idx: {end_index}")
-
-        # Use the indicies to get the signal's segment
+        end_index = seconds.searchsorted(end_time, side='left')
+        
         segment_ecg = signal[start_index:end_index]
-        # print(f" segment idx: ({start_index} : {end_index}) | segment length: {len(segment_ecg)}\n\tsegment: {segment_ecg}")
-
-        if segment_idx < 3:
-            print(f"Segment ({segment_idx})\n start time: {start_time} | end time: {end_time}")
-            print(f" start idx: {start_index} | end idx: {end_index}")
-            print(f" segment idx: ({start_index} : {end_index}) | segment length: {len(segment_ecg)}\n\tsegment values: {segment_ecg}")
-
-        # If segment is empty
-        if segment_ecg.size == 0:
-            r_peaks.append({
-                'window_id': int(segment['window_id']),
-                'window_start_seconds': start_time,
-                'window_end_seconds': end_time,
-                'n_samples': 0,
-                'n_r_peaks': 0,
-                'r_peaks_samples': np.array([], dtype=int),
-                'note': 'empty window',
-            })
-            continue
-
-        # If segment is NOT empty
-        info = nk.ecg_findpeaks(segment_ecg, sampling_rate=sampling_rate)
+        
+        info = nk.ecg_findpeaks(segment_ecg, sampling_rate=sampling_rate) if segment_ecg.size > 0 else {}
         peaks = info.get('ECG_R_Peaks', np.array([], dtype=int))
-
-        if segment_idx < 3:
-            print(f"\t#peaks: {len(peaks)}")
-
-        r_peaks.append({
-            'window_id': int(segment['window_id']),
-            'window_start_seconds': start_time,
-            'window_end_seconds': end_time,
-            'n_samples': int(segment_ecg.size),
-            'n_r_peaks': int(peaks.size),
-            'r_peaks_samples': peaks,  # indices are relative to the segment
-        })
-
-    return r_peaks
-
-def get_hrv(r_peaks, sampling_rate):
-    hrv_stats = []
-    for r_peaks_idx in range(len(r_peaks)):
-        r_peaks_info = r_peaks[r_peaks_idx]
-        r_preak_name = r_peaks_info['window_id']
-        r_peaks_per_segment = r_peaks_info['r_peaks_samples']
-
-        # Add this check:
-        # We need at least 2 peaks to compute 1 R-R interval.
-        if len(r_peaks_per_segment) < 2:
-            print(f"Skipping window {r_preak_name}: Not enough R-peaks found ({len(r_peaks_per_segment)}).")
-            continue  # Skip to the next segment
-
-        # computes time-domain indices of Heart Rate Variability (HRV)
-        hrv_segment_stats = nk.hrv_time(r_peaks_per_segment, sampling_rate, show=False)
         
-        # Add window_id to the stats for easy tracking
-        hrv_segment_stats['window_id'] = r_preak_name
+        r_peak_info = {
+            'window_id': int(segment_idx),
+            'label': label_val,
+            'subject': s_id,
+            'n_r_peaks': len(peaks),
+            'r_peaks_samples': peaks
+        }
+        r_peaks_list.append(r_peak_info)
         
-        if r_peaks_idx < 2:
-            print(f"R-peaks segment ({r_peaks_idx}): {r_peaks_per_segment}")
-            print(f"\tstats: {hrv_segment_stats.to_dict()}\n")
-            
-        hrv_stats.append(hrv_segment_stats)
+        # --- Verification Printing ---
+        tqdm.write("\n" + "#"*40)
+        tqdm.write(f"### Window {segment_idx} ({label_name}) ###")
+        tqdm.write(f"  R-Peaks Found: {len(peaks)}")
+        tqdm.write(f"  R-Peak: {peaks}")
 
-    if not hrv_stats:
-        print("No valid HRV stats were computed.")
-        return pd.DataFrame()
+        # --- Conditional HRV Calculation & Printing ---
+        if not no_hrv:
+            if len(peaks) >= 2:
+                hrv_segment_stats = nk.hrv_time(peaks, sampling_rate, show=False)
+                tqdm.write(f"  HRV RMSSD: {hrv_segment_stats['HRV_RMSSD'].iloc[0]:.2f} ms")
+                
+                # Add metadata and append to list
+                hrv_segment_stats['window_id'] = segment_idx
+                hrv_segment_stats['subject'] = s_id
+                hrv_segment_stats['label'] = label_val
+                hrv_stats_list.append(hrv_segment_stats)
+            else:
+                tqdm.write("  HRV Stats: Skipped (Not enough peaks)")
+        tqdm.write("#"*40)
+        
+        pbar.set_description(f"Processing {s_id} - {label_name} | Window {segment_idx} | Peaks: {len(peaks)}")
 
-    segment_stats_df = pd.concat(hrv_stats)
-    segment_stats_df.reset_index(drop=True, inplace=True) # Use drop=True
-    print("\n" + "="*60)
-    print(f"HRV Stats per segment")
-    print("="*60)
-    print(f"Shape: {segment_stats_df.shape}")
-    print(f"\nPreview:\n{segment_stats_df.head(7)}")
-    print(f"\nPreview:\n{segment_stats_df.tail(7)}\n")
-    return segment_stats_df
+    # Combine HRV stats at the end
+    hrv_df = pd.concat(hrv_stats_list, ignore_index=True) if hrv_stats_list else pd.DataFrame()
+    return r_peaks_list, hrv_df
 
 # Create a visualization class
 def plot_per_label(df, s_id, pre_title):
@@ -343,6 +312,14 @@ if __name__ == "__main__":
         type=int,
         help="How to segment data across time (e.g. 60 secs (1 min), 300 secs (5 mins), etc)"
     )
+
+    # no_hrv
+    parser.add_argument(
+        "--no_hrv",
+        action='store_true',  # This makes it a simple flag, no value needed.
+        help="If set, only calculate R-Peaks and skip HRV analysis."
+    )
+
     args = parser.parse_args()
     
     os.makedirs(args.save_path, exist_ok=True)
@@ -388,5 +365,17 @@ if __name__ == "__main__":
         pre_title="Post-Segmenting"
         )
     
-    r_peaks = get_r_peaks(segment_dfs, default_sampling_rate)
-    hrv_df = get_hrv(r_peaks, default_sampling_rate)
+    # This single call will handle finding peaks and conditionally calculating HRV.
+    # It also handles all the verification printing internally.
+    r_peaks_data, hrv_df = get_r_peaks_and_hrv(
+        segment_dfs, 
+        default_sampling_rate, 
+        no_hrv=args.no_hrv
+    )
+
+    if not args.no_hrv and not hrv_df.empty:
+        print("\n" + "="*60)
+        print("=== FINAL HRV DATAFRAME ===")
+        print("="*60)
+        print(f"Shape: {hrv_df.shape}")
+        print(f"\nPreview:\n{hrv_df.head()}")
