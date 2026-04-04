@@ -258,6 +258,58 @@ def plot_per_label(df, s_id, pre_title):
     plt.tight_layout()
     plt.show()
 
+
+
+def plot_hrv_metric(df, col_name, s_id, save_path):
+    """
+    Plots a specified HRV metric over time (window_id) for each label,
+    with each label in its own subplot. Saves the figure to a file.
+    """
+    if df.empty:
+        print(f"Cannot plot {col_name}: The HRV DataFrame is empty.")
+        return
+
+    # Ensure the save directory exists
+    os.makedirs(save_path, exist_ok=True)
+
+    labels = sorted(df['label'].unique())
+    
+    # Create a figure with one subplot for each label
+    fig, axes = plt.subplots(len(labels), 1, figsize=(15, 5 * len(labels)), sharex=False)
+    
+    # Handle case where there is only one label, as subplots won't return an array
+    if len(labels) == 1:
+        axes = [axes]
+
+    fig.suptitle(f'HRV Metric Analysis for Subject {s_id}', fontsize=16, y=1.02)
+
+    for ax, label in zip(axes, labels):
+        # Filter the DataFrame for the current label
+        label_df = df[df['label'] == label].copy()
+        label_name = _get_label_name(label)
+        
+        # Plot the specified metric against the window ID
+        ax.plot(label_df['window_id'], label_df[col_name], marker='o', linestyle='-', label=col_name)
+        
+        # Formatting the plot
+        ax.set_title(f'Label {label}: {label_name}')
+        ax.set_xlabel('Segment Window ID')
+        ax.set_ylabel(col_name)
+        ax.grid(True, linestyle='--', alpha=0.7)
+        ax.legend()
+
+    # Save the figure
+    today_str = datetime.now().strftime('%Y-%m-%d')
+    filename = f'{s_id}_{col_name}_{today_str}.png'
+    full_save_path = os.path.join(save_path, filename)
+    
+    plt.tight_layout(rect=[0, 0, 1, 0.98]) # Adjust layout to make room for suptitle
+    plt.savefig(full_save_path)
+    print(f"\nHRV plot saved to: {full_save_path}")
+    
+    plt.show()
+
+
 if __name__ == "__main__":
     print("\n" + "="*60)
     print("ECG TO HR PIPELINE")
@@ -366,7 +418,6 @@ if __name__ == "__main__":
         )
     
     # This single call will handle finding peaks and conditionally calculating HRV.
-    # It also handles all the verification printing internally.
     r_peaks_data, hrv_df = get_r_peaks_and_hrv(
         segment_dfs, 
         default_sampling_rate, 
@@ -379,3 +430,11 @@ if __name__ == "__main__":
         print("="*60)
         print(f"Shape: {hrv_df.shape}")
         print(f"\nPreview:\n{hrv_df.head()}")
+
+        # Plot the RMSSD metric using the new function
+        plot_hrv_metric(
+            df=hrv_df, 
+            col_name="HRV_RMSSD", 
+            s_id=args.subjects, 
+            save_path=args.save_path
+        )
