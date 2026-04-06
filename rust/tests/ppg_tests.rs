@@ -1,6 +1,6 @@
 use ndarray::Array1;
-use neurokit_rs::ppg::clean::ppg_clean;
-use neurokit_rs::ppg::peaks::ppg_findpeaks;
+use lamina::ppg::clean::ppg_clean;
+use lamina::ppg::peaks::ppg_findpeaks;
 
 #[test]
 fn test_ppg_clean_mock() {

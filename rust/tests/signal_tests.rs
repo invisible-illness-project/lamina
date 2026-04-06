@@ -1,6 +1,6 @@
 use ndarray::{array, Array1};
-use neurokit_rs::signal::smooth::signal_smooth_moving_average;
-use neurokit_rs::signal::peaks::signal_findpeaks;
+use lamina::signal::smooth::signal_smooth_moving_average;
+use lamina::signal::peaks::signal_findpeaks;
 
 #[test]
 fn test_signal_smooth_moving_average() {

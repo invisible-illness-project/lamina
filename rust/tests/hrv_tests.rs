@@ -1,6 +1,6 @@
 use ndarray::{array, Array1};
-use neurokit_rs::hrv::intervals::peaks_to_intervals;
-use neurokit_rs::hrv::time::{hrv_rmssd, hrv_mean_nn};
+use lamina::hrv::intervals::peaks_to_intervals;
+use lamina::hrv::time::{hrv_rmssd, hrv_mean_nn};
 
 #[test]
 fn test_peaks_to_intervals() {

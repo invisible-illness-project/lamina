@@ -1,6 +1,6 @@
 use ndarray::Array1;
-use neurokit_rs::ecg::clean::ecg_clean;
-use neurokit_rs::ecg::peaks::ecg_findpeaks;
+use lamina::ecg::clean::ecg_clean;
+use lamina::ecg::peaks::ecg_findpeaks;
 
 #[test]
 fn test_ecg_clean_mock() {
