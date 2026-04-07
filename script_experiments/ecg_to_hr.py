@@ -152,87 +152,102 @@ def split_into_segments(time_dfs, window_size):
     print(f"\nPreview:\n{segmented_by_label_df.head(7)}")
     print(f"\nPreview:\n{segmented_by_label_df.tail(7)}\n")
 
-    return segmented_by_label_df
+    return segmented_by_label_df, segment_dfs
 
-def get_r_peaks_and_hrv(segments_df, sampling_rate, no_hrv=False):
+def get_r_peaks_and_hrv(segments_dfs, sampling_rate, no_hrv=False):
     """Finds R-peaks and optionally calculates HRV, printing verification for each."""
     print("\n" + "="*60)
     print("=== R-PEAK & HRV ANALYSIS ===")
     print("="*60)
 
-    if segments_df.empty:
-        print("Input dataframe is empty. Skipping analysis.")
-        return [], pd.DataFrame()
+    r_peaks_lists = []
+    hrv_dfs = []
 
-    windows_df = segments_df[['window_id', 'window_start_seconds', 'window_end_seconds']].drop_duplicates()
-    windows_df = windows_df.sort_values('window_id').reset_index(drop=True)
-    
-    s_id = segments_df['subject'].iloc[0]
-    label_val = segments_df['label'].iloc[0]
-    label_name = _get_label_name(label_val)
-    
-    signal_col = 'Cleaned ECG' if 'Cleaned ECG' in segments_df.columns else 'ECG'
-    seconds = segments_df['Seconds'].to_numpy()
-    signal  = segments_df[signal_col].to_numpy()
-    
-    r_peaks_list = []
-    hrv_stats_list = []
-    
-    pbar = tqdm(windows_df.iterrows(), total=len(windows_df), desc=f"Analyzing {s_id} - {label_name}")
-    
-    for _, segment in pbar:
-        segment_idx = segment['window_id']
-        start_time = float(segment['window_start_seconds'])
-        end_time = float(segment['window_end_seconds'])
-        
-        start_index = seconds.searchsorted(start_time, side='left')
-        end_index = seconds.searchsorted(end_time, side='left')
-        
-        segment_ecg = signal[start_index:end_index]
-        
-        info = nk.ecg_findpeaks(segment_ecg, sampling_rate=sampling_rate) if segment_ecg.size > 0 else {}
-        peaks = info.get('ECG_R_Peaks', np.array([], dtype=int))
-        
-        r_peak_info = {
-            'window_id': int(segment_idx),
-            'label': label_val,
-            'subject': s_id,
-            'n_r_peaks': len(peaks),
-            'r_peaks_samples': peaks
-        }
-        r_peaks_list.append(r_peak_info)
-        
-        # --- Verification Printing ---
-        tqdm.write("\n" + "#"*40)
-        tqdm.write(f"### Window {segment_idx} ({label_name}) ###")
-        tqdm.write(f"  R-Peaks Found: {len(peaks)}")
-        tqdm.write(f"  R-Peak: {peaks}")
+    for segments_dfs_idx in range(len(segments_dfs)):
+        segments_df = segments_dfs[segments_dfs_idx]
 
-        # --- Conditional HRV Calculation & Printing ---
-        if not no_hrv:
-            if len(peaks) >= 2:
-                hrv_segment_stats = nk.hrv_time(peaks, sampling_rate, show=False)
-                tqdm.write(f"  HRV RMSSD: {hrv_segment_stats['HRV_RMSSD'].iloc[0]:.2f} ms")
-                
-                # Add metadata and append to list
-                hrv_segment_stats['window_id'] = segment_idx
-                hrv_segment_stats['subject'] = s_id
-                hrv_segment_stats['label'] = label_val
-                hrv_stats_list.append(hrv_segment_stats)
-            else:
-                tqdm.write("  HRV Stats: Skipped (Not enough peaks)")
-        tqdm.write("#"*40)
-        
-        pbar.set_description(f"Processing {s_id} - {label_name} | Window {segment_idx} | Peaks: {len(peaks)}")
+        if segments_df.empty:
+            print("Input dataframe is empty. Skipping analysis.")
+            return [], pd.DataFrame()
 
-    # Combine HRV stats at the end
-    hrv_df = pd.concat(hrv_stats_list, ignore_index=True) if hrv_stats_list else pd.DataFrame()
-    return r_peaks_list, hrv_df
+        # print(segments_df.head(7))
+        # print(segments_df.tail(7))
+
+        windows_df = segments_df[['window_id', 'window_start_seconds', 'window_end_seconds']].drop_duplicates()
+        windows_df = windows_df.sort_values('window_id').reset_index(drop=True)
+
+        # print(windows_df.head(7))
+        # print(windows_df.tail(7))
+        
+        s_id = segments_df['subject'].iloc[0]
+        label_val = segments_df['label'].iloc[0]
+        label_name = _get_label_name(label_val)
+        
+        signal_col = 'Cleaned ECG' if 'Cleaned ECG' in segments_df.columns else 'ECG'
+        seconds = segments_df['Seconds'].to_numpy()
+        signal  = segments_df[signal_col].to_numpy()
+        
+        r_peaks_list = []
+        hrv_stats_list = []
+        
+        pbar = tqdm(windows_df.iterrows(), total=len(windows_df), desc=f"Analyzing {s_id} - {label_name}")
+        
+        for _, segment in pbar:
+            segment_idx = segment['window_id']
+            start_time = float(segment['window_start_seconds'])
+            end_time = float(segment['window_end_seconds'])
+            
+            start_index = seconds.searchsorted(start_time, side='left')
+            end_index = seconds.searchsorted(end_time, side='left')
+            
+            segment_ecg = signal[start_index:end_index]
+            
+            info = nk.ecg_findpeaks(segment_ecg, sampling_rate=sampling_rate) if segment_ecg.size > 0 else {}
+            peaks = info.get('ECG_R_Peaks', np.array([], dtype=int))
+            
+            r_peak_info = {
+                'window_id': int(segment_idx),
+                'label': label_val,
+                'subject': s_id,
+                'n_r_peaks': len(peaks),
+                'r_peaks_samples': peaks
+            }
+            r_peaks_list.append(r_peak_info)
+            
+            # --- Verification Printing ---
+            tqdm.write("\n" + "#"*40)
+            tqdm.write(f"### Window {segment_idx} ({label_name}) ###")
+            tqdm.write(f"  R-Peaks Found: {len(peaks)}")
+            tqdm.write(f"  R-Peak: {peaks}")
+
+            # --- Conditional HRV Calculation & Printing ---
+            if not no_hrv:
+                if len(peaks) >= 2:
+                    hrv_segment_stats = nk.hrv_time(peaks, sampling_rate, show=False)
+                    tqdm.write(f"  HRV RMSSD: {hrv_segment_stats['HRV_RMSSD'].iloc[0]:.2f} ms")
+                    
+                    # Add metadata and append to list
+                    hrv_segment_stats['window_id'] = segment_idx
+                    hrv_segment_stats['subject'] = s_id
+                    hrv_segment_stats['label'] = label_val
+                    hrv_stats_list.append(hrv_segment_stats)
+                else:
+                    tqdm.write("  HRV Stats: Skipped (Not enough peaks)")
+            tqdm.write("#"*40)
+            
+            pbar.set_description(f"Processing {s_id} - {label_name} | Window {segment_idx} | Peaks: {len(peaks)}")
+        r_peaks_lists.append(r_peaks_list)
+        
+        # Combine HRV stats at the end
+        hrv_df = pd.concat(hrv_stats_list, ignore_index=True) if hrv_stats_list else pd.DataFrame()
+        hrv_dfs.append(hrv_df)
+
+    return r_peaks_lists, hrv_dfs
 
 # Create a visualization class
 def plot_per_label(df, s_id, pre_title):
     labels = sorted(df['label'].unique())
-    fig, axes = plt.subplots(len(labels), 1, figsize=(14, 4 * len(labels)), sharex=False)
+    fig, axes = plt.subplots(len(labels), 1, figsize=(7, 4 * len(labels)), sharex=False)
     if len(labels) == 1:
         axes = [axes]
 
@@ -258,9 +273,7 @@ def plot_per_label(df, s_id, pre_title):
     plt.tight_layout()
     plt.show()
 
-
-
-def plot_hrv_metric(df, col_name, s_id, save_path):
+def plot_hrv_metric(df, col_name, s_id, save_path, label):
     """
     Plots a specified HRV metric over time (window_id) for each label,
     with each label in its own subplot. Saves the figure to a file.
@@ -300,7 +313,7 @@ def plot_hrv_metric(df, col_name, s_id, save_path):
 
     # Save the figure
     today_str = datetime.now().strftime('%Y-%m-%d')
-    filename = f'{s_id}_{col_name}_{today_str}.png'
+    filename = f'{s_id}_{col_name}_{today_str}_{label}.png'
     full_save_path = os.path.join(save_path, filename)
     
     plt.tight_layout(rect=[0, 0, 1, 0.98]) # Adjust layout to make room for suptitle
@@ -406,35 +419,39 @@ if __name__ == "__main__":
     # ==========================
     # 4.2 SEGMENT
     # ==========================
-    segment_dfs = split_into_segments(time_subject_dfs, args.window_size)
+    segmented_by_label_df, segment_dfs = split_into_segments(time_subject_dfs, args.window_size)
 
     # ==========================
     # 4.3 VISUALIZE (POST-SEGMENTS)
     # ==========================
-    plot_per_label(
-        df=segment_dfs, 
-        s_id=args.subjects,
-        pre_title="Post-Segmenting"
-        )
+    # plot_per_label(
+    #     df=segment_dfs, 
+    #     s_id=args.subjects,
+    #     pre_title="Post-Segmenting"
+    #     )
     
     # This single call will handle finding peaks and conditionally calculating HRV.
-    r_peaks_data, hrv_df = get_r_peaks_and_hrv(
+    r_peaks_datas, hrv_dfs = get_r_peaks_and_hrv(
         segment_dfs, 
         default_sampling_rate, 
         no_hrv=args.no_hrv
     )
 
-    if not args.no_hrv and not hrv_df.empty:
-        print("\n" + "="*60)
-        print("=== FINAL HRV DATAFRAME ===")
-        print("="*60)
-        print(f"Shape: {hrv_df.shape}")
-        print(f"\nPreview:\n{hrv_df.head()}")
+    for hrv_dfs_idx in range(len(hrv_dfs)):
+        hrv_df = hrv_dfs[hrv_dfs_idx]
 
-        # Plot the RMSSD metric using the new function
-        plot_hrv_metric(
-            df=hrv_df, 
-            col_name="HRV_RMSSD", 
-            s_id=args.subjects, 
-            save_path=args.save_path
-        )
+        if not args.no_hrv and not hrv_df.empty:
+            print("\n" + "="*60)
+            print("=== FINAL HRV DATAFRAME ===")
+            print("="*60)
+            print(f"Shape: {hrv_df.shape}")
+            print(f"\nPreview:\n{hrv_df.head()}")
+
+            # Plot the RMSSD metric using the new function
+            plot_hrv_metric(
+                df=hrv_df, 
+                col_name="HRV_RMSSD", 
+                s_id=args.subjects, 
+                save_path=args.save_path,
+                label=hrv_dfs_idx
+            )
