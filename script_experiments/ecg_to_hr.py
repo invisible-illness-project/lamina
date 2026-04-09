@@ -278,12 +278,11 @@ def plot_hrv_metric(df, col_name, s_id, save_path, label):
     Plots a specified HRV metric over time (window_id) for each label,
     with each label in its own subplot. Saves the figure to a file.
     """
+    today_str = datetime.now().strftime('%Y-%m-%d')
+
     if df.empty:
         print(f"Cannot plot {col_name}: The HRV DataFrame is empty.")
         return
-
-    # Ensure the save directory exists
-    os.makedirs(save_path, exist_ok=True)
 
     labels = sorted(df['label'].unique())
     
@@ -310,18 +309,25 @@ def plot_hrv_metric(df, col_name, s_id, save_path, label):
         ax.set_ylabel(col_name)
         ax.grid(True, linestyle='--', alpha=0.7)
         ax.legend()
+    
+    # Ensure the save directory exists
+    label_name = label_name.lower()
+    label_save_path = os.path.join(save_path, label_name)
+    os.makedirs(label_save_path, exist_ok=True)
 
-    # Save the figure
-    today_str = datetime.now().strftime('%Y-%m-%d')
-    filename = f'{s_id}_{col_name}_{today_str}_{label}.png'
-    full_save_path = os.path.join(save_path, filename)
+    data_filename = f'{s_id}_{col_name}_{today_str}_{label}.csv'
+    data_save_path = os.path.join(label_save_path, data_filename)
+    df.to_csv(data_save_path)
+    print(f"\nHRV data saved to: {data_save_path}")
+
+    plot_filename = f'{s_id}_{col_name}_{today_str}_{label}.png'
+    plot_save_path = os.path.join(label_save_path, plot_filename)
     
     plt.tight_layout(rect=[0, 0, 1, 0.98]) # Adjust layout to make room for suptitle
-    plt.savefig(full_save_path)
-    print(f"\nHRV plot saved to: {full_save_path}")
+    plt.savefig(plot_save_path)
+    print(f"\nHRV plot saved to: {plot_save_path}")
     
     plt.show()
-
 
 if __name__ == "__main__":
     print("\n" + "="*60)
