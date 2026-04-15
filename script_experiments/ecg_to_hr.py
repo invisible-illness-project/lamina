@@ -94,14 +94,13 @@ def convert_to_time(df, sampling_rate):
             subject_label_df = subject_label_df.reset_index(drop=True)
 
             timed_subject_df = DataProcessing.create_time_df(subject_label_df, sampling_rate=sampling_rate)
-            if subject_id == "S4":
-                print("\n" + "="*60)
-                print(f"Creating time component for subject {subject_id} --- label {label}")
-                print("="*60)
+            print("\n" + "="*60)
+            print(f"Creating time component for subject {subject_id} --- label {label}")
+            print("="*60)
 
-                print(f"Shape: {timed_subject_df.shape}")
-                print(f"\nPreview:\n{timed_subject_df[timed_subject_df['subject'] == "S4"].head(7)}")
-                print(f"\nPreview:\n{timed_subject_df[timed_subject_df['subject'] == "S4"].tail(7)}\n")
+            print(f"Shape: {timed_subject_df.shape}")
+            print(f"\nPreview:\n{timed_subject_df[timed_subject_df['subject'] == subject_id].head(7)}")
+            print(f"\nPreview:\n{timed_subject_df[timed_subject_df['subject'] == subject_id].tail(7)}\n")
             # print(f"\nPreview:\n{timed_subject_df.head(7)}")
             # print(f"\nPreview:\n{timed_subject_df.tail(7)}\n")
             specifc_subject_dfs.append(timed_subject_df)
@@ -140,11 +139,11 @@ def split_into_segments(time_dfs, window_size):
             # ==========================
             # 4.3 VISUALIZE (POST-SEGMENTS)
             # ==========================
-            plot_per_label(
-                df=segmented_df, 
-                s_id=args.subjects,
-                pre_title="Post-Segmenting"
-                )
+            # plot_per_label(
+            #     df=segmented_df, 
+            #     s_id=args.subjects,
+            #     pre_title="Post-Segmenting"
+            #     )
 
         segment_dfs.append(segmented_df)
 
@@ -273,63 +272,57 @@ def plot_per_label(df, s_id, pre_title):
     plt.tight_layout()
     plt.show()
 
-def plot_hrv_metric(df, col_name, s_id, save_path, label):
+def plot_hrv_metric(df, col_name, s_id, save_path, show_plot: bool = False):
     """
-    Plots a specified HRV metric over time (window_id) for each label,
-    with each label in its own subplot. Saves the figure to a file.
+    Plots an HRV metric for a single label, saves the figure and data
+    to the appropriate label-specific subfolder.
     """
-    today_str = datetime.now().strftime('%Y-%m-%d')
-
     if df.empty:
-        print(f"Cannot plot {col_name}: The HRV DataFrame is empty.")
+        print(f"Cannot plot {col_name}: The DataFrame for this label is empty.")
         return
 
-    labels = sorted(df['label'].unique())
-    
-    # Create a figure with one subplot for each label
-    fig, axes = plt.subplots(len(labels), 1, figsize=(15, 5 * len(labels)), sharex=False)
-    
-    # Handle case where there is only one label, as subplots won't return an array
-    if len(labels) == 1:
-        axes = [axes]
+    # --- Extract Metadata from the DataFrame ---
+    # Since the df is for a single label, these values will be the same for all rows
+    label_val = df['label'].iloc[0]
+    label_name = _get_label_name(label_val).lower() # e.g., 'baseline'
 
-    fig.suptitle(f'HRV Metric Analysis for Subject {s_id}', fontsize=16, y=1.02)
-
-    for ax, label in zip(axes, labels):
-        # Filter the DataFrame for the current label
-        label_df = df[df['label'] == label].copy()
-        label_name = _get_label_name(label)
-        
-        # Plot the specified metric against the window ID
-        ax.plot(label_df['window_id'], label_df[col_name], marker='o', linestyle='-', label=col_name)
-        
-        # Formatting the plot
-        ax.set_title(f'Label {label}: {label_name}')
-        ax.set_xlabel('Segment Window ID')
-        ax.set_ylabel(col_name)
-        ax.grid(True, linestyle='--', alpha=0.7)
-        ax.legend()
+    # --- Setup Paths ---
+    # Create the label-specific subfolder (e.g., .../ecg_to_hr/baseline/)
+    label_specific_save_path = os.path.join(save_path, s_id, label_name)
+    os.makedirs(label_specific_save_path, exist_ok=True)
     
-    # Ensure the save directory exists
-    label_name = label_name.lower()
-    label_save_path = os.path.join(save_path, label_name)
-    os.makedirs(label_save_path, exist_ok=True)
+    today_str = datetime.now().strftime('%Y-%m-%d')
+    base_filename = f'{s_id}_{col_name}_{today_str}_{label_val}'
 
-    data_filename = f'{s_id}_{col_name}_{today_str}_{label}.csv'
-    data_save_path = os.path.join(label_save_path, data_filename)
-    df.to_csv(data_save_path)
-    print(f"\nHRV data saved to: {data_save_path}")
-
-    plot_filename = f'{s_id}_{col_name}_{today_str}_{label}.png'
-    plot_save_path = os.path.join(label_save_path, plot_filename)
+    # --- Create Single Plot ---
+    plt.figure(figsize=(12, 6))
+    plt.plot(df['window_id'], df[col_name], marker='o', linestyle='-')
     
-    plt.tight_layout(rect=[0, 0, 1, 0.98]) # Adjust layout to make room for suptitle
+    plt.title(f'HRV Metric ({col_name}) for Subject {s_id} - {label_name.title()}', fontsize=16)
+    plt.xlabel('Segment Window ID', fontsize=12)
+    plt.ylabel(f'{col_name} (ms)', fontsize=12)
+    plt.grid(True, linestyle='--', alpha=0.7)
+
+    # --- Save Data and Figure to the Correct Subfolder ---
+    data_save_path = os.path.join(label_specific_save_path, f'{base_filename}.csv')
+    df.to_csv(data_save_path, index=False)
+    print(f"  -> Saved data to: {data_save_path}")
+
+    plot_save_path = os.path.join(label_specific_save_path, f'{base_filename}.png')
     plt.savefig(plot_save_path)
-    print(f"\nHRV plot saved to: {plot_save_path}")
+    print(f"  -> Saved plot to: {plot_save_path}")
+
+    if show_plot:
+        plt.show()
     
-    plt.show()
+    # Close the figure to free memory, which is essential for loops
+    plt.close()
 
 if __name__ == "__main__":
+    """Usage:
+
+    python ecg_to_hr.py --subjects S4 --window_size 300
+    """
     print("\n" + "="*60)
     print("ECG TO HR PIPELINE")
     print("="*50)
@@ -399,6 +392,9 @@ if __name__ == "__main__":
     # 2. LOAD DF + NORMAL (3 -> 4) AND ABNORMAL (4 -> 3 -> 4)
     # ==========================
     df = load_dataset(script_dir, args.dataset, args.subjects)
+    if df.empty:
+        print("Error: Loaded DataFrame is empty. Check subject ID or file path. Exiting.")
+        sys.exit(1)
     
     normal_abnormal_df = separate_subjects(df)
     filt_normal = (normal_abnormal_df["Labels Order"] == "Normal")
@@ -443,21 +439,20 @@ if __name__ == "__main__":
         no_hrv=args.no_hrv
     )
 
-    for hrv_dfs_idx in range(len(hrv_dfs)):
-        hrv_df = hrv_dfs[hrv_dfs_idx]
-
-        if not args.no_hrv and not hrv_df.empty:
-            print("\n" + "="*60)
-            print("=== FINAL HRV DATAFRAME ===")
-            print("="*60)
-            print(f"Shape: {hrv_df.shape}")
-            print(f"\nPreview:\n{hrv_df.head()}")
-
-            # Plot the RMSSD metric using the new function
+    # The 'hrv_dfs' is a list, with each element being a DataFrame for one label.
+    # We loop through this list and process each label's DataFrame individually.
+    for hrv_df_for_label in hrv_dfs:
+        if not hrv_df_for_label.empty:
+            label_val = hrv_df_for_label['label'].iloc[0]
+            label_name = _get_label_name(label_val)
+            
+            print("\n" + "-"*60)
+            print(f"--- Processing and Saving for Label: {label_name} ---")
+            
             plot_hrv_metric(
-                df=hrv_df, 
-                col_name="HRV_RMSSD", 
-                s_id=args.subjects, 
+                df=hrv_df_for_label,
+                col_name="HRV_RMSSD",
+                s_id=args.subjects,
                 save_path=args.save_path,
-                label=hrv_dfs_idx
+                show_plot=False # Set to False for bash script automation
             )
