@@ -6,3 +6,7 @@ pandas>=2.0
 matplotlib>=3.7
 wfdb>=4.1        # PhysioNet access for ECG/PPG dataset adapters (Stage 2)
 pytest>=8.0      # framework test suite
+h5py>=3.8        # MATLAB v7.3 (.mat) readers for SCAMPS rPPG videos (notebooks)
+jupyter>=1.0     # notebook tooling for validation/notebooks/
+nbconvert>=7.0   # headless notebook execution (--execute --inplace)
+nbformat>=5.9    # notebook authoring/validation
