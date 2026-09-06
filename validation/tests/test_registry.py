@@ -2,7 +2,7 @@
 
 import pytest
 
-from validation.datasets.base import AccessStatus
+from validation.datasets.base import AccessStatus, StubDatasetAdapter
 from validation.registry import DATASET_CLASSES, get_dataset, list_datasets
 
 
@@ -40,8 +40,12 @@ def test_info_fields_populated():
 
 
 def test_stub_check_access_is_honest_placeholder():
+    # Stage 2+: implemented adapters may perform real (networked) access checks,
+    # so the strict placeholder assertions below apply only to adapters that are
+    # still StubDatasetAdapter subclasses (offline by construction).
     allowed = {AccessStatus.NOT_ATTEMPTED, AccessStatus.INACCESSIBLE}
-    for a in list_datasets():
+    stubs = [a for a in list_datasets() if isinstance(a, StubDatasetAdapter)]
+    for a in stubs:
         report = a.check_access()
         assert report.status in allowed
         assert report.reason  # never an empty reason
@@ -50,8 +54,20 @@ def test_stub_check_access_is_honest_placeholder():
 
 def test_stub_iter_recordings_raises_not_implemented():
     for a in list_datasets():
+        if not isinstance(a, StubDatasetAdapter):
+            continue  # implemented adapters yield real recordings (need data)
         with pytest.raises(NotImplementedError):
             next(a.iter_recordings())
+
+
+def test_implemented_adapters_conform_to_contract():
+    # Every non-stub adapter must still expose the full DatasetAdapter contract.
+    for a in list_datasets():
+        if isinstance(a, StubDatasetAdapter):
+            continue
+        assert callable(a.check_access)
+        assert callable(a.iter_recordings)
+        assert a.info().lamina_ops, a.key
 
 
 def test_get_dataset_unknown_key():
