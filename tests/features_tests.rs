@@ -5,7 +5,8 @@ use lamina::eda::{
 use lamina::error::SignalError;
 use lamina::features::{
     FeatureConfig, MultimodalInput, WindowConfig, cardiac_features, coupling_features,
-    eda_features, extract_features, generate_windows, respiration_features,
+    eda_features, extract_features, extract_features_naive, generate_windows, respiration_features,
+    time_range_to_sample_range,
 };
 use lamina::ppg::ppg_findpeaks;
 use lamina::rsp::{RespirationCycle, rsp_clean, rsp_cycles};
@@ -20,7 +21,7 @@ fn mask_to_indices(mask: &Array1<bool>) -> Vec<usize> {
 }
 
 // ============================================================================
-// Group A — Windowing Tests
+// Group A — Windowing & Time-Range Conversion Tests
 // ============================================================================
 
 #[test]
@@ -31,7 +32,6 @@ fn test_generate_windows_fixed_and_overlapping() {
         min_coverage: 0.80,
     };
 
-    // 0 to 120 seconds -> 3 windows: [0, 60), [30, 90), [60, 120)
     let wins = generate_windows(0.0, 120.0, &cfg).unwrap();
     assert_eq!(wins.len(), 3);
     assert_eq!(wins[0].start_time_sec, 0.0);
@@ -78,14 +78,45 @@ fn test_generate_windows_invalid_configs() {
     ));
 }
 
+#[test]
+fn test_time_range_to_sample_range_boundaries() {
+    let fs = 100.0;
+    let len = 1000;
+
+    // Integer aligned: [0.0, 1.0) -> sample indices 0 to 100
+    let range = time_range_to_sample_range(0.0, 1.0, fs, 0.0, len)
+        .unwrap()
+        .unwrap();
+    assert_eq!(range, (0, 100));
+
+    // Fractional boundary: [0.005, 1.005) -> sample indices 1 to 101
+    let range2 = time_range_to_sample_range(0.005, 1.005, fs, 0.0, len)
+        .unwrap()
+        .unwrap();
+    assert_eq!(range2, (1, 101));
+
+    // Outside bounds before data -> None
+    assert!(
+        time_range_to_sample_range(-10.0, -1.0, fs, 0.0, len)
+            .unwrap()
+            .is_none()
+    );
+
+    // Outside bounds after data -> None
+    assert!(
+        time_range_to_sample_range(20.0, 30.0, fs, 0.0, len)
+            .unwrap()
+            .is_none()
+    );
+}
+
 // ============================================================================
-// Group B — Cardiac Feature Tests
+// Group B — Cardiac Feature & HRV Hand-Calculation Tests
 // ============================================================================
 
 #[test]
 fn test_cardiac_features_synthetic_r_peaks() {
     let fs = 100.0;
-    // R-peaks every 1.0s (60 BPM, 1000 ms RR) over 10 seconds: indices 0, 100, 200, ..., 900
     let r_peaks: Vec<usize> = (0..10).map(|i| i * 100).collect();
 
     let win = generate_windows(
@@ -111,8 +142,62 @@ fn test_cardiac_features_synthetic_r_peaks() {
     assert!((cardiac.pnn50.unwrap() - 0.0).abs() < 1e-5);
 }
 
+#[test]
+fn test_cardiac_sdnn_known_value() {
+    let fs = 1000.0; // 1 ms resolution
+    // R-peaks at times 0.0, 0.8, 1.8, 3.0 seconds -> RR intervals: 800 ms, 1000 ms, 1200 ms
+    // Mean RR = 1000 ms
+    // Deviations: -200, 0, 200 ms -> Squared: 40000, 0, 40000 -> Sum = 80000
+    // Population variance = 80000 / 3 = 26666.6667
+    // SDNN = sqrt(26666.6667) = 163.299316 ms
+    let r_peaks = vec![0, 800, 1800, 3000];
+
+    let win = generate_windows(
+        0.0,
+        5.0,
+        &WindowConfig {
+            window_duration_sec: 5.0,
+            step_sec: 5.0,
+            min_coverage: 0.8,
+        },
+    )
+    .unwrap()[0]
+        .clone();
+
+    let cardiac = cardiac_features(&r_peaks, fs, 0.0, &win).unwrap();
+    assert!((cardiac.rr_mean_ms.unwrap() - 1000.0).abs() < 1e-3);
+    assert!((cardiac.sdnn_ms.unwrap() - 163.2993).abs() < 1e-3);
+    assert_eq!(cardiac.rr_std_ms, cardiac.sdnn_ms);
+}
+
+#[test]
+fn test_cardiac_boundary_crossing_rr_interval() {
+    let fs = 10.0;
+    // Peak at 5.5s (index 55), peak at 6.5s (index 65)
+    // Window is [6.0, 12.0)
+    let r_peaks = vec![55, 65, 75];
+
+    let win = generate_windows(
+        6.0,
+        12.0,
+        &WindowConfig {
+            window_duration_sec: 6.0,
+            step_sec: 6.0,
+            min_coverage: 0.8,
+        },
+    )
+    .unwrap()[0]
+        .clone();
+
+    let cardiac = cardiac_features(&r_peaks, fs, 0.0, &win).unwrap();
+    // Terminating R-peak at 6.5s falls in [6.0, 12.0). Preceding peak is 5.5s.
+    // RR interval (5.5, 6.5) = 1.0s = 1000 ms is included!
+    assert!(cardiac.rr_mean_ms.is_some());
+    assert!((cardiac.rr_mean_ms.unwrap() - 1000.0).abs() < 1e-3);
+}
+
 // ============================================================================
-// Group C — EDA Feature Tests
+// Group C — EDA Feature & Safety Tests
 // ============================================================================
 
 #[test]
@@ -152,10 +237,34 @@ fn test_eda_features_synthetic_signals_and_scrs() {
     let eda = eda_features(&tonic, &phasic, &scrs, fs, 0.0, &win).unwrap();
 
     assert_eq!(eda.scr_count, 2);
-    assert!((eda.scr_rate_per_min.unwrap() - 12.0).abs() < 1e-5); // 2 events / 10s = 12 events/min
+    assert!((eda.scr_rate_per_min.unwrap() - 12.0).abs() < 1e-5);
     assert!((eda.mean_tonic_us.unwrap() - 3.5).abs() < 1e-5);
     assert!((eda.mean_phasic_us.unwrap() - 0.2).abs() < 1e-5);
     assert!((eda.mean_scr_amplitude_us.unwrap() - 2.0).abs() < 1e-5);
+}
+
+#[test]
+fn test_eda_mismatched_lengths_returns_error() {
+    let fs = 100.0;
+    let tonic = Array1::from_elem(1000, 3.5);
+    let phasic = Array1::from_elem(500, 0.2); // Mismatched length
+
+    let win = generate_windows(
+        0.0,
+        10.0,
+        &WindowConfig {
+            window_duration_sec: 10.0,
+            step_sec: 10.0,
+            min_coverage: 0.8,
+        },
+    )
+    .unwrap()[0]
+        .clone();
+
+    assert!(matches!(
+        eda_features(&tonic, &phasic, &[], fs, 0.0, &win),
+        Err(SignalError::DimensionMismatch)
+    ));
 }
 
 // ============================================================================
@@ -255,32 +364,79 @@ fn test_coupling_features_multimodal() {
 }
 
 // ============================================================================
-// Group F — Missing Modality Tests
+// Group F — Coverage & Quality Semantics Tests
 // ============================================================================
 
 #[test]
-fn test_missing_modalities_returns_none_statistics() {
-    let input = MultimodalInput {
-        ecg_r_peaks: Some(vec![0, 100, 200, 300, 400, 500, 600, 700, 800, 900, 1000]),
-        ecg_sampling_rate: 100.0,
-        ecg_offset_sec: 0.0,
-        eda_tonic: None,
-        eda_phasic: None,
-        eda_scr_events: None,
-        eda_sampling_rate: 100.0,
-        eda_offset_sec: 0.0,
-        rsp_cycles: None,
-        rsp_sampling_rate: 100.0,
-        rsp_offset_sec: 0.0,
-        ppg_peaks: None,
-        ppg_sampling_rate: 100.0,
-        ppg_offset_sec: 0.0,
+fn test_coverage_semantics_usable_window_duration() {
+    let input = MultimodalInput::new()
+        .with_ecg(
+            (0..=60).map(|i| i * 100).collect(), // 0 to 60s
+            100.0,
+            0.0,
+        )
+        .unwrap();
+
+    let cfg = FeatureConfig {
+        window: WindowConfig {
+            window_duration_sec: 60.0,
+            step_sec: 60.0,
+            min_coverage: 0.80,
+        },
+        ..FeatureConfig::default()
     };
+
+    let fvs = extract_features(&input, &cfg).unwrap();
+    assert!(!fvs.is_empty());
+    let quality = &fvs[0].quality;
+
+    // Full 60s window fully populated -> coverage is ~1.0 (100%), NOT 1/recording_len
+    assert!((quality.coverage - 1.0).abs() < 1e-3);
+    assert!((quality.modality_coverage.overall - 1.0).abs() < 1e-3);
+    assert_eq!(quality.modality_coverage.ecg, Some(1.0));
+    assert_eq!(quality.modality_coverage.eda, None); // Absent modality represented as None
+}
+
+// ============================================================================
+// Group G — Naive Reference Equivalence Oracle & Large Event Scaling
+// ============================================================================
+
+#[test]
+fn test_naive_reference_equivalence_oracle() {
+    let fs = 100.0;
+    let r_peaks: Vec<usize> = (0..100).map(|i| i * 100).collect();
+    let input = MultimodalInput::new().with_ecg(r_peaks, fs, 0.0).unwrap();
 
     let cfg = FeatureConfig {
         window: WindowConfig {
             window_duration_sec: 10.0,
-            step_sec: 10.0,
+            step_sec: 5.0,
+            min_coverage: 0.8,
+        },
+        ..FeatureConfig::default()
+    };
+
+    let fvs_prod = extract_features(&input, &cfg).unwrap();
+    let fvs_naive = extract_features_naive(&input, &cfg).unwrap();
+
+    assert_eq!(fvs_prod.len(), fvs_naive.len());
+    for (p, n) in fvs_prod.iter().zip(fvs_naive.iter()) {
+        assert_eq!(p.cardiac, n.cardiac);
+        assert_eq!(p.quality, n.quality);
+    }
+}
+
+#[test]
+fn test_large_event_collection_scaling() {
+    let fs = 100.0;
+    let n_events = 100_000;
+    let r_peaks: Vec<usize> = (0..n_events).map(|i| i * 100).collect();
+    let input = MultimodalInput::new().with_ecg(r_peaks, fs, 0.0).unwrap();
+
+    let cfg = FeatureConfig {
+        window: WindowConfig {
+            window_duration_sec: 60.0,
+            step_sec: 30.0,
             min_coverage: 0.8,
         },
         ..FeatureConfig::default()
@@ -288,16 +444,10 @@ fn test_missing_modalities_returns_none_statistics() {
 
     let fvs = extract_features(&input, &cfg).unwrap();
     assert!(!fvs.is_empty());
-
-    let fv = &fvs[0];
-    assert!(fv.cardiac.mean_hr_bpm.is_some());
-    assert!(fv.eda.mean_tonic_us.is_none());
-    assert!(fv.respiration.mean_rate_bpm.is_none());
-    assert!(fv.coupling.rsa_amplitude_bpm.is_none());
 }
 
 // ============================================================================
-// Group G — Sampling Rate Invariance Tests
+// Group H — Sampling Rate Invariance Tests
 // ============================================================================
 
 #[test]
@@ -326,7 +476,7 @@ fn test_multi_sampling_rate_feature_invariance() {
 }
 
 // ============================================================================
-// Group H — Numerical Robustness & Fallible Inputs
+// Group I — Numerical Robustness & Fallible Inputs
 // ============================================================================
 
 #[test]
@@ -354,7 +504,7 @@ fn test_numerical_robustness_and_fallible_inputs() {
 }
 
 // ============================================================================
-// Group I — End-to-End Integration Pipeline Test
+// Group J — End-to-End Integration Pipeline Test
 // ============================================================================
 
 #[test]
@@ -362,7 +512,6 @@ fn test_features_end_to_end_multimodal_pipeline() {
     let fs = 100.0;
     let n_samples = 3000; // 30 seconds
 
-    // Synthetic ECG
     let mut ecg_signal = Array1::<f64>::zeros(n_samples);
     for i in (50..n_samples).step_by(100) {
         ecg_signal[i] = 4.0;
@@ -370,7 +519,6 @@ fn test_features_end_to_end_multimodal_pipeline() {
     let r_peaks_mask = ecg_findpeaks(&ecg_signal, fs).unwrap();
     let r_peaks = mask_to_indices(&r_peaks_mask);
 
-    // Synthetic RSP
     let mut rsp_signal = Array1::<f64>::zeros(n_samples);
     for i in 0..n_samples {
         let t = i as f64 / fs;
@@ -379,7 +527,6 @@ fn test_features_end_to_end_multimodal_pipeline() {
     let cleaned_rsp = rsp_clean(&rsp_signal, fs).unwrap();
     let rsp_cycle_list = rsp_cycles(&cleaned_rsp, fs).unwrap();
 
-    // Synthetic PPG
     let mut ppg_signal = Array1::<f64>::zeros(n_samples);
     for &r_idx in &r_peaks {
         let p_idx = r_idx + 20;
@@ -390,7 +537,6 @@ fn test_features_end_to_end_multimodal_pipeline() {
     let ppg_peaks_mask = ppg_findpeaks(&ppg_signal, fs).unwrap();
     let ppg_peaks_list = mask_to_indices(&ppg_peaks_mask);
 
-    // Synthetic EDA
     let mut eda_signal = Array1::<f64>::zeros(n_samples);
     for i in 0..n_samples {
         eda_signal[i] = 2.0 + 0.001 * i as f64;
@@ -400,22 +546,15 @@ fn test_features_end_to_end_multimodal_pipeline() {
     let scr_events =
         eda_findpeaks_events(&decomp.phasic, fs, &EdaPeakDetectionConfig::default()).unwrap();
 
-    let input = MultimodalInput {
-        ecg_r_peaks: Some(r_peaks),
-        ecg_sampling_rate: fs,
-        ecg_offset_sec: 0.0,
-        eda_tonic: Some(decomp.tonic),
-        eda_phasic: Some(decomp.phasic),
-        eda_scr_events: Some(scr_events),
-        eda_sampling_rate: fs,
-        eda_offset_sec: 0.0,
-        rsp_cycles: Some(rsp_cycle_list),
-        rsp_sampling_rate: fs,
-        rsp_offset_sec: 0.0,
-        ppg_peaks: Some(ppg_peaks_list),
-        ppg_sampling_rate: fs,
-        ppg_offset_sec: 0.0,
-    };
+    let input = MultimodalInput::new()
+        .with_ecg(r_peaks, fs, 0.0)
+        .unwrap()
+        .with_ppg(ppg_peaks_list, fs, 0.0)
+        .unwrap()
+        .with_eda(decomp.tonic, decomp.phasic, scr_events, fs, 0.0)
+        .unwrap()
+        .with_rsp(rsp_cycle_list, fs, 0.0)
+        .unwrap();
 
     let cfg = FeatureConfig {
         window: WindowConfig {

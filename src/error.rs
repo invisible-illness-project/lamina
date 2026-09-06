@@ -19,6 +19,8 @@ pub enum SignalError {
     NonFiniteInput,
     /// Insufficient detected peaks or intervals to compute the requested metric.
     InsufficientPeaks { required: usize, provided: usize },
+    /// Input array dimensions mismatch.
+    DimensionMismatch,
 }
 
 impl fmt::Display for SignalError {
@@ -60,6 +62,9 @@ impl fmt::Display for SignalError {
                     "Insufficient peaks/intervals: requires at least {}, provided {}",
                     required, provided
                 )
+            }
+            SignalError::DimensionMismatch => {
+                write!(f, "Input signal dimensions mismatch")
             }
         }
     }

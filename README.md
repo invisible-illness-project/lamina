@@ -62,12 +62,12 @@
 - **Signal Quality Assessment (`quality`)**: `multimodal_quality`, `evaluate_ecg_quality`, and `evaluate_rsp_quality` transparent rule-based quality evaluation.
 
 ### 9. `lamina::features` — Windowed Multimodal Physiological Feature Extraction Layer
-- **Window Generation (`generate_windows`, `FeatureWindow`)**: Generates sliding fixed-duration windows over physical timestamps $[t_{\text{start}}, t_{\text{end}})$ with configurable duration ($60.0\text{ s}$), step ($30.0\text{ s}$), and coverage.
-- **Cardiac Features (`cardiac_features`)**: Mean/median HR ($\text{BPM}$), SDNN ($\text{ms}$), RMSSD ($\text{ms}$ via `lamina::hrv`), pNN50 ($\%$), mean/std RR intervals ($\text{ms}$), and beat count.
-- **EDA Features (`eda_features`)**: Mean/median/std Tonic SCL ($\mu\text{S}$), mean/std Phasic SCR ($\mu\text{S}$), SCR event count, normalized SCR rate ($\text{events/min}$), and mean/median SCR amplitude ($\mu\text{S}$) & rise time ($\text{seconds}$).
+- **Window Generation (`generate_windows`, `FeatureWindow`)**: Generates sliding fixed-duration windows over physical timestamps $[t_{\text{start}}, t_{\text{end}})$ with configurable duration ($60.0\text{ s}$), step ($30.0\text{ s}$), and coverage. Includes `time_range_to_sample_range` for half-open $[t_{\text{start}}, t_{\text{end}})$ index conversion.
+- **Cardiac Features (`cardiac_features`)**: Mean/median HR ($\text{BPM}$), SDNN ($\text{ms}$), RMSSD ($\text{ms}$ via `lamina::hrv`), pNN50 ($\%$), mean/std RR intervals ($\text{ms}$), and beat count. Implements Terminating R-peak boundary convention for crossing intervals and explicit population standard deviation.
+- **EDA Features (`eda_features`)**: Mean/median/std Tonic SCL ($\mu\text{S}$), mean/std Phasic SCR ($\mu\text{S}$), SCR event count, normalized SCR rate ($\text{events/min}$), and mean/median SCR amplitude ($\mu\text{S}$) & rise time ($\text{seconds}$). Enforces $N_{\text{tonic}} == N_{\text{phasic}}$ signal dimension equality.
 - **Respiration Features (`respiration_features`)**: Mean/median/std respiratory rate ($\text{BPM}$), mean cycle duration ($\text{seconds}$), cycle count, and amplitude statistics ($\text{peak-to-trough}$).
-- **Coupling Features (`coupling_features`)**: Within-window RSA modulation ($\Delta \text{BPM}$, $\Delta \text{RR}_{\text{sec}}$), cardiorespiratory phase concentration ($R \in [0, 1]$), mean phase ($\bar{\phi}$), mean/std ECG-PPG pulse delay ($\text{seconds}$), and SCR cardiorespiratory association counts.
-- **Unified Feature Pipeline (`extract_features`, `MultimodalInput`, `MultimodalFeatureVector`)**: Extracts fixed-duration sliding feature vectors supporting absent modalities via `Option::None` statistics without artificial zero-filling. Strictly $O(N + W)$ linear complexity.
+- **Coupling Features (`coupling_features`)**: Precomputes recording coupling observations (`PrecomputedCoupling`) and aggregates per window: RSA modulation ($\Delta \text{BPM}$, $\Delta \text{RR}_{\text{sec}}$), cardiorespiratory phase concentration ($R \in [0, 1]$), mean phase ($\bar{\phi}$), mean/std ECG-PPG pulse delay ($\text{seconds}$), and SCR cardiorespiratory association counts.
+- **Unified Feature Pipeline (`extract_features`, `MultimodalInput`, `MultimodalFeatureVector`)**: Accepts fallible builder inputs (`with_ecg`, `with_eda`, `with_rsp`, `with_ppg`) bundling `TimedEvents` and `TimedSignal` containers. Supports missing modalities via `Option::None` without artificial zero-filling. Monotonic range lookup (`EventCursor`) operates in $O(N + W)$ total time.
 
 ---
 

@@ -229,7 +229,7 @@ fn test_rsp_edge_case_robustness() {
     let n = 1000;
 
     // Constant signal noise floor protection
-    let const_sig = Array1::<f64>::ones(n) * 3.14;
+    let const_sig = Array1::<f64>::ones(n) * PI;
     let cycles = rsp_cycles(&const_sig, fs).expect("Constant signal cycles failed");
     assert_eq!(cycles.len(), 0, "Constant signal must produce 0 cycles");
 

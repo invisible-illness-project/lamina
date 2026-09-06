@@ -328,8 +328,8 @@ fn test_multi_sampling_rate_timing_invariance() {
     let sampling_rates = [32.0, 64.0, 100.0, 250.0, 500.0, 1000.0];
 
     for &fs in &sampling_rates {
-        let ecg_idx = (1.0 * fs as f64).round() as usize;
-        let ppg_idx = (1.2 * fs as f64).round() as usize;
+        let ecg_idx = (1.0f64 * fs).round() as usize;
+        let ppg_idx = (1.2f64 * fs).round() as usize;
 
         let matches = ecg_ppg_timing(&[ecg_idx], fs, 0.0, &[ppg_idx], fs, 0.0).unwrap();
         assert_eq!(matches.len(), 1);

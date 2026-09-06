@@ -210,15 +210,11 @@ fn bench_feature_extraction(c: &mut Criterion) {
             .map(|i| ((i as f64 + 0.2) * fs).round() as usize)
             .collect();
 
-        let input = MultimodalInput {
-            ecg_r_peaks: Some(r_peaks),
-            ecg_sampling_rate: fs,
-            ecg_offset_sec: 0.0,
-            ppg_peaks: Some(ppg_peaks),
-            ppg_sampling_rate: fs,
-            ppg_offset_sec: 0.0,
-            ..MultimodalInput::default()
-        };
+        let input = MultimodalInput::new()
+            .with_ecg(r_peaks, fs, 0.0)
+            .unwrap()
+            .with_ppg(ppg_peaks, fs, 0.0)
+            .unwrap();
 
         let cfg = FeatureConfig {
             window: WindowConfig {
@@ -232,6 +228,32 @@ fn bench_feature_extraction(c: &mut Criterion) {
         group.bench_with_input(
             BenchmarkId::new("extract_features_sec", dur_sec as usize),
             &dur_sec,
+            |b, _| {
+                b.iter(|| extract_features(&input, &cfg).unwrap());
+            },
+        );
+    }
+
+    // Large event workload benchmark (10k, 100k, 1M events)
+    for &n_events in &[10_000, 100_000, 1_000_000] {
+        let r_peaks: Vec<usize> = (0..n_events)
+            .map(|i| (i as f64 * 0.1 * fs).round() as usize) // 10 Hz event density
+            .collect();
+
+        let input = MultimodalInput::new().with_ecg(r_peaks, fs, 0.0).unwrap();
+
+        let cfg = FeatureConfig {
+            window: WindowConfig {
+                window_duration_sec: 60.0,
+                step_sec: 30.0,
+                min_coverage: 0.8,
+            },
+            ..FeatureConfig::default()
+        };
+
+        group.bench_with_input(
+            BenchmarkId::new("dense_events_count", n_events),
+            &n_events,
             |b, _| {
                 b.iter(|| extract_features(&input, &cfg).unwrap());
             },

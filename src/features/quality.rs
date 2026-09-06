@@ -5,6 +5,21 @@ use crate::features::eda::EdaFeatures;
 use crate::features::respiration::RespirationFeatures;
 use crate::features::window::FeatureWindow;
 
+/// Detailed feature coverage assessment across present physiological modalities.
+#[derive(Debug, Clone, PartialEq)]
+pub struct FeatureCoverage {
+    /// Mean usable window coverage ratio across all present input modalities in $[0.0, 1.0]$
+    pub overall: f64,
+    /// ECG signal/event coverage ratio in window $[0.0, 1.0]$ (`None` if ECG is unsupplied)
+    pub ecg: Option<f64>,
+    /// PPG signal/event coverage ratio in window $[0.0, 1.0]$ (`None` if PPG is unsupplied)
+    pub ppg: Option<f64>,
+    /// EDA signal/event coverage ratio in window $[0.0, 1.0]$ (`None` if EDA is unsupplied)
+    pub eda: Option<f64>,
+    /// Respiration signal/event coverage ratio in window $[0.0, 1.0]$ (`None` if RSP is unsupplied)
+    pub rsp: Option<f64>,
+}
+
 /// Specific feature quality issues detected during windowed extraction.
 #[derive(Debug, Clone, PartialEq, Eq)]
 pub enum FeatureQualityIssue {
@@ -25,8 +40,10 @@ pub enum FeatureQualityIssue {
 /// Transparent, rule-based quality assessment for extracted feature vectors.
 #[derive(Debug, Clone, PartialEq)]
 pub struct FeatureQuality {
-    /// Window recording coverage ratio in $[0.0, 1.0]$
+    /// Window usable recording coverage ratio in $[0.0, 1.0]$ (alias to `modality_coverage.overall`)
     pub coverage: f64,
+    /// Modality-specific coverage breakdown
+    pub modality_coverage: FeatureCoverage,
     /// Cardiac features validity flag
     pub cardiac_valid: bool,
     /// EDA features validity flag
@@ -44,24 +61,60 @@ pub struct FeatureQuality {
 }
 
 /// Evaluate transparent rule-based feature quality for a feature window.
+#[allow(clippy::too_many_arguments)]
 pub fn evaluate_feature_quality(
     cardiac: &CardiacFeatures,
     eda: &EdaFeatures,
     respiration: &RespirationFeatures,
     coupling: &CouplingFeatures,
-    _window: &FeatureWindow,
+    window: &FeatureWindow,
     config: &FeatureConfig,
-    recording_duration_sec: f64,
+    ecg_bounds: Option<(f64, f64)>,
+    ppg_bounds: Option<(f64, f64)>,
+    eda_bounds: Option<(f64, f64)>,
+    rsp_bounds: Option<(f64, f64)>,
 ) -> FeatureQuality {
     let mut issues = Vec::new();
 
-    let coverage = if recording_duration_sec > 0.0 {
-        (_window.duration_sec / recording_duration_sec).min(1.0)
-    } else {
-        1.0
+    let calc_mod_cov = |bounds: Option<(f64, f64)>| -> Option<f64> {
+        bounds.map(|(m_start, m_end)| {
+            if window.duration_sec <= 0.0 || m_start >= m_end {
+                return 0.0;
+            }
+            let overlap_start = window.start_time_sec.max(m_start);
+            let overlap_end = window.end_time_sec.min(m_end);
+            let overlap = (overlap_end - overlap_start).max(0.0);
+            (overlap / window.duration_sec).min(1.0)
+        })
     };
 
-    if coverage < config.window.min_coverage {
+    let ecg_cov = calc_mod_cov(ecg_bounds);
+    let ppg_cov = calc_mod_cov(ppg_bounds);
+    let eda_cov = calc_mod_cov(eda_bounds);
+    let rsp_cov = calc_mod_cov(rsp_bounds);
+
+    let mut sum_cov = 0.0;
+    let mut count_cov = 0;
+    for cov in [ecg_cov, ppg_cov, eda_cov, rsp_cov].iter().flatten() {
+        sum_cov += cov;
+        count_cov += 1;
+    }
+
+    let overall_cov = if count_cov > 0 {
+        sum_cov / count_cov as f64
+    } else {
+        0.0
+    };
+
+    let modality_coverage = FeatureCoverage {
+        overall: overall_cov,
+        ecg: ecg_cov,
+        ppg: ppg_cov,
+        eda: eda_cov,
+        rsp: rsp_cov,
+    };
+
+    if overall_cov < config.window.min_coverage {
         issues.push(FeatureQualityIssue::LowCoverage);
     }
 
@@ -82,8 +135,7 @@ pub fn evaluate_feature_quality(
 
     let coupling_valid = cardiac_valid && respiration_valid;
 
-    // Count non-None fields
-    let total_features = 30; // Scheme total features
+    let total_features = 30;
     let mut usable_count = 0;
 
     if cardiac.mean_hr_bpm.is_some() {
@@ -175,7 +227,8 @@ pub fn evaluate_feature_quality(
     }
 
     FeatureQuality {
-        coverage,
+        coverage: overall_cov,
+        modality_coverage,
         cardiac_valid,
         eda_valid,
         respiration_valid,

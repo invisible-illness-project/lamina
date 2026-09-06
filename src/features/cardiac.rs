@@ -27,6 +27,17 @@ pub struct CardiacFeatures {
 
 /// Extract cardiac physiological features from ECG R-peaks intersecting a feature window.
 ///
+/// # Terminating R-Peak Boundary Convention
+/// An RR interval between consecutive peaks $(R_{k-1}, R_k)$ is associated with the feature window $[t_{\text{start}}, t_{\text{end}})$
+/// if and only if the timestamp of the terminating peak $t(R_k) \in [t_{\text{start}}, t_{\text{end}})$.
+///
+/// If $t(R_k) \in [t_{\text{start}}, t_{\text{end}})$ and a preceding peak $R_{k-1}$ exists in the recording timeline
+/// (even if $t(R_{k-1}) < t_{\text{start}}$), the interval $(R_{k-1}, R_k)$ is included in the window's HRV calculations.
+///
+/// # Statistical Conventions
+/// - `sdnn_ms`: Calculated as the population standard deviation of RR intervals in milliseconds ($\sqrt{\frac{1}{N}\sum (RR_i - \overline{RR})^2}$).
+/// - `rr_std_ms`: Exposed as an explicit alias to `sdnn_ms` for backward compatibility.
+///
 /// # Errors
 /// Returns [`SignalError::InvalidSamplingRate`] if `sampling_rate` is $\le 0.0$ or non-finite.
 /// Returns [`SignalError::NonFiniteInput`] if `offset_sec` is non-finite.
@@ -43,17 +54,7 @@ pub fn cardiac_features(
         return Err(SignalError::NonFiniteInput);
     }
 
-    let mut intersecting_times = Vec::new();
-    for &idx in r_peaks {
-        let t = sample_to_time(idx, sampling_rate, offset_sec)?;
-        if t >= window.start_time_sec && t < window.end_time_sec {
-            intersecting_times.push(t);
-        }
-    }
-
-    let beat_count = intersecting_times.len();
-
-    if beat_count < 2 {
+    if r_peaks.is_empty() {
         return Ok(CardiacFeatures {
             mean_hr_bpm: None,
             median_hr_bpm: None,
@@ -62,19 +63,56 @@ pub fn cardiac_features(
             pnn50: None,
             rr_mean_ms: None,
             rr_std_ms: None,
-            beat_count,
+            beat_count: 0,
         });
     }
 
-    let mut rr_ms_vec = Vec::with_capacity(beat_count - 1);
-    let mut bpm_vec = Vec::with_capacity(beat_count - 1);
+    // Find indices of peaks falling in [window.start_time_sec, window.end_time_sec)
+    let mut start_idx = None;
+    let mut end_idx = None;
 
-    for i in 0..(beat_count - 1) {
-        let diff_sec = intersecting_times[i + 1] - intersecting_times[i];
-        if diff_sec > 0.0 {
-            let rr_ms = diff_sec * 1000.0;
-            rr_ms_vec.push(rr_ms);
-            bpm_vec.push(60.0 / diff_sec);
+    for (i, &idx) in r_peaks.iter().enumerate() {
+        let t = sample_to_time(idx, sampling_rate, offset_sec)?;
+        if t >= window.start_time_sec && t < window.end_time_sec {
+            if start_idx.is_none() {
+                start_idx = Some(i);
+            }
+            end_idx = Some(i + 1);
+        }
+    }
+
+    let (start_idx, end_idx) = match (start_idx, end_idx) {
+        (Some(s), Some(e)) => (s, e),
+        _ => {
+            return Ok(CardiacFeatures {
+                mean_hr_bpm: None,
+                median_hr_bpm: None,
+                sdnn_ms: None,
+                rmssd_ms: None,
+                pnn50: None,
+                rr_mean_ms: None,
+                rr_std_ms: None,
+                beat_count: 0,
+            });
+        }
+    };
+
+    let beat_count = end_idx - start_idx;
+
+    // Collect RR intervals for peaks terminating in window
+    let mut rr_ms_vec = Vec::new();
+    let mut bpm_vec = Vec::new();
+
+    for i in start_idx..end_idx {
+        if i > 0 {
+            let t_curr = sample_to_time(r_peaks[i], sampling_rate, offset_sec)?;
+            let t_prev = sample_to_time(r_peaks[i - 1], sampling_rate, offset_sec)?;
+            let diff_sec = t_curr - t_prev;
+            if diff_sec > 0.0 {
+                let rr_ms = diff_sec * 1000.0;
+                rr_ms_vec.push(rr_ms);
+                bpm_vec.push(60.0 / diff_sec);
+            }
         }
     }
 
@@ -94,7 +132,7 @@ pub fn cardiac_features(
     // Mean RR
     let rr_mean = rr_ms_vec.iter().sum::<f64>() / rr_ms_vec.len() as f64;
 
-    // SDNN / RR std
+    // SDNN (Population standard deviation)
     let variance = rr_ms_vec
         .iter()
         .map(|&x| (x - rr_mean).powi(2))
@@ -122,7 +160,7 @@ pub fn cardiac_features(
     let mean_hr = bpm_vec.iter().sum::<f64>() / bpm_vec.len() as f64;
 
     // Median HR
-    let mut sorted_bpm = bpm_vec.clone();
+    let mut sorted_bpm = bpm_vec;
     sorted_bpm.sort_by(|a, b| a.partial_cmp(b).unwrap_or(std::cmp::Ordering::Equal));
     let median_hr = if sorted_bpm.len() % 2 == 1 {
         sorted_bpm[sorted_bpm.len() / 2]

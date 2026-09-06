@@ -69,7 +69,7 @@ fn test_group_a_mathematical_invariants() {
         // 1. Lowpass / Highpass: expected sections = ceil(order / 2)
         let lp_spec = FilterSpec::lowpass(fs, 10.0, order);
         let lp_filter = SosFilter::from_spec(&lp_spec).expect("LP design failed");
-        let expected_lp_sections = (order + 1) / 2;
+        let expected_lp_sections = order.div_ceil(2);
         assert_eq!(
             lp_filter.sections.len(),
             expected_lp_sections,

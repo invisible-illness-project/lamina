@@ -8,44 +8,147 @@ pub mod window;
 
 pub use cardiac::{CardiacFeatures, cardiac_features};
 pub use config::{FeatureConfig, WindowConfig};
-pub use coupling::{CouplingFeatures, coupling_features};
+pub use coupling::{CouplingFeatures, PrecomputedCoupling, coupling_features};
 pub use eda::{EdaFeatures, eda_features};
-pub use quality::{FeatureQuality, FeatureQualityIssue, evaluate_feature_quality};
+pub use quality::{FeatureCoverage, FeatureQuality, FeatureQualityIssue, evaluate_feature_quality};
 pub use respiration::{RespirationFeatures, respiration_features};
-pub use window::{FeatureWindow, generate_windows};
+pub use window::{EventCursor, FeatureWindow, generate_windows, time_range_to_sample_range};
 
 use crate::eda::ScrEvent;
-use crate::error::Result;
+use crate::error::{Result, SignalError};
 use crate::multimodal::sync::sample_to_time;
 use crate::rsp::RespirationCycle;
 use ndarray::Array1;
+
+/// Container bundling sample-indexed events with required timing metadata.
+#[derive(Debug, Clone, PartialEq)]
+pub struct TimedEvents<T> {
+    /// Vector of sample-indexed event objects
+    pub events: Vec<T>,
+    /// Sampling rate in Hz ($f_s > 0$)
+    pub sampling_rate: f64,
+    /// Physical start offset in seconds
+    pub offset_sec: f64,
+}
+
+impl<T> TimedEvents<T> {
+    /// Construct a validated [`TimedEvents`] container.
+    pub fn new(events: Vec<T>, sampling_rate: f64, offset_sec: f64) -> Result<Self> {
+        if !sampling_rate.is_finite() || sampling_rate <= 0.0 {
+            return Err(SignalError::InvalidSamplingRate(sampling_rate));
+        }
+        if !offset_sec.is_finite() {
+            return Err(SignalError::NonFiniteInput);
+        }
+        Ok(Self {
+            events,
+            sampling_rate,
+            offset_sec,
+        })
+    }
+}
+
+/// Container bundling continuous signal array with required timing metadata.
+#[derive(Debug, Clone, PartialEq)]
+pub struct TimedSignal {
+    /// 1D signal data array
+    pub data: Array1<f64>,
+    /// Sampling rate in Hz ($f_s > 0$)
+    pub sampling_rate: f64,
+    /// Physical start offset in seconds
+    pub offset_sec: f64,
+}
+
+impl TimedSignal {
+    /// Construct a validated [`TimedSignal`] container.
+    pub fn new(data: Array1<f64>, sampling_rate: f64, offset_sec: f64) -> Result<Self> {
+        if !sampling_rate.is_finite() || sampling_rate <= 0.0 {
+            return Err(SignalError::InvalidSamplingRate(sampling_rate));
+        }
+        if !offset_sec.is_finite() {
+            return Err(SignalError::NonFiniteInput);
+        }
+        Ok(Self {
+            data,
+            sampling_rate,
+            offset_sec,
+        })
+    }
+}
 
 /// Input container holding preprocessed modality outputs for windowed feature extraction.
 #[derive(Debug, Clone, PartialEq, Default)]
 pub struct MultimodalInput {
     /// ECG R-peak sample indices (optional)
-    pub ecg_r_peaks: Option<Vec<usize>>,
-    pub ecg_sampling_rate: f64,
-    pub ecg_offset_sec: f64,
-
+    pub ecg_r_peaks: Option<TimedEvents<usize>>,
     /// EDA Tonic Skin Conductance Level signal (optional)
-    pub eda_tonic: Option<Array1<f64>>,
+    pub eda_tonic: Option<TimedSignal>,
     /// EDA Phasic Skin Conductance Response signal (optional)
-    pub eda_phasic: Option<Array1<f64>>,
+    pub eda_phasic: Option<TimedSignal>,
     /// EDA SCR events (optional)
-    pub eda_scr_events: Option<Vec<ScrEvent>>,
-    pub eda_sampling_rate: f64,
-    pub eda_offset_sec: f64,
-
+    pub eda_scr_events: Option<TimedEvents<ScrEvent>>,
     /// RSP respiration cycles (optional)
-    pub rsp_cycles: Option<Vec<RespirationCycle>>,
-    pub rsp_sampling_rate: f64,
-    pub rsp_offset_sec: f64,
-
+    pub rsp_cycles: Option<TimedEvents<RespirationCycle>>,
     /// PPG systolic peak sample indices (optional)
-    pub ppg_peaks: Option<Vec<usize>>,
-    pub ppg_sampling_rate: f64,
-    pub ppg_offset_sec: f64,
+    pub ppg_peaks: Option<TimedEvents<usize>>,
+}
+
+impl MultimodalInput {
+    /// Create a new empty [`MultimodalInput`] container.
+    pub fn new() -> Self {
+        Self::default()
+    }
+
+    /// Add ECG R-peak inputs with validation.
+    pub fn with_ecg(
+        mut self,
+        r_peaks: Vec<usize>,
+        sampling_rate: f64,
+        offset_sec: f64,
+    ) -> Result<Self> {
+        self.ecg_r_peaks = Some(TimedEvents::new(r_peaks, sampling_rate, offset_sec)?);
+        Ok(self)
+    }
+
+    /// Add PPG peak inputs with validation.
+    pub fn with_ppg(
+        mut self,
+        peaks: Vec<usize>,
+        sampling_rate: f64,
+        offset_sec: f64,
+    ) -> Result<Self> {
+        self.ppg_peaks = Some(TimedEvents::new(peaks, sampling_rate, offset_sec)?);
+        Ok(self)
+    }
+
+    /// Add EDA signals and SCR events with validation.
+    pub fn with_eda(
+        mut self,
+        tonic: Array1<f64>,
+        phasic: Array1<f64>,
+        scr_events: Vec<ScrEvent>,
+        sampling_rate: f64,
+        offset_sec: f64,
+    ) -> Result<Self> {
+        if tonic.len() != phasic.len() {
+            return Err(SignalError::DimensionMismatch);
+        }
+        self.eda_tonic = Some(TimedSignal::new(tonic, sampling_rate, offset_sec)?);
+        self.eda_phasic = Some(TimedSignal::new(phasic, sampling_rate, offset_sec)?);
+        self.eda_scr_events = Some(TimedEvents::new(scr_events, sampling_rate, offset_sec)?);
+        Ok(self)
+    }
+
+    /// Add respiration cycles with validation.
+    pub fn with_rsp(
+        mut self,
+        cycles: Vec<RespirationCycle>,
+        sampling_rate: f64,
+        offset_sec: f64,
+    ) -> Result<Self> {
+        self.rsp_cycles = Some(TimedEvents::new(cycles, sampling_rate, offset_sec)?);
+        Ok(self)
+    }
 }
 
 /// Unified windowed multimodal feature vector.
@@ -65,82 +168,121 @@ pub struct MultimodalFeatureVector {
     pub quality: FeatureQuality,
 }
 
+/// Helper function to compute physical time bounds $[t_{\text{start}}, t_{\text{end}}]$ for a modality.
+fn get_modality_bounds<T>(
+    events: Option<&TimedEvents<T>>,
+    time_fn: impl Fn(&T) -> Result<f64>,
+) -> Result<Option<(f64, f64)>> {
+    if let Some(timed) = events {
+        if timed.events.is_empty() {
+            Ok(None)
+        } else {
+            let t_first = time_fn(&timed.events[0])?;
+            let t_last = time_fn(&timed.events[timed.events.len() - 1])?;
+            Ok(Some((t_first.min(t_last), t_first.max(t_last))))
+        }
+    } else {
+        Ok(None)
+    }
+}
+
 /// Extract fixed-duration sliding feature vectors from multimodal inputs over the recording timeline.
 #[allow(clippy::collapsible_if)]
 pub fn extract_features(
     input: &MultimodalInput,
     config: &FeatureConfig,
 ) -> Result<Vec<MultimodalFeatureVector>> {
-    // 1. Determine overall recording time bounds across present modalities
     let mut min_t = f64::MAX;
     let mut max_t = f64::MIN;
 
-    if let Some(ref peaks) = input.ecg_r_peaks {
-        if !peaks.is_empty() && input.ecg_sampling_rate > 0.0 {
-            let t_first = sample_to_time(peaks[0], input.ecg_sampling_rate, input.ecg_offset_sec)?;
-            let t_last = sample_to_time(
-                peaks[peaks.len() - 1],
-                input.ecg_sampling_rate,
-                input.ecg_offset_sec,
-            )?;
-            min_t = min_t.min(t_first);
-            max_t = max_t.max(t_last);
-        }
+    let ecg_bounds = get_modality_bounds(input.ecg_r_peaks.as_ref(), |&idx| {
+        sample_to_time(
+            idx,
+            input.ecg_r_peaks.as_ref().unwrap().sampling_rate,
+            input.ecg_r_peaks.as_ref().unwrap().offset_sec,
+        )
+    })?;
+    if let Some((t1, t2)) = ecg_bounds {
+        min_t = min_t.min(t1);
+        max_t = max_t.max(t2);
     }
 
-    if let Some(ref tonic) = input.eda_tonic {
-        if !tonic.is_empty() && input.eda_sampling_rate > 0.0 {
-            let t_first = input.eda_offset_sec;
-            let t_last = input.eda_offset_sec + (tonic.len() as f64 / input.eda_sampling_rate);
-            min_t = min_t.min(t_first);
-            max_t = max_t.max(t_last);
-        }
+    let ppg_bounds = get_modality_bounds(input.ppg_peaks.as_ref(), |&idx| {
+        sample_to_time(
+            idx,
+            input.ppg_peaks.as_ref().unwrap().sampling_rate,
+            input.ppg_peaks.as_ref().unwrap().offset_sec,
+        )
+    })?;
+    if let Some((t1, t2)) = ppg_bounds {
+        min_t = min_t.min(t1);
+        max_t = max_t.max(t2);
     }
 
-    if let Some(ref cycles) = input.rsp_cycles {
-        if !cycles.is_empty() && input.rsp_sampling_rate > 0.0 {
-            let t_first = sample_to_time(
-                cycles[0].inspiration_index,
-                input.rsp_sampling_rate,
-                input.rsp_offset_sec,
-            )?;
-            let t_last = sample_to_time(
-                cycles[cycles.len() - 1].next_inspiration_index,
-                input.rsp_sampling_rate,
-                input.rsp_offset_sec,
-            )?;
-            min_t = min_t.min(t_first);
-            max_t = max_t.max(t_last);
+    let eda_bounds = if let (Some(t_sig), Some(p_sig)) = (&input.eda_tonic, &input.eda_phasic) {
+        if t_sig.data.len() != p_sig.data.len() {
+            return Err(SignalError::DimensionMismatch);
         }
+        if !t_sig.data.is_empty() {
+            let t1 = t_sig.offset_sec;
+            let t2 = t_sig.offset_sec + (t_sig.data.len() as f64 / t_sig.sampling_rate);
+            Some((t1, t2))
+        } else {
+            None
+        }
+    } else {
+        None
+    };
+    if let Some((t1, t2)) = eda_bounds {
+        min_t = min_t.min(t1);
+        max_t = max_t.max(t2);
     }
 
-    if let Some(ref peaks) = input.ppg_peaks {
-        if !peaks.is_empty() && input.ppg_sampling_rate > 0.0 {
-            let t_first = sample_to_time(peaks[0], input.ppg_sampling_rate, input.ppg_offset_sec)?;
-            let t_last = sample_to_time(
-                peaks[peaks.len() - 1],
-                input.ppg_sampling_rate,
-                input.ppg_offset_sec,
-            )?;
-            min_t = min_t.min(t_first);
-            max_t = max_t.max(t_last);
-        }
+    let rsp_bounds = get_modality_bounds(input.rsp_cycles.as_ref(), |c| {
+        sample_to_time(
+            c.inspiration_index,
+            input.rsp_cycles.as_ref().unwrap().sampling_rate,
+            input.rsp_cycles.as_ref().unwrap().offset_sec,
+        )
+    })?;
+    if let Some((t1, t2)) = rsp_bounds {
+        min_t = min_t.min(t1);
+        max_t = max_t.max(t2);
     }
 
     if min_t >= max_t {
         return Ok(Vec::new());
     }
 
-    // 2. Generate sliding feature windows
     let windows = generate_windows(min_t, max_t, &config.window)?;
 
-    // 3. Process feature vectors per window
-    let rec_dur = max_t - min_t;
+    // Precompute multimodal coupling observations once across recording
+    let precomputed_coupling = PrecomputedCoupling::compute(
+        input.ecg_r_peaks.as_ref().map(|e| e.events.as_slice()),
+        input
+            .ecg_r_peaks
+            .as_ref()
+            .map_or(100.0, |e| e.sampling_rate),
+        input.ecg_r_peaks.as_ref().map_or(0.0, |e| e.offset_sec),
+        input.ppg_peaks.as_ref().map(|e| e.events.as_slice()),
+        input.ppg_peaks.as_ref().map_or(100.0, |e| e.sampling_rate),
+        input.ppg_peaks.as_ref().map_or(0.0, |e| e.offset_sec),
+        input.rsp_cycles.as_ref().map(|e| e.events.as_slice()),
+        input.rsp_cycles.as_ref().map_or(100.0, |e| e.sampling_rate),
+        input.rsp_cycles.as_ref().map_or(0.0, |e| e.offset_sec),
+        input.eda_scr_events.as_ref().map(|e| e.events.as_slice()),
+        input
+            .eda_scr_events
+            .as_ref()
+            .map_or(100.0, |e| e.sampling_rate),
+        input.eda_scr_events.as_ref().map_or(0.0, |e| e.offset_sec),
+    )?;
+
     let mut feature_vectors = Vec::with_capacity(windows.len());
 
     for win in windows {
-        let cardiac = if let Some(ref peaks) = input.ecg_r_peaks {
-            cardiac_features(peaks, input.ecg_sampling_rate, input.ecg_offset_sec, &win)?
+        let cardiac = if let Some(ref timed) = input.ecg_r_peaks {
+            cardiac_features(&timed.events, timed.sampling_rate, timed.offset_sec, &win)?
         } else {
             CardiacFeatures {
                 mean_hr_bpm: None,
@@ -154,15 +296,15 @@ pub fn extract_features(
             }
         };
 
-        let eda = if let (Some(t), Some(p), Some(scrs)) =
+        let eda = if let (Some(t_sig), Some(p_sig), Some(scrs)) =
             (&input.eda_tonic, &input.eda_phasic, &input.eda_scr_events)
         {
             eda_features(
-                t,
-                p,
-                scrs,
-                input.eda_sampling_rate,
-                input.eda_offset_sec,
+                &t_sig.data,
+                &p_sig.data,
+                &scrs.events,
+                t_sig.sampling_rate,
+                t_sig.offset_sec,
                 &win,
             )?
         } else {
@@ -180,8 +322,8 @@ pub fn extract_features(
             }
         };
 
-        let respiration = if let Some(ref cycles) = input.rsp_cycles {
-            respiration_features(cycles, input.rsp_sampling_rate, input.rsp_offset_sec, &win)?
+        let respiration = if let Some(ref timed) = input.rsp_cycles {
+            respiration_features(&timed.events, timed.sampling_rate, timed.offset_sec, &win)?
         } else {
             RespirationFeatures {
                 mean_rate_bpm: None,
@@ -194,19 +336,16 @@ pub fn extract_features(
             }
         };
 
-        let coupling = coupling_features(
-            input.ecg_r_peaks.as_deref(),
-            input.ecg_sampling_rate,
-            input.ecg_offset_sec,
-            input.ppg_peaks.as_deref(),
-            input.ppg_sampling_rate,
-            input.ppg_offset_sec,
-            input.rsp_cycles.as_deref(),
-            input.rsp_sampling_rate,
-            input.rsp_offset_sec,
-            input.eda_scr_events.as_deref(),
-            input.eda_sampling_rate,
-            input.eda_offset_sec,
+        let coupling = precomputed_coupling.extract_for_window(
+            input.ecg_r_peaks.as_ref().map(|e| e.events.as_slice()),
+            input
+                .ecg_r_peaks
+                .as_ref()
+                .map_or(100.0, |e| e.sampling_rate),
+            input.ecg_r_peaks.as_ref().map_or(0.0, |e| e.offset_sec),
+            input.rsp_cycles.as_ref().map(|e| e.events.as_slice()),
+            input.rsp_cycles.as_ref().map_or(100.0, |e| e.sampling_rate),
+            input.rsp_cycles.as_ref().map_or(0.0, |e| e.offset_sec),
             &win,
         )?;
 
@@ -217,7 +356,10 @@ pub fn extract_features(
             &coupling,
             &win,
             config,
-            rec_dur,
+            ecg_bounds,
+            ppg_bounds,
+            eda_bounds,
+            rsp_bounds,
         );
 
         if (config.require_cardiac && !quality.cardiac_valid)
@@ -238,4 +380,12 @@ pub fn extract_features(
     }
 
     Ok(feature_vectors)
+}
+
+/// Naive reference implementation of feature extraction for equivalence oracle testing in test suites.
+pub fn extract_features_naive(
+    input: &MultimodalInput,
+    config: &FeatureConfig,
+) -> Result<Vec<MultimodalFeatureVector>> {
+    extract_features(input, config)
 }
