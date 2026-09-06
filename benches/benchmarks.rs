@@ -1,5 +1,7 @@
 use criterion::{BenchmarkId, Criterion, criterion_group, criterion_main};
 use lamina::complexity::entropy::sample_entropy;
+use lamina::ecg::{EcgPeakDetectionConfig, ecg_findpeaks_config};
+use lamina::ppg::{PpgPeakDetectionConfig, ppg_findpeaks_config};
 use lamina::signal::filter::{FilterSpec, SosFilter, signal_filtfilt};
 use lamina::signal::peaks::{PeakDetectionConfig, signal_findpeaks_config};
 use lamina::signal::smooth::signal_smooth_moving_average;
@@ -66,6 +68,45 @@ fn bench_findpeaks(c: &mut Criterion) {
     group.finish();
 }
 
+fn bench_ecg_pipeline(c: &mut Criterion) {
+    let mut group = c.benchmark_group("ecg_findpeaks_pan_tompkins");
+    let fs = 100.0;
+    let config = EcgPeakDetectionConfig::default();
+
+    for size in [1000, 5000].iter() {
+        let mut signal = Array1::<f64>::zeros(*size);
+        for i in (50..*size).step_by(100) {
+            signal[i] = 4.0;
+        }
+        group.bench_with_input(BenchmarkId::from_parameter(size), size, |b, _| {
+            b.iter(|| ecg_findpeaks_config(&signal, fs, &config).unwrap());
+        });
+    }
+    group.finish();
+}
+
+fn bench_ppg_pipeline(c: &mut Criterion) {
+    let mut group = c.benchmark_group("ppg_findpeaks_elgendi");
+    let fs = 100.0;
+    let config = PpgPeakDetectionConfig::default();
+
+    for size in [1000, 5000].iter() {
+        let mut signal = Array1::<f64>::zeros(*size);
+        for i in (50..*size).step_by(100) {
+            for offset in -5..=5 {
+                let idx = (i as i64 + offset) as usize;
+                if idx < *size {
+                    signal[idx] = 2.0;
+                }
+            }
+        }
+        group.bench_with_input(BenchmarkId::from_parameter(size), size, |b, _| {
+            b.iter(|| ppg_findpeaks_config(&signal, fs, &config).unwrap());
+        });
+    }
+    group.finish();
+}
+
 fn bench_sample_entropy(c: &mut Criterion) {
     let mut group = c.benchmark_group("sample_entropy");
     let size = 500;
@@ -85,6 +126,8 @@ criterion_group!(
     bench_filtfilt,
     bench_moving_average,
     bench_findpeaks,
+    bench_ecg_pipeline,
+    bench_ppg_pipeline,
     bench_sample_entropy
 );
 criterion_main!(benches);

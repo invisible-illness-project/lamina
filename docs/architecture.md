@@ -91,7 +91,33 @@ Generic peak detection encapsulates the [`find_peaks`](https://crates.io/crates/
 
 ---
 
-## 4. Dependency Decision Table
+## 4. Physiological Processing Layer (`lamina::ecg` & `lamina::ppg`)
+
+Lamina separates generic DSP primitives from domain-specific physiological interpretation.
+
+### 4.1 ECG Pan-Tompkins QRS Detection Pipeline (`ecg_findpeaks_config`)
+- **Pipeline Architecture**:
+  $$\text{Raw ECG} \xrightarrow{\text{5--15Hz BP}} \text{Bandpassed} \xrightarrow{\text{5-Point Deriv}} \text{Derivative} \xrightarrow{\text{Square}} \text{Power} \xrightarrow{\text{150ms Moving Integral}} \text{Integrated} \xrightarrow{\text{Adaptive Dual-Threshold}} \text{R-Peaks}$$
+- **Bandpass Filtering**: 2nd-order Butterworth SOS bandpass filter (default 5–15 Hz) via `signal_filtfilt`.
+- **5-Point Derivative**: $d[n] = \frac{F_s}{8} (-x[n-2] - 2x[n-1] + 2x[n+1] + x[n+2])$, highlighting QRS slopes.
+- **Moving Window Integration**: $W = \text{round}(0.150 \cdot F_s)$ samples (150 ms) using `signal_smooth_moving_average`.
+- **Adaptive Dual Thresholding**: Signal peak ($SPKI$) and Noise peak ($NPKI$) tracking with $THRESHOLD_{I1} = NPKI + 0.25 (SPKI - NPKI)$ and searchback threshold $THRESHOLD_{I2} = 0.5 \cdot THRESHOLD_{I1}$.
+- **Physiological Boundaries**: 200 ms ($\text{round}(0.200 \cdot F_s)$ samples) refractory period enforcement and searchback for missed beats when $\Delta t > 1.66 \cdot \text{RR}_{\text{avg}}$.
+- **Fine-Alignment**: Validated integrated peaks are aligned to the exact R-peak maximum in the bandpassed signal.
+
+### 4.2 PPG Elgendi Systolic Peak Detection Pipeline (`ppg_findpeaks_config`)
+- **Pipeline Architecture**:
+  $$\text{Raw PPG} \xrightarrow{\text{0.5--8.0Hz BP}} \text{Bandpassed} \xrightarrow{\text{Clip \& Square}} \text{Enhanced} \xrightarrow{\text{Dual MAs}} (MA_{\text{peak}}, MA_{\text{beat}}) \xrightarrow{\text{Adaptive Block Thresh}} \text{Systolic Peaks}$$
+- **Bandpass Filtering**: 3rd-order Butterworth SOS bandpass filter (default 0.5–8.0 Hz) via `signal_filtfilt`.
+- **Dual Moving Averages**:
+  - Short MA ($W_{\text{peak}} \approx 111\text{ ms}$, $\text{round}(0.111 \cdot F_s)$) representing systolic peak duration.
+  - Long MA ($W_{\text{beat}} \approx 667\text{ ms}$, $\text{round}(0.667 \cdot F_s)$) representing heartbeat duration.
+- **Adaptive Block Thresholding**: $THRESHOLD = MA_{\text{beat}} + \alpha \cdot \bar{S}$, where $\alpha = 0.02$ and $\bar{S} = \text{mean}(\text{squared})$. Decision blocks are formed where $MA_{\text{peak}} > THRESHOLD$.
+- **Systolic Peak Selection**: Local maximum within each decision block with a 300 ms ($\text{round}(0.300 \cdot F_s)$ samples) pulse wave refractory period.
+
+---
+
+## 5. Dependency Decision Table
 
 | Capability | Current Lamina | Candidate | Decision | Reason |
 | :--- | :--- | :--- | :--- | :--- |
