@@ -69,6 +69,13 @@
 - **Coupling Features (`coupling_features`)**: Precomputes recording coupling streams (`pulse_delays`, `cr_phases`, `eda_assocs` in `PrecomputedCoupling`) and aggregates them per window. RSA modulation ($\Delta \text{BPM}$, $\Delta \text{RR}_{\text{sec}}$) is evaluated as a window-local coupling metric over window-bounded beats and cycles. Also provides cardiorespiratory phase concentration ($R \in [0, 1]$), mean phase ($\bar{\phi}$), mean/std ECG-PPG pulse delay ($\text{seconds}$), and SCR cardiorespiratory association counts.
 - **Unified Feature Pipeline (`extract_features`, `MultimodalInput`, `MultimodalFeatureVector`)**: Accepts fallible builder inputs (`with_ecg`, `with_eda`, `with_rsp`, `with_ppg`) bundling `TimedEvents` and `TimedSignal` containers. Enforces non-decreasing chronological ordering (`SignalError::UnsortedEvents`). Monotonic range lookup (`EventCursor`) operates in $O(N + W)$ total time across the recording, eliminating per-window full scans ($O(N)$), while per-window feature statistics scale as $O(K)$ / $O(K \log K)$ over window-bounded events $K$. Supports missing modalities via `Option::None` without artificial zero-filling. Includes `extract_features_naive` reference oracle for exact parity testing.
 
+### 10. `lamina::autonomic` — Interpretable Multimodal Physiological State Estimation Layer
+- **Baseline Fitting & Normalization (`AutonomicBaseline`, `BaselineFeatureStats`)**: Fits location/scale statistics over baseline feature vectors. Applies $z$-scoring (Standard or Robust Median/MAD) and hyperbolic tangent scaling into $[-1.0, 1.0]$.
+- **Structured Evidence States (`AutonomicState`, `CardiacState`, `ElectrodermalState`, `RespiratoryState`, `CouplingState`)**: Represents normalized physiological evidence without reinterpreting raw metrics as direct sympathetic/parasympathetic outflow (Carter et al., 2026). RespHRV coupling evidence requires direct respiratory context (Buron & Menuet, 2026; Gevonden et al., 2025; 2025 RespHRV Expert Recommendation).
+- **Composite Evidence Indices**: Computes Physiological Activation Evidence Index (`activation_score`) and Cardiorespiratory Regulation & Coupling Index (`regulation_score`) in $[-1.0, 1.0]$.
+- **Multi-Tiered Evidence Confidence (`StateConfidence`)**: Quantifies completeness and quality in $[0.0, 1.0]$ without artificial zero-filling for missing modalities.
+- **State Trajectory & EMA Smoothing (`AutonomicEstimator`, `AutonomicStateSeries`)**: Supports trajectory series state estimation and optional deterministic Exponential Moving Average (EMA) temporal smoothing. See [`docs/autonomic_state.md`](file:///home/eddiem3/development/roeh-health/lamina/docs/autonomic_state.md).
+
 ---
 
 ## Code Example

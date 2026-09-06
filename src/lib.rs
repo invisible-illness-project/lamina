@@ -1,3 +1,4 @@
+pub mod autonomic;
 pub mod complexity;
 pub mod ecg;
 pub mod eda;
