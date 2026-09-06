@@ -1,6 +1,9 @@
 use criterion::{BenchmarkId, Criterion, criterion_group, criterion_main};
 use lamina::complexity::entropy::sample_entropy;
 use lamina::ecg::{EcgPeakDetectionConfig, ecg_findpeaks_config};
+use lamina::eda::{
+    EdaDecompositionConfig, EdaPeakDetectionConfig, eda_clean, eda_decompose, eda_findpeaks_events,
+};
 use lamina::ppg::{PpgPeakDetectionConfig, ppg_findpeaks_config};
 use lamina::signal::filter::{FilterSpec, SosFilter, signal_filtfilt};
 use lamina::signal::peaks::{PeakDetectionConfig, signal_findpeaks_config};
@@ -107,6 +110,33 @@ fn bench_ppg_pipeline(c: &mut Criterion) {
     group.finish();
 }
 
+fn bench_eda_pipeline(c: &mut Criterion) {
+    let mut group = c.benchmark_group("eda_processing_pipeline");
+    let fs = 100.0;
+    let decomp_cfg = EdaDecompositionConfig::default();
+    let peak_cfg = EdaPeakDetectionConfig::default();
+
+    for size in [1000, 5000, 10000, 100000].iter() {
+        let mut signal = Array1::<f64>::zeros(*size);
+        for i in (100..*size).step_by(200) {
+            signal[i] = 2.0;
+        }
+
+        group.bench_with_input(BenchmarkId::new("eda_decompose", size), size, |b, _| {
+            b.iter(|| eda_decompose(&signal, fs, &decomp_cfg).unwrap());
+        });
+
+        group.bench_with_input(BenchmarkId::new("eda_full_pipeline", size), size, |b, _| {
+            b.iter(|| {
+                let cleaned = eda_clean(&signal, fs).unwrap();
+                let comp = eda_decompose(&cleaned, fs, &decomp_cfg).unwrap();
+                eda_findpeaks_events(&comp.phasic, fs, &peak_cfg).unwrap();
+            });
+        });
+    }
+    group.finish();
+}
+
 fn bench_sample_entropy(c: &mut Criterion) {
     let mut group = c.benchmark_group("sample_entropy");
     let size = 500;
@@ -128,6 +158,7 @@ criterion_group!(
     bench_findpeaks,
     bench_ecg_pipeline,
     bench_ppg_pipeline,
+    bench_eda_pipeline,
     bench_sample_entropy
 );
 criterion_main!(benches);

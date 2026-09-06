@@ -89,7 +89,7 @@ Generic peak detection encapsulates the [`find_peaks`](https://crates.io/crates/
 
 ---
 
-## 4. Physiological Processing Layer (`lamina::ecg` & `lamina::ppg`)
+## 4. Physiological Processing Layer (`lamina::ecg`, `lamina::ppg`, `lamina::eda`)
 
 Lamina separates generic DSP primitives from domain-specific physiological interpretation.
 
@@ -117,23 +117,38 @@ Lamina separates generic DSP primitives from domain-specific physiological inter
 - **Decision Block Filtering**: Canonical Elgendi block size verification ($width \ge W_{\text{peak}}$) rejecting narrow noise spikes.
 - **Systolic Peak Selection**: Local maximum within each valid decision block with a 300 ms ($\text{round}(0.300 \cdot F_s)$ samples) pulse wave refractory period.
 
-### 4.3 Offline (Non-Causal Zero-Phase) vs. Real-Time (Causal Streaming) Architectural Boundaries
+### 4.3 Electrodermal Activity (EDA/GSR) Signal Processing (`eda_decompose` & `eda_findpeaks_events`)
+- **Canonical References**: Dawson, M. E. et al. (2007). *The Electrodermal System*. Handbook of Psychophysiology.
+- **Signal Model**:
+  $$\text{EDA}(t) = \text{tonic}(t) + \text{phasic}(t)$$
+- **Pipeline Architecture**:
+  $$\text{Raw EDA} \xrightarrow{\text{5.0Hz Lowpass}} \text{Cleaned} \xrightarrow{\text{0.05Hz Lowpass}} \text{Tonic (SCL)} \xrightarrow{\text{Cleaned - Tonic}} \text{Phasic (SCR)} \xrightarrow{\text{Peak/Onset Analysis}} \text{ScrEvent List}$$
+- **Tonic/Phasic Decomposition (`eda_decompose`)**:
+  - **Tonic (Skin Conductance Level - SCL)**: Extracted via zero-phase 2nd-order 0.05 Hz low-pass Butterworth filtering (`signal_filtfilt`).
+  - **Phasic (Skin Conductance Response - SCR)**: Residual signal $\text{phasic}[n] = \text{cleaned}[n] - \text{tonic}[n]$, providing **exact mathematical reconstruction** ($\text{tonic}[n] + \text{phasic}[n] = \text{cleaned}[n]$ within floating-point epsilon).
+- **SCR Event Characterization (`ScrEvent`)**:
+  - `onset_index`: Sample position of preceding trough/local minimum.
+  - `peak_index`: Sample position of maximum SCR amplitude.
+  - `amplitude`: Vertical height $\text{phasic}[i_{\text{peak}}] - \text{phasic}[i_{\text{onset}}]$ in microsiemens ($\mu\text{S}$).
+  - `rise_time_sec`: Time interval $(i_{\text{peak}} - i_{\text{onset}}) / F_s$ in seconds.
+
+### 4.4 Offline (Non-Causal Zero-Phase) vs. Real-Time (Causal Streaming) Architectural Boundaries
 
 Lamina explicitly distinguishes between offline retrospective signal processing and streaming real-time execution:
 
-- **Offline Processing (`signal_filtfilt`, `ecg_findpeaks`, `ppg_findpeaks`)**:
+- **Offline Processing (`signal_filtfilt`, `ecg_findpeaks`, `ppg_findpeaks`, `eda_decompose`)**:
   - Employs zero-phase forward-backward filtering (`signal_filtfilt`) to eliminate phase distortion and group delay.
   - Non-causal: requires the complete signal array to perform end reflection padding ($3 \times \text{order}$).
-  - retrospectively estimates global signal/noise levels ($SPKI$, $NPKI$, $\bar{S}$) across the full waveform.
+  - Retrospectively estimates global signal/noise levels ($SPKI$, $NPKI$, $\bar{S}$) across the full waveform.
 - **Streaming Real-Time Processing (Architectural Model for Future Modules)**:
   - Requires single-pass causal IIR filtering (stateful `SosFilter` instances) with fixed group delay.
   - Bounded latency $\Delta t \le \text{window\_size}$.
   - Incremental running estimate updates ($SPKI$, $NPKI$) updated beat-by-beat without retrospective searchback.
 
-### 4.4 Scientific Validation & Clinical Disclaimer
+### 4.5 Scientific Validation & Clinical Disclaimer
 
-- **Validation Methodology**: Tested against NeuroKit2 reference implementations (`nk.ecg_peaks`, `nk.ppg_peaks`) across multiple sampling frequencies ($50, 100, 128, 250, 500, 1000\text{ Hz}$) and heart rates ($45\text{--}140\text{ bpm}$).
-- **Event Parity Metrics**: Evaluated with a time-domain tolerance $\Delta t \le 150\text{ ms}$ ($\text{round}(0.150 \cdot F_s)$ samples).
+- **Validation Methodology**: Tested against NeuroKit2 reference implementations (`nk.ecg_peaks`, `nk.ppg_peaks`, `nk.eda_peaks`) across multiple sampling frequencies ($32, 50, 64, 100, 128, 250, 500, 1000\text{ Hz}$).
+- **Event Parity Metrics**: Evaluated with standard time-domain tolerances ($\Delta t \le 150\text{ ms}$ for ECG/PPG, $\Delta t \le 250\text{ ms}$ for EDA).
 - **Disclaimer**: Lamina is a general-purpose scientific signal-processing library designed for research and physiological data analysis. **It is not a medical device, nor has it been cleared by regulatory authorities (FDA, CE) for clinical diagnosis or monitoring.**
 
 ---
@@ -147,7 +162,7 @@ Lamina explicitly distinguishes between offline retrospective signal processing 
 | **Peak Detection** | 3-point local maxima | `find_peaks` | **Adopt (Primitive)** | High quality prominence, distance, & height handling matching SciPy semantics (`v0.1.5`). |
 | **Smoothing** | $O(N \cdot W)$ moving average | Custom | **Custom (Lamina)** | Optimized $O(N)$ sliding window accumulator natively implemented in `src/signal/smooth.rs`. |
 | **Parallelism** | None (Single-threaded) | `rayon` | **Optional Feature** | Guard with `#[cfg(feature = "parallel")]` for heavy non-linear metrics like Sample Entropy. |
-| **ECG / PPG / EDA** | Prototype heuristics | Custom | **Custom (Lamina)** | Physiological algorithms (Pan-Tompkins, Elgendi, cvxEDA/Highpass, SCR) must be owned by Lamina. |
+| **ECG / PPG / EDA** | Prototype heuristics | Custom | **Custom (Lamina)** | Physiological algorithms (Pan-Tompkins, Elgendi, Lowpass/Highpass SCR) must be owned by Lamina. |
 | **HRV Analysis** | Basic time-domain | `cardio-rs` / `hrv-algos` | **Reject Dependency** | Native Lamina implementation guarantees clean API contracts, zero extraneous dependencies, and `no_std` flexibility. |
 
 ---
@@ -158,7 +173,7 @@ Lamina uses a central `SignalError` type:
 - `EmptySignal`
 - `InvalidSamplingRate(f64)`
 - `InvalidCutoffFrequency(String)`
-- `InsufficientSamples(usize)`
+- `InsufficientSamples { required: usize, provided: usize }`
 - `InvalidWindowSize(usize)`
 - `InvalidFilterOrder(usize)`
 - `NonFiniteInput`
