@@ -14,7 +14,11 @@ create_exception!(_lamina, InsufficientPeaksError, LaminaInputError);
 
 create_exception!(_lamina, LaminaConfigurationError, PyValueError);
 create_exception!(_lamina, InvalidSamplingRateError, LaminaConfigurationError);
-create_exception!(_lamina, InvalidCutoffFrequencyError, LaminaConfigurationError);
+create_exception!(
+    _lamina,
+    InvalidCutoffFrequencyError,
+    LaminaConfigurationError
+);
 create_exception!(_lamina, InvalidWindowSizeError, LaminaConfigurationError);
 create_exception!(_lamina, InvalidFilterOrderError, LaminaConfigurationError);
 

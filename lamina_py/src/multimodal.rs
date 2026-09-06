@@ -126,13 +126,14 @@ pub fn multimodal_quality<'py>(
     eda_quality: Option<PyModalityQuality>,
     rsp_quality: Option<PyModalityQuality>,
 ) -> PyResult<PyMultimodalQuality> {
-    let convert_mod = |m: Option<PyModalityQuality>| -> Option<lamina::multimodal::ModalityQuality> {
-        m.map(|q| lamina::multimodal::ModalityQuality {
-            score: q.score,
-            valid: q.valid,
-            issues: vec![],
-        })
-    };
+    let convert_mod =
+        |m: Option<PyModalityQuality>| -> Option<lamina::multimodal::ModalityQuality> {
+            m.map(|q| lamina::multimodal::ModalityQuality {
+                score: q.score,
+                valid: q.valid,
+                issues: vec![],
+            })
+        };
 
     let rust_ecg = convert_mod(ecg_quality);
     let rust_ppg = convert_mod(ppg_quality);
@@ -140,9 +141,7 @@ pub fn multimodal_quality<'py>(
     let rust_rsp = convert_mod(rsp_quality);
 
     let res = py
-        .detach(|| {
-            lamina::multimodal::multimodal_quality(rust_ecg, rust_ppg, rust_eda, rust_rsp)
-        })
+        .detach(|| lamina::multimodal::multimodal_quality(rust_ecg, rust_ppg, rust_eda, rust_rsp))
         .map_err(map_signal_error)?;
 
     let map_mod = |m: Option<lamina::multimodal::ModalityQuality>| -> Option<PyModalityQuality> {
@@ -160,4 +159,3 @@ pub fn multimodal_quality<'py>(
         overall_quality: res.overall_quality,
     })
 }
-

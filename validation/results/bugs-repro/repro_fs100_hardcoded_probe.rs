@@ -25,24 +25,22 @@ fn main() {
     let centers: Vec<usize> = (0..10).map(|k| ((5.0 + 0.6 * k as f64) * fs_eda) as usize).collect();
     let phasic = gaussian_train(n, &centers, 0.05 * fs_eda, 1.0);
 
-    let mask_default = eda_findpeaks(&phasic).expect("eda_findpeaks");
+    let mask_default = eda_findpeaks(&phasic, fs_eda).expect("eda_findpeaks");
     let n_default = mask_default.iter().filter(|&&v| v).count();
     let cfg = EdaPeakDetectionConfig::default();
     let peaks_truefs = eda_findpeaks_config(&phasic, fs_eda, &cfg).expect("eda_findpeaks_config");
     println!("EDA  true_fs={} Hz, {} SCR pulses spaced 0.6 s", fs_eda, centers.len());
-    println!("  eda_findpeaks (hardcoded fs=100)        -> {} peaks", n_default);
+    println!("  eda_findpeaks(fs={})                    -> {} peaks", fs_eda, n_default);
     println!("  eda_findpeaks_config(fs={})            -> {} peaks", fs_eda, peaks_truefs.len());
 
     // ---- RSP: true fs = 25 Hz. Breaths 2.0 s apart (50 samples).
     // min_breath_interval_sec default = 1.2 s.
-    // - rsp_findpeaks (hardcoded fs=100): 1.2 s -> 120 samples -> 50 < 120, drops most.
-    // - rsp_findpeaks_config(fs=25):      1.2 s -> 30 samples  -> 50 >= 30, keeps all.
     let fs_rsp = 25.0;
     let n = (60.0 * fs_rsp) as usize;
     let centers: Vec<usize> = (0..25).map(|k| ((2.0 + 2.0 * k as f64) * fs_rsp) as usize).collect();
     let cleaned = gaussian_train(n, &centers, 0.3 * fs_rsp, 1.0);
 
-    let mask_default = rsp_findpeaks(&cleaned).expect("rsp_findpeaks");
+    let mask_default = rsp_findpeaks(&cleaned, fs_rsp).expect("rsp_findpeaks");
     let n_default = mask_default.iter().filter(|&&v| v).count();
     let cfg = RspProcessingConfig::default();
     let peaks_truefs = rsp_findpeaks_config(&cleaned, fs_rsp, &cfg).expect("rsp_findpeaks_config");

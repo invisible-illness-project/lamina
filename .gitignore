@@ -15,9 +15,9 @@ __pycache__/
 *.dll
 coverage/
 
-# Locally generated testing datasets (optional, uncomment to track)
-golden_*.json
+# Locally generated testing datasets (golden reference files in tests/ are tracked)
 golden_*.csv
+!tests/golden_*.json
 
 # Validation framework (validation/): build artifacts + run outputs
 validation/lamina_bridge/target/

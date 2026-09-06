@@ -135,7 +135,7 @@ pub fn evaluate_rsp_quality(cycles_count: usize, signal_duration_sec: f64) -> Mo
 /// Consolidate modality quality evaluations into a overall multimodal quality summary.
 ///
 /// # Errors
-/// Returns [`SignalError::InvalidSamplingRate`] if input bounds are invalid.
+/// Returns [`SignalError::EmptySignal`] if all modality arguments are `None`.
 pub fn multimodal_quality(
     ecg_quality: Option<ModalityQuality>,
     ppg_quality: Option<ModalityQuality>,

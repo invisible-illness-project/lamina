@@ -11,12 +11,7 @@ pub struct PyVideoFrame {
 #[pymethods]
 impl PyVideoFrame {
     #[new]
-    pub fn new(
-        timestamp_sec: f64,
-        width: usize,
-        height: usize,
-        data: Vec<u8>,
-    ) -> PyResult<Self> {
+    pub fn new(timestamp_sec: f64, width: usize, height: usize, data: Vec<u8>) -> PyResult<Self> {
         let frame = lamina::rppg::VideoFrame::new(timestamp_sec, width, height, data)
             .map_err(map_signal_error)?;
         Ok(Self { inner: frame })
@@ -51,8 +46,8 @@ impl PyVideoStream {
     pub fn new(frames: Vec<PyVideoFrame>, nominal_fps: Option<f64>) -> PyResult<Self> {
         let rust_frames: Vec<lamina::rppg::VideoFrame> =
             frames.into_iter().map(|f| f.inner).collect();
-        let stream = lamina::rppg::VideoStream::new(rust_frames, nominal_fps)
-            .map_err(map_signal_error)?;
+        let stream =
+            lamina::rppg::VideoStream::new(rust_frames, nominal_fps).map_err(map_signal_error)?;
         Ok(Self { inner: stream })
     }
 }

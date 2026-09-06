@@ -14,10 +14,12 @@ pub struct RspProcessingConfig {
     pub filter_order: Option<usize>,
     /// Minimum breath cycle duration in seconds (default: 1.2 s, ~50 breaths/min max).
     pub min_breath_interval_sec: Option<f64>,
-    /// Maximum breath cycle duration in seconds (default: 12.0 s, ~5 breaths/min min).
+    /// Maximum breath cycle duration in seconds (default: 20.0 s, ~3 breaths/min min).
     pub max_breath_interval_sec: Option<f64>,
     /// Minimum peak-to-trough respiratory amplitude cutoff (default: 0.05 a.u.).
     pub min_amplitude: Option<f64>,
+    /// Bypasses internal bandpass filter if input signal is already precleaned (default: false).
+    pub precleaned: Option<bool>,
 }
 
 impl Default for RspProcessingConfig {
@@ -27,8 +29,9 @@ impl Default for RspProcessingConfig {
             highcut: Some(0.50),
             filter_order: Some(3),
             min_breath_interval_sec: Some(1.2),
-            max_breath_interval_sec: Some(12.0),
+            max_breath_interval_sec: Some(20.0),
             min_amplitude: Some(0.05),
+            precleaned: Some(false),
         }
     }
 }
@@ -72,6 +75,12 @@ impl RspProcessingConfig {
     /// Set minimum respiratory peak-to-trough amplitude.
     pub fn with_min_amplitude(mut self, amp: f64) -> Self {
         self.min_amplitude = Some(amp);
+        self
+    }
+
+    /// Set whether the input signal is already precleaned (bypassing internal filtering).
+    pub fn with_precleaned(mut self, precleaned: bool) -> Self {
+        self.precleaned = Some(precleaned);
         self
     }
 
@@ -163,14 +172,18 @@ pub fn rsp_cycles_config(
     let highcut = config.highcut.unwrap_or(0.50);
     let filter_order = config.filter_order.unwrap_or(3);
     let min_interval_sec = config.min_breath_interval_sec.unwrap_or(1.2);
-    let max_interval_sec = config.max_breath_interval_sec.unwrap_or(12.0);
+    let max_interval_sec = config.max_breath_interval_sec.unwrap_or(20.0);
     let min_amp = config.min_amplitude.unwrap_or(0.05);
 
-    let clean_cfg = RspCleaningConfig::new()
-        .with_lowcut(lowcut)
-        .with_highcut(highcut)
-        .with_filter_order(filter_order);
-    let cleaned = rsp_clean_config(signal, sampling_rate, &clean_cfg)?;
+    let cleaned = if config.precleaned.unwrap_or(false) {
+        signal.clone()
+    } else {
+        let clean_cfg = RspCleaningConfig::new()
+            .with_lowcut(lowcut)
+            .with_highcut(highcut)
+            .with_filter_order(filter_order);
+        rsp_clean_config(signal, sampling_rate, &clean_cfg)?
+    };
 
     // Noise floor protection for flat / zero / constant signals
     let max_val = cleaned.fold(f64::NEG_INFINITY, |acc, &x| acc.max(x));
@@ -330,10 +343,11 @@ pub fn rsp_findpeaks_mask(
     Ok(mask)
 }
 
-/// Locate inspiratory peak mask (`Array1<bool>`) in a cleaned RSP signal assuming default 100 Hz sampling rate.
-///
-/// Convenience entry point maintaining backward compatibility.
-pub fn rsp_findpeaks(cleaned_signal: &Array1<f64>) -> Result<Array1<bool>> {
+/// Locate inspiratory peak mask (`Array1<bool>`) in a cleaned RSP signal given a sampling rate.
+pub fn rsp_findpeaks(cleaned_signal: &Array1<f64>, sampling_rate: f64) -> Result<Array1<bool>> {
+    if !sampling_rate.is_finite() || sampling_rate <= 0.0 {
+        return Err(SignalError::InvalidSamplingRate(sampling_rate));
+    }
     let config = RspProcessingConfig::default();
-    rsp_findpeaks_mask(cleaned_signal, 100.0, &config)
+    rsp_findpeaks_mask(cleaned_signal, sampling_rate, &config)
 }

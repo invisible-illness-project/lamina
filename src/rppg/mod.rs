@@ -9,14 +9,16 @@ pub mod video;
 
 pub use algorithms::{GreenAlgorithm, RppgAlgorithm};
 pub use chrom::ChromAlgorithm;
-pub use config::{RppgAlgorithmId, RppgConfig, RppgPreprocessingConfig, RppgWindowConfig};
+pub use config::{
+    RppgAlgorithmId, RppgConfig, RppgPreprocessingConfig, RppgWindowConfig, SignalPolarity,
+};
 pub use pos::PosAlgorithm;
 pub use quality::{
     RppgQualitySummary, RppgSegmentQuality, assess_illumination_quality, assess_motion_quality,
     assess_roi_quality, assess_signal_quality, evaluate_segment_quality,
 };
 pub use roi::{Roi, RoiProvider, StaticRoi, TrackedRoiSeries, extract_roi_sample};
-pub use signal::{OpticalSignal, RoiSample, RppgSegment, RppgSignal};
+pub use signal::{BvpWaveform, OpticalSignal, RoiSample, RppgSegment, RppgSignal};
 pub use video::{VideoFrame, VideoMetadata, VideoStream};
 
 use crate::error::{Result, SignalError};

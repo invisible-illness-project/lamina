@@ -29,6 +29,37 @@ fn test_ecg_clean_basic() {
 }
 
 #[test]
+fn test_ecg_clean_method_dispatch() {
+    let signal = Array1::<f64>::ones(100);
+    for m in ["neurokit", "pantompkins", "biosppy", "", "  NEUROKIT  "] {
+        assert!(
+            ecg_clean(&signal, 100.0, m).is_ok(),
+            "Method '{}' should be supported",
+            m
+        );
+    }
+    assert!(
+        matches!(
+            ecg_clean(&signal, 100.0, "unsupported_method"),
+            Err(SignalError::InvalidCutoffFrequency(_))
+        ),
+        "Unsupported method should return InvalidCutoffFrequency error"
+    );
+}
+
+#[test]
+fn test_ecg_peaks_invalid_threshold_multiplier_error() {
+    let signal = Array1::<f64>::ones(500);
+    let inv_cfg = EcgPeakDetectionConfig::new().with_threshold_multiplier(1.0);
+    let err = ecg_findpeaks_config(&signal, 100.0, &inv_cfg).unwrap_err();
+    assert!(
+        matches!(err, SignalError::InvalidCutoffFrequency(_)),
+        "threshold_multiplier >= 1.0 must return InvalidCutoffFrequency parameter error, got {:?}",
+        err
+    );
+}
+
+#[test]
 fn test_ecg_input_validation() {
     let empty_sig = Array1::<f64>::zeros(0);
     assert!(matches!(
@@ -253,4 +284,129 @@ fn test_ecg_hrv_pipeline_integration() {
 
     let rmssd = hrv_rmssd(&intervals).expect("hrv_rmssd failed");
     assert!(rmssd.is_finite());
+}
+
+#[test]
+fn test_ecg_6case_regression_matrix() {
+    let fs = 250.0;
+    let duration = 10.0;
+    let n = (fs * duration) as usize;
+
+    // Helper to generate synthetic QRS pulse
+    let make_qrs = |amp: f64, width_sec: f64| -> Vec<f64> {
+        let len = (width_sec * fs) as usize;
+        let mut pulse = Vec::with_capacity(len);
+        for i in 0..len {
+            let t = (i as f64 - len as f64 / 2.0) / (len as f64 / 4.0);
+            pulse.push(amp * (-0.5 * t * t).exp());
+        }
+        pulse
+    };
+
+    // Case 1: Normal sinus QRS
+    let mut sig1 = Array1::<f64>::zeros(n);
+    for k in 1..9 {
+        let pos = (k as f64 * 1.0 * fs) as usize;
+        let qrs = make_qrs(1.0, 0.08);
+        for (i, &v) in qrs.iter().enumerate() {
+            if pos + i < n {
+                sig1[pos + i] += v;
+            }
+        }
+    }
+    let peaks1 = ecg_findpeaks(&sig1, fs).expect("Case 1 failed");
+    assert!(
+        peaks1.iter().filter(|&&p| p).count() >= 7,
+        "Case 1: Normal QRS should be detected"
+    );
+
+    // Case 2: PVCs with 3:1 amplitude disparity (MIT-BIH 228 model)
+    let mut sig2 = Array1::<f64>::zeros(n);
+    for k in 1..9 {
+        let pos = (k as f64 * 1.0 * fs) as usize;
+        let amp = if k % 3 == 0 { 3.5 } else { 1.0 }; // 3.5:1 amplitude disparity
+        let qrs = make_qrs(amp, 0.08);
+        for (i, &v) in qrs.iter().enumerate() {
+            if pos + i < n {
+                sig2[pos + i] += v;
+            }
+        }
+    }
+    let peaks2 = ecg_findpeaks(&sig2, fs).expect("Case 2 failed");
+    let count2 = peaks2.iter().filter(|&&p| p).count();
+    assert_eq!(
+        count2, 8,
+        "Case 2: PVC with 3:1 amplitude disparity should detect all 8 beats without blackout"
+    );
+
+    // Case 3: Continuous bigeminy (normal - PVC - normal - PVC)
+    let mut sig3 = Array1::<f64>::zeros(n);
+    for k in 0..6 {
+        let pos_norm = ((1.0 + k as f64 * 1.4) * fs) as usize;
+        let pos_pvc = ((1.5 + k as f64 * 1.4) * fs) as usize;
+        let qrs_norm = make_qrs(1.0, 0.08);
+        let qrs_pvc = make_qrs(2.5, 0.12);
+        for (i, &v) in qrs_norm.iter().enumerate() {
+            if pos_norm + i < n {
+                sig3[pos_norm + i] += v;
+            }
+        }
+        for (i, &v) in qrs_pvc.iter().enumerate() {
+            if pos_pvc + i < n {
+                sig3[pos_pvc + i] += v;
+            }
+        }
+    }
+    let peaks3 = ecg_findpeaks(&sig3, fs).expect("Case 3 failed");
+    assert!(
+        peaks3.iter().filter(|&&p| p).count() >= 10,
+        "Case 3: Bigeminy beats should be detected"
+    );
+
+    // Case 4: Narrow / biphasic QRS complexes
+    let mut sig4 = Array1::<f64>::zeros(n);
+    for k in 1..9 {
+        let pos = (k as f64 * 1.0 * fs) as usize;
+        // Biphasic: positive spike followed immediately by negative trough
+        for i in 0..10 {
+            if pos + i < n {
+                sig4[pos + i] = 1.0 * (i as f64 / 5.0);
+            }
+            if pos + 10 + i < n {
+                sig4[pos + 10 + i] = -1.0 * (1.0 - i as f64 / 5.0);
+            }
+        }
+    }
+    let peaks4 = ecg_findpeaks(&sig4, fs).expect("Case 4 failed");
+    assert!(
+        peaks4.iter().filter(|&&p| p).count() >= 7,
+        "Case 4: Biphasic QRS should be detected"
+    );
+
+    // Case 5: Paced ECG with sharp pacing spikes
+    let mut sig5 = sig1.clone();
+    for k in 1..9 {
+        let pos = (k as f64 * 1.0 * fs) as usize - 5;
+        if pos < n {
+            sig5[pos] = 5.0;
+        } // narrow sharp pacing spike 5 samples before QRS
+    }
+    let peaks5 = ecg_findpeaks(&sig5, fs).expect("Case 5 failed");
+    assert!(
+        peaks5.iter().filter(|&&p| p).count() >= 7,
+        "Case 5: Paced ECG should detect R-peaks"
+    );
+
+    // Case 6: High-frequency EMG / motion noise bursts
+    let mut sig6 = sig1.clone();
+    for i in (3.0 * fs) as usize..(4.0 * fs) as usize {
+        if i < n {
+            sig6[i] += 0.2 * ((i as f64 * 50.0).sin());
+        } // 50 Hz noise burst
+    }
+    let peaks6 = ecg_findpeaks(&sig6, fs).expect("Case 6 failed");
+    assert!(
+        peaks6.iter().filter(|&&p| p).count() >= 7,
+        "Case 6: EMG noise burst should not prevent detection of R-peaks"
+    );
 }

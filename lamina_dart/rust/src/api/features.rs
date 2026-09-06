@@ -2,9 +2,14 @@ use crate::api::eda::EdaPeakEvent;
 use crate::api::error::SignalError;
 use crate::api::rsp::RespirationCycle;
 use lamina::eda::ScrEvent as CoreScrEvent;
-use lamina::features::cardiac::{cardiac_features as core_cardiac_features, CardiacFeatures as CoreCardiacFeatures};
+use lamina::features::cardiac::{
+    cardiac_features as core_cardiac_features, CardiacFeatures as CoreCardiacFeatures,
+};
 use lamina::features::eda::{eda_features as core_eda_features, EdaFeatures as CoreEdaFeatures};
-use lamina::features::respiration::{respiration_features as core_respiration_features, RespirationFeatures as CoreRespirationFeatures};
+use lamina::features::respiration::{
+    respiration_features as core_respiration_features,
+    RespirationFeatures as CoreRespirationFeatures,
+};
 use lamina::features::window::FeatureWindow as CoreFeatureWindow;
 use lamina::rsp::RespirationCycle as CoreRespirationCycle;
 use ndarray::Array1;

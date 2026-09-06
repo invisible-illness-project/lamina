@@ -1,16 +1,13 @@
 use crate::api::error::SignalError;
 use lamina::eda::clean::eda_clean;
 use lamina::eda::peaks::{
-    eda_findpeaks as core_eda_findpeaks,
-    eda_findpeaks_config as core_eda_findpeaks_config,
+    eda_findpeaks as core_eda_findpeaks, eda_findpeaks_config as core_eda_findpeaks_config,
     eda_findpeaks_events as core_eda_findpeaks_events,
     eda_findpeaks_mask as core_eda_findpeaks_mask,
-    EdaPeakDetectionConfig as CoreEdaPeakDetectionConfig,
-    ScrEvent as CoreScrEvent,
+    EdaPeakDetectionConfig as CoreEdaPeakDetectionConfig, ScrEvent as CoreScrEvent,
 };
 use lamina::eda::phasic::{
-    eda_decompose as core_eda_decompose,
-    eda_phasic as core_eda_phasic,
+    eda_decompose as core_eda_decompose, eda_phasic as core_eda_phasic,
     EdaDecompositionConfig as CoreEdaDecompositionConfig,
 };
 use ndarray::Array1;
@@ -94,7 +91,9 @@ pub fn process_eda_decompose(
     config: Option<EdaDecompositionConfig>,
 ) -> Result<EdaComponentSignals, SignalError> {
     let nd = Array1::from_vec(signal);
-    let cfg = config.map(CoreEdaDecompositionConfig::from).unwrap_or_default();
+    let cfg = config
+        .map(CoreEdaDecompositionConfig::from)
+        .unwrap_or_default();
     let comp = core_eda_decompose(&nd, sampling_rate, &cfg)?;
     Ok(EdaComponentSignals {
         tonic: comp.tonic.into_raw_vec_and_offset().0,
@@ -113,7 +112,7 @@ pub fn process_eda_findpeaks(
         let indices = core_eda_findpeaks_config(&nd, sampling_rate, &core_cfg)?;
         Ok(indices)
     } else {
-        let mask = core_eda_findpeaks(&nd)?;
+        let mask = core_eda_findpeaks(&nd, sampling_rate)?;
         let indices = mask
             .iter()
             .enumerate()
@@ -129,7 +128,9 @@ pub fn process_eda_findpeaks_events(
     config: Option<EdaPeakDetectionConfig>,
 ) -> Result<Vec<EdaPeakEvent>, SignalError> {
     let nd = Array1::from_vec(phasic_signal);
-    let cfg = config.map(CoreEdaPeakDetectionConfig::from).unwrap_or_default();
+    let cfg = config
+        .map(CoreEdaPeakDetectionConfig::from)
+        .unwrap_or_default();
     let events = core_eda_findpeaks_events(&nd, sampling_rate, &cfg)?;
     Ok(events.into_iter().map(EdaPeakEvent::from).collect())
 }

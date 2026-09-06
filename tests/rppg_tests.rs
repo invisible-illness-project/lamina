@@ -775,3 +775,36 @@ fn test_piecewise_elementary_quality_aggregation_no_multiplicity_bias() {
     );
     assert!((uncovered_segs[0].quality.roi_quality - 1.6 / 3.0).abs() < 1e-3);
 }
+
+#[test]
+fn test_signal_polarity_and_bvp_waveform() {
+    use lamina::rppg::{BvpWaveform, SignalPolarity};
+
+    let timestamps = vec![0.0, 0.1, 0.2, 0.3, 0.4];
+    let raw_waveform = vec![1.0, 2.0, 0.5, 3.0, 0.0];
+
+    let rppg = lamina::rppg::RppgSignal {
+        timestamps_sec: timestamps.clone(),
+        waveform: raw_waveform.clone(),
+        sampling_rate_hz: 10.0,
+        quality: lamina::rppg::RppgQualitySummary {
+            overall: 1.0,
+            valid_fraction: 1.0,
+            segments: Vec::new(),
+        },
+        algorithm: RppgAlgorithmId::Pos,
+    };
+
+    // Normal polarity keeps waveform unchanged
+    let bvp_normal = rppg.to_bvp_waveform(SignalPolarity::Normal);
+    assert_eq!(bvp_normal.waveform, raw_waveform);
+
+    // Inverted polarity negates waveform
+    let bvp_inv = rppg.to_bvp_waveform(SignalPolarity::Inverted);
+    let expected_inv: Vec<f64> = raw_waveform.iter().map(|v| -v).collect();
+    assert_eq!(bvp_inv.waveform, expected_inv);
+
+    // BvpWaveform to_ndarray conversion
+    let arr = bvp_normal.to_ndarray();
+    assert_eq!(arr.len(), 5);
+}

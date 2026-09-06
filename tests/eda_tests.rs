@@ -1,6 +1,7 @@
 use lamina::eda::{
-    EdaDecompositionConfig, EdaPeakDetectionConfig, ScrEvent, eda_clean, eda_decompose,
-    eda_findpeaks, eda_findpeaks_config, eda_findpeaks_events, eda_findpeaks_mask, eda_phasic,
+    EdaCleaningConfig, EdaDecompositionConfig, EdaPeakDetectionConfig, ScrEvent, eda_clean,
+    eda_clean_config, eda_decompose, eda_findpeaks, eda_findpeaks_config, eda_findpeaks_events,
+    eda_findpeaks_mask, eda_phasic,
 };
 use lamina::error::SignalError;
 use ndarray::Array1;
@@ -347,7 +348,49 @@ fn test_eda_convenience_apis() {
     assert_eq!(mask.len(), n);
     assert!(mask[199]);
 
-    let compat_mask = eda_findpeaks(&phasic).expect("eda_findpeaks failed");
+    let compat_mask = eda_findpeaks(&phasic, fs).expect("eda_findpeaks failed");
     assert_eq!(compat_mask.len(), n);
     assert!(compat_mask[199]);
+}
+
+#[test]
+fn test_eda_4hz_wearable_passband_and_nyquist_handling() {
+    // Empatica E4 wearable EDA (fs = 4.0 Hz, Nyquist = 2.0 Hz)
+    let fs = 4.0;
+    let duration = 60.0;
+    let n = (fs * duration) as usize;
+    let raw_eda = Array1::from_elem(n, 2.5);
+
+    // Default 5.0 Hz cutoff >= 2.0 Hz Nyquist -> pass-through enabled by default
+    let cleaned_default = eda_clean(&raw_eda, fs).expect("eda_clean at 4 Hz failed");
+    assert_eq!(cleaned_default, raw_eda);
+
+    // Explicit 1.5 Hz lowpass cutoff < 2.0 Hz Nyquist -> applies Butterworth lowpass filter
+    let cfg_1_5 = EdaCleaningConfig::new().with_lowpass_cutoff_hz(1.5);
+    let cleaned_1_5 =
+        eda_clean_config(&raw_eda, fs, &cfg_1_5).expect("eda_clean_config at 1.5 Hz failed");
+    assert_eq!(cleaned_1_5.len(), n);
+
+    // Explicit pass_through_if_nyquist_violated = false -> returns InvalidCutoffFrequency error
+    let cfg_strict = EdaCleaningConfig::new()
+        .with_lowpass_cutoff_hz(5.0)
+        .with_pass_through_if_nyquist_violated(false);
+    assert!(eda_clean_config(&raw_eda, fs, &cfg_strict).is_err());
+}
+
+#[test]
+fn test_eda_multi_sampling_rates() {
+    let rates = [4.0, 16.0, 100.0, 700.0];
+    for &fs in &rates {
+        let duration = 30.0;
+        let n = (fs * duration) as usize;
+        let t = Array1::linspace(0.0, duration, n);
+        let raw = t.mapv(|tv| 1.0 + 0.1 * (2.0 * std::f64::consts::PI * 0.05 * tv).sin());
+        let cleaned = eda_clean(&raw, fs).expect("eda_clean failed");
+        assert_eq!(cleaned.len(), n);
+        let decomp = eda_decompose(&cleaned, fs, &EdaDecompositionConfig::default())
+            .expect("eda_decompose failed");
+        assert_eq!(decomp.tonic.len(), n);
+        assert_eq!(decomp.phasic.len(), n);
+    }
 }

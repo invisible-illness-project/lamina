@@ -73,6 +73,18 @@ impl Default for RppgPreprocessingConfig {
     }
 }
 
+/// Signal polarity convention for optical surrogates and blood volume pulse (BVP) waveforms.
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Default)]
+pub enum SignalPolarity {
+    /// Standard optical surrogate (uninverted raw rPPG projection)
+    #[default]
+    Normal,
+    /// Inverted optical surrogate (negated waveform)
+    Inverted,
+    /// Auto-detect polarity using skewness relative to Elgendi pulse expectations
+    AutoDetect,
+}
+
 /// Master configuration for the rPPG pulse signal extraction pipeline.
 #[derive(Debug, Clone, PartialEq)]
 pub struct RppgConfig {
@@ -90,6 +102,8 @@ pub struct RppgConfig {
     pub preprocessing: RppgPreprocessingConfig,
     /// Frequency band $[f_{\text{low}}, f_{\text{high}}]$ in Hz for pulse signal filtering (default $[0.75, 2.5]$ Hz for $45\text{--}150$ BPM)
     pub signal_band_hz: (f64, f64),
+    /// Pulse-phase polarity convention for downstream BVP conversion
+    pub polarity: SignalPolarity,
 }
 
 impl Default for RppgConfig {
@@ -102,11 +116,18 @@ impl Default for RppgConfig {
             window: RppgWindowConfig::default(),
             preprocessing: RppgPreprocessingConfig::default(),
             signal_band_hz: (0.75, 2.5),
+            polarity: SignalPolarity::default(),
         }
     }
 }
 
 impl RppgConfig {
+    /// Set signal polarity convention.
+    pub fn with_polarity(mut self, polarity: SignalPolarity) -> Self {
+        self.polarity = polarity;
+        self
+    }
+
     /// Validate all rPPG configuration fields.
     pub fn validate(&self) -> Result<()> {
         if !self.min_quality.is_finite() || !(0.0..=1.0).contains(&self.min_quality) {

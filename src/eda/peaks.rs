@@ -228,10 +228,11 @@ pub fn eda_findpeaks_mask(
     Ok(mask)
 }
 
-/// Locate SCR peak mask (`Array1<bool>`) in a Phasic EDA signal assuming default 100 Hz sampling rate.
-///
-/// Convenience entry point maintaining backward compatibility.
-pub fn eda_findpeaks(phasic_signal: &Array1<f64>) -> Result<Array1<bool>> {
+/// Locate SCR peak mask (`Array1<bool>`) in a Phasic EDA signal given a sampling rate.
+pub fn eda_findpeaks(phasic_signal: &Array1<f64>, sampling_rate: f64) -> Result<Array1<bool>> {
+    if !sampling_rate.is_finite() || sampling_rate <= 0.0 {
+        return Err(SignalError::InvalidSamplingRate(sampling_rate));
+    }
     let config = EdaPeakDetectionConfig::default();
-    eda_findpeaks_mask(phasic_signal, 100.0, &config)
+    eda_findpeaks_mask(phasic_signal, sampling_rate, &config)
 }

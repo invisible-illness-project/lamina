@@ -13,6 +13,8 @@ The `lamina::rppg` module provides a modular, deterministic, research-grade opti
 ### Scientific Scope & Principles
 - **First-Class Quality Assessment**: Camera-derived pulse extraction performance is heavily influenced by motion, illumination, frame rate variability, and ROI bounds. rPPG output signals and quality metadata are inseparable.
 - **Classical Deterministic Algorithms**: Implements foundational Green-channel baseline, CHROM (de Haan & Jeanne, 2013), and POS (Wang et al., 2017) methods operating over sliding temporal windows without neural network dependencies.
+- **Non-Physiological BVP Contract**: `BvpWaveform` represents a normalized pulsatile optical waveform expressed under Lamina's documented pulse-phase convention (where positive deflection corresponds to peak pulse expansion). The convention is intended to make downstream pulse-event detection consistent; it does **not** imply direct measurement of absolute arterial blood volume ($\text{mL}$) or calibrated arterial pressure ($\text{mmHg}$).
+- **Standalone Peak Detection & Motion Artifact Boundary**: Standalone peak detectors operating on raw or un-gated rPPG signals without quality filtering are highly vulnerable to motion artifacts and illumination fluctuations. Downstream consumers must extract contiguous valid segments via `RppgSignal::valid_segments(max_gap_sec)` or enforce quality gating (`min_quality`) before executing peak detection.
 - **Downstream Decoupling**: Reuses Lamina's existing PPG feature pipeline (`lamina::ppg`) rather than creating a parallel feature-processing stack.
 
 ---

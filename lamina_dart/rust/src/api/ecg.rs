@@ -1,8 +1,7 @@
 use crate::api::error::SignalError;
 use lamina::ecg::clean::ecg_clean;
 use lamina::ecg::peaks::{
-    ecg_findpeaks as core_ecg_findpeaks,
-    ecg_findpeaks_config as core_ecg_findpeaks_config,
+    ecg_findpeaks as core_ecg_findpeaks, ecg_findpeaks_config as core_ecg_findpeaks_config,
     ecg_findpeaks_mask as core_ecg_findpeaks_mask,
     EcgPeakDetectionConfig as CoreEcgPeakDetectionConfig,
 };

@@ -309,6 +309,27 @@ fn test_rsp_convenience_apis() {
         .expect("rsp_findpeaks_mask failed");
     assert_eq!(mask.len(), n);
 
-    let compat_mask = rsp_findpeaks(&raw).expect("rsp_findpeaks failed");
+    let compat_mask = rsp_findpeaks(&raw, fs).expect("rsp_findpeaks failed");
     assert_eq!(compat_mask.len(), n);
+}
+
+#[test]
+fn test_rsp_precleaned_and_slow_breathing() {
+    let fs = 50.0;
+    // 1 breath every 15 seconds (4 breaths/min, duration 60s -> 4 cycles)
+    let duration = 60.0;
+    let n = (fs * duration) as usize;
+    let t = Array1::linspace(0.0, duration, n);
+    let precleaned_sig = t.mapv(|tv| (2.0 * PI * (1.0 / 15.0) * tv).sin());
+
+    let cfg = RspProcessingConfig::default()
+        .with_precleaned(true)
+        .with_max_breath_interval_sec(20.0);
+
+    let cycles =
+        rsp_cycles_config(&precleaned_sig, fs, &cfg).expect("rsp_cycles_config precleaned failed");
+    assert!(
+        !cycles.is_empty(),
+        "Should detect slow breathing cycles (15s interval)"
+    );
 }

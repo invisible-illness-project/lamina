@@ -10,7 +10,9 @@ use lamina::autonomic::state::{
 use lamina::features::cardiac::CardiacFeatures as CoreCardiacFeatures;
 use lamina::features::coupling::CouplingFeatures as CoreCouplingFeatures;
 use lamina::features::eda::EdaFeatures as CoreEdaFeatures;
-use lamina::features::quality::{FeatureCoverage as CoreFeatureCoverage, FeatureQuality as CoreFeatureQuality};
+use lamina::features::quality::{
+    FeatureCoverage as CoreFeatureCoverage, FeatureQuality as CoreFeatureQuality,
+};
 use lamina::features::respiration::RespirationFeatures as CoreRespirationFeatures;
 use lamina::features::window::FeatureWindow as CoreFeatureWindow;
 use lamina::features::MultimodalFeatureVector as CoreMultimodalFeatureVector;

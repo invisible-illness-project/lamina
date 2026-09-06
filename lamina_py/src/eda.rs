@@ -4,6 +4,44 @@ use pyo3::prelude::*;
 
 #[pyclass]
 #[derive(Clone)]
+pub struct PyEdaCleaningConfig {
+    #[pyo3(get, set)]
+    pub lowpass_cutoff_hz: Option<f64>,
+    #[pyo3(get, set)]
+    pub filter_order: Option<usize>,
+    #[pyo3(get, set)]
+    pub pass_through_if_nyquist_violated: bool,
+}
+
+#[pymethods]
+impl PyEdaCleaningConfig {
+    #[new]
+    #[pyo3(signature = (lowpass_cutoff_hz=None, filter_order=None, pass_through_if_nyquist_violated=true))]
+    pub fn new(
+        lowpass_cutoff_hz: Option<f64>,
+        filter_order: Option<usize>,
+        pass_through_if_nyquist_violated: bool,
+    ) -> Self {
+        Self {
+            lowpass_cutoff_hz,
+            filter_order,
+            pass_through_if_nyquist_violated,
+        }
+    }
+}
+
+impl From<&PyEdaCleaningConfig> for lamina::eda::EdaCleaningConfig {
+    fn from(cfg: &PyEdaCleaningConfig) -> Self {
+        let mut c = lamina::eda::EdaCleaningConfig::new();
+        c.lowpass_cutoff_hz = cfg.lowpass_cutoff_hz;
+        c.filter_order = cfg.filter_order;
+        c.pass_through_if_nyquist_violated = cfg.pass_through_if_nyquist_violated;
+        c
+    }
+}
+
+#[pyclass]
+#[derive(Clone)]
 pub struct PyEdaDecompositionConfig {
     #[pyo3(get, set)]
     pub tonic_cutoff_hz: Option<f64>,
@@ -123,17 +161,25 @@ pub struct PyEdaComponents {
 }
 
 #[pyfunction]
-#[pyo3(signature = (signal, sampling_rate))]
+#[pyo3(signature = (signal, sampling_rate, config=None))]
 pub fn eda_clean<'py>(
     py: Python<'py>,
     signal: PyReadonlyArray1<'py, f64>,
     sampling_rate: f64,
+    config: Option<&PyEdaCleaningConfig>,
 ) -> PyResult<Bound<'py, PyArray1<f64>>> {
     let array_view = signal.as_array();
     let arr = array_view.to_owned();
 
     let out = py
-        .detach(|| lamina::eda::eda_clean(&arr, sampling_rate))
+        .detach(|| {
+            if let Some(cfg) = config {
+                let rust_cfg = cfg.into();
+                lamina::eda::eda_clean_config(&arr, sampling_rate, &rust_cfg)
+            } else {
+                lamina::eda::eda_clean(&arr, sampling_rate)
+            }
+        })
         .map_err(map_signal_error)?;
 
     Ok(out.into_pyarray(py))
@@ -182,7 +228,7 @@ pub fn eda_phasic<'py>(
 }
 
 #[pyfunction]
-#[pyo3(signature = (phasic_signal, sampling_rate=100.0, config=None))]
+#[pyo3(signature = (phasic_signal, sampling_rate, config=None))]
 pub fn eda_findpeaks<'py>(
     py: Python<'py>,
     phasic_signal: PyReadonlyArray1<'py, f64>,

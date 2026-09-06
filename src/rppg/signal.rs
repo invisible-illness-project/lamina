@@ -1,5 +1,5 @@
 use crate::error::{Result, SignalError};
-use crate::rppg::config::{RppgAlgorithmId, RppgPreprocessingConfig};
+use crate::rppg::config::{RppgAlgorithmId, RppgPreprocessingConfig, SignalPolarity};
 use crate::rppg::quality::{RppgQualitySummary, RppgSegmentQuality};
 use ndarray::Array1;
 
@@ -229,6 +229,52 @@ impl RppgSegment {
     pub fn to_ndarray(&self) -> Array1<f64> {
         Array1::from_vec(self.waveform.clone())
     }
+
+    /// Convert segment into a normalized [`BvpWaveform`] under Lamina's documented pulse-phase convention.
+    pub fn to_bvp_waveform(&self, polarity: SignalPolarity) -> BvpWaveform {
+        let mut wf = self.waveform.clone();
+        let should_flip = match polarity {
+            SignalPolarity::Normal => false,
+            SignalPolarity::Inverted => true,
+            SignalPolarity::AutoDetect => compute_should_flip(&wf),
+        };
+        if should_flip {
+            for v in wf.iter_mut() {
+                if v.is_finite() {
+                    *v = -*v;
+                }
+            }
+        }
+        BvpWaveform {
+            timestamps_sec: self.timestamps_sec.clone(),
+            waveform: wf,
+            sampling_rate_hz: self.sampling_rate_hz,
+        }
+    }
+}
+
+/// Standardized normalized optical blood volume pulse (BVP) surrogate waveform.
+///
+/// # Scientific Contract & Non-Clinical Boundary
+/// `BvpWaveform` represents a normalized pulsatile optical waveform expressed under Lamina's
+/// documented pulse-phase convention (where positive deflection corresponds to peak pulse expansion).
+/// The convention is intended to make downstream pulse-event detection consistent; it does **not**
+/// imply direct measurement of absolute arterial blood volume ($\text{mL}$) or calibrated arterial pressure ($\text{mmHg}$).
+#[derive(Debug, Clone, PartialEq)]
+pub struct BvpWaveform {
+    /// Physical timestamps in seconds
+    pub timestamps_sec: Vec<f64>,
+    /// Normalized optical pulse surrogate samples obeying positive peak-phase expansion convention
+    pub waveform: Vec<f64>,
+    /// Sampling rate in Hz
+    pub sampling_rate_hz: f64,
+}
+
+impl BvpWaveform {
+    /// Convert waveform into a 1D `Array1<f64>` for downstream `lamina::ppg` peak detection.
+    pub fn to_ndarray(&self) -> Array1<f64> {
+        Array1::from_vec(self.waveform.clone())
+    }
 }
 
 /// Standardized camera-derived optical pulse surrogate waveform and quality summary.
@@ -250,6 +296,28 @@ impl RppgSignal {
     /// Convert waveform into an 1D `Array1<f64>` for downstream Lamina PPG processing.
     pub fn to_ndarray(&self) -> Array1<f64> {
         Array1::from_vec(self.waveform.clone())
+    }
+
+    /// Convert the optical surrogate signal into a normalized [`BvpWaveform`] under Lamina's documented pulse-phase convention.
+    pub fn to_bvp_waveform(&self, polarity: SignalPolarity) -> BvpWaveform {
+        let mut wf = self.waveform.clone();
+        let should_flip = match polarity {
+            SignalPolarity::Normal => false,
+            SignalPolarity::Inverted => true,
+            SignalPolarity::AutoDetect => compute_should_flip(&wf),
+        };
+        if should_flip {
+            for v in wf.iter_mut() {
+                if v.is_finite() {
+                    *v = -*v;
+                }
+            }
+        }
+        BvpWaveform {
+            timestamps_sec: self.timestamps_sec.clone(),
+            waveform: wf,
+            sampling_rate_hz: self.sampling_rate_hz,
+        }
     }
 
     /// Extract contiguous valid signal segments where waveform samples are finite and physical gaps do not exceed `max_gap_sec`.
@@ -484,5 +552,30 @@ impl RppgSignal {
             quality: self.quality.clone(),
             algorithm: self.algorithm,
         })
+    }
+}
+
+fn compute_should_flip(wf: &[f64]) -> bool {
+    let valid_samples: Vec<f64> = wf.iter().copied().filter(|v| v.is_finite()).collect();
+    if valid_samples.len() > 3 {
+        let mean = valid_samples.iter().sum::<f64>() / valid_samples.len() as f64;
+        let var = valid_samples
+            .iter()
+            .map(|v| (v - mean).powi(2))
+            .sum::<f64>()
+            / valid_samples.len() as f64;
+        let std = var.sqrt();
+        if std > 1e-6 {
+            let skew = valid_samples
+                .iter()
+                .map(|v| ((v - mean) / std).powi(3))
+                .sum::<f64>()
+                / valid_samples.len() as f64;
+            skew > 0.3
+        } else {
+            false
+        }
+    } else {
+        false
     }
 }

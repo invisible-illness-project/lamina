@@ -41,6 +41,7 @@ fn _lamina(m: &Bound<'_, PyModule>) -> PyResult<()> {
     m.add_function(wrap_pyfunction!(ppg::ppg_findpeaks_mask, m)?)?;
 
     // EDA
+    m.add_class::<eda::PyEdaCleaningConfig>()?;
     m.add_class::<eda::PyEdaDecompositionConfig>()?;
     m.add_class::<eda::PyEdaPeakDetectionConfig>()?;
     m.add_class::<eda::PyScrEvent>()?;
@@ -96,7 +97,10 @@ fn _lamina(m: &Bound<'_, PyModule>) -> PyResult<()> {
     m.add_class::<multimodal::PyModalityQuality>()?;
     m.add_class::<multimodal::PyMultimodalQuality>()?;
     m.add_function(wrap_pyfunction!(multimodal::rsa, m)?)?;
-    m.add_function(wrap_pyfunction!(multimodal::cardiorespiratory_phase_coupling, m)?)?;
+    m.add_function(wrap_pyfunction!(
+        multimodal::cardiorespiratory_phase_coupling,
+        m
+    )?)?;
     m.add_function(wrap_pyfunction!(multimodal::multimodal_quality, m)?)?;
 
     Ok(())

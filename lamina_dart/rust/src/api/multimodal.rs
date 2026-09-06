@@ -1,8 +1,11 @@
 use crate::api::error::SignalError;
 use crate::api::rsp::RespirationCycle;
-use lamina::multimodal::config::{PulseTimingConfig as CorePulseTimingConfig, RsaConfig as CoreRsaConfig};
+use lamina::multimodal::config::{
+    PulseTimingConfig as CorePulseTimingConfig, RsaConfig as CoreRsaConfig,
+};
 use lamina::multimodal::coupling::{
-    cardiorespiratory_phase_coupling as core_phase_coupling, PhaseCouplingResult as CorePhaseCouplingResult,
+    cardiorespiratory_phase_coupling as core_phase_coupling,
+    PhaseCouplingResult as CorePhaseCouplingResult,
 };
 use lamina::multimodal::ecg_ppg::{
     ecg_ppg_timing_config as core_ecg_ppg_timing_config, PulseTimingResult as CorePulseTimingResult,

@@ -92,13 +92,7 @@ impl PyMultimodalInput {
 
         let input = self_.inner.clone();
         let updated = input
-            .with_eda(
-                tonic_arr,
-                phasic_arr,
-                rust_scrs,
-                sampling_rate,
-                offset_sec,
-            )
+            .with_eda(tonic_arr, phasic_arr, rust_scrs, sampling_rate, offset_sec)
             .map_err(map_signal_error)?;
         self_.inner = updated;
         Ok(())

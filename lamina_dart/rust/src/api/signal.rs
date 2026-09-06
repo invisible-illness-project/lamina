@@ -1,6 +1,8 @@
 use crate::api::error::SignalError;
 use lamina::signal::filter::signal_filter;
-use lamina::signal::peaks::{signal_findpeaks, signal_findpeaks_config, PeakDetectionConfig as CorePeakDetectionConfig};
+use lamina::signal::peaks::{
+    signal_findpeaks, signal_findpeaks_config, PeakDetectionConfig as CorePeakDetectionConfig,
+};
 use lamina::signal::smooth::signal_smooth_moving_average;
 use ndarray::Array1;
 

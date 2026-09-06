@@ -135,7 +135,7 @@ pub fn evaluate_feature_quality(
 
     let coupling_valid = cardiac_valid && respiration_valid;
 
-    let total_features = 30;
+    let total_features = 28;
     let mut usable_count = 0;
 
     if cardiac.mean_hr_bpm.is_some() {

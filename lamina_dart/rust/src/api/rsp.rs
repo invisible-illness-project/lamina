@@ -71,7 +71,7 @@ pub fn process_rsp_findpeaks(
         let indices = core_rsp_findpeaks_config(&nd, sampling_rate, &core_cfg)?;
         Ok(indices)
     } else {
-        let mask = core_rsp_findpeaks(&nd)?;
+        let mask = core_rsp_findpeaks(&nd, sampling_rate)?;
         let indices = mask
             .iter()
             .enumerate()
@@ -87,7 +87,9 @@ pub fn process_rsp_findpeaks_mask(
     config: Option<RspProcessingConfig>,
 ) -> Result<Vec<u8>, SignalError> {
     let nd = Array1::from_vec(cleaned_signal);
-    let cfg = config.map(CoreRspProcessingConfig::from).unwrap_or_default();
+    let cfg = config
+        .map(CoreRspProcessingConfig::from)
+        .unwrap_or_default();
     let mask = core_rsp_findpeaks_mask(&nd, sampling_rate, &cfg)?;
     let byte_mask: Vec<u8> = mask.iter().map(|&b| if b { 1 } else { 0 }).collect();
     Ok(byte_mask)
@@ -99,7 +101,9 @@ pub fn process_rsp_cycles(
     config: Option<RspProcessingConfig>,
 ) -> Result<Vec<RespirationCycle>, SignalError> {
     let nd = Array1::from_vec(cleaned_signal);
-    let cfg = config.map(CoreRspProcessingConfig::from).unwrap_or_default();
+    let cfg = config
+        .map(CoreRspProcessingConfig::from)
+        .unwrap_or_default();
     let cycles = rsp_cycles_config(&nd, sampling_rate, &cfg)?;
     Ok(cycles.into_iter().map(RespirationCycle::from).collect())
 }
@@ -110,7 +114,9 @@ pub fn process_rsp_rate(
     config: Option<RspProcessingConfig>,
 ) -> Result<Vec<f64>, SignalError> {
     let nd = Array1::from_vec(cleaned_signal);
-    let cfg = config.map(CoreRspProcessingConfig::from).unwrap_or_default();
+    let cfg = config
+        .map(CoreRspProcessingConfig::from)
+        .unwrap_or_default();
     let rate = rsp_rate_config(&nd, sampling_rate, &cfg)?;
     Ok(rate.into_raw_vec_and_offset().0)
 }

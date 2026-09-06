@@ -79,6 +79,12 @@ impl EcgPeakDetectionConfig {
         self
     }
 
+    /// Set primary threshold multiplier factor.
+    pub fn with_threshold_multiplier(mut self, mult: f64) -> Self {
+        self.threshold_multiplier = Some(mult);
+        self
+    }
+
     /// Validate configuration values.
     pub fn validate(&self) -> Result<()> {
         if matches!(self.lowcut, Some(lc) if !lc.is_finite() || lc <= 0.0) {
@@ -109,7 +115,9 @@ impl EcgPeakDetectionConfig {
         }
         if matches!(self.threshold_multiplier, Some(tm) if !tm.is_finite() || tm <= 0.0 || tm >= 1.0)
         {
-            return Err(SignalError::NonFiniteInput);
+            return Err(SignalError::InvalidCutoffFrequency(
+                "Threshold multiplier must be strictly between 0.0 and 1.0".to_string(),
+            ));
         }
         Ok(())
     }
@@ -214,7 +222,7 @@ pub fn ecg_findpeaks_config(
         .iter()
         .map(|&idx| integrated[idx])
         .collect();
-    candidate_heights.sort_by(|a, b| a.partial_cmp(b).unwrap());
+    candidate_heights.sort_by(|a, b| a.total_cmp(b));
 
     // Initialize SPKI (Signal Peak level) and NPKI (Noise Peak level)
     let n_cands = candidate_heights.len();
@@ -234,9 +242,10 @@ pub fn ecg_findpeaks_config(
         let threshold_i1 = npki + mult * (spki - npki);
 
         if matches!(last_peak_idx, Some(last_idx) if cand_idx < last_idx + refractory_samples) {
-            // Inside 200ms refractory period -> treat as T-wave or noise
+            // Inside 200ms refractory period -> treat as T-wave or noise side-lobe
             if y_val > threshold_i1 {
-                spki = 0.125 * y_val + 0.875 * spki;
+                let y_eff = y_val.min(spki);
+                spki = 0.125 * y_eff + 0.875 * spki;
             } else {
                 npki = 0.125 * y_val + 0.875 * npki;
             }
@@ -266,7 +275,8 @@ pub fn ecg_findpeaks_config(
                                     rr_intervals.remove(0);
                                 }
                                 last_peak_idx = Some(sb_cand);
-                                spki = 0.25 * sb_val + 0.75 * spki;
+                                let sb_eff = sb_val.min(2.5 * spki);
+                                spki = 0.25 * sb_eff + 0.75 * spki;
                                 break;
                             }
                         }
@@ -283,7 +293,8 @@ pub fn ecg_findpeaks_config(
             }
             validated_integrated_peaks.push(cand_idx);
             last_peak_idx = Some(cand_idx);
-            spki = 0.125 * y_val + 0.875 * spki;
+            let y_eff = y_val.min(2.5 * spki);
+            spki = 0.125 * y_eff + 0.875 * spki;
         } else {
             npki = 0.125 * y_val + 0.875 * npki;
         }

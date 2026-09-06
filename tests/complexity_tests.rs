@@ -22,3 +22,14 @@ fn test_sample_entropy_random() {
         assert!(sampen >= 0.0);
     }
 }
+
+#[test]
+fn test_sample_entropy_zero_matches_inf() {
+    let signal = array![1.0, 10.0, 100.0, 1000.0, 10000.0];
+    let sampen = sample_entropy(&signal, 2, 0.1).expect("Sample entropy calculation failed");
+    assert!(
+        sampen.is_infinite() && sampen.is_sign_positive(),
+        "Zero template matches must return Ok(f64::INFINITY), got {}",
+        sampen
+    );
+}

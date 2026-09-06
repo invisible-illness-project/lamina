@@ -1,8 +1,7 @@
 use crate::api::error::SignalError;
 use lamina::ppg::clean::ppg_clean;
 use lamina::ppg::peaks::{
-    ppg_findpeaks as core_ppg_findpeaks,
-    ppg_findpeaks_config as core_ppg_findpeaks_config,
+    ppg_findpeaks as core_ppg_findpeaks, ppg_findpeaks_config as core_ppg_findpeaks_config,
     ppg_findpeaks_mask as core_ppg_findpeaks_mask,
     PpgPeakDetectionConfig as CorePpgPeakDetectionConfig,
 };

@@ -51,12 +51,14 @@ pub struct PyRspProcessingConfig {
     pub max_breath_interval_sec: Option<f64>,
     #[pyo3(get, set)]
     pub min_amplitude: Option<f64>,
+    #[pyo3(get, set)]
+    pub precleaned: Option<bool>,
 }
 
 #[pymethods]
 impl PyRspProcessingConfig {
     #[new]
-    #[pyo3(signature = (lowcut=None, highcut=None, filter_order=None, min_breath_interval_sec=None, max_breath_interval_sec=None, min_amplitude=None))]
+    #[pyo3(signature = (lowcut=None, highcut=None, filter_order=None, min_breath_interval_sec=None, max_breath_interval_sec=None, min_amplitude=None, precleaned=None))]
     pub fn new(
         lowcut: Option<f64>,
         highcut: Option<f64>,
@@ -64,6 +66,7 @@ impl PyRspProcessingConfig {
         min_breath_interval_sec: Option<f64>,
         max_breath_interval_sec: Option<f64>,
         min_amplitude: Option<f64>,
+        precleaned: Option<bool>,
     ) -> Self {
         Self {
             lowcut,
@@ -72,6 +75,7 @@ impl PyRspProcessingConfig {
             min_breath_interval_sec,
             max_breath_interval_sec,
             min_amplitude,
+            precleaned,
         }
     }
 }
@@ -85,6 +89,7 @@ impl From<&PyRspProcessingConfig> for lamina::rsp::RspProcessingConfig {
         c.min_breath_interval_sec = cfg.min_breath_interval_sec;
         c.max_breath_interval_sec = cfg.max_breath_interval_sec;
         c.min_amplitude = cfg.min_amplitude;
+        c.precleaned = cfg.precleaned;
         c
     }
 }
@@ -160,7 +165,7 @@ pub fn rsp_clean<'py>(
 }
 
 #[pyfunction]
-#[pyo3(signature = (signal, sampling_rate=100.0, config=None))]
+#[pyo3(signature = (signal, sampling_rate, config=None))]
 pub fn rsp_findpeaks<'py>(
     py: Python<'py>,
     signal: PyReadonlyArray1<'py, f64>,

@@ -8,7 +8,7 @@ use ndarray::Array1;
 ///   - `signal`: 1D array of real-valued floating-point samples (`f64`).
 ///   - `m`: Embedding dimension ($m \ge 1$).
 ///   - `r`: Tolerance threshold ($r > 0.0$), typically $0.2 \times \text{std}(x)$.
-/// - **Output**: Non-negative Sample Entropy value $h \ge 0.0$.
+/// - **Output**: Non-negative Sample Entropy value $h \ge 0.0$, or `f64::INFINITY` if zero template matches occur ($A = 0$ or $B = 0$).
 /// - **Mathematical Definition**: $\text{SampEn}(m, r, N) = -\ln \frac{A}{B}$, where $B$ is the total count of template vectors of length $m$ matching within Chebyshev distance $r$, and $A$ is the count matching for length $m+1$.
 ///
 /// # Errors
