@@ -89,7 +89,7 @@ Generic peak detection encapsulates the [`find_peaks`](https://crates.io/crates/
 
 ---
 
-## 4. Physiological Processing Layer (`lamina::ecg`, `lamina::ppg`, `lamina::eda`)
+## 4. Physiological Processing Layer (`lamina::ecg`, `lamina::ppg`, `lamina::eda`, `lamina::rsp`)
 
 Lamina separates generic DSP primitives from domain-specific physiological interpretation.
 
@@ -132,23 +132,49 @@ Lamina separates generic DSP primitives from domain-specific physiological inter
   - `amplitude`: Vertical height $\text{phasic}[i_{\text{peak}}] - \text{phasic}[i_{\text{onset}}]$ in microsiemens ($\mu\text{S}$).
   - `rise_time_sec`: Time interval $(i_{\text{peak}} - i_{\text{onset}}) / F_s$ in seconds.
 
-### 4.4 Offline (Non-Causal Zero-Phase) vs. Real-Time (Causal Streaming) Architectural Boundaries
+### 4.4 Respiration (RSP) Signal Processing (`rsp_clean`, `rsp_cycles`, `rsp_rate`)
+- **Canonical References**: Khodadad, D. et al. (2018). *Optimized peak detection in respiration signals*. Physiological Measurement. NeuroKit2 RSP Processing Guidelines.
+- **Signal Model**:
+  $$\text{RSP}(t) = \text{respiratory\_component}(t) + \text{baseline\_drift}(t) + \text{noise}(t)$$
+- **Pipeline Architecture**:
+  $$\text{Raw RSP} \xrightarrow{\text{0.05--0.50Hz BP}} \text{Cleaned RSP} \xrightarrow{\text{Extrema Detection}} (i_k, e_k) \xrightarrow{\text{Cycle Pairing}} \text{RespirationCycle List} \xrightarrow{\text{Rate Calculation}} \text{RSP Rate Array}$$
+- **Respiration Cleaning (`rsp_clean_config`)**:
+  - 3rd-order Butterworth SOS bandpass filter (default 0.05–0.50 Hz, corresponding to 3–30 breaths/min) via zero-phase `signal_filtfilt`.
+  - Removes baseline drift ($<0.05\text{ Hz}$) and high-frequency motion/muscular noise ($>0.50\text{ Hz}$).
+- **Peak / Trough Detection & Cycle Pairing (`rsp_cycles_config`)**:
+  - Inspiratory extrema ($i_k$) detected as positive peaks on `cleaned_rsp` using generic peak detection (`signal_findpeaks_config`) with minimum distance $W_{\text{min\_dist}} = \text{round}(\text{min\_breath\_interval} \cdot F_s)$.
+  - Expiratory extrema ($e_k$) detected as troughs by applying peak detection to inverted signal $-1.0 \times \text{cleaned\_rsp}$.
+  - Sequential cycle pairing constructs `RespirationCycle`:
+    - Finds expiratory trough $e_k$ strictly between consecutive inspiratory peaks $i_k < e_k < i_{k+1}$.
+    - Calculates breath duration $T_k = (i_{k+1} - i_k) / F_s$ (sec), instantaneous rate $\text{BPM}_k = 60.0 / T_k$, and peak-to-trough amplitude $A_k = x[i_{k+1}] - x[e_k]$.
+- **Physiological Validation & Safeguards**:
+  - Noise floor gate: checks peak-to-peak amplitude $A_{\text{p2p}} \ge 10^{-12}$; flat/constant signals return empty cycle lists.
+  - Duration bounds: validates $1.50\text{ s} \le T_k \le 15.0\text{ s}$ (4–40 bpm).
+  - Minimum amplitude threshold: enforces $A_k \ge \text{min\_amplitude}$.
+- **Respiratory Rate Array Extraction (`rsp_rate_config`)**:
+  - Calculates instantaneous rate array matching input signal length $N$.
+  - Piecewise constant interpolation between cycle boundaries with nearest-neighbor extrapolation at boundaries.
+  - Handles invalid/empty cycles safely by returning 0.0 array.
+- **Respiratory Rate Variability (RRV)**:
+  - Extracted directly from cycle interval series $I_k = (i_{k+1} - i_k) / F_s$, enabling mean rate, mean breath interval, SDNN/SDRR, and RMSSD computation.
+
+### 4.5 Offline (Non-Causal Zero-Phase) vs. Real-Time (Causal Streaming) Architectural Boundaries
 
 Lamina explicitly distinguishes between offline retrospective signal processing and streaming real-time execution:
 
-- **Offline Processing (`signal_filtfilt`, `ecg_findpeaks`, `ppg_findpeaks`, `eda_decompose`)**:
+- **Offline Processing (`signal_filtfilt`, `ecg_findpeaks`, `ppg_findpeaks`, `eda_decompose`, `rsp_cycles`)**:
   - Employs zero-phase forward-backward filtering (`signal_filtfilt`) to eliminate phase distortion and group delay.
   - Non-causal: requires the complete signal array to perform end reflection padding ($3 \times \text{order}$).
-  - Retrospectively estimates global signal/noise levels ($SPKI$, $NPKI$, $\bar{S}$) across the full waveform.
+  - Retrospectively estimates global signal/noise levels ($SPKI$, $NPKI$, $\bar{S}$, peak-to-peak amplitude) across the full waveform.
 - **Streaming Real-Time Processing (Architectural Model for Future Modules)**:
   - Requires single-pass causal IIR filtering (stateful `SosFilter` instances) with fixed group delay.
   - Bounded latency $\Delta t \le \text{window\_size}$.
   - Incremental running estimate updates ($SPKI$, $NPKI$) updated beat-by-beat without retrospective searchback.
 
-### 4.5 Scientific Validation & Clinical Disclaimer
+### 4.6 Scientific Validation & Clinical Disclaimer
 
-- **Validation Methodology**: Tested against NeuroKit2 reference implementations (`nk.ecg_peaks`, `nk.ppg_peaks`, `nk.eda_peaks`) across multiple sampling frequencies ($32, 50, 64, 100, 128, 250, 500, 1000\text{ Hz}$).
-- **Event Parity Metrics**: Evaluated with standard time-domain tolerances ($\Delta t \le 150\text{ ms}$ for ECG/PPG, $\Delta t \le 250\text{ ms}$ for EDA).
+- **Validation Methodology**: Tested against NeuroKit2 reference implementations (`nk.ecg_peaks`, `nk.ppg_peaks`, `nk.eda_peaks`, `nk.rsp_process`) across multiple sampling frequencies ($32, 50, 64, 100, 128, 250, 500, 1000\text{ Hz}$).
+- **Event Parity Metrics**: Evaluated with standard time-domain tolerances ($\Delta t \le 150\text{ ms}$ for ECG/PPG, $\Delta t \le 250\text{ ms}$ for EDA/RSP).
 - **Disclaimer**: Lamina is a general-purpose scientific signal-processing library designed for research and physiological data analysis. **It is not a medical device, nor has it been cleared by regulatory authorities (FDA, CE) for clinical diagnosis or monitoring.**
 
 ---

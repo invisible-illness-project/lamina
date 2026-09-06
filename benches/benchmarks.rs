@@ -5,6 +5,9 @@ use lamina::eda::{
     EdaDecompositionConfig, EdaPeakDetectionConfig, eda_clean, eda_decompose, eda_findpeaks_events,
 };
 use lamina::ppg::{PpgPeakDetectionConfig, ppg_findpeaks_config};
+use lamina::rsp::{
+    RspCleaningConfig, RspProcessingConfig, rsp_clean_config, rsp_cycles_config, rsp_rate_config,
+};
 use lamina::signal::filter::{FilterSpec, SosFilter, signal_filtfilt};
 use lamina::signal::peaks::{PeakDetectionConfig, signal_findpeaks_config};
 use lamina::signal::smooth::signal_smooth_moving_average;
@@ -137,6 +140,38 @@ fn bench_eda_pipeline(c: &mut Criterion) {
     group.finish();
 }
 
+fn bench_rsp_pipeline(c: &mut Criterion) {
+    let mut group = c.benchmark_group("rsp_processing_pipeline");
+    let fs = 100.0;
+    let clean_cfg = RspCleaningConfig::default();
+    let proc_cfg = RspProcessingConfig::default();
+
+    for size in [1000, 5000, 10000, 100000].iter() {
+        let mut signal = Array1::<f64>::zeros(*size);
+        for i in 0..*size {
+            let t = i as f64 / fs;
+            signal[i] = (2.0 * std::f64::consts::PI * 0.25 * t).sin();
+        }
+
+        group.bench_with_input(BenchmarkId::new("rsp_clean", size), size, |b, _| {
+            b.iter(|| rsp_clean_config(&signal, fs, &clean_cfg).unwrap());
+        });
+
+        group.bench_with_input(BenchmarkId::new("rsp_cycles", size), size, |b, _| {
+            b.iter(|| rsp_cycles_config(&signal, fs, &proc_cfg).unwrap());
+        });
+
+        group.bench_with_input(BenchmarkId::new("rsp_full_pipeline", size), size, |b, _| {
+            b.iter(|| {
+                let cleaned = rsp_clean_config(&signal, fs, &clean_cfg).unwrap();
+                let _cycles = rsp_cycles_config(&cleaned, fs, &proc_cfg).unwrap();
+                rsp_rate_config(&cleaned, fs, &proc_cfg).unwrap();
+            });
+        });
+    }
+    group.finish();
+}
+
 fn bench_sample_entropy(c: &mut Criterion) {
     let mut group = c.benchmark_group("sample_entropy");
     let size = 500;
@@ -159,6 +194,7 @@ criterion_group!(
     bench_ecg_pipeline,
     bench_ppg_pipeline,
     bench_eda_pipeline,
+    bench_rsp_pipeline,
     bench_sample_entropy
 );
 criterion_main!(benches);
