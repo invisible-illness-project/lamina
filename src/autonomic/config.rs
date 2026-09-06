@@ -33,8 +33,6 @@ pub struct NormalizationConfig {
     pub min_scale: f64,
     /// Consistency constant multiplier for MAD (default $c = 1.4826$ for normal equivalence)
     pub mad_multiplier: f64,
-    /// Variance regularization threshold $\epsilon > 0$ to prevent division by zero
-    pub epsilon: f64,
 }
 
 impl Default for NormalizationConfig {
@@ -45,7 +43,6 @@ impl Default for NormalizationConfig {
             bounded_scale: 2.0,
             min_scale: 1e-6,
             mad_multiplier: 1.4826,
-            epsilon: 1e-6,
         }
     }
 }
@@ -63,9 +60,6 @@ impl NormalizationConfig {
             return Err(SignalError::NonFiniteInput);
         }
         if !self.mad_multiplier.is_finite() || self.mad_multiplier <= 0.0 {
-            return Err(SignalError::NonFiniteInput);
-        }
-        if !self.epsilon.is_finite() || self.epsilon <= 0.0 {
             return Err(SignalError::NonFiniteInput);
         }
         Ok(())

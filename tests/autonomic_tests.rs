@@ -506,7 +506,7 @@ fn test_invalid_min_scale_rejected() {
 }
 
 #[test]
-fn test_recovery_weighted_equation() {
+fn test_recovery_both_features_weighted() {
     let mut config = AutonomicEstimatorConfig::default();
     config.recovery.variability_weight = 2.0;
     config.recovery.heart_rate_weight = 1.0;
@@ -527,7 +527,17 @@ fn test_recovery_weighted_equation() {
     );
 
     let state = estimator.estimate(&fv, &baseline).unwrap();
-    assert!(state.cardiac.recovery_evidence.is_some());
+    let var_idx = state.cardiac.variability_index.unwrap();
+    let hr_idx = state.cardiac.heart_rate_index.unwrap();
+    let expected = (2.0 * var_idx - 1.0 * hr_idx) / 3.0;
+
+    let actual = state.cardiac.recovery_evidence.unwrap();
+    assert!(
+        (actual - expected).abs() < 1e-10,
+        "Recovery must equal (2*var - 1*hr)/3, got {}, expected {}",
+        actual,
+        expected
+    );
 }
 
 #[test]
@@ -811,4 +821,186 @@ fn test_separate_raw_vs_smoothed_trajectory_immutability() {
         series_res.states[1].activation_score, smoothed[1].activation_score,
         "Smoothed state must differ from raw state after step change"
     );
+}
+
+#[test]
+fn test_recovery_variability_only() {
+    let series = create_mock_baseline_series(10);
+    let config = AutonomicEstimatorConfig::default();
+    let baseline = AutonomicBaseline::fit(&series, &config.normalization).unwrap();
+    let estimator = AutonomicEstimator::new(config);
+
+    let mut fv_var_only = create_mock_feature_vector(
+        0.0,
+        Some(70.0),
+        Some(40.0),
+        Some(2.0),
+        Some(0.5),
+        Some(4.0),
+        Some(15.0),
+        Some(5.0),
+    );
+    fv_var_only.cardiac.mean_hr_bpm = None;
+    fv_var_only.quality.cardiac_valid = true;
+
+    let state = estimator.estimate(&fv_var_only, &baseline).unwrap();
+    assert!(state.cardiac.variability_index.is_some());
+    assert!(state.cardiac.heart_rate_index.is_none());
+    assert_eq!(
+        state.cardiac.recovery_evidence, state.cardiac.variability_index,
+        "Variability-only recovery must equal variability_index"
+    );
+}
+
+#[test]
+fn test_recovery_heart_rate_only() {
+    let series = create_mock_baseline_series(10);
+    let config = AutonomicEstimatorConfig::default();
+    let baseline = AutonomicBaseline::fit(&series, &config.normalization).unwrap();
+    let estimator = AutonomicEstimator::new(config);
+
+    let mut fv_hr_only = create_mock_feature_vector(
+        0.0,
+        Some(70.0),
+        None,
+        Some(2.0),
+        Some(0.5),
+        Some(4.0),
+        Some(15.0),
+        Some(5.0),
+    );
+    fv_hr_only.cardiac.rmssd_ms = None;
+    fv_hr_only.cardiac.pnn50 = None;
+
+    let state = estimator.estimate(&fv_hr_only, &baseline).unwrap();
+    assert!(state.cardiac.variability_index.is_none());
+    assert!(state.cardiac.heart_rate_index.is_some());
+    let hr_idx = state.cardiac.heart_rate_index.unwrap();
+    assert_eq!(
+        state.cardiac.recovery_evidence,
+        Some(-hr_idx),
+        "Heart-rate-only recovery must equal -heart_rate_index"
+    );
+}
+
+#[test]
+fn test_recovery_zero_variability_weight() {
+    let mut config = AutonomicEstimatorConfig::default();
+    config.recovery.variability_weight = 0.0;
+    config.recovery.heart_rate_weight = 1.0;
+    let estimator = AutonomicEstimator::new(config);
+
+    let series = create_mock_baseline_series(10);
+    let baseline = AutonomicBaseline::fit(&series, &estimator.config.normalization).unwrap();
+
+    let fv = create_mock_feature_vector(
+        0.0,
+        Some(70.0),
+        Some(40.0),
+        Some(2.0),
+        Some(0.5),
+        Some(4.0),
+        Some(15.0),
+        Some(5.0),
+    );
+
+    let state = estimator.estimate(&fv, &baseline).unwrap();
+    let hr_idx = state.cardiac.heart_rate_index.unwrap();
+    assert_eq!(
+        state.cardiac.recovery_evidence,
+        Some(-hr_idx),
+        "When w_var = 0, recovery must equal -heart_rate_index"
+    );
+}
+
+#[test]
+fn test_recovery_zero_heart_rate_weight() {
+    let mut config = AutonomicEstimatorConfig::default();
+    config.recovery.variability_weight = 1.0;
+    config.recovery.heart_rate_weight = 0.0;
+    let estimator = AutonomicEstimator::new(config);
+
+    let series = create_mock_baseline_series(10);
+    let baseline = AutonomicBaseline::fit(&series, &estimator.config.normalization).unwrap();
+
+    let fv = create_mock_feature_vector(
+        0.0,
+        Some(70.0),
+        Some(40.0),
+        Some(2.0),
+        Some(0.5),
+        Some(4.0),
+        Some(15.0),
+        Some(5.0),
+    );
+
+    let state = estimator.estimate(&fv, &baseline).unwrap();
+    let var_idx = state.cardiac.variability_index.unwrap();
+    assert_eq!(
+        state.cardiac.recovery_evidence,
+        Some(var_idx),
+        "When w_hr = 0, recovery must equal variability_index"
+    );
+}
+
+#[test]
+fn test_recovery_unavailable_zero_weight_returns_none() {
+    let series = create_mock_baseline_series(10);
+
+    let mut config_a = AutonomicEstimatorConfig::default();
+    config_a.recovery.variability_weight = 0.0;
+    config_a.recovery.heart_rate_weight = 1.0;
+    let baseline_a = AutonomicBaseline::fit(&series, &config_a.normalization).unwrap();
+    let estimator_a = AutonomicEstimator::new(config_a);
+
+    let mut fv_var_only = create_mock_feature_vector(
+        0.0,
+        Some(70.0),
+        Some(40.0),
+        Some(2.0),
+        Some(0.5),
+        Some(4.0),
+        Some(15.0),
+        Some(5.0),
+    );
+    fv_var_only.cardiac.mean_hr_bpm = None;
+    fv_var_only.quality.cardiac_valid = true;
+    let state_a = estimator_a.estimate(&fv_var_only, &baseline_a).unwrap();
+    assert_eq!(
+        state_a.cardiac.recovery_evidence, None,
+        "Variability present but w_var = 0 with HR unavailable must yield recovery_evidence = None"
+    );
+
+    let mut config_b = AutonomicEstimatorConfig::default();
+    config_b.recovery.variability_weight = 1.0;
+    config_b.recovery.heart_rate_weight = 0.0;
+    let baseline_b = AutonomicBaseline::fit(&series, &config_b.normalization).unwrap();
+    let estimator_b = AutonomicEstimator::new(config_b);
+
+    let mut fv_hr_only = create_mock_feature_vector(
+        0.0,
+        Some(70.0),
+        None,
+        Some(2.0),
+        Some(0.5),
+        Some(4.0),
+        Some(15.0),
+        Some(5.0),
+    );
+    fv_hr_only.cardiac.rmssd_ms = None;
+    fv_hr_only.cardiac.pnn50 = None;
+
+    let state_b = estimator_b.estimate(&fv_hr_only, &baseline_b).unwrap();
+    assert_eq!(
+        state_b.cardiac.recovery_evidence, None,
+        "HR present but w_hr = 0 with variability unavailable must yield recovery_evidence = None"
+    );
+}
+
+#[test]
+fn test_recovery_both_weights_zero_rejected() {
+    let mut config = AutonomicEstimatorConfig::default();
+    config.recovery.variability_weight = 0.0;
+    config.recovery.heart_rate_weight = 0.0;
+    assert!(config.validate().is_err());
 }

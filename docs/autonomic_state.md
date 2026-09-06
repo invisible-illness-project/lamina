@@ -76,8 +76,6 @@ Evidence Confidence & Temporal Trajectory [AutonomicStateSeries]
 
 ## 5. Mathematical Formulations
 
-## 5. Mathematical Formulations
-
 ### 5.1 Baseline Normalization
 For feature sample set $\{x_1, \dots, x_N\}$, standard z-score normalization computes **population standard deviation**:
 $$\mu = \frac{1}{N}\sum_{i=1}^N x_i, \quad \sigma = \sqrt{\frac{1}{N}\sum_{i=1}^N (x_i - \mu)^2}$$
@@ -88,8 +86,9 @@ $$z = \frac{x - \text{median}}{c \cdot \text{MAD}}$$
 where $c = 1.4826$ provides normal-equivalent scaling.
 
 #### Zero-Scale Policy (`min_scale`)
-`min_scale` (default $10^{-6}$, validated $> 0$ and finite) serves as a numerical/configuration floor threshold for declaring baseline scale unusable:
-- If scale ($\sigma$ or $c \cdot \text{MAD}$) $\le \text{min\_scale}$:
+Baseline scale is considered unusable when scale ($\sigma$ or $c \cdot \text{MAD}$) $\le \text{min\_scale}$.
+`min_scale` (default $10^{-6}$, validated $> 0$ and finite) is a numerical/configuration scale-validity floor threshold, not a biological floor:
+- If scale $\le \text{min\_scale}$:
   - If $|x - \text{location}| \le \text{min\_scale}$, return $0.0$ (exact baseline location match).
   - If $|x - \text{location}| > \text{min\_scale}$, return `None` (z-score unavailable).
 
@@ -102,11 +101,16 @@ $$\text{score} = \tanh\left(\frac{z_{\text{directed}}}{s}\right)$$
 where $s > 0$ (`bounded_scale`, default $2.0$).
 
 ### 5.3 Cardiac Recovery Evidence Index (`RecoveryConfig`)
-Cardiac recovery evidence is calculated via explicit sign subtraction using `RecoveryConfig` weights ($w_{\text{var}} \ge 0$, $w_{\text{hr}} \ge 0$, $w_{\text{var}} + w_{\text{hr}} > 0$):
-$$\text{recovery\_evidence} = \frac{w_{\text{var}} \cdot \text{variability\_index} - w_{\text{hr}} \cdot \text{heart\_rate\_index}}{w_{\text{var}} + w_{\text{hr}}}$$
+Recovery evidence uses a signed weighted mean of available cardiac variability and heart-rate evidence.
+Variability has positive direction ($d_{\text{variability}} = +1$), while heart-rate evidence has negative direction ($d_{\text{heart\_rate}} = -1$).
+Only present contributors with positive configured weights ($w_i > 0$) participate in the numerator and denominator:
+
+$$R = \frac{\sum_i w_i \cdot d_i \cdot x_i}{\sum_i w_i}$$
+
 - `variability_index`: positive = higher-than-baseline cardiac variability (SDNN preferred, RMSSD fallback).
 - `heart_rate_index`: positive = higher-than-baseline HR.
-- `recovery_evidence`: positive = higher variability combined with lower HR.
+- `recovery_evidence`: positive = evidence of higher variability combined with lower baseline-relative HR.
+- If no positive-weight contributor is available (or total active weight is 0), `recovery_evidence = None`.
 
 ### 5.4 Multimodal Composite Weighted Score
 For $M$ valid, quality-gated contributing features with normalized values $x_i$ and weights $w_i > 0$:

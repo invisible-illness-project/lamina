@@ -70,17 +70,27 @@ impl AutonomicEstimator {
             None
         };
 
-        // Engineered cardiac recovery evidence index: (w_var * v - w_hr * h) / (w_var + w_hr)
-        let recovery_evidence = match (variability_index, hr_index) {
-            (Some(v), Some(h)) => {
-                let w_v = self.config.recovery.variability_weight;
-                let w_h = self.config.recovery.heart_rate_weight;
-                let rec = (w_v * v - w_h * h) / (w_v + w_h);
-                Some(rec.clamp(-1.0, 1.0))
-            }
-            (Some(v), None) => Some(v.clamp(-1.0, 1.0)),
-            (None, Some(h)) => Some((-h).clamp(-1.0, 1.0)),
-            (None, None) => None,
+        // Engineered cardiac recovery evidence index: signed weighted average over available positive-weight contributors
+        let w_var = self.config.recovery.variability_weight;
+        let w_hr = self.config.recovery.heart_rate_weight;
+
+        let mut recovery_num = 0.0;
+        let mut recovery_denom = 0.0;
+
+        if let Some(v) = variability_index.filter(|_| w_var > 0.0) {
+            recovery_num += w_var * v;
+            recovery_denom += w_var;
+        }
+
+        if let Some(h) = hr_index.filter(|_| w_hr > 0.0) {
+            recovery_num += w_hr * (-h);
+            recovery_denom += w_hr;
+        }
+
+        let recovery_evidence = if recovery_denom > 0.0 {
+            Some((recovery_num / recovery_denom).clamp(-1.0, 1.0))
+        } else {
+            None
         };
 
         let cardiac = CardiacState {
