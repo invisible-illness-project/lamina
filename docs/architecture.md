@@ -30,6 +30,8 @@ Lamina separates third-party DSP and numerical primitives from domain-specific p
 |   +-------------------+  +-------------------+  +--------------------+  |
 |   |    lamina::rsp    |  |    lamina::hrv    |  | lamina::complexity |  |
 |   +-------------------+  +-------------------+  +--------------------+  |
+|   |                   |  |    lamina::rppg   |  |                    |  |
+|   +-------------------+  +-------------------+  +--------------------+  |
 +-------------------------------------------------------------------------+
                                      |
                                      v
@@ -164,7 +166,16 @@ Lamina separates generic DSP primitives from domain-specific physiological inter
 - **Respiratory Rate Variability (RRV)**:
   - Extracted directly from cycle interval series $I_k = (i_{k+1} - i_k) / F_s$, enabling mean rate, mean breath interval, SDNN/SDRR, and RMSSD computation.
 
-### 4.5 Offline (Non-Causal Zero-Phase) vs. Real-Time (Causal Streaming) Architectural Boundaries
+### 4.5 Remote Photoplethysmography (rPPG) Signal Substrate (`lamina::rppg`)
+- **Canonical References**: Verkruysse et al. (2008); de Haan & Jeanne (2013, CHROM); Wang et al. (2017, POS); Elgendi et al. (2026 rPPG Roadmap).
+- **Pipeline Architecture**:
+  $$\text{VideoStream} \xrightarrow{\text{ROI Provider}} \text{OpticalSignal} \xrightarrow{\text{Timestamp Slicing}} \text{Window-Local Preprocess} \xrightarrow{\text{CHROM / POS}} \text{Quality & Overlap-Add} \xrightarrow{\text{valid\_segments}} \text{ppg\_clean / ppg\_findpeaks}$$
+- **Physical Timestamp Windowing**: Slices optical signals into physical time windows using $O(\log N)$ binary search (`timestamp_range`), enforcing window-local linear detrending and channel mean normalization before optical pulse projections.
+- **First-Class Quality & Gap Invalidation**: Evaluates segment quality across ROI sufficiency, motion displacement, illumination stability, and spectral periodicity (using discrete lag bounds $\lceil F_s / f_{\text{high}} \rceil$ to $\lfloor F_s / f_{\text{low}} \rfloor$). Invalid processing windows (internal gaps $> \text{max\_gap\_sec}$ or low coverage) emit non-finite missing data samples (`f64::NAN`).
+- **Non-Overlapping Piecewise Elementary Quality Integration**: Aggregates segment quality across overlapping window hops by integrating mean quality over non-overlapping elementary intervals, preventing window multiplicity bias.
+- **Downstream PPG Integration**: `RppgSignal` provides `.valid_segments(max_gap_sec)` to extract contiguous non-NaN `RppgSegment` slices paired with `.to_ndarray()` and `.resample_uniform(target_fs, max_gap_sec)` for direct input to `lamina::ppg` (`ppg_clean`, `ppg_findpeaks`). See [`docs/rppg.md`](file:///home/eddiem3/development/roeh-health/lamina/docs/rppg.md).
+
+### 4.6 Offline (Non-Causal Zero-Phase) vs. Real-Time (Causal Streaming) Architectural Boundaries
 
 Lamina explicitly distinguishes between offline retrospective signal processing and streaming real-time execution:
 
@@ -177,7 +188,7 @@ Lamina explicitly distinguishes between offline retrospective signal processing 
   - Bounded latency $\Delta t \le \text{window\_size}$.
   - Incremental running estimate updates ($SPKI$, $NPKI$) updated beat-by-beat without retrospective searchback.
 
-### 4.6 Scientific Validation & Clinical Disclaimer
+### 4.7 Scientific Validation & Clinical Disclaimer
 
 - **Validation Methodology**: Tested against NeuroKit2 reference implementations (`nk.ecg_peaks`, `nk.ppg_peaks`, `nk.eda_peaks`, `nk.rsp_process`) across multiple sampling frequencies ($32, 50, 64, 100, 128, 250, 500, 1000\text{ Hz}$).
 - **Event Parity Metrics**: Evaluated with standard time-domain tolerances ($\Delta t \le 150\text{ ms}$ for ECG/PPG, $\Delta t \le 250\text{ ms}$ for EDA/RSP).
