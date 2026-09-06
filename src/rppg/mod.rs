@@ -124,7 +124,7 @@ pub fn extract_rppg(
                     signal_quality: 0.0,
                     valid_fraction: 0.0,
                 };
-                (vec![0.0; current_len], q)
+                (vec![f64::NAN; current_len], q)
             } else {
                 // Apply window-local preprocessing
                 match win_optical_raw.preprocess(&config.preprocessing) {
@@ -150,7 +150,7 @@ pub fn extract_rppg(
                                 signal_quality: 0.0,
                                 valid_fraction: 0.0,
                             };
-                            (vec![0.0; current_len], q)
+                            (vec![f64::NAN; current_len], q)
                         }
                     },
                     Err(_) => {
@@ -164,7 +164,7 @@ pub fn extract_rppg(
                             signal_quality: 0.0,
                             valid_fraction: 0.0,
                         };
-                        (vec![0.0; current_len], q)
+                        (vec![f64::NAN; current_len], q)
                     }
                 }
             };

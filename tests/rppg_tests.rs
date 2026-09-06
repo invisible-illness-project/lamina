@@ -613,9 +613,9 @@ fn test_valid_segments_invalid_max_gap_returns_error() {
 
 #[test]
 fn test_internal_frame_gap_invalidates_window() {
-    let (mut stream, roi) = create_synthetic_video_stream(5.0, 30.0, 1.2, 10.0, 0.0, 0.0);
-    // Introduce a large 2.0s internal gap between frame 30 and frame 31
-    for frame in stream.frames.iter_mut().skip(31) {
+    let (mut stream, roi) = create_synthetic_video_stream(10.0, 30.0, 1.2, 10.0, 0.0, 0.0);
+    // Introduce a large 2.0s internal gap at frame 150 (t = 5.0s -> t = 7.033s)
+    for frame in stream.frames.iter_mut().skip(151) {
         frame.timestamp_sec += 2.0;
     }
 
@@ -632,18 +632,55 @@ fn test_internal_frame_gap_invalidates_window() {
     };
 
     let signal = extract_rppg(&stream, &roi, &config).unwrap();
-    // Windows spanning the 2.0s gap (around t=1.0s to 3.0s) must be invalidated (NaN in waveform)
-    let gap_samples = signal
+
+    // 1. Verify quality metadata: windows spanning the 2.0s gap must be invalidated (overall == 0.0)
+    let gap_quality_windows = signal
+        .quality
+        .segments
+        .iter()
+        .filter(|q| q.start_sec <= 5.0 && q.end_sec >= 7.0);
+    for q in gap_quality_windows {
+        assert_eq!(
+            q.overall, 0.0,
+            "Quality window spanning internal gap > max_gap_sec must have 0.0 quality"
+        );
+    }
+
+    // 2. Check boundary waveform samples before (<= 4.0s) and after (>= 8.0s) the gap are finite
+    let before_gap_samples = signal
         .timestamps_sec
         .iter()
         .zip(signal.waveform.iter())
-        .filter(|&(t, _)| *t > 0.9 && *t < 2.9);
+        .filter(|&(t, _)| *t >= 0.0 && *t <= 4.0);
+    for (_, w) in before_gap_samples {
+        assert!(!w.is_nan(), "Samples before gap must be finite");
+    }
 
-    for (_, w) in gap_samples {
-        assert!(
-            w.is_nan(),
-            "Internal frame gap > max_gap_sec must invalidate window waveform samples"
-        );
+    let after_gap_samples = signal
+        .timestamps_sec
+        .iter()
+        .zip(signal.waveform.iter())
+        .filter(|&(t, _)| *t >= 8.0 && *t <= 11.5);
+    for (_, w) in after_gap_samples {
+        assert!(!w.is_nan(), "Samples after gap must be finite");
+    }
+
+    // 3. Verify valid_segments() extracts exactly two distinct contiguous temporal segments
+    let valid_segs = signal.valid_segments(config.max_gap_sec).unwrap();
+    assert_eq!(
+        valid_segs.len(),
+        2,
+        "Timestamp gap must split signal into two contiguous valid segments"
+    );
+    assert!(valid_segs[0].end_sec <= 5.1);
+    assert!(valid_segs[1].start_sec >= 6.9);
+    for seg in &valid_segs {
+        for w in &seg.waveform {
+            assert!(
+                !w.is_nan(),
+                "Valid segments must contain non-NaN waveform samples"
+            );
+        }
     }
 }
 
@@ -651,15 +688,16 @@ fn test_internal_frame_gap_invalidates_window() {
 fn test_piecewise_elementary_quality_aggregation_no_multiplicity_bias() {
     use lamina::rppg::RppgSegmentQuality;
 
+    // Two overlapping windows with conflicting quality (0.2 vs 0.8)
     let quality_segs = vec![
         RppgSegmentQuality {
             start_sec: 0.0,
             end_sec: 3.0,
-            overall: 0.8,
-            roi_quality: 0.8,
-            motion_quality: 0.8,
-            illumination_quality: 0.8,
-            signal_quality: 0.8,
+            overall: 0.2,
+            roi_quality: 0.2,
+            motion_quality: 0.2,
+            illumination_quality: 0.2,
+            signal_quality: 0.2,
             valid_fraction: 1.0,
         },
         RppgSegmentQuality {
@@ -679,7 +717,7 @@ fn test_piecewise_elementary_quality_aggregation_no_multiplicity_bias() {
         waveform: vec![1.0, 2.0, 1.0, 0.0],
         sampling_rate_hz: 1.0,
         quality: lamina::rppg::RppgQualitySummary {
-            overall: 0.8,
+            overall: 0.5,
             valid_fraction: 1.0,
             segments: quality_segs,
         },
@@ -688,5 +726,52 @@ fn test_piecewise_elementary_quality_aggregation_no_multiplicity_bias() {
 
     let segs = signal.valid_segments(1.0).unwrap();
     assert_eq!(segs.len(), 1);
-    assert!((segs[0].quality.overall - 0.8).abs() < 1e-3);
+
+    // Over segment [0.0, 3.0]:
+    // Interval [0.0, 0.5): length 0.5, active {W1 (0.2)} => mean 0.2, contrib 0.1
+    // Interval [0.5, 3.0): length 2.5, active {W1 (0.2), W2 (0.8)} => mean 0.5, contrib 1.25
+    // Integrated quality = (0.1 + 1.25) / 3.0 = 0.45 (vs naive overlap weighting 0.4727)
+    assert!(
+        (segs[0].quality.overall - 0.45).abs() < 1e-3,
+        "Piecewise quality integration must produce 0.45, got {}",
+        segs[0].quality.overall
+    );
+
+    // Also test uncovered sub-interval quality fallback (active_cnt == 0 => 0.0 quality contribution)
+    let uncovered_quality_segs = vec![RppgSegmentQuality {
+        start_sec: 0.0,
+        end_sec: 2.0,
+        overall: 0.8,
+        roi_quality: 0.8,
+        motion_quality: 0.8,
+        illumination_quality: 0.8,
+        signal_quality: 0.8,
+        valid_fraction: 1.0,
+    }];
+
+    let uncovered_signal = lamina::rppg::RppgSignal {
+        timestamps_sec: vec![0.0, 1.0, 2.0, 3.0],
+        waveform: vec![1.0, 2.0, 1.0, 0.0],
+        sampling_rate_hz: 1.0,
+        quality: lamina::rppg::RppgQualitySummary {
+            overall: 0.8,
+            valid_fraction: 1.0,
+            segments: uncovered_quality_segs,
+        },
+        algorithm: RppgAlgorithmId::Pos,
+    };
+
+    let uncovered_segs = uncovered_signal.valid_segments(1.0).unwrap();
+    assert_eq!(uncovered_segs.len(), 1);
+
+    // Over segment [0.0, 3.0]:
+    // Interval [0.0, 2.0): length 2.0, active {W1 (0.8)} => contrib 1.6
+    // Interval [2.0, 3.0): length 1.0, active {} => contrib 0.0
+    // Integrated quality = 1.6 / 3.0 = 0.5333...
+    assert!(
+        (uncovered_segs[0].quality.overall - 1.6 / 3.0).abs() < 1e-3,
+        "Uncovered sub-interval must contribute 0.0 quality, got {}",
+        uncovered_segs[0].quality.overall
+    );
+    assert!((uncovered_segs[0].quality.roi_quality - 1.6 / 3.0).abs() < 1e-3);
 }

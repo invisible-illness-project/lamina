@@ -132,6 +132,8 @@ $$\text{valid\_fraction} = \frac{\text{duration}\left(\bigcup_i V_i\right)}{\tex
 For contiguous valid segments extracted via `valid_segments()`, composite quality scores are computed by partitioning the segment interval into non-overlapping elementary sub-intervals $[\tau_k, \tau_{k+1})$, computing unweighted mean quality over simultaneously active windows $A_k$, and integrating over segment duration:
 $$Q_{\text{segment}} = \frac{\sum_k \left( \frac{1}{|A_k|} \sum_{j \in A_k} Q_j \right) \cdot (\tau_{k+1} - \tau_k)}{t_B - t_A}$$
 
+If an elementary sub-interval $[\tau_k, \tau_{k+1})$ has no active quality windows ($|A_k| = 0$), its contribution to all composite quality metrics is zero ($Q = 0.0$), ensuring that missing quality evidence cannot falsely inflate segment quality scores.
+
 ---
 
 ## 6. Algorithmic Complexity

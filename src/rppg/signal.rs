@@ -270,12 +270,12 @@ impl RppgSignal {
                 return RppgSegmentQuality {
                     start_sec: t_a,
                     end_sec: t_b,
-                    overall: self.quality.overall,
-                    roi_quality: 1.0,
-                    motion_quality: 1.0,
-                    illumination_quality: 1.0,
-                    signal_quality: 1.0,
-                    valid_fraction: 1.0,
+                    overall: 0.0,
+                    roi_quality: 0.0,
+                    motion_quality: 0.0,
+                    illumination_quality: 0.0,
+                    signal_quality: 0.0,
+                    valid_fraction: 0.0,
                 };
             }
 
@@ -331,13 +331,9 @@ impl RppgSignal {
                     sum_motion += (a_motion / cnt_f64) * elem_dur;
                     sum_illum += (a_illum / cnt_f64) * elem_dur;
                     sum_signal += (a_signal / cnt_f64) * elem_dur;
-                } else {
-                    sum_overall += self.quality.overall * elem_dur;
-                    sum_roi += 1.0 * elem_dur;
-                    sum_motion += 1.0 * elem_dur;
-                    sum_illum += 1.0 * elem_dur;
-                    sum_signal += 1.0 * elem_dur;
                 }
+                // Uncovered elementary sub-intervals (active_cnt == 0) contribute 0.0
+                // to avoid falsely inflating segment quality.
             }
 
             RppgSegmentQuality {
