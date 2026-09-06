@@ -4,6 +4,7 @@ use lamina::ecg::{EcgPeakDetectionConfig, ecg_findpeaks_config};
 use lamina::eda::{
     EdaDecompositionConfig, EdaPeakDetectionConfig, eda_clean, eda_decompose, eda_findpeaks_events,
 };
+use lamina::multimodal::{cardiorespiratory_phase_coupling, ecg_ppg_timing};
 use lamina::ppg::{PpgPeakDetectionConfig, ppg_findpeaks_config};
 use lamina::rsp::{
     RspCleaningConfig, RspProcessingConfig, rsp_clean_config, rsp_cycles_config, rsp_rate_config,
@@ -172,6 +173,29 @@ fn bench_rsp_pipeline(c: &mut Criterion) {
     group.finish();
 }
 
+fn bench_multimodal_pipeline(c: &mut Criterion) {
+    let mut group = c.benchmark_group("multimodal_processing_pipeline");
+    let fs = 100.0;
+
+    for count in [1000, 10000, 100000].iter() {
+        let ecg_peaks: Vec<usize> = (0..*count).map(|i| i * 100).collect();
+        let ppg_peaks: Vec<usize> = (0..*count).map(|i| i * 100 + 20).collect();
+        let phases: Vec<f64> = (0..*count)
+            .map(|i| (i as f64 * 0.1) % (2.0 * std::f64::consts::PI))
+            .collect();
+
+        group.bench_with_input(BenchmarkId::new("ecg_ppg_timing", count), count, |b, _| {
+            b.iter(|| ecg_ppg_timing(&ecg_peaks, fs, 0.0, &ppg_peaks, fs, 0.0).unwrap());
+        });
+
+        group.bench_with_input(BenchmarkId::new("phase_coupling", count), count, |b, _| {
+            b.iter(|| cardiorespiratory_phase_coupling(&phases).unwrap());
+        });
+    }
+
+    group.finish();
+}
+
 fn bench_sample_entropy(c: &mut Criterion) {
     let mut group = c.benchmark_group("sample_entropy");
     let size = 500;
@@ -195,6 +219,7 @@ criterion_group!(
     bench_ppg_pipeline,
     bench_eda_pipeline,
     bench_rsp_pipeline,
+    bench_multimodal_pipeline,
     bench_sample_entropy
 );
 criterion_main!(benches);

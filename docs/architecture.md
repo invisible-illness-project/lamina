@@ -34,8 +34,14 @@ Lamina separates third-party DSP and numerical primitives from domain-specific p
                                      |
                                      v
 +-------------------------------------------------------------------------+
+|                       Multimodal Analysis Layer                         |
+|  (lamina::multimodal: sync, phase, rsa, coupling, ecg_ppg, eda_assoc)   |
++-------------------------------------------------------------------------+
+                                     |
+                                     v
++-------------------------------------------------------------------------+
 |                           Public Facade API                             |
-|  (ecg_find_r_peaks, ppg_find_systolic_peaks, hrv_rmssd, eda_phasic...)  |
+|  (ecg_findpeaks, rsa, ecg_ppg_timing, cardiorespiratory_phase_coupling) |
 +-------------------------------------------------------------------------+
 ```
 
@@ -179,7 +185,47 @@ Lamina explicitly distinguishes between offline retrospective signal processing 
 
 ---
 
-## 5. Dependency Decision Table
+## 5. Multimodal Physiological Analysis Layer (`lamina::multimodal`)
+
+Lamina provides a cross-modality synthesis layer that operates directly on physical time coordinates, derived events, and phase representations without duplicating low-level DSP filtering or peak detection.
+
+### 5.1 Physical Synchronization Model (`sync`)
+- **Independent Sampling Rates & Offsets**: Operates seamlessly across heterogeneous sampling frequencies ($F_s$) and hardware acquisition start offsets ($\text{offset\_sec}$).
+- **Timestamp Transformation**: Maps 0-indexed sample $n$ to physical time $t$:
+  $$t = \text{offset\_sec} + \frac{n}{F_s}$$
+- **Event Representation (`TimedEvent`)**: Pairs discrete modality events (`Ecg`, `Ppg`, `Eda`, `Rsp`) with sample indices and physical timestamps.
+
+### 5.2 Respiratory Phase Mapping (`phase`)
+- **Continuous Phase Convention ($\phi \in [0, 2\pi)$)**:
+  - Inspiration phase $[0, \pi)$: maps timestamp $t \in [t_{\text{insp1}}, t_{\text{exp}}]$ linearly from $0$ to $\pi$.
+  - Expiration phase $[\pi, 2\pi)$: maps timestamp $t \in (t_{\text{exp}}, t_{\text{insp2}}]$ linearly from $\pi$ to $2\pi$.
+- **Boundary Safety**: Timestamps outside complete respiratory cycles return `None` without panics or silent invalid values.
+
+### 5.3 Respiratory Sinus Arrhythmia (RSA) (`rsa`)
+- **Operational Definition**: Evaluates peak within-cycle heart rate modulation across valid respiration cycles:
+  $$\Delta \text{BPM}_k = \max_{i \in \text{insp}} \text{BPM}_i - \min_{e \in \text{exp}} \text{BPM}_e$$
+  $$\Delta \text{RR}_k = \max_{e \in \text{exp}} \text{RR}_e - \min_{i \in \text{insp}} \text{RR}_i$$
+- **Beat-Level Mapping (`CardiacRespiratoryEvent`)**: Binds each ECG R-peak to continuous respiratory phase, instantaneous R-R interval ($\text{seconds}$), and instantaneous heart rate ($\text{BPM}$).
+
+### 5.4 Cardiorespiratory Phase Coupling (`coupling`)
+- **Circular Statistics**:
+  $$\bar{C} = \frac{1}{N} \sum_{k=1}^N \cos(\phi_k), \quad \bar{S} = \frac{1}{N} \sum_{k=1}^N \sin(\phi_k)$$
+  $$R = \sqrt{\bar{C}^2 + \bar{S}^2}, \quad \bar{\phi} = \operatorname{atan2}(\bar{S}, \bar{C}) \pmod{2\pi}$$
+- **Invariants**: Resultant vector length $R \in [0.0, 1.0]$ measures phase concentration ($R \approx 1.0$ for concentrated phases, $R \approx 0.0$ for uniform distributions) and is invariant under constant rotational shifts.
+
+### 5.5 ECG-to-PPG Pulse Delay Timing (`ecg_ppg`)
+- **Deterministic 1-to-1 Matching**: Pairs each ECG R-peak with at most one following PPG systolic pulse wave within a configurable time window $[t_{\text{min}}, t_{\text{max}}]$ (default $0.10\text{--}0.60\text{ s}$).
+- **Terminology Precision**: Measured delay represents observable ECG-PPG peak delay and is explicitly distinguished from calibrated arterial pulse transit time (PTT).
+
+### 5.6 EDA Temporal Associations (`eda_assoc`)
+- **Event Linking**: Associates `ScrEvent` peaks with preceding/nearest ECG R-peak timestamps and current respiratory phase without asserting causal physiological mechanisms.
+
+### 5.7 Multimodal Signal Quality (`quality`)
+- **Transparent Rule-Based Scoring**: Evaluates modality validity and issues (`EmptySignal`, `UnplausibleHeartRate`, `UnplausibleRespirationRate`, `ExtremeArtifact`) yielding normalized quality scores in $[0.0, 1.0]$.
+
+---
+
+## 6. Dependency Decision Table
 
 | Capability | Current Lamina | Candidate | Decision | Reason |
 | :--- | :--- | :--- | :--- | :--- |
@@ -193,7 +239,7 @@ Lamina explicitly distinguishes between offline retrospective signal processing 
 
 ---
 
-## 6. Error Semantics
+## 7. Error Semantics
 
 Lamina uses a central `SignalError` type:
 - `EmptySignal`
