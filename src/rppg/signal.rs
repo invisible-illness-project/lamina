@@ -265,41 +265,9 @@ impl RppgSignal {
         }
 
         let aggregate_quality_for_range = |t_a: f64, t_b: f64| -> RppgSegmentQuality {
-            let mut total_dur = 0.0f64;
-            let mut w_overall = 0.0f64;
-            let mut w_roi = 0.0f64;
-            let mut w_motion = 0.0f64;
-            let mut w_illum = 0.0f64;
-            let mut w_signal = 0.0f64;
-
-            for q in &self.quality.segments {
-                let overlap_start = t_a.max(q.start_sec);
-                let overlap_end = t_b.min(q.end_sec);
-                let overlap_dur = (overlap_end - overlap_start).max(0.0);
-
-                if overlap_dur > 0.0 {
-                    total_dur += overlap_dur;
-                    w_overall += q.overall * overlap_dur;
-                    w_roi += q.roi_quality * overlap_dur;
-                    w_motion += q.motion_quality * overlap_dur;
-                    w_illum += q.illumination_quality * overlap_dur;
-                    w_signal += q.signal_quality * overlap_dur;
-                }
-            }
-
-            if total_dur > 0.0 {
-                RppgSegmentQuality {
-                    start_sec: t_a,
-                    end_sec: t_b,
-                    overall: w_overall / total_dur,
-                    roi_quality: w_roi / total_dur,
-                    motion_quality: w_motion / total_dur,
-                    illumination_quality: w_illum / total_dur,
-                    signal_quality: w_signal / total_dur,
-                    valid_fraction: 1.0,
-                }
-            } else {
-                RppgSegmentQuality {
+            let seg_dur = (t_b - t_a).max(0.0);
+            if seg_dur <= 0.0 {
+                return RppgSegmentQuality {
                     start_sec: t_a,
                     end_sec: t_b,
                     overall: self.quality.overall,
@@ -308,7 +276,79 @@ impl RppgSignal {
                     illumination_quality: 1.0,
                     signal_quality: 1.0,
                     valid_fraction: 1.0,
+                };
+            }
+
+            // Partition segment into non-overlapping elementary intervals using quality boundaries
+            let mut bounds = vec![t_a, t_b];
+            for q in &self.quality.segments {
+                if q.start_sec > t_a && q.start_sec < t_b {
+                    bounds.push(q.start_sec);
                 }
+                if q.end_sec > t_a && q.end_sec < t_b {
+                    bounds.push(q.end_sec);
+                }
+            }
+            bounds.sort_by(|a, b| a.partial_cmp(b).unwrap_or(std::cmp::Ordering::Equal));
+            bounds.dedup_by(|a, b| (*a - *b).abs() < 1e-6);
+
+            let mut sum_overall = 0.0f64;
+            let mut sum_roi = 0.0f64;
+            let mut sum_motion = 0.0f64;
+            let mut sum_illum = 0.0f64;
+            let mut sum_signal = 0.0f64;
+
+            for win in bounds.windows(2) {
+                let tau_0 = win[0];
+                let tau_1 = win[1];
+                let elem_dur = (tau_1 - tau_0).max(0.0);
+                if elem_dur <= 0.0 {
+                    continue;
+                }
+
+                let mut active_cnt = 0usize;
+                let mut a_overall = 0.0f64;
+                let mut a_roi = 0.0f64;
+                let mut a_motion = 0.0f64;
+                let mut a_illum = 0.0f64;
+                let mut a_signal = 0.0f64;
+
+                for q in &self.quality.segments {
+                    if q.start_sec <= tau_0 + 1e-6 && q.end_sec >= tau_1 - 1e-6 {
+                        active_cnt += 1;
+                        a_overall += q.overall;
+                        a_roi += q.roi_quality;
+                        a_motion += q.motion_quality;
+                        a_illum += q.illumination_quality;
+                        a_signal += q.signal_quality;
+                    }
+                }
+
+                if active_cnt > 0 {
+                    let cnt_f64 = active_cnt as f64;
+                    sum_overall += (a_overall / cnt_f64) * elem_dur;
+                    sum_roi += (a_roi / cnt_f64) * elem_dur;
+                    sum_motion += (a_motion / cnt_f64) * elem_dur;
+                    sum_illum += (a_illum / cnt_f64) * elem_dur;
+                    sum_signal += (a_signal / cnt_f64) * elem_dur;
+                } else {
+                    sum_overall += self.quality.overall * elem_dur;
+                    sum_roi += 1.0 * elem_dur;
+                    sum_motion += 1.0 * elem_dur;
+                    sum_illum += 1.0 * elem_dur;
+                    sum_signal += 1.0 * elem_dur;
+                }
+            }
+
+            RppgSegmentQuality {
+                start_sec: t_a,
+                end_sec: t_b,
+                overall: (sum_overall / seg_dur).clamp(0.0, 1.0),
+                roi_quality: (sum_roi / seg_dur).clamp(0.0, 1.0),
+                motion_quality: (sum_motion / seg_dur).clamp(0.0, 1.0),
+                illumination_quality: (sum_illum / seg_dur).clamp(0.0, 1.0),
+                signal_quality: (sum_signal / seg_dur).clamp(0.0, 1.0),
+                valid_fraction: 1.0,
             }
         };
 

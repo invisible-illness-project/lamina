@@ -610,3 +610,83 @@ fn test_valid_segments_invalid_max_gap_returns_error() {
         Err(SignalError::InvalidWindowSize(_))
     ));
 }
+
+#[test]
+fn test_internal_frame_gap_invalidates_window() {
+    let (mut stream, roi) = create_synthetic_video_stream(5.0, 30.0, 1.2, 10.0, 0.0, 0.0);
+    // Introduce a large 2.0s internal gap between frame 30 and frame 31
+    for frame in stream.frames.iter_mut().skip(31) {
+        frame.timestamp_sec += 2.0;
+    }
+
+    let config = RppgConfig {
+        algorithm: RppgAlgorithmId::Pos,
+        min_quality: 0.4,
+        max_gap_sec: 0.5, // 0.5s max gap threshold
+        window: RppgWindowConfig {
+            window_sec: 3.0,
+            step_sec: 0.5,
+            min_window_fraction: 0.8,
+        },
+        ..RppgConfig::default()
+    };
+
+    let signal = extract_rppg(&stream, &roi, &config).unwrap();
+    // Windows spanning the 2.0s gap (around t=1.0s to 3.0s) must be invalidated (NaN in waveform)
+    let gap_samples = signal
+        .timestamps_sec
+        .iter()
+        .zip(signal.waveform.iter())
+        .filter(|&(t, _)| *t > 0.9 && *t < 2.9);
+
+    for (_, w) in gap_samples {
+        assert!(
+            w.is_nan(),
+            "Internal frame gap > max_gap_sec must invalidate window waveform samples"
+        );
+    }
+}
+
+#[test]
+fn test_piecewise_elementary_quality_aggregation_no_multiplicity_bias() {
+    use lamina::rppg::RppgSegmentQuality;
+
+    let quality_segs = vec![
+        RppgSegmentQuality {
+            start_sec: 0.0,
+            end_sec: 3.0,
+            overall: 0.8,
+            roi_quality: 0.8,
+            motion_quality: 0.8,
+            illumination_quality: 0.8,
+            signal_quality: 0.8,
+            valid_fraction: 1.0,
+        },
+        RppgSegmentQuality {
+            start_sec: 0.5,
+            end_sec: 3.5,
+            overall: 0.8,
+            roi_quality: 0.8,
+            motion_quality: 0.8,
+            illumination_quality: 0.8,
+            signal_quality: 0.8,
+            valid_fraction: 1.0,
+        },
+    ];
+
+    let signal = lamina::rppg::RppgSignal {
+        timestamps_sec: vec![0.0, 1.0, 2.0, 3.0],
+        waveform: vec![1.0, 2.0, 1.0, 0.0],
+        sampling_rate_hz: 1.0,
+        quality: lamina::rppg::RppgQualitySummary {
+            overall: 0.8,
+            valid_fraction: 1.0,
+            segments: quality_segs,
+        },
+        algorithm: RppgAlgorithmId::Pos,
+    };
+
+    let segs = signal.valid_segments(1.0).unwrap();
+    assert_eq!(segs.len(), 1);
+    assert!((segs[0].quality.overall - 0.8).abs() < 1e-3);
+}

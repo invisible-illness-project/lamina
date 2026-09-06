@@ -128,9 +128,9 @@ $$\text{min\_lag} = \left\lceil \frac{F_s}{f_{\text{high}}} \right\rceil, \quad 
 To prevent double-counting overlapping window hops, `valid_fraction` measures the total length of the single-pass forward merged union of valid segment intervals:
 $$\text{valid\_fraction} = \frac{\text{duration}\left(\bigcup_i V_i\right)}{\text{total\_duration}} \quad \in [0.0, 1.0]$$
 
-### 5.5 Segment Duration-Weighted Quality Aggregation
-For contiguous valid segments extracted across gaps via `valid_segments()`, composite quality scores are computed by weighting overlapping quality windows by temporal overlap duration:
-$$Q_{\text{segment}} = \frac{\sum_j Q_j \cdot \text{duration}(\text{segment} \cap \text{quality}_j)}{\sum_j \text{duration}(\text{segment} \cap \text{quality}_j)}$$
+### 5.5 Piecewise Elementary Quality Integration
+For contiguous valid segments extracted via `valid_segments()`, composite quality scores are computed by partitioning the segment interval into non-overlapping elementary sub-intervals $[\tau_k, \tau_{k+1})$, computing unweighted mean quality over simultaneously active windows $A_k$, and integrating over segment duration:
+$$Q_{\text{segment}} = \frac{\sum_k \left( \frac{1}{|A_k|} \sum_{j \in A_k} Q_j \right) \cdot (\tau_{k+1} - \tau_k)}{t_B - t_A}$$
 
 ---
 

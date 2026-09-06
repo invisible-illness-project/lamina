@@ -105,33 +105,54 @@ pub fn extract_rppg(
         let win_optical_raw = optical.slice(start_idx, current_len)?;
         let win_displacements = &displacements[start_idx..end_idx];
 
-        let (win_pulse, seg_q) = if coverage_ratio < config.window.min_window_fraction {
-            // Window duration insufficient to meet min_window_fraction coverage criteria
-            let q = RppgSegmentQuality {
-                start_sec: win_optical_raw.timestamps_sec[0],
-                end_sec: *win_optical_raw.timestamps_sec.last().unwrap(),
-                overall: 0.0,
-                roi_quality: 0.0,
-                motion_quality: 0.0,
-                illumination_quality: 0.0,
-                signal_quality: 0.0,
-                valid_fraction: 0.0,
-            };
-            (vec![0.0; current_len], q)
-        } else {
-            // Apply window-local preprocessing
-            match win_optical_raw.preprocess(&config.preprocessing) {
-                Ok(win_optical) => match algo.extract_window(&win_optical, config) {
-                    Ok(p) => {
-                        let q = evaluate_segment_quality(
-                            &win_optical,
-                            &p,
-                            win_displacements,
-                            config.minimum_roi_pixels,
-                            config.signal_band_hz,
-                        );
-                        (p, q)
-                    }
+        // Check for internal frame gaps exceeding config.max_gap_sec
+        let has_internal_gap = win_optical_raw
+            .timestamps_sec
+            .windows(2)
+            .any(|w| (w[1] - w[0]) > config.max_gap_sec);
+
+        let (win_pulse, seg_q) =
+            if coverage_ratio < config.window.min_window_fraction || has_internal_gap {
+                // Window duration insufficient or contains internal frame gap > max_gap_sec
+                let q = RppgSegmentQuality {
+                    start_sec: win_optical_raw.timestamps_sec[0],
+                    end_sec: *win_optical_raw.timestamps_sec.last().unwrap(),
+                    overall: 0.0,
+                    roi_quality: 0.0,
+                    motion_quality: 0.0,
+                    illumination_quality: 0.0,
+                    signal_quality: 0.0,
+                    valid_fraction: 0.0,
+                };
+                (vec![0.0; current_len], q)
+            } else {
+                // Apply window-local preprocessing
+                match win_optical_raw.preprocess(&config.preprocessing) {
+                    Ok(win_optical) => match algo.extract_window(&win_optical, config) {
+                        Ok(p) => {
+                            let q = evaluate_segment_quality(
+                                &win_optical,
+                                &p,
+                                win_displacements,
+                                config.minimum_roi_pixels,
+                                config.signal_band_hz,
+                            );
+                            (p, q)
+                        }
+                        Err(_) => {
+                            let q = RppgSegmentQuality {
+                                start_sec: win_optical_raw.timestamps_sec[0],
+                                end_sec: *win_optical_raw.timestamps_sec.last().unwrap(),
+                                overall: 0.0,
+                                roi_quality: 0.0,
+                                motion_quality: 0.0,
+                                illumination_quality: 0.0,
+                                signal_quality: 0.0,
+                                valid_fraction: 0.0,
+                            };
+                            (vec![0.0; current_len], q)
+                        }
+                    },
                     Err(_) => {
                         let q = RppgSegmentQuality {
                             start_sec: win_optical_raw.timestamps_sec[0],
@@ -145,22 +166,8 @@ pub fn extract_rppg(
                         };
                         (vec![0.0; current_len], q)
                     }
-                },
-                Err(_) => {
-                    let q = RppgSegmentQuality {
-                        start_sec: win_optical_raw.timestamps_sec[0],
-                        end_sec: *win_optical_raw.timestamps_sec.last().unwrap(),
-                        overall: 0.0,
-                        roi_quality: 0.0,
-                        motion_quality: 0.0,
-                        illumination_quality: 0.0,
-                        signal_quality: 0.0,
-                        valid_fraction: 0.0,
-                    };
-                    (vec![0.0; current_len], q)
                 }
-            }
-        };
+            };
 
         segment_qualities.push(seg_q.clone());
 
