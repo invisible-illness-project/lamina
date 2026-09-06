@@ -1,17 +1,17 @@
 {
   "format": "umbrella-consolidation-manifest",
   "format_version": "1.0",
-  "created_utc": "2026-09-06T17:13:09.333486+00:00",
+  "created_utc": "2026-09-06T18:08:28.440319+00:00",
   "created_by": "python -m validation.consolidate",
   "results": {
-    "summary_rows": 9,
+    "summary_rows": 18,
     "recording_rows": 175,
     "metric_rows": 2333,
-    "dataset_entries": 9
+    "dataset_entries": 18
   },
   "contributing_runs": [
     {
-      "results_dir": "/home/kimi/work-docs/validation/results/autonomic/autonomic-aging",
+      "results_dir": "/home/kimi/work/validation/results/autonomic/autonomic-aging",
       "manifest": {
         "created_utc": "2026-09-06T16:22:46+00:00",
         "lamina_git_commit": "6edb51c4655583360a7b03be9defb64f02065aba",
@@ -43,7 +43,7 @@
       }
     },
     {
-      "results_dir": "/home/kimi/work-docs/validation/results/autonomic/big-ideas",
+      "results_dir": "/home/kimi/work/validation/results/autonomic/big-ideas",
       "manifest": {
         "created_utc": "2026-09-06T16:33:45+00:00",
         "lamina_git_commit": "bce7d7b821adab060762fae82b5bf2846425665d",
@@ -75,7 +75,7 @@
       }
     },
     {
-      "results_dir": "/home/kimi/work-docs/validation/results/autonomic/wearable-exam-stress",
+      "results_dir": "/home/kimi/work/validation/results/autonomic/wearable-exam-stress",
       "manifest": {
         "created_utc": "2026-09-06T16:51:29+00:00",
         "lamina_git_commit": "2df48a8151cebd3ffe8803b2d50116233a26dcb3",
@@ -107,7 +107,7 @@
       }
     },
     {
-      "results_dir": "/home/kimi/work-docs/validation/results/autonomic/wesad",
+      "results_dir": "/home/kimi/work/validation/results/autonomic/wesad",
       "manifest": {
         "created_utc": "2026-09-06T16:12:13+00:00",
         "lamina_git_commit": "e5cbc3570884825bea38ffb6f47604c4c3c05bd7",
@@ -139,7 +139,7 @@
       }
     },
     {
-      "results_dir": "/home/kimi/work-docs/validation/results/ecg/mit-bih-arrhythmia",
+      "results_dir": "/home/kimi/work/validation/results/ecg/mit-bih-arrhythmia",
       "manifest": {
         "created_utc": "2026-09-06T16:17:09+00:00",
         "lamina_git_commit": "4d3f4b9ab8184ad5c4bea9d12dc453c864a9cd14",
@@ -171,7 +171,7 @@
       }
     },
     {
-      "results_dir": "/home/kimi/work-docs/validation/results/ecg/mit-bih-noise-stress",
+      "results_dir": "/home/kimi/work/validation/results/ecg/mit-bih-noise-stress",
       "manifest": {
         "created_utc": "2026-09-06T16:21:51+00:00",
         "lamina_git_commit": "4d3f4b9ab8184ad5c4bea9d12dc453c864a9cd14",
@@ -203,7 +203,7 @@
       }
     },
     {
-      "results_dir": "/home/kimi/work-docs/validation/results/ppg",
+      "results_dir": "/home/kimi/work/validation/results/ppg",
       "manifest": {
         "created_utc": "2026-09-06T15:52:13+00:00",
         "lamina_git_commit": "ac7f7663c052888dce7dc9cf8bbbb78c96241a0f",
@@ -234,7 +234,7 @@
       }
     },
     {
-      "results_dir": "/home/kimi/work-docs/validation/results/rppg",
+      "results_dir": "/home/kimi/work/validation/results/rppg",
       "manifest": {
         "created_utc": "2026-09-06T15:39:33+00:00",
         "lamina_git_commit": "3856c2ab331b86089c6359d1406262cc47e7bc87",
@@ -270,5 +270,15 @@
     "runs were executed on 7 different git commits (adapter-development branches; Lamina core src/ identical to upstream main f3a195a in all of them)",
     "seeds differ across runs: [0, 42]"
   ],
-  "notes": []
+  "notes": [
+    "registry fill: pulsedb not present in any run; added with adapter-reported status 'inaccessible'",
+    "registry fill: mimic-iii-waveform not present in any run; added with adapter-reported status 'inaccessible'",
+    "registry fill: mimic-iii-ext-ppg not present in any run; added with adapter-reported status 'inaccessible'",
+    "registry fill: pure not present in any run; added with adapter-reported status 'inaccessible'",
+    "registry fill: ubfc-rppg not present in any run; added with adapter-reported status 'inaccessible'",
+    "registry fill: cohface not present in any run; added with adapter-reported status 'inaccessible'",
+    "registry fill: ubfc-phys not present in any run; added with adapter-reported status 'inaccessible'",
+    "registry fill: mmpd not present in any run; added with adapter-reported status 'inaccessible'",
+    "registry fill: ibvp not present in any run; added with adapter-reported status 'inaccessible'"
+  ]
 }

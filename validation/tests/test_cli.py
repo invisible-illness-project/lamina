@@ -28,7 +28,24 @@ def test_cli_list_category_filter(capsys):
     assert "2 dataset(s) registered." in out
 
 
-def test_cli_check_access_runs_and_exits_zero(capsys):
+def test_cli_check_access_runs_and_exits_zero(capsys, monkeypatch):
+    """Hermetic check-access test: all 18 registered adapters are listed, but
+    their probes are replaced with a static report so the suite never touches
+    the network (real probes are exercised by the validation runs, not by
+    framework self-tests)."""
+    import validation.registry as registry
+    from validation.datasets.base import AccessReport, AccessStatus
+
+    real = registry.list_datasets()
+    for a in real:
+        monkeypatch.setattr(
+            a, "check_access",
+            lambda cache_dir=None: AccessReport(
+                status=AccessStatus.NOT_ATTEMPTED,
+                reason="hermetic test probe (patched)"),
+        )
+    monkeypatch.setattr(registry, "list_datasets", lambda category=None: real)
+
     assert main(["check-access"]) == 0
     out = capsys.readouterr().out
     assert out.count("[") == 18
@@ -42,10 +59,22 @@ def test_cli_check_access_single_dataset(capsys):
 
 
 @pytest.mark.skipif(not cargo_available(), reason="cargo unavailable")
-def test_cli_run_records_stub_statuses(tmp_path, capsys):
+def test_cli_run_records_stub_statuses(tmp_path, capsys, monkeypatch):
+    """Hermetic run test: a stub adapter reporting ``not_attempted`` must not be
+    a "bad" status for exit-code purposes, and ``run`` must still write
+    summary.csv + manifest.json. The registry lookup is monkeypatched so the
+    test never touches the network or downloads data."""
+    import validation.registry as registry
+    from validation.datasets.base import StubDatasetAdapter
+
+    class _HermeticStub(StubDatasetAdapter):
+        key = "mit-bih-arrhythmia"
+
+    monkeypatch.setattr(registry, "get_dataset", lambda key: _HermeticStub())
+
     code = main(["run", "--dataset", "mit-bih-arrhythmia",
                  "--results-dir", str(tmp_path)])
-    # Stub adapter is not_attempted -> not a "bad" status for exit-code purposes.
+    # not_attempted is not a "bad" status for exit-code purposes.
     assert code == 0
     out = capsys.readouterr().out
     assert "not_attempted" in out
@@ -53,6 +82,17 @@ def test_cli_run_records_stub_statuses(tmp_path, capsys):
     manifest = json.loads((tmp_path / "manifest.json").read_text())
     assert manifest["lamina_git_commit"]
     assert manifest["seed"] == 0
+
+
+@pytest.mark.skipif(not cargo_available(), reason="cargo unavailable")
+def test_cli_run_inaccessible_single_dataset_exits_one(tmp_path, capsys):
+    """Hermetic exit-code test: ``pure`` is a stub adapter whose verified
+    access status is ``inaccessible`` (no network touched); a single-dataset
+    run with a bad status must exit 1."""
+    code = main(["run", "--dataset", "pure", "--results-dir", str(tmp_path)])
+    assert code == 1
+    out = capsys.readouterr().out
+    assert "inaccessible" in out
 
 
 @pytest.mark.skipif(not cargo_available(), reason="cargo unavailable")

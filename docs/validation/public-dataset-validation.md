@@ -381,7 +381,9 @@ consolidated in [`BUGS.md`](./BUGS.md); the staged candidate lists live in
 git clone <repo> && cd <repo>
 sh validation/scripts/setup-env.sh "$(pwd)"
 
-# 2. Framework self-tests (no network, no downloads)
+# 2. Framework self-tests (hermetic: no network access, no dataset
+#    downloads — adapter probes in CLI tests are patched; real probing is
+#    exercised by `check-access` / `run` below, which DO use the network)
 python -m validation test
 
 # 3. Per-dataset runs (data acquisition commands are per-group; see

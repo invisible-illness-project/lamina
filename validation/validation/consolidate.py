@@ -8,10 +8,13 @@ e.g. ``ppg``) or in per-dataset subdirectories (e.g.
 ``autonomic/wesad/``). This script discovers every run directory, merges the
 machine-readable artifacts, and writes the canonical top-level files:
 
-- ``validation/results/summary.csv``     — union of per-run summary rows
+- ``validation/results/summary.csv``     — union of per-run summary rows, plus
+  one row per registry dataset that never ran (status from the adapter's own
+  verified access check, e.g. ``inaccessible``)
 - ``validation/results/recordings.csv``  — union of per-run recording rows
 - ``validation/results/metrics.csv``     — union of per-run metric rows
-- ``validation/results/datasets.json``   — merged list of dataset entries
+- ``validation/results/datasets.json``   — merged list of dataset entries, plus
+  registry entries for datasets that never ran
 - ``validation/results/manifest.json``   — umbrella manifest (see below)
 
 The umbrella manifest does NOT pretend the runs were a single homogeneous
@@ -161,6 +164,72 @@ def merge_datasets_json(run_dirs: list[Path]) -> tuple[list[dict], list[str]]:
     return [merged[k] for k in sorted(merged)], notes
 
 
+def registry_fill(
+    present_keys: set[str],
+) -> tuple[list[dict[str, str]], list[dict], list[str]]:
+    """Build summary.csv rows and datasets.json entries for registry datasets
+    that never ran (not present in any contributing run).
+
+    Status/reason come from each adapter's own ``check_access()``. For the
+    stub adapters this is the statically recorded, previously verified probe
+    result — no network is touched. Any exception is recorded honestly as
+    ``not_attempted``. Timestamps/commit/version fields are left empty rather
+    than fabricated.
+    """
+    from .registry import list_datasets
+
+    summary_rows: list[dict[str, str]] = []
+    dataset_entries: list[dict] = []
+    notes: list[str] = []
+    for adapter in list_datasets():
+        info = adapter.info()
+        if info.key in present_keys:
+            continue
+        try:
+            access = adapter.check_access()
+            status = access.status.value
+            reason = access.reason
+        except Exception as exc:  # noqa: BLE001 - never fabricate; record honestly
+            status = "not_attempted"
+            reason = f"access check raised during consolidation: {type(exc).__name__}: {exc}"
+        summary_rows.append(
+            {
+                "dataset": info.key,
+                "status": status,
+                "recordings_ok": "0",
+                "recordings_failed": "0",
+                "reason": reason,
+                "error": "",
+                "started_at": "",
+                "finished_at": "",
+            }
+        )
+        dataset_entries.append(
+            {
+                "dataset": info.key,
+                "version": info.version,
+                "source": info.source_url,
+                "access_status": status,
+                "reason": reason,
+                "subjects_evaluated": 0,
+                "recordings_evaluated": 0,
+                "modalities": info.modalities,
+                "lamina_ops": info.lamina_ops,
+                "lamina_version": "",
+                "git_commit": "",
+                "validation_date": "",
+                "metrics": {},
+                "note": "not executed in any contributing run; status is the "
+                        "adapter's recorded access-check result",
+            }
+        )
+        notes.append(
+            f"registry fill: {info.key} not present in any run; "
+            f"added with adapter-reported status {status!r}"
+        )
+    return summary_rows, dataset_entries, notes
+
+
 def build_umbrella_manifest(
     run_dirs: list[Path],
     merged_counts: dict[str, int],
@@ -252,6 +321,19 @@ def consolidate(results_dir: Path, check: bool = False) -> int:
 
     datasets, n = merge_datasets_json(run_dirs)
     notes.extend(n)
+
+    # Fill in registry datasets that never ran so the consolidated artifacts
+    # cover all 18 registered datasets, not only the executed ones.
+    present = {r.get("dataset", "") for r in outputs["summary.csv"][1]}
+    fill_summary, fill_datasets, n = registry_fill(present)
+    notes.extend(n)
+    header, rows = outputs["summary.csv"]
+    rows.extend(fill_summary)
+    rows.sort(key=_sort_key_summary)
+    outputs["summary.csv"] = (header, rows)
+    merged_counts["summary.csv"] = len(rows)
+    datasets.extend(fill_datasets)
+    datasets.sort(key=lambda e: e.get("dataset", ""))
     merged_counts["datasets.json"] = len(datasets)
 
     manifest = build_umbrella_manifest(run_dirs, merged_counts, list(notes))

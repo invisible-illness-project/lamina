@@ -560,6 +560,10 @@ N/A.
 cargo test --test filter_parity_tests --test peaks_parity_tests   # fresh checkout
 ```
 
+### Input
+N/A (test infrastructure). Trigger is a fresh checkout missing
+`tests/golden_filter.json` / `tests/golden_peaks.json`; no signal input.
+
 ### Expected Behavior
 Parity tests either skip gracefully with instructions to run the
 `generate_*_reference.py` scripts, or the goldens are checked in.
@@ -602,9 +606,17 @@ N/A.
 ### Reproduction
 Source inspection (citations above).
 
-### Expected / Actual Behavior
+### Input
+N/A (documentation/code mismatch). The relevant call is
+`multimodal_quality(None, None, None, None, ...)`, i.e. all four modality
+arguments `None`.
+
+### Expected Behavior
 Docs should name the error actually returned (`EmptySignal` on all-None
-input); they name `InvalidSamplingRate`, which this function never returns.
+input).
+
+### Actual Behavior
+Docs name `InvalidSamplingRate`, which this function never returns.
 
 ### Evidence
 `src/multimodal/quality.rs:135-161`.
@@ -937,16 +949,20 @@ python -m validation run --dataset wrist-ppg-exercise --seed 42 \
 Exercise recordings with periodic foot-strike spikes (~0.55 s spacing)
 interleaved with true beats (~1.05 s spacing).
 
-### Expected Behavior / assessment
+### Expected Behavior
 No defect claimed: Lamina implements classical detectors without
 accelerometer-guided artifact rejection, and this dataset is explicitly
-designed to stress exactly that. `s1_walk`: ecg-peaks F1 = 0.667 (973
-detected vs 563 annotated), windowed HR MAE 63.6 bpm; ppg-peaks HR bias
-+33.0 bpm. HR-from-PPG MAE stratified by activity: walk 15.9 bpm (n=6),
-run 32.9 bpm (n=5), low-resistance bike 14.7 bpm (n=5), high-resistance
-bike 20.3 bpm (n=3) — errors grow with motion intensity as expected. Note:
-per-record ECG F1 < 0.75 on 5 of 19 records may partially compound BUG-012
-(threshold pathology); the entries are not fully independent.
+designed to stress exactly that; errors are expected to grow with motion
+intensity.
+
+### Actual Behavior
+`s1_walk`: ecg-peaks F1 = 0.667 (973 detected vs 563 annotated), windowed
+HR MAE 63.6 bpm; ppg-peaks HR bias +33.0 bpm. HR-from-PPG MAE stratified by
+activity: walk 15.9 bpm (n=6), run 32.9 bpm (n=5), low-resistance bike
+14.7 bpm (n=5), high-resistance bike 20.3 bpm (n=3) — errors grow with
+motion intensity as expected. Note: per-record ECG F1 < 0.75 on 5 of 19
+records may partially compound BUG-012 (threshold pathology); the entries
+are not fully independent.
 
 ### Evidence
 `validation/results/ppg/metrics.csv`, `metrics_extra.csv`.
@@ -986,16 +1002,20 @@ python -m validation run --dataset bidmc --seed 42 \
 ICU respiration at ~6 brpm with annotated intervals 9.7-14.3 s and a small
 pre-inspiratory bump ~4-5 s before each true inspiratory peak.
 
-### Expected Behavior / assessment
+### Expected Behavior
 Mostly an expected limitation of a simple peak-based cycle detector at ~6
-brpm with biphasic morphology. `bidmc05`: F1 = 0.658 (precision 0.490,
-recall 1.000); Lamina counts both the pre-inspiratory bump and the true peak
-(98 cycles vs 48 annotated). Config relaxation (`max_breath_interval_sec=20`,
-`min_amplitude=0.15`) still yields 95 detections (F1 0.671) — not fixable via
-exposed config. Separately, annotated intervals up to 14.3 s exceed the
-default `max_breath_interval_sec=12`, so some true cycles are structurally
-rejected by the default ceiling (masked here by dense false detections). All
-other 11 BIDMC records: F1 0.93-0.99 (mean 0.944).
+brpm with biphasic morphology; ideally only true inspiratory peaks are
+counted and true cycles with long intervals are not structurally rejected.
+
+### Actual Behavior
+`bidmc05`: F1 = 0.658 (precision 0.490, recall 1.000); Lamina counts both
+the pre-inspiratory bump and the true peak (98 cycles vs 48 annotated).
+Config relaxation (`max_breath_interval_sec=20`, `min_amplitude=0.15`)
+still yields 95 detections (F1 0.671) — not fixable via exposed config.
+Separately, annotated intervals up to 14.3 s exceed the default
+`max_breath_interval_sec=12`, so some true cycles are structurally rejected
+by the default ceiling (masked here by dense false detections). All other
+11 BIDMC records: F1 0.93-0.99 (mean 0.944).
 
 ### Evidence
 `validation/results/ppg/metrics.csv`; group plots.
@@ -1035,12 +1055,14 @@ Record 0554 ECG1, first 10 min @1000 Hz: sustained ventricular bigeminy;
 Lamina `ecg-peaks` correctly marks every QRS (verified visually); RR sequence
 alternates ~0.44 s / ~0.83 s.
 
-### Expected Behavior / assessment
-Published physiology expects RMSSD to decrease with age. Lamina RMSSD
-medians: young 52.3 ms, middle 24.9 ms, old 142.8 ms — the old stratum is
-inflated by genuine bigeminy/ectopy (record 0554 RMSSD 315.6 ms). This is a
-population-trend check confounded by arrhythmia in the sample, not a
-detection error; the HRV op documents no ectopy filtering.
+### Expected Behavior
+Published physiology expects RMSSD to decrease with age.
+
+### Actual Behavior
+Lamina RMSSD medians: young 52.3 ms, middle 24.9 ms, old 142.8 ms — the old
+stratum is inflated by genuine bigeminy/ectopy (record 0554 RMSSD 315.6 ms).
+This is a population-trend check confounded by arrhythmia in the sample, not
+a detection error; the HRV op documents no ectopy filtering.
 
 ### Evidence
 `validation/results/autonomic/metrics_extra.csv` rows
@@ -1077,6 +1099,11 @@ N/A (code-level).
 None known. The input signal is validated finite before this point
 (`src/ecg/peaks.rs:144`); a panic would require the filter/integration stages
 to introduce NaN from finite input (not observed in any validation run).
+
+### Input
+`candidate_heights` values of the integrated ECG signal at
+`src/ecg/peaks.rs:218`; inputs are pre-validated finite, so triggering input
+(NaN in the integrated signal from finite raw input) is hypothetical.
 
 ### Expected Behavior
 Total-order-aware sort (e.g. `total_cmp`) so no internal numeric edge can
@@ -1122,11 +1149,15 @@ python -m validation run --dataset bidmc --seed 42 \
 Lead II std = 0.053 mV, p2p = 1.26 mV (vs healthy lead II QRS ~1 mV): the
 electrode signal is near-flatline/low-voltage.
 
-### Expected Behavior / assessment
-Root cause is the recorded signal, not the detector. Lamina ecg-peaks finds
-153 peaks in 8 min (~19/min, implausible) while ppg-peaks on the same
-recording finds 610 (~76/min, plausible). Kept as a structural anomaly flag;
-no fix proposed.
+### Expected Behavior
+Root cause is the recorded signal, not the detector; on a near-flatline
+lead a detector ideally reports few/no beats rather than an implausible
+rate.
+
+### Actual Behavior
+Lamina ecg-peaks finds 153 peaks in 8 min (~19/min, implausible) while
+ppg-peaks on the same recording finds 610 (~76/min, plausible). Kept as a
+structural anomaly flag; no fix proposed.
 
 ### Evidence
 `validation/results/ppg/bug-candidates.md` BUG-PPG-004; group metrics.
