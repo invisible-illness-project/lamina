@@ -1,7 +1,7 @@
 use crate::error::{Result, SignalError};
-use biquad::{Coefficients, ToHertz, Type};
+use biquad::Coefficients;
 use ndarray::Array1;
-use std::f64::consts::{FRAC_1_SQRT_2, PI};
+use std::f64::consts::PI;
 
 /// High-level filter type specification for Lamina DSP routines.
 #[derive(Debug, Clone, PartialEq)]
@@ -152,6 +152,331 @@ impl SosSection {
     }
 }
 
+#[derive(Debug, Clone, Copy, PartialEq)]
+struct Complex64 {
+    re: f64,
+    im: f64,
+}
+
+impl Complex64 {
+    fn new(re: f64, im: f64) -> Self {
+        Self { re, im }
+    }
+
+    fn from_polar(r: f64, theta: f64) -> Self {
+        Self {
+            re: r * theta.cos(),
+            im: r * theta.sin(),
+        }
+    }
+
+    fn abs(&self) -> f64 {
+        self.re.hypot(self.im)
+    }
+
+    fn conj(&self) -> Self {
+        Self {
+            re: self.re,
+            im: -self.im,
+        }
+    }
+
+    fn sqrt(&self) -> Self {
+        let r = self.abs();
+        let theta = self.im.atan2(self.re);
+        Self::from_polar(r.sqrt(), theta / 2.0)
+    }
+}
+
+impl std::ops::Add for Complex64 {
+    type Output = Self;
+    fn add(self, rhs: Self) -> Self {
+        Self::new(self.re + rhs.re, self.im + rhs.im)
+    }
+}
+
+impl std::ops::Sub for Complex64 {
+    type Output = Self;
+    fn sub(self, rhs: Self) -> Self {
+        Self::new(self.re - rhs.re, self.im - rhs.im)
+    }
+}
+
+impl std::ops::Mul for Complex64 {
+    type Output = Self;
+    fn mul(self, rhs: Self) -> Self {
+        Self::new(
+            self.re * rhs.re - self.im * rhs.im,
+            self.re * rhs.im + self.im * rhs.re,
+        )
+    }
+}
+
+impl std::ops::Mul<f64> for Complex64 {
+    type Output = Self;
+    fn mul(self, rhs: f64) -> Self {
+        Self::new(self.re * rhs, self.im * rhs)
+    }
+}
+
+impl std::ops::Div for Complex64 {
+    type Output = Self;
+    fn div(self, rhs: Self) -> Self {
+        let denom = rhs.re * rhs.re + rhs.im * rhs.im;
+        Self::new(
+            (self.re * rhs.re + self.im * rhs.im) / denom,
+            (self.im * rhs.re - self.re * rhs.im) / denom,
+        )
+    }
+}
+
+impl std::ops::Div<f64> for Complex64 {
+    type Output = Self;
+    fn div(self, rhs: f64) -> Self {
+        Self::new(self.re / rhs, self.im / rhs)
+    }
+}
+
+impl std::ops::Neg for Complex64 {
+    type Output = Self;
+    fn neg(self) -> Self {
+        Self::new(-self.re, -self.im)
+    }
+}
+
+/// Design a digital Butterworth filter SOS matrix matching SciPy `scipy.signal.butter(..., output='sos')`.
+pub fn design_butterworth_sos(spec: &FilterSpec) -> Result<Vec<SosSection>> {
+    spec.validate()?;
+
+    let order = spec.order;
+    let fs = spec.sampling_rate;
+
+    // 1. Analog lowpass prototype poles: p_k = exp(j * pi * (2*k + 1 + order) / (2 * order))
+    let mut p_proto = Vec::with_capacity(order);
+    for k in 0..order {
+        let angle = PI * ((2 * k + 1 + order) as f64) / (2.0 * order as f64);
+        p_proto.push(Complex64::from_polar(1.0, angle));
+    }
+
+    // 2. Frequency pre-warping & analog s-plane transformation
+    let (p_s, z_s, k_s) = match spec.kind {
+        FilterKind::LowPass => {
+            let fc = spec.cutoffs[0];
+            let wp = 2.0 * fs * (PI * fc / fs).tan();
+            let p_s: Vec<Complex64> = p_proto.iter().map(|&p| p * wp).collect();
+            let z_s: Vec<Complex64> = Vec::new();
+            let k_s = wp.powi(order as i32);
+            (p_s, z_s, k_s)
+        }
+        FilterKind::HighPass => {
+            let fc = spec.cutoffs[0];
+            let wp = 2.0 * fs * (PI * fc / fs).tan();
+            let p_s: Vec<Complex64> = p_proto
+                .iter()
+                .map(|&p| Complex64::new(wp, 0.0) / p)
+                .collect();
+            let z_s: Vec<Complex64> = vec![Complex64::new(0.0, 0.0); order];
+            let mut prod_neg_p = Complex64::new(1.0, 0.0);
+            for &p in &p_proto {
+                prod_neg_p = prod_neg_p * (-p);
+            }
+            let k_s = prod_neg_p.re;
+            (p_s, z_s, k_s)
+        }
+        FilterKind::BandPass => {
+            let f1 = spec.cutoffs[0];
+            let f2 = spec.cutoffs[1];
+            let w1 = 2.0 * fs * (PI * f1 / fs).tan();
+            let w2 = 2.0 * fs * (PI * f2 / fs).tan();
+            let w0 = (w1 * w2).sqrt();
+            let bw = w2 - w1;
+
+            let mut p_s = Vec::with_capacity(2 * order);
+            for &pk in &p_proto {
+                let term1 = pk * pk * (bw * bw);
+                let disc = (term1 - Complex64::new(4.0 * w0 * w0, 0.0)).sqrt();
+                p_s.push((pk * bw + disc) / 2.0);
+                p_s.push((pk * bw - disc) / 2.0);
+            }
+            let z_s = vec![Complex64::new(0.0, 0.0); order];
+            let k_s = bw.powi(order as i32);
+            (p_s, z_s, k_s)
+        }
+        FilterKind::Notch => {
+            let f1 = spec.cutoffs[0];
+            let f2 = spec.cutoffs[1];
+            let w1 = 2.0 * fs * (PI * f1 / fs).tan();
+            let w2 = 2.0 * fs * (PI * f2 / fs).tan();
+            let w0 = (w1 * w2).sqrt();
+            let bw = w2 - w1;
+
+            let mut p_s = Vec::with_capacity(2 * order);
+            for &pk in &p_proto {
+                let term1 = (Complex64::new(bw, 0.0) / pk) * (Complex64::new(bw, 0.0) / pk);
+                let disc = (term1 - Complex64::new(4.0 * w0 * w0, 0.0)).sqrt();
+                p_s.push((Complex64::new(bw, 0.0) / pk + disc) / 2.0);
+                p_s.push((Complex64::new(bw, 0.0) / pk - disc) / 2.0);
+            }
+            let mut z_s = Vec::with_capacity(2 * order);
+            for _ in 0..order {
+                z_s.push(Complex64::new(0.0, w0));
+                z_s.push(Complex64::new(0.0, -w0));
+            }
+            let mut prod_neg_p = Complex64::new(1.0, 0.0);
+            for &p in &p_proto {
+                prod_neg_p = prod_neg_p * (-p);
+            }
+            let k_s = prod_neg_p.re;
+            (p_s, z_s, k_s)
+        }
+    };
+
+    // 3. Bilinear Transformation (fs_b = 2 * fs)
+    let fs_b = 2.0 * fs;
+    let fs_c = Complex64::new(fs_b, 0.0);
+
+    let mut p_z: Vec<Complex64> = p_s.iter().map(|&ps| (fs_c + ps) / (fs_c - ps)).collect();
+    let mut z_z: Vec<Complex64> = z_s.iter().map(|&zs| (fs_c + zs) / (fs_c - zs)).collect();
+
+    let num_neg1 = p_s.len().saturating_sub(z_s.len());
+    for _ in 0..num_neg1 {
+        z_z.push(Complex64::new(-1.0, 0.0));
+    }
+
+    let mut prod_z = Complex64::new(1.0, 0.0);
+    for &zs in &z_s {
+        prod_z = prod_z * (fs_c - zs);
+    }
+    let mut prod_p = Complex64::new(1.0, 0.0);
+    for &ps in &p_s {
+        prod_p = prod_p * (fs_c - ps);
+    }
+    let k_z = (Complex64::new(k_s, 0.0) * prod_z / prod_p).re;
+
+    // 4. Convert z, p, k to SOS matrix matching SciPy zpk2sos (pairing='nearest')
+    let n_sections = p_z.len().max(z_z.len()).div_ceil(2);
+    if p_z.len() < n_sections * 2 {
+        p_z.resize(n_sections * 2, Complex64::new(0.0, 0.0));
+    }
+    if z_z.len() < n_sections * 2 {
+        z_z.resize(n_sections * 2, Complex64::new(0.0, 0.0));
+    }
+
+    let mut sections = vec![SosSection::new(0.0, 0.0, 0.0, 0.0, 0.0); n_sections];
+
+    let idx_worst = |p_list: &[Complex64]| -> usize {
+        let mut best_i = 0;
+        let mut best_d = (1.0 - p_list[0].abs()).abs();
+        for (i, p) in p_list.iter().enumerate().skip(1) {
+            let d = (1.0 - p.abs()).abs();
+            if d < best_d {
+                best_d = d;
+                best_i = i;
+            }
+        }
+        best_i
+    };
+
+    let idx_nearest_zero =
+        |z_list: &[Complex64], target_p: Complex64, kind: &str| -> Option<usize> {
+            let mut best_i = None;
+            let mut best_d = f64::MAX;
+            for (i, &zv) in z_list.iter().enumerate() {
+                let is_cplx = zv.im.abs() > 1e-12;
+                if kind == "complex" && !is_cplx {
+                    continue;
+                }
+                if kind == "real" && is_cplx {
+                    continue;
+                }
+                let d = (zv - target_p).abs();
+                if d < best_d {
+                    best_d = d;
+                    best_i = Some(i);
+                }
+            }
+            best_i
+        };
+
+    for si in (0..n_sections).rev() {
+        let p1_idx = idx_worst(&p_z);
+        let p1 = p_z.remove(p1_idx);
+
+        let is_p1_real = p1.im.abs() <= 1e-12;
+        let num_real_p = p_z.iter().filter(|pv| pv.im.abs() <= 1e-12).count();
+
+        if is_p1_real && num_real_p == 0 {
+            let z1_idx = idx_nearest_zero(&z_z, p1, "real")
+                .or_else(|| idx_nearest_zero(&z_z, p1, "any"))
+                .unwrap_or(0);
+            let z1 = z_z.remove(z1_idx);
+
+            sections[si] = SosSection::new(1.0, -z1.re, 0.0, -p1.re, 0.0);
+        } else {
+            let p2 = if is_p1_real {
+                let real_p_indices: Vec<usize> = p_z
+                    .iter()
+                    .enumerate()
+                    .filter(|(_, pv)| pv.im.abs() <= 1e-12)
+                    .map(|(i, _)| i)
+                    .collect();
+                let worst_sub =
+                    idx_worst(&real_p_indices.iter().map(|&i| p_z[i]).collect::<Vec<_>>());
+                let p2_idx = real_p_indices[worst_sub];
+                p_z.remove(p2_idx)
+            } else {
+                let mut best_conj_i = 0;
+                let mut best_conj_d = f64::MAX;
+                for (i, &pv) in p_z.iter().enumerate() {
+                    let d = (pv - p1.conj()).abs();
+                    if d < best_conj_d {
+                        best_conj_d = d;
+                        best_conj_i = i;
+                    }
+                }
+                p_z.remove(best_conj_i)
+            };
+
+            let a1 = -(p1 + p2).re;
+            let a2 = (p1 * p2).re;
+
+            let z1_idx = idx_nearest_zero(&z_z, p1, "any").unwrap_or(0);
+            let z1 = z_z.remove(z1_idx);
+
+            let z2 = if z1.im.abs() > 1e-12 {
+                let mut best_z_conj_i = 0;
+                let mut best_z_conj_d = f64::MAX;
+                for (i, &zv) in z_z.iter().enumerate() {
+                    let d = (zv - z1.conj()).abs();
+                    if d < best_z_conj_d {
+                        best_z_conj_d = d;
+                        best_z_conj_i = i;
+                    }
+                }
+                z_z.remove(best_z_conj_i)
+            } else {
+                if let Some(z2_idx) = idx_nearest_zero(&z_z, p1, "real") {
+                    z_z.remove(z2_idx)
+                } else {
+                    Complex64::new(0.0, 0.0)
+                }
+            };
+
+            let b0 = 1.0;
+            let b1 = -(z1 + z2).re;
+            let b2 = (z1 * z2).re;
+
+            sections[si] = SosSection::new(b0, b1, b2, a1, a2);
+        }
+    }
+
+    sections[0].b0 *= k_z;
+    sections[0].b1 *= k_z;
+    sections[0].b2 *= k_z;
+
+    Ok(sections)
+}
+
 /// Cascaded Second-Order Sections (SOS) filter executor.
 #[derive(Debug, Clone, PartialEq)]
 pub struct SosFilter {
@@ -166,92 +491,7 @@ impl SosFilter {
 
     /// Design an SOS filter from a high-level [`FilterSpec`].
     pub fn from_spec(spec: &FilterSpec) -> Result<Self> {
-        spec.validate()?;
-
-        let fs = spec.sampling_rate;
-        let mut sections = Vec::new();
-
-        match spec.kind {
-            FilterKind::LowPass => {
-                let fc = spec.cutoffs[0];
-                let num_biquads = spec.order / 2;
-                for k in 0..num_biquads {
-                    let q =
-                        1.0 / (2.0 * ((2 * k + 1) as f64 * PI / (2.0 * spec.order as f64)).cos());
-                    let coeffs =
-                        Coefficients::<f64>::from_params(Type::LowPass, fs.hz(), fc.hz(), q)
-                            .map_err(|e| SignalError::InvalidCutoffFrequency(format!("{:?}", e)))?;
-                    sections.push(SosSection::from_biquad(&coeffs));
-                }
-                if !spec.order.is_multiple_of(2) {
-                    let coeffs = Coefficients::<f64>::from_params(
-                        Type::SinglePoleLowPass,
-                        fs.hz(),
-                        fc.hz(),
-                        FRAC_1_SQRT_2,
-                    )
-                    .map_err(|e| SignalError::InvalidCutoffFrequency(format!("{:?}", e)))?;
-                    sections.push(SosSection::from_biquad(&coeffs));
-                }
-            }
-            FilterKind::HighPass => {
-                let fc = spec.cutoffs[0];
-                let num_biquads = spec.order / 2;
-                for k in 0..num_biquads {
-                    let q =
-                        1.0 / (2.0 * ((2 * k + 1) as f64 * PI / (2.0 * spec.order as f64)).cos());
-                    let coeffs =
-                        Coefficients::<f64>::from_params(Type::HighPass, fs.hz(), fc.hz(), q)
-                            .map_err(|e| SignalError::InvalidCutoffFrequency(format!("{:?}", e)))?;
-                    sections.push(SosSection::from_biquad(&coeffs));
-                }
-                if !spec.order.is_multiple_of(2) {
-                    let coeffs = Coefficients::<f64>::from_params(
-                        Type::HighPass,
-                        fs.hz(),
-                        fc.hz(),
-                        FRAC_1_SQRT_2,
-                    )
-                    .map_err(|e| SignalError::InvalidCutoffFrequency(format!("{:?}", e)))?;
-                    sections.push(SosSection::from_biquad(&coeffs));
-                }
-            }
-            FilterKind::BandPass => {
-                let f_low = spec.cutoffs[0];
-                let f_high = spec.cutoffs[1];
-                let f0 = (f_low * f_high).sqrt();
-                let bw = f_high - f_low;
-                let q_base = f0 / bw;
-
-                let num_biquads = spec.order;
-                for k in 0..num_biquads {
-                    let q_factor = q_base
-                        / (2.0
-                            * ((2 * k + 1) as f64 * PI / (2.0 * (2 * num_biquads) as f64)).cos());
-                    let coeffs = Coefficients::<f64>::from_params(
-                        Type::BandPass,
-                        fs.hz(),
-                        f0.hz(),
-                        q_factor,
-                    )
-                    .map_err(|e| SignalError::InvalidCutoffFrequency(format!("{:?}", e)))?;
-                    sections.push(SosSection::from_biquad(&coeffs));
-                }
-            }
-            FilterKind::Notch => {
-                let f_low = spec.cutoffs[0];
-                let f_high = spec.cutoffs[1];
-                let f0 = (f_low * f_high).sqrt();
-                let bw = f_high - f_low;
-                let q_base = f0 / bw;
-
-                let coeffs =
-                    Coefficients::<f64>::from_params(Type::Notch, fs.hz(), f0.hz(), q_base)
-                        .map_err(|e| SignalError::InvalidCutoffFrequency(format!("{:?}", e)))?;
-                sections.push(SosSection::from_biquad(&coeffs));
-            }
-        }
-
+        let sections = design_butterworth_sos(spec)?;
         Ok(Self { sections })
     }
 
@@ -270,7 +510,6 @@ impl SosFilter {
         let mut out = signal.to_vec();
         let mut states: Vec<(f64, f64)> = self.sections.iter().map(|s| s.initial_state()).collect();
 
-        // Scale initial states by initial sample x[0] and cascaded DC gains (matching SciPy sosfilt_zi)
         let mut cur_scale = out[0];
         for (st, sec) in states.iter_mut().zip(self.sections.iter()) {
             st.0 *= cur_scale;
@@ -293,17 +532,6 @@ impl SosFilter {
     }
 
     /// Zero-phase forward-backward filtering (`filtfilt`) with SciPy-style odd reflection padding (`padtype='odd'`).
-    ///
-    /// # Scientific Contract
-    /// - **Inputs**: 1D signal array `Array1<f64>`.
-    /// - **Output**: Filtered array of identical length $N$.
-    /// - **Padding**: Odd-reflection padding length $L = 3 \times (2 \cdot n_{\text{sections}} + 1)$.
-    ///   - Left: $\text{padded}[L - i] = 2 \cdot x[0] - x[i]$ for $i=1 \dots L$.
-    ///   - Right: $\text{padded}[L + N - 1 + i] = 2 \cdot x[N - 1] - x[N - 1 - i]$ for $i=1 \dots L$.
-    /// - **Initial Conditions**: Filter states are initialized using steady-state $z_{\text{init}}$ scaled by the first sample of each pass.
-    ///
-    /// # Errors
-    /// Returns [`SignalError::InsufficientSamples`] if $N \le L$.
     pub fn filtfilt(&self, signal: &Array1<f64>) -> Result<Array1<f64>> {
         let n = signal.len();
         if n == 0 {
@@ -315,7 +543,10 @@ impl SosFilter {
             }
         }
 
-        let padlen = 3 * (2 * self.sections.len() + 1);
+        let zero_b2 = self.sections.iter().filter(|s| s.b2 == 0.0).count();
+        let zero_a2 = self.sections.iter().filter(|s| s.a2 == 0.0).count();
+        let ntaps = (2 * self.sections.len() + 1).saturating_sub(zero_b2.min(zero_a2));
+        let padlen = 3 * ntaps;
         if n <= padlen {
             return Err(SignalError::InsufficientSamples {
                 required: padlen + 1,
@@ -323,28 +554,23 @@ impl SosFilter {
             });
         }
 
-        // Construct odd-reflected padded array
         let total_len = n + 2 * padlen;
         let mut padded = vec![0.0; total_len];
 
-        // Copy original signal into center
         for i in 0..n {
             padded[padlen + i] = signal[i];
         }
 
-        // Left odd reflection
         let x0 = signal[0];
         for i in 1..=padlen {
             padded[padlen - i] = 2.0 * x0 - signal[i];
         }
 
-        // Right odd reflection
         let x_end = signal[n - 1];
         for i in 1..=padlen {
             padded[padlen + n - 1 + i] = 2.0 * x_end - signal[n - 1 - i];
         }
 
-        // Forward Pass
         let mut fwd_states: Vec<(f64, f64)> =
             self.sections.iter().map(|s| s.initial_state()).collect();
         let mut cur_scale = padded[0];
@@ -366,7 +592,6 @@ impl SosFilter {
             *sample = x;
         }
 
-        // Backward Pass (Reverse fwd_out, filter, reverse back)
         fwd_out.reverse();
 
         let mut bwd_states: Vec<(f64, f64)> =
@@ -392,26 +617,18 @@ impl SosFilter {
 
         bwd_out.reverse();
 
-        // Extract signal unpadded portion
         let output = bwd_out[padlen..(padlen + n)].to_vec();
         Ok(Array1::from_vec(output))
     }
 }
 
 /// Zero-phase digital filtering (`signal_filtfilt`) using Second-Order Sections (SOS) and odd reflection padding.
-///
-/// This is the primary zero-phase filtering entry point for Lamina.
-///
-/// # Errors
-/// Returns [`SignalError`] if input parameters are invalid or signal is too short for padding.
 pub fn signal_filtfilt(signal: &Array1<f64>, spec: &FilterSpec) -> Result<Array1<f64>> {
     let filter = SosFilter::from_spec(spec)?;
     filter.filtfilt(signal)
 }
 
 /// Convenience entry point for digital filtering, constructing a [`FilterSpec`] and running [`signal_filtfilt`].
-///
-/// Backwards-compatible signature for Lamina signal functions.
 pub fn signal_filter(
     signal: &Array1<f64>,
     sampling_rate: f64,

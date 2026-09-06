@@ -1,9 +1,27 @@
 use criterion::{BenchmarkId, Criterion, criterion_group, criterion_main};
 use lamina::complexity::entropy::sample_entropy;
-use lamina::signal::filter::{FilterSpec, signal_filtfilt};
+use lamina::signal::filter::{FilterSpec, SosFilter, signal_filtfilt};
 use lamina::signal::peaks::{PeakDetectionConfig, signal_findpeaks_config};
 use lamina::signal::smooth::signal_smooth_moving_average;
 use ndarray::Array1;
+
+fn bench_filter_design(c: &mut Criterion) {
+    let mut group = c.benchmark_group("filter_design_from_spec");
+
+    let specs = vec![
+        ("lowpass_ord4", FilterSpec::lowpass(100.0, 5.0, 4)),
+        ("highpass_ord4", FilterSpec::highpass(100.0, 0.5, 4)),
+        ("bandpass_ord4", FilterSpec::bandpass(100.0, 5.0, 15.0, 4)),
+        ("notch_ord4", FilterSpec::notch(100.0, 18.0, 22.0, 4)),
+    ];
+
+    for (name, spec) in specs {
+        group.bench_function(name, |b| {
+            b.iter(|| SosFilter::from_spec(&spec).unwrap());
+        });
+    }
+    group.finish();
+}
 
 fn bench_filtfilt(c: &mut Criterion) {
     let mut group = c.benchmark_group("signal_filtfilt_lowpass_order4");
@@ -63,6 +81,7 @@ fn bench_sample_entropy(c: &mut Criterion) {
 
 criterion_group!(
     benches,
+    bench_filter_design,
     bench_filtfilt,
     bench_moving_average,
     bench_findpeaks,

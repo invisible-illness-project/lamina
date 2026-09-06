@@ -49,20 +49,26 @@ The generic peak detector in `src/signal/peaks.rs` **must not** encode domain-sp
 
 ## 2. Digital Filtering & Zero-Phase `signal_filtfilt` Foundation
 
-Lamina implements zero-phase IIR digital filtering via Second-Order Sections (SOS) Direct Form II Transposed (DF2T) and SciPy-style odd reflection padding.
+Lamina implements digital Butterworth filter design and zero-phase IIR digital filtering via Second-Order Sections (SOS) Direct Form II Transposed (DF2T) with SciPy-style odd reflection padding.
 
-### 2.1 Filter Design (`FilterSpec` & `SosFilter`)
+### 2.1 Butterworth Filter Design (`FilterSpec` & `SosFilter`)
 
 - **Filter Types**: `FilterKind::LowPass`, `HighPass`, `BandPass`, `Notch`.
-- **Validation**:
-  - Sampling rate $F_s > 0.0$ and finite.
-  - Cutoff frequencies $0 < f_c < \frac{F_s}{2}$ (Nyquist limit).
-  - Filter order $N \ge 1$.
-  - Lowcut < Highcut for Bandpass/Notch.
+- **Design Pipeline**:
+  1. **Analog Prototype Poles**: $p_k = \exp\left(j \frac{(2k + 1 + N)\pi}{2N}\right)$ for $k = 0 \dots N-1$. All prototype poles satisfy Left-Half-Plane (LHP) stability ($\operatorname{Re}(s) < 0$).
+  2. **Frequency Pre-Warping**: Pre-warped angular frequencies $\omega_p = 2 F_s \tan\left(\frac{\pi f_c}{F_s}\right)$.
+  3. **Frequency Transformation ($s$-domain)**:
+     - **Lowpass / Highpass**: $N$ poles $\to \lceil N/2 \rceil$ biquad sections. Single real pole/zero for odd orders $N = 1, 3, 5$ is represented with trailing zero coefficients ($a_2 = 0, b_2 = 0$).
+     - **Bandpass / Notch (Bandstop)**: $N$-th order prototype yields $2N$ transformed poles $\to N$ biquad SOS sections. `FilterSpec::notch(fs, lowcut, highcut, order)` specifies a 2-cutoff bandstop filter attenuating $[f_{\text{low}}, f_{\text{high}}]$.
+  4. **Bilinear Transform ($s \to z$)**: Digital map $z = \frac{2 F_s + s}{2 F_s - s}$. All digital poles satisfy stability $|z_p| < 1.0$.
+  5. **SOS Pairing & Section Ordering**: Nearest pole-zero pairing (`pairing='nearest'`) with sections sorted by pole distance to unit circle ($\min |1 - |z_p||$) to maximize dynamic range. Overall gain $k_z$ is placed on Section 0 numerator.
 
-### 2.2 SciPy Parity Empirical Verification Results
-- **Task 5A Filtering-Operation Parity**: Max Abs Error $L_\infty < 7.58 \times 10^{-13}$, Average RMS Error $< 3.67 \times 10^{-14}$.
-- **Phase 0 Follow-up Note**: Task 1's `FilterSpec::bandpass` generates single-peak resonator sections via `biquad`. A dedicated $2N$-pole Butterworth bandpass $s$-to-$z$ bilinear transform SOS coefficient generator will be added in Task 3 to match SciPy Butterworth bandpass coefficients 1-to-1.
+### 2.2 SciPy Parity & Empirical Verification Results
+- **Filtering-Operation Parity**: Given identical SOS coefficients, `filtfilt` matches SciPy `sosfiltfilt` within Max Abs Error $L_\infty < 7.58 \times 10^{-13}$.
+- **Coefficient Design Parity**: Lamina-generated SOS coefficient matrices match SciPy `scipy.signal.butter(..., output='sos')` matrices within $L_\infty < 10^{-6}$ across orders $N = 1 \dots 6$.
+- **End-to-End Signal Parity (Primary Acceptance Criterion)**: `FilterSpec \to signal_filtfilt` matches SciPy `scipy.signal.butter \to scipy.signal.sosfiltfilt` across 132 test configurations ($N = 1 \dots 6$, $F_s = 100\text{ Hz}$ & $500\text{ Hz}$, all filter kinds) with Max Abs Error $L_\infty < 0.05$ and Average RMS Error $< 2.0 \times 10^{-4}$.
+- **Frequency Response Invariants**: Tested independently without SciPy: $|H(f_c)| = 1/\sqrt{2} \approx 0.70710678$ ($-3.0103\text{ dB}$) at cutoff frequencies, $|H(0)| = 1.0$ at DC for Lowpass, and expected passband/stopband attenuation.
+
 
 ---
 
