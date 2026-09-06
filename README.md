@@ -1,41 +1,133 @@
 # Lamina (Rust) 🦀
 
-Lamina is a high-performance, safe Rust library for neurophysiological signal processing (ECG, PPG, EDA, HRV, RSP). It is heavily inspired by Python's [NeuroKit2](https://github.com/neuropsychology/NeuroKit) and designed with zero-cost abstractions, making it suitable for integration in high-throughput or embedded sensing systems.
+**Lamina** is a safe, high-performance, scientific Rust library for biomedical and physiological signal processing (ECG, PPG, EDA, RSP, HRV, Complexity, and Multimodal Coupling). Inspired by Python's [NeuroKit2](https://github.com/neuropsychology/NeuroKit) and SciPy, Lamina provides zero-phase digital filtering, domain-specific physiological event extractors, and cross-modality cardiorespiratory coupling analysis with strict numerical stability, $O(N)$ linear complexity, and empirical scientific parity.
 
-## Modules
+---
 
-Lamina currently features the structural scaffolding and algorithmic processing for:
+## Key Features & Modules
 
-- `signal`: Core processing utilities. Features advanced zero-phase digital filtering utilizing `realfft` frequency-domain multiplication and basic extrema trackers.
-- `ecg`: Electrocardiogram routines mimicking Pan-Tompkins QRS logic and baseline wander removal.
-- `ppg`: Photoplethysmogram techniques featuring adaptive thresholds and dicrotic notch elimination.
-- `eda`: Electrodermal Activity pipelines isolating Phasic elements (Skin Conductance Response) from the Tonic baseline.
-- `rsp`: Respiratory signal structures bounded by physiological respiration rates to detect individual breaths.
-- `hrv`: Time-domain Heart Rate Variability summarizations (RMSSD, Mean NN).
-- `complexity`: Non-linear state metrics featuring the Sample Entropy (SampEn) algorithm.
+### 1. `lamina::signal` — Generic DSP & Math Core
+- **Digital Butterworth SOS Filtering (`FilterSpec` & `SosFilter`)**: Lowpass, Highpass, Bandpass, and Notch IIR filter design via analog prototypes, frequency pre-warping, bilinear transform, and nearest pole-zero biquad SOS sectioning. Tested for exact frequency response invariants ($|H(f_c)| = 1/\sqrt{2} \approx -3.01\text{ dB}$).
+- **Zero-Phase Digital Filtering (`signal_filtfilt`)**: SciPy-equivalent `sosfiltfilt` zero-phase forward-backward filtering utilizing Direct Form II Transposed (DF2T) biquads and odd-reflection boundary padding ($3 \times \text{order}$). Matches SciPy end-to-end with Max Abs Error $L_\infty < 1.0 \times 10^{-10}$.
+- **Generic Peak Detection (`signal_findpeaks_config`)**: Configurable peak detection wrapping `find_peaks` with height, distance, prominence, width, and threshold constraints, verified against SciPy.
+- **Fast Moving Average (`signal_smooth_moving_average`)**: Optimized prefix-sum sliding window accumulator operating in strict $O(N)$ time.
 
-## Architecture
+### 2. `lamina::ecg` — Electrocardiography Processing
+- **Pan-Tompkins QRS Detection (`ecg_findpeaks_config`, `ecg_clean`)**: 
+  - Canonical bandpass filtering ($5\text{--}15\text{ Hz}$).
+  - 5-point slope derivative and non-linear power squaring.
+  - $150\text{ ms}$ moving window integration.
+  - Adaptive dual-thresholding ($SPKI$, $NPKI$), $200\text{ ms}$ refractory period enforcement, and searchback for missed beats ($RR > 1.66 \cdot RR_{\text{avg}}$).
+  - Fine alignment to exact R-peak max amplitude within $\pm 150\text{ ms}$.
 
-To prioritize maximum speed and simple dependency graphs, Lamina centers its data processing exclusively around `ndarray::Array1<f64>`. 
+### 3. `lamina::ppg` — Photoplethysmography Processing
+- **Elgendi Systolic Peak Detection (`ppg_findpeaks_config`, `ppg_clean`)**:
+  - $0.5\text{--}8.0\text{ Hz}$ zero-phase Butterworth bandpass filter.
+  - Non-linear clipping & squaring ($S[n] = \max(0, x[n])^2$).
+  - Dual moving averages: Short MA ($W_{\text{peak}} \approx 111\text{ ms}$) & Long MA ($W_{\text{beat}} \approx 667\text{ ms}$).
+  - Adaptive block thresholding ($THRESHOLD = MA_{\text{beat}} + 0.02 \cdot \bar{S}$) and $300\text{ ms}$ pulse refractory period.
 
-Dependencies rely on standard mathematical implementations, with operations offloaded to standard fast ecosystems like `rustfft` and `statrs` without necessitating heavy, volatile dataframe libraries.
+### 4. `lamina::eda` — Electrodermal Activity Processing
+- **Tonic / Phasic Decomposition (`eda_decompose`, `eda_clean`)**:
+  - Zero-phase low-pass filtering ($5.0\text{ Hz}$ for noise cleaning, $0.05\text{ Hz}$ for Tonic SCL extraction).
+  - Exact mathematical reconstruction: $\text{tonic}[n] + \text{phasic}[n] = \text{cleaned}[n]$.
+- **SCR Event Detection (`eda_findpeaks_events`)**:
+  - Characterizes Skin Conductance Response (SCR) events: `onset_index`, `peak_index`, `amplitude` ($\mu\text{S}$), and `rise_time_sec`.
 
-## Contributing and Getting Started
+### 5. `lamina::rsp` — Respiration Processing
+- **Respiratory Band Filtering (`rsp_clean`, `rsp_clean_config`)**:
+  - 3rd-order zero-phase Butterworth bandpass filtering ($0.05\text{--}0.50\text{ Hz}$, $3\text{--}30\text{ BPM}$).
+- **Breath Cycle Construction (`RespirationCycle`, `rsp_cycles`)**:
+  - Pairs inspiratory peaks ($i_k$) with intervening expiratory troughs ($e_k$) under strict ordering $i_k < e_k < i_{k+1}$.
+  - Validates breath duration ($1.50\text{--}15.0\text{ s}$, $4\text{--}40\text{ BPM}$), minimum amplitude, and flatline noise floor ($A_{\text{p2p}} \ge 10^{-12}$).
+- **Continuous Rate Array (`rsp_rate`, `rsp_rate_config`)**:
+  - Piecewise constant interpolation with boundary extrapolation returning an $N$-length instantaneous rate series (BPM).
 
-Welcome to Lamina! As we continue porting features from NeuroKit2 into safe systems Rust, developer contributions are highly appreciated.
+### 6. `lamina::hrv` — Heart Rate Variability
+- **Time-Domain HRV (`hrv_rmssd`, `hrv_mean_nn`, `peaks_to_intervals`)**:
+  - Converts peak detection masks into inter-beat interval series ($\text{ms}$).
+  - Computes RMSSD (Root Mean Square of Successive Differences) and Mean NN interval.
 
-### Setting up the Environment
-1. Ensure you have standard Rust toolchains installed (`cargo`).
-2. Run `cargo build` in this directory to pull dependencies such as `ndarray` and `rustfft`.
+### 7. `lamina::complexity` — Non-Linear Dynamics
+- **Sample Entropy (`sample_entropy`)**:
+  - Calculates Sample Entropy ($\text{SampEn}(m, r)$) measuring signal regularity and physiological complexity.
 
-### Validating Changes
-- **Unit Tests:** Always ensure you add module-specific logic tests when adding new methodologies (e.g. `tests/eda_tests.rs`).
-- run `cargo test` to execute native synthetic tests and ensure your additions didn't break continuous structures.
+### 8. `lamina::multimodal` — Multimodal Physiological Feature & Coupling Layer
+- **Physical Time Synchronization (`sync`)**: `sample_to_time` maps 0-indexed sample $n$ to physical timestamp $t = \text{offset} + n / F_s$ across heterogeneous sampling frequencies and hardware start offsets.
+- **Respiratory Phase Mapping (`phase`)**: `respiratory_phase_at_time` maps timestamps into continuous normalized respiratory phase $\phi \in [0, 2\pi)$ ($[0, \pi)$ for inspiration, $[\pi, 2\pi)$ for expiration).
+- **Respiratory Sinus Arrhythmia (`rsa`)**: `cardiac_respiratory_phase` and `rsa`/`rsa_config` compute beat-level respiratory phase and within-cycle peak heart rate modulation ($\Delta \text{BPM}$ and $\Delta \text{RR}_{\text{sec}}$).
+- **Cardiorespiratory Phase Coupling (`coupling`)**: `cardiorespiratory_phase_coupling` computes circular concentration (resultant vector length $R \in [0.0, 1.0]$) and circular mean phase $\bar{\phi}$.
+- **ECG-to-PPG Pulse Delay (`ecg_ppg`)**: `ecg_ppg_timing` performs deterministic two-pointer 1-to-1 matching pairing ECG R-peaks to following PPG pulse waves within $[0.10, 0.60]\text{ s}$.
+- **EDA Associations (`eda_assoc`)**: `eda_cardiorespiratory_association` links SCR events to cardiac timestamps and respiratory phase.
+- **Signal Quality Assessment (`quality`)**: `multimodal_quality`, `evaluate_ecg_quality`, and `evaluate_rsp_quality` transparent rule-based quality evaluation.
 
-### Integration Testing with NeuroKit2 (Golden Datasets)
-When porting a complex feature from Python, we ensure precision parity against Python outputs:
-1. Ensure you have Python (`>=3.9`), `numpy`, `scipy` and `neurokit2` (`<=0.2.7`) installed via pip in your local env or conda.
-2. We have provided `tests/generate_test_data.py`. Run this Python script to extract known sample sets through NeuroKit2 into absolute `golden` JSON files.
-3. Your final validation test (e.g., inside `tests/integration_tests.rs`) should deserialize `golden_ecg.json` and forcefully align your Rust implementations against it.
+---
 
-*Golden Data Integration ensures Lamina always tracks alongside academic standards set by NeuroKit2!*
+## Code Example
+
+```rust
+use lamina::ecg::ecg_findpeaks;
+use lamina::rsp::{rsp_clean, rsp_cycles};
+use lamina::multimodal::{cardiac_respiratory_phase, rsa, cardiorespiratory_phase_coupling};
+use ndarray::Array1;
+
+fn main() -> lamina::Result<()> {
+    let fs = 100.0; // 100 Hz sampling rate
+
+    // 1. Process ECG
+    let raw_ecg = Array1::<f64>::zeros(1000); // Load raw ECG waveform
+    let r_peaks_mask = ecg_findpeaks(&raw_ecg, fs)?;
+
+    // 2. Process RSP
+    let raw_rsp = Array1::<f64>::zeros(1000); // Load raw RSP waveform
+    let cleaned_rsp = rsp_clean(&raw_rsp, fs)?;
+    let cycles = rsp_cycles(&cleaned_rsp, fs)?;
+
+    // Convert mask to index list
+    let r_peaks: Vec<usize> = r_peaks_mask
+        .iter()
+        .enumerate()
+        .filter_map(|(i, &p)| if p { Some(i) } else { None })
+        .collect();
+
+    // 3. Compute Multimodal RSA and Cardiorespiratory Phase Coupling
+    if !r_peaks.is_empty() && !cycles.is_empty() {
+        let rsa_result = rsa(&r_peaks, fs, 0.0, &cycles, fs, 0.0)?;
+        println!("RSA Amplitude: {:.2} BPM", rsa_result.amplitude_bpm);
+
+        let cardiac_phases = cardiac_respiratory_phase(&r_peaks, fs, 0.0, &cycles, fs, 0.0)?;
+        let phases: Vec<f64> = cardiac_phases.iter().map(|e| e.respiratory_phase).collect();
+        
+        let coupling = cardiorespiratory_phase_coupling(&phases)?;
+        println!("Phase Concentration (R): {:.4}", coupling.concentration);
+    }
+
+    Ok(())
+}
+```
+
+---
+
+## Testing & Benchmarks
+
+Run the complete validation test suite (unit tests, NeuroKit2 golden reference datasets, multi-rate suites $32\text{--}1000\text{ Hz}$, invariants):
+```bash
+cargo test
+```
+
+Run formatting and linter checks:
+```bash
+cargo fmt --check
+cargo clippy -- -D warnings
+```
+
+Run Criterion performance benchmarks:
+```bash
+cargo bench -- --test
+```
+
+---
+
+## Non-Clinical Disclaimer
+
+Lamina is a general-purpose scientific signal-processing library designed for research, data analysis, and physiological computing. **It is not a medical device, nor has it been cleared or approved by regulatory authorities (FDA, CE) for clinical diagnosis, treatment, or monitoring.**
