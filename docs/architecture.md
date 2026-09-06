@@ -225,7 +225,31 @@ Lamina provides a cross-modality synthesis layer that operates directly on physi
 
 ---
 
-## 6. Dependency Decision Table
+## 6. Windowed Multimodal Physiological Feature Extraction Layer (`lamina::features`)
+
+Lamina provides a configurable windowed feature extraction engine that transforms continuous waveforms and event-level outputs into timestamped physiological feature vectors (`MultimodalFeatureVector`) across sliding time windows.
+
+### 6.1 Window Generation & Time Boundaries (`window`)
+- **Half-Open Boundaries $[t_{\text{start}}, t_{\text{end}})$**: Sliding feature windows (`FeatureWindow`) are generated using exact physical timestamps (seconds).
+- **Configuration (`WindowConfig`)**: Configurable duration (`window_duration_sec`, default $60.0\text{ s}$), step size (`step_sec`, default $30.0\text{ s}$), and coverage threshold (`min_coverage`, default $0.80$).
+
+### 6.2 Modality Feature Extraction
+- **Cardiac Features (`cardiac`)**: Mean/median heart rate ($\text{BPM}$), SDNN ($\text{ms}$), RMSSD ($\text{ms}$ via `lamina::hrv`), pNN50 ($\%$), mean/std RR intervals ($\text{ms}$), and beat count.
+- **EDA Features (`eda`)**: Mean/median/std Tonic SCL ($\mu\text{S}$), mean/std Phasic SCR ($\mu\text{S}$), SCR event count, normalized SCR rate ($\text{events/min}$), and mean/median SCR amplitude ($\mu\text{S}$) & rise time ($\text{seconds}$).
+- **Respiration Features (`respiration`)**: Mean/median/std respiratory rate ($\text{BPM}$), mean cycle duration ($\text{seconds}$), cycle count, and amplitude statistics ($\text{peak-to-trough}$).
+- **Multimodal Coupling Features (`coupling`)**: Within-window RSA heart rate modulation ($\Delta \text{BPM}$, $\Delta \text{RR}_{\text{sec}}$), cardiorespiratory phase concentration ($R \in [0.0, 1.0]$), mean phase ($\bar{\phi}$), mean/std ECG-PPG pulse delay ($\text{seconds}$), and SCR cardiorespiratory association counts.
+
+### 6.3 Unified Feature Extraction & Missing Modalities (`mod`)
+- **`MultimodalInput` Container**: Accepts optional modality streams (`ecg_r_peaks`, `eda_tonic`, `eda_phasic`, `eda_scr_events`, `rsp_cycles`, `ppg_peaks`).
+- **No Fabricated Measurements**: Absent data produces `None` instead of artificial zeros ($0.0$).
+- **$O(N + W)$ Complexity**: Traverses event arrays linearly over window boundaries without quadratic $O(N^2)$ rescanning.
+
+### 6.4 Feature Quality Assessment (`quality`)
+- **Transparent Rule-Based Quality (`FeatureQuality`)**: Tracks window coverage, modality validity flags (`cardiac_valid`, `eda_valid`, `respiration_valid`, `coupling_valid`), usable feature count vs schema total ($30$), and specific issue codes (`InsufficientBeats`, `InsufficientRespirationCycles`, `InsufficientScrEvents`, `LowCoverage`).
+
+---
+
+## 7. Dependency Decision Table
 
 | Capability | Current Lamina | Candidate | Decision | Reason |
 | :--- | :--- | :--- | :--- | :--- |
@@ -239,7 +263,7 @@ Lamina provides a cross-modality synthesis layer that operates directly on physi
 
 ---
 
-## 7. Error Semantics
+## 8. Error Semantics
 
 Lamina uses a central `SignalError` type:
 - `EmptySignal`

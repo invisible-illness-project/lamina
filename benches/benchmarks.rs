@@ -4,6 +4,7 @@ use lamina::ecg::{EcgPeakDetectionConfig, ecg_findpeaks_config};
 use lamina::eda::{
     EdaDecompositionConfig, EdaPeakDetectionConfig, eda_clean, eda_decompose, eda_findpeaks_events,
 };
+use lamina::features::{FeatureConfig, MultimodalInput, WindowConfig, extract_features};
 use lamina::multimodal::{cardiorespiratory_phase_coupling, ecg_ppg_timing};
 use lamina::ppg::{PpgPeakDetectionConfig, ppg_findpeaks_config};
 use lamina::rsp::{
@@ -196,6 +197,50 @@ fn bench_multimodal_pipeline(c: &mut Criterion) {
     group.finish();
 }
 
+fn bench_feature_extraction(c: &mut Criterion) {
+    let mut group = c.benchmark_group("feature_extraction_layer");
+    let fs = 100.0;
+
+    for &dur_sec in &[60.0, 300.0, 1800.0, 3600.0] {
+        let n_events = (dur_sec * 1.0) as usize; // 1 beat/sec
+        let r_peaks: Vec<usize> = (0..n_events)
+            .map(|i| (i as f64 * fs).round() as usize)
+            .collect();
+        let ppg_peaks: Vec<usize> = (0..n_events)
+            .map(|i| ((i as f64 + 0.2) * fs).round() as usize)
+            .collect();
+
+        let input = MultimodalInput {
+            ecg_r_peaks: Some(r_peaks),
+            ecg_sampling_rate: fs,
+            ecg_offset_sec: 0.0,
+            ppg_peaks: Some(ppg_peaks),
+            ppg_sampling_rate: fs,
+            ppg_offset_sec: 0.0,
+            ..MultimodalInput::default()
+        };
+
+        let cfg = FeatureConfig {
+            window: WindowConfig {
+                window_duration_sec: 60.0,
+                step_sec: 30.0,
+                min_coverage: 0.8,
+            },
+            ..FeatureConfig::default()
+        };
+
+        group.bench_with_input(
+            BenchmarkId::new("extract_features_sec", dur_sec as usize),
+            &dur_sec,
+            |b, _| {
+                b.iter(|| extract_features(&input, &cfg).unwrap());
+            },
+        );
+    }
+
+    group.finish();
+}
+
 fn bench_sample_entropy(c: &mut Criterion) {
     let mut group = c.benchmark_group("sample_entropy");
     let size = 500;
@@ -220,6 +265,7 @@ criterion_group!(
     bench_eda_pipeline,
     bench_rsp_pipeline,
     bench_multimodal_pipeline,
+    bench_feature_extraction,
     bench_sample_entropy
 );
 criterion_main!(benches);
