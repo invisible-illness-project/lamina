@@ -16,15 +16,16 @@ use std::process::ExitCode;
 use lamina::complexity::entropy::sample_entropy;
 use lamina::ecg::{EcgPeakDetectionConfig, ecg_clean, ecg_findpeaks_config};
 use lamina::eda::{
-    EdaDecompositionConfig, EdaPeakDetectionConfig, eda_clean, eda_decompose,
-    eda_findpeaks_events,
+    EdaCleaningConfig, EdaDecompositionConfig, EdaPeakDetectionConfig, eda_clean,
+    eda_clean_config, eda_decompose, eda_findpeaks_events,
 };
 use lamina::hrv::intervals::peaks_to_intervals;
+use lamina::hrv::quality::{CorrectionPolicy, IntervalQuality, classify_intervals, clean_rr_intervals};
 use lamina::hrv::time::{hrv_mean_nn, hrv_rmssd};
 use lamina::ppg::{PpgPeakDetectionConfig, ppg_clean, ppg_findpeaks_config};
 use lamina::rppg::{
     ChromAlgorithm, GreenAlgorithm, OpticalSignal, PosAlgorithm, RoiSample, RppgAlgorithm,
-    RppgAlgorithmId, RppgConfig,
+    RppgAlgorithmId, RppgConfig, RppgQualitySummary, RppgSignal, SignalPolarity,
 };
 use lamina::rsp::{RspCleaningConfig, RspProcessingConfig, rsp_clean_config, rsp_cycles_config, rsp_rate_config};
 use lamina::signal::filter::{FilterSpec, SosFilter, signal_filtfilt};
@@ -45,9 +46,11 @@ struct Input {
     signal: Option<Vec<f64>>,
     sampling_rate: Option<f64>,
     config: Option<Value>,
-    // hrv op
+    // hrv / hrv-correct ops
     peaks: Option<Vec<usize>>,
     signal_length: Option<usize>,
+    // hrv-correct op: direct RR interval input in milliseconds
+    rr_intervals_ms: Option<Vec<f64>>,
     // rppg-algorithm op
     timestamps_sec: Option<Vec<f64>>,
     red: Option<Vec<f64>>,
@@ -182,6 +185,9 @@ struct RspCyclesCfg {
     min_breath_interval_sec: Option<f64>,
     max_breath_interval_sec: Option<f64>,
     min_amplitude: Option<f64>,
+    /// Post-remediation RspProcessingConfig field (BUG-007): skip internal
+    /// re-cleaning when the input is already cleaned. Absent = Lamina default.
+    precleaned: Option<bool>,
 }
 
 #[derive(Debug, Deserialize, Default)]
@@ -216,6 +222,33 @@ struct RppgCfg {
     min_window_fraction: Option<f64>,
     normalize_channels: Option<bool>,
     detrend: Option<bool>,
+    /// rppg-polarity op only: pulse-phase conversion mode (normal|inverted|auto).
+    polarity: Option<String>,
+}
+
+// --- revalidation extension config DTOs (see SPEC.md addendum) --------------
+
+/// eda-clean-config config. `lowpass_cutoff_hz` is NOT in this struct: it is
+/// read from the raw config JSON in the op so the bridge can distinguish
+/// "absent" (Lamina default Some(5.0)) from an explicit JSON null (Lamina
+/// `None` = pass-through, no low-pass filter) — serde's Option handling
+/// collapses null and absent.
+#[derive(Debug, Deserialize, Default)]
+struct EdaCleanConfigCfg {
+    filter_order: Option<usize>,
+    pass_through_if_nyquist_violated: Option<bool>,
+}
+
+/// hrv-correct config (post-remediation src/hrv/quality.rs pipeline).
+#[derive(Debug, Deserialize, Default)]
+struct HrvCorrectCfg {
+    /// none|reject_invalid|interpolate_linear|interpolate_cubic|percent_threshold
+    policy: Option<String>,
+    /// Threshold parameter for the `percent_threshold` policy (0.0 < p < 1.0).
+    percent_threshold: Option<f64>,
+    /// Override for the classify_intervals relative-deviation threshold
+    /// (absent = Lamina default 0.20).
+    classify_threshold: Option<f64>,
 }
 
 // ---------------------------------------------------------------------------
@@ -271,6 +304,7 @@ fn rsp_processing_cfg(c: &RspCyclesCfg) -> RspProcessingConfig {
     if let Some(v) = c.min_breath_interval_sec { b = b.with_min_breath_interval_sec(v); }
     if let Some(v) = c.max_breath_interval_sec { b = b.with_max_breath_interval_sec(v); }
     if let Some(v) = c.min_amplitude { b = b.with_min_amplitude(v); }
+    if let Some(v) = c.precleaned { b = b.with_precleaned(v); }
     b
 }
 
@@ -285,9 +319,23 @@ fn op_version(_input: &Input) -> OpResult {
     }))
 }
 
+/// Map the bridge's historical default method token onto the post-remediation
+/// `ecg_clean` method dispatch (BUG-001). Pre-remediation Lamina ignored the
+/// `method` argument entirely and always applied the 0.5 Hz HP order-5
+/// pipeline; post-remediation Lamina accepts "", "neurokit", "pantompkins",
+/// "biosppy" (all numerically that same pipeline) and errors otherwise.
+/// Mapping the legacy default "none" to "" keeps the op's numerics and JSON
+/// schema identical to the pre-remediation baseline.
+fn ecg_method(method: &str) -> &str {
+    match method {
+        "none" => "",
+        other => other,
+    }
+}
+
 fn op_ecg_clean(input: &Input) -> OpResult {
     let c: EcgCleanCfg = cfg(input)?;
-    let method = c.method.as_deref().unwrap_or("none");
+    let method = ecg_method(c.method.as_deref().unwrap_or("none"));
     let out = ecg_clean(&arr(input)?, fs(input)?, method).map_err(OpError::lamina)?;
     Ok(json!({ "signal": sig_json(&out) }))
 }
@@ -296,7 +344,9 @@ fn op_ecg_peaks(input: &Input) -> OpResult {
     let c: EcgPeaksCfg = cfg(input)?;
     let fs = fs(input)?;
     // Pipeline mirrors Lamina tests: clean first, then detect on the cleaned signal.
-    let cleaned = ecg_clean(&arr(input)?, fs, "none").map_err(OpError::lamina)?;
+    // "none" -> "" mapping per ecg_method(): preserves baseline numerics under
+    // the post-remediation method dispatch (BUG-001).
+    let cleaned = ecg_clean(&arr(input)?, fs, ecg_method("none")).map_err(OpError::lamina)?;
     let peaks = ecg_findpeaks_config(&cleaned, fs, &ecg_peak_cfg(&c)).map_err(OpError::lamina)?;
     let mut out = json!({ "peaks": &peaks, "count": peaks.len() });
     if c.return_cleaned.unwrap_or(false) {
@@ -493,8 +543,18 @@ fn op_sample_entropy(input: &Input) -> OpResult {
     }))
 }
 
-fn op_rppg_algorithm(input: &Input) -> OpResult {
-    let c: RppgCfg = cfg(input)?;
+/// Shared rPPG raw-algorithm sliding-window pipeline used by the
+/// `rppg-algorithm` and `rppg-polarity` ops (identical input schema and
+/// overlap-trimmed concatenation semantics for both).
+struct RppgWindows {
+    waveform: Vec<f64>,
+    timestamps_sec: Vec<f64>,
+    algorithm: RppgAlgorithmId,
+    n_windows: usize,
+    mean_sampling_rate_hz: f64,
+}
+
+fn run_rppg_windows(input: &Input, c: &RppgCfg) -> std::result::Result<RppgWindows, OpError> {
     let ts = input.timestamps_sec.as_ref()
         .ok_or_else(|| OpError::bad_request("missing required field 'timestamps_sec'"))?;
     let (r, g, b) = (
@@ -578,12 +638,206 @@ fn op_rppg_algorithm(input: &Input) -> OpResult {
         win_start += rc.window.step_sec;
     }
 
+    Ok(RppgWindows {
+        waveform,
+        timestamps_sec: out_ts,
+        algorithm: rc.algorithm,
+        n_windows,
+        mean_sampling_rate_hz: mean_fs,
+    })
+}
+
+fn op_rppg_algorithm(input: &Input) -> OpResult {
+    let c: RppgCfg = cfg(input)?;
+    let w = run_rppg_windows(input, &c)?;
     Ok(json!({
-        "waveform": waveform,
-        "timestamps_sec": out_ts,
-        "algorithm": format!("{:?}", rc.algorithm),
-        "n_windows": n_windows,
-        "mean_sampling_rate_hz": mean_fs,
+        "waveform": w.waveform,
+        "timestamps_sec": w.timestamps_sec,
+        "algorithm": format!("{:?}", w.algorithm),
+        "n_windows": w.n_windows,
+        "mean_sampling_rate_hz": w.mean_sampling_rate_hz,
+    }))
+}
+
+// ---------------------------------------------------------------------------
+// Revalidation extension ops (additive; see SPEC.md addendum §A)
+// ---------------------------------------------------------------------------
+
+/// eda-clean-config: run `eda_clean_config` with an explicit
+/// `EdaCleaningConfig`, exposing the post-remediation valid-cutoff /
+/// near-Nyquist / above-Nyquist / pass-through paths (BUG-003).
+fn op_eda_clean_config(input: &Input) -> OpResult {
+    let c: EdaCleanConfigCfg = cfg(input)?;
+    let fs = fs(input)?;
+    let mut b = EdaCleaningConfig::new();
+    // Tri-state lowpass_cutoff_hz: absent = Lamina default; explicit null =
+    // None (no low-pass at all); number = cutoff. Read from the raw config map
+    // because serde Option fields collapse null and absent.
+    if let Some(Value::Object(map)) = &input.config {
+        if let Some(v) = map.get("lowpass_cutoff_hz") {
+            b.lowpass_cutoff_hz = if v.is_null() {
+                None
+            } else {
+                Some(v.as_f64().ok_or_else(|| {
+                    OpError::bad_request("config 'lowpass_cutoff_hz' must be a number or null")
+                })?)
+            };
+        }
+    }
+    if let Some(v) = c.filter_order { b = b.with_filter_order(v); }
+    if let Some(v) = c.pass_through_if_nyquist_violated {
+        b = b.with_pass_through_if_nyquist_violated(v);
+    }
+    let out = eda_clean_config(&arr(input)?, fs, &b).map_err(OpError::lamina)?;
+    let nyquist = fs / 2.0;
+    let filter_applied = matches!(b.lowpass_cutoff_hz, Some(cut) if cut < nyquist);
+    Ok(json!({
+        "signal": sig_json(&out),
+        "filter_applied": filter_applied,
+        "cutoff_hz": b.lowpass_cutoff_hz,
+        "nyquist_hz": nyquist,
+    }))
+}
+
+/// rppg-polarity: extract the raw rPPG window pipeline (same schema as
+/// `rppg-algorithm`), wrap the result in an `RppgSignal`, and convert it via
+/// `RppgSignal::to_bvp_waveform(SignalPolarity)` (BUG-005). Returns the BVP
+/// samples plus the polarity that was actually applied (what `AutoDetect`
+/// resolved to).
+fn op_rppg_polarity(input: &Input) -> OpResult {
+    let c: RppgCfg = cfg(input)?;
+    let polarity = match c.polarity.as_deref().unwrap_or("normal") {
+        "normal" => SignalPolarity::Normal,
+        "inverted" => SignalPolarity::Inverted,
+        "auto" | "auto_detect" | "autodetect" => SignalPolarity::AutoDetect,
+        other => {
+            return Err(OpError::bad_request(format!(
+                "unknown polarity '{other}' (normal|inverted|auto)"
+            )));
+        }
+    };
+    let w = run_rppg_windows(input, &c)?;
+    // Minimal quality summary: the raw-algorithm layer does not produce
+    // quality windows (that is extract_rppg's job); polarity conversion only
+    // reads timestamps/waveform/sampling_rate.
+    let signal = RppgSignal {
+        timestamps_sec: w.timestamps_sec.clone(),
+        waveform: w.waveform.clone(),
+        sampling_rate_hz: w.mean_sampling_rate_hz,
+        quality: RppgQualitySummary { overall: 1.0, valid_fraction: 1.0, segments: Vec::new() },
+        algorithm: w.algorithm,
+    };
+    let bvp = signal.to_bvp_waveform(polarity);
+    // Resolve the applied flip by comparing BVP against the raw waveform
+    // (to_bvp_waveform negates finite samples exactly when it flips).
+    let flipped = w
+        .waveform
+        .iter()
+        .zip(bvp.waveform.iter())
+        .find(|(a, _)| a.is_finite() && **a != 0.0)
+        .map(|(a, bv)| *bv == -*a)
+        .unwrap_or(false);
+    let resolved = if flipped { "inverted" } else { "normal" };
+    Ok(json!({
+        "waveform": bvp.waveform,
+        "timestamps_sec": bvp.timestamps_sec,
+        "sampling_rate_hz": bvp.sampling_rate_hz,
+        "algorithm": format!("{:?}", w.algorithm),
+        "polarity_requested": c.polarity.as_deref().unwrap_or("normal"),
+        "polarity_resolved": resolved,
+        "flipped": flipped,
+        "n_windows": w.n_windows,
+        "mean_sampling_rate_hz": w.mean_sampling_rate_hz,
+    }))
+}
+
+fn interval_quality_name(q: IntervalQuality) -> &'static str {
+    match q {
+        IntervalQuality::NormalNN => "normal_nn",
+        IntervalQuality::EctopicRR => "ectopic_rr",
+        IntervalQuality::ArtifactRR => "artifact_rr",
+        IntervalQuality::Missing => "missing",
+    }
+}
+
+/// hrv-correct: exercise the post-remediation interval pipeline
+/// (`classify_intervals` -> `clean_rr_intervals` -> `hrv_rmssd`/`hrv_mean_nn`;
+/// BUG-018). Input is either `rr_intervals_ms` directly or the same
+/// `peaks` + `signal_length` + `sampling_rate` envelope as the `hrv` op.
+fn op_hrv_correct(input: &Input) -> OpResult {
+    let c: HrvCorrectCfg = cfg(input)?;
+    let policy_name = c.policy.as_deref().unwrap_or("none");
+    let policy = match policy_name {
+        "none" => CorrectionPolicy::None,
+        "reject_invalid" => CorrectionPolicy::RejectInvalid,
+        "interpolate_linear" => CorrectionPolicy::InterpolateLinear,
+        "interpolate_cubic" => CorrectionPolicy::InterpolateCubic,
+        "percent_threshold" => CorrectionPolicy::PercentThreshold(
+            c.percent_threshold
+                .ok_or_else(|| OpError::bad_request(
+                    "policy 'percent_threshold' requires config 'percent_threshold' (0.0 < p < 1.0)"))?,
+        ),
+        other => {
+            return Err(OpError::bad_request(format!(
+                "unknown correction policy '{other}' (none|reject_invalid|interpolate_linear|interpolate_cubic|percent_threshold)")))
+        }
+    };
+
+    let rr: Array1<f64> = if let Some(v) = &input.rr_intervals_ms {
+        Array1::from_vec(v.clone())
+    } else {
+        // Same peak-train envelope as the `hrv` op.
+        let fs = fs(input)?;
+        let peaks = input
+            .peaks
+            .as_ref()
+            .ok_or_else(|| OpError::bad_request(
+                "missing 'rr_intervals_ms' (or 'peaks' + 'signal_length' + 'sampling_rate')"))?;
+        let n = input
+            .signal_length
+            .ok_or_else(|| OpError::bad_request("missing required field 'signal_length'"))?;
+        if peaks.iter().any(|&p| p >= n) {
+            return Err(OpError::bad_request("peak index out of range for signal_length"));
+        }
+        let mut mask = Array1::from_elem(n, false);
+        for &p in peaks {
+            mask[p] = true;
+        }
+        match peaks_to_intervals(&mask, fs) {
+            Ok(v) => v,
+            Err(lamina::SignalError::InsufficientPeaks { .. }) => Array1::<f64>::zeros(0),
+            Err(e) => return Err(OpError::lamina(e)),
+        }
+    };
+
+    let quality = classify_intervals(&rr, c.classify_threshold);
+    let quality_json: Vec<Value> = quality.iter().map(|&q| json!(interval_quality_name(q))).collect();
+
+    // Empty interval series -> empty outputs with null metrics (mirrors `hrv` op).
+    if rr.is_empty() {
+        return Ok(json!({
+            "nn_intervals_ms": Vec::<f64>::new(),
+            "n_input_intervals": 0,
+            "n_nn": 0,
+            "interval_quality": quality_json,
+            "policy": policy_name,
+            "rmssd_ms": Value::Null,
+            "mean_nn_ms": Value::Null,
+        }));
+    }
+
+    let nn = clean_rr_intervals(&rr, &policy).map_err(OpError::lamina)?;
+    // Insufficient cleaned intervals -> null (not an error), per SPEC §3.2 `hrv`.
+    let rmssd = hrv_rmssd(&nn).ok();
+    let mean_nn = hrv_mean_nn(&nn).ok();
+    Ok(json!({
+        "nn_intervals_ms": sig_json(&nn),
+        "n_input_intervals": rr.len(),
+        "n_nn": nn.len(),
+        "interval_quality": quality_json,
+        "policy": policy_name,
+        "rmssd_ms": rmssd,
+        "mean_nn_ms": mean_nn,
     }))
 }
 
@@ -607,6 +861,10 @@ const OPS: &[(&str, fn(&Input) -> OpResult)] = &[
     ("filter", op_filter),
     ("sample-entropy", op_sample_entropy),
     ("rppg-algorithm", op_rppg_algorithm),
+    // Revalidation extension ops (additive; SPEC.md addendum §A).
+    ("eda-clean-config", op_eda_clean_config),
+    ("rppg-polarity", op_rppg_polarity),
+    ("hrv-correct", op_hrv_correct),
 ];
 
 fn dispatch(op: &str, input: &Input) -> std::result::Result<OpResult, OpError> {

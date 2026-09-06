@@ -277,3 +277,62 @@ without touching `datasets/base.py`, `registry.py` structure, metrics, or runner
 
 Dataset statuses: `validated, partially_validated, inaccessible, unsupported_format,
 failed, not_attempted`.
+---
+
+## Appendix A — Revalidation extension (post-remediation)
+
+Added during the independent revalidation of post-remediation Lamina
+(`main @ fec2668`). **Additive only**: no existing op changed its JSON field
+names or numerical semantics. This section is the binding contract for the
+extension ops and for the revalidation-era adjustments below.
+
+### A.1 Revalidation-era adjustments to existing ops
+
+- **`ecg-clean` / `ecg-peaks` method mapping (BUG-001).** Post-remediation
+  `ecg_clean` dispatches on the `method` string (`""`, `"neurokit"`,
+  `"pantompkins"`, `"biosppy"` — all numerically the same 0.5 Hz HP order-5
+  pipeline — and `SignalError::InvalidCutoffFrequency` otherwise). The bridge's
+  historical default token `"none"` (ignored by pre-remediation Lamina) is now
+  mapped to `""` at the bridge boundary, so both ops keep their baseline
+  numerics and JSON schema. Callers may also pass the real method names.
+- **`rsp-cycles` config gains optional `precleaned: bool` (BUG-007).** Maps to
+  `RspProcessingConfig::with_precleaned`; absent = Lamina default (`false`,
+  i.e. internal re-cleaning — baseline behavior unchanged).
+- **`eda_findpeaks(phasic, fs)` / `rsp_findpeaks(cleaned, fs)` (BUG-004)** now
+  take an explicit `sampling_rate`. The existing bridge ops only used the
+  `*_config`/`eda_findpeaks_events` variants (already fs-explicit), so no
+  bridge op semantics changed.
+
+### A.2 New ops (ops-table addendum)
+
+| op | Lamina calls | input | result |
+|----|--------------|-------|--------|
+| `eda-clean-config` | `eda_clean_config(sig, fs, EdaCleaningConfig)` | signal, fs; cfg = `EdaCleaningConfig` fields: `lowpass_cutoff_hz` (**tri-state**: absent = Lamina default `Some(5.0)`; explicit JSON `null` = `None`, no low-pass at all; number = cutoff Hz), `filter_order`, `pass_through_if_nyquist_violated` | `signal`, `filter_applied` (bool — false when pass-through path taken), `cutoff_hz` (resolved, null if disabled), `nyquist_hz`. Above-Nyquist cutoff with `pass_through_if_nyquist_violated: false` surfaces `lamina_error` (`InvalidCutoffFrequency`) |
+| `rppg-polarity` | raw-algorithm sliding-window pipeline (identical to `rppg-algorithm`, incl. overlap-trimmed concatenation) → wrap in `RppgSignal` → `RppgSignal::to_bvp_waveform(SignalPolarity)` | identical to `rppg-algorithm` plus cfg `polarity`: `normal`\|`inverted`\|`auto` (default `normal`) | `waveform` (BVP samples), `timestamps_sec`, `sampling_rate_hz`, `algorithm`, `polarity_requested`, `polarity_resolved` (`normal`\|`inverted` — what `auto` inferred, resolved by comparing the returned BVP against the raw waveform), `flipped` (bool), `n_windows`, `mean_sampling_rate_hz` |
+| `hrv-correct` | `peaks_to_intervals` (if peaks given) → `classify_intervals(rr, classify_threshold)` → `clean_rr_intervals(rr, CorrectionPolicy)` → `hrv_rmssd`, `hrv_mean_nn` | either `rr_intervals_ms` (float array, ms) **or** the `hrv`-op envelope (`peaks`, `signal_length`, `sampling_rate`); cfg: `policy` = `none`\|`reject_invalid`\|`interpolate_linear`\|`interpolate_cubic`\|`percent_threshold` (default `none`; `percent_threshold` requires cfg `percent_threshold`, 0.0 < p < 1.0), `classify_threshold` (absent = Lamina default 0.20) | `nn_intervals_ms`, `n_input_intervals`, `n_nn`, `interval_quality` (per-input-interval kind: `normal_nn`\|`ectopic_rr`\|`artifact_rr`\|`missing`), `policy` (echo), `rmssd_ms`, `mean_nn_ms` (null when insufficient; mirrors `hrv` op). Empty interval input yields empty outputs + null metrics (not an error) |
+
+### A.3 Notes and known API gaps (observed, not fixed)
+
+- There is **no public `sdnn` function** in `lamina::hrv`; `hrv-correct`
+  therefore returns `rmssd_ms` and `mean_nn_ms` only. (`sdnn` exists only
+  inside `features::cardiac::CardiacFeatures`, not as a standalone op input.)
+- There is **no public per-beat `BeatQuality` classifier**: the `BeatQuality`
+  enum is exported (`lamina::hrv::BeatQuality`) but no public function
+  produces or consumes it, so the planned `beat-quality` op was **not added**
+  (it would require fabricating classifications bridge-side — a hack).
+- `classify_intervals` hardcodes the 300–2000 ms artifact bounds; the
+  `IntervalCleaningConfig` (`min_valid_interval_ms` / `max_valid_interval_ms`)
+  sketched in `docs/validation/REMEDIATION_PLAN.md` §4.4 does **not** exist in
+  the shipped API (`clean_rr_intervals` takes only `rr` + `policy`).
+- `CorrectionPolicy::InterpolateCubic` currently executes the **same linear
+  interpolation code path** as `InterpolateLinear` (shared match arm in
+  `src/hrv/quality.rs`); it does not perform cubic spline interpolation as the
+  remediation plan describes.
+
+### A.4 Python wrappers & tests
+
+`bridge.py` gains typed wrappers `eda_clean_config(signal, fs, config)`,
+`rppg_polarity(ts, r, g, b, polarity=..., ...)`, and
+`hrv_correct(rr_intervals_ms=None, *, peaks=..., signal_length=..., fs=..., policy=...)`.
+Hermetic tests live in `validation/tests/test_revalidation_ops.py` (same
+fixtures + inline synthetics; no network).
