@@ -4,7 +4,9 @@ use lamina::ecg::{EcgPeakDetectionConfig, ecg_findpeaks_config};
 use lamina::eda::{
     EdaDecompositionConfig, EdaPeakDetectionConfig, eda_clean, eda_decompose, eda_findpeaks_events,
 };
-use lamina::features::{FeatureConfig, MultimodalInput, WindowConfig, extract_features};
+use lamina::features::{
+    FeatureConfig, MultimodalInput, WindowConfig, extract_features, extract_features_naive,
+};
 use lamina::multimodal::{cardiorespiratory_phase_coupling, ecg_ppg_timing};
 use lamina::ppg::{PpgPeakDetectionConfig, ppg_findpeaks_config};
 use lamina::rsp::{
@@ -201,40 +203,7 @@ fn bench_feature_extraction(c: &mut Criterion) {
     let mut group = c.benchmark_group("feature_extraction_layer");
     let fs = 100.0;
 
-    for &dur_sec in &[60.0, 300.0, 1800.0, 3600.0] {
-        let n_events = (dur_sec * 1.0) as usize; // 1 beat/sec
-        let r_peaks: Vec<usize> = (0..n_events)
-            .map(|i| (i as f64 * fs).round() as usize)
-            .collect();
-        let ppg_peaks: Vec<usize> = (0..n_events)
-            .map(|i| ((i as f64 + 0.2) * fs).round() as usize)
-            .collect();
-
-        let input = MultimodalInput::new()
-            .with_ecg(r_peaks, fs, 0.0)
-            .unwrap()
-            .with_ppg(ppg_peaks, fs, 0.0)
-            .unwrap();
-
-        let cfg = FeatureConfig {
-            window: WindowConfig {
-                window_duration_sec: 60.0,
-                step_sec: 30.0,
-                min_coverage: 0.8,
-            },
-            ..FeatureConfig::default()
-        };
-
-        group.bench_with_input(
-            BenchmarkId::new("extract_features_sec", dur_sec as usize),
-            &dur_sec,
-            |b, _| {
-                b.iter(|| extract_features(&input, &cfg).unwrap());
-            },
-        );
-    }
-
-    // Large event workload benchmark (10k, 100k, 1M events)
+    // 1. Event Count Matrix (10k, 100k, 1M events)
     for &n_events in &[10_000, 100_000, 1_000_000] {
         let r_peaks: Vec<usize> = (0..n_events)
             .map(|i| (i as f64 * 0.1 * fs).round() as usize) // 10 Hz event density
@@ -252,13 +221,66 @@ fn bench_feature_extraction(c: &mut Criterion) {
         };
 
         group.bench_with_input(
-            BenchmarkId::new("dense_events_count", n_events),
+            BenchmarkId::new("events_count_60s_win_30s_hop", n_events),
             &n_events,
             |b, _| {
                 b.iter(|| extract_features(&input, &cfg).unwrap());
             },
         );
     }
+
+    // 2. Window Duration & Hop Size Matrix (30s, 60s, 300s durations; 1.0x, 0.5x, 0.1x hops)
+    let dur_sec = 600.0; // 10 min recording
+    let n_events = (dur_sec * fs) as usize / 100; // 1 beat / sec
+    let r_peaks: Vec<usize> = (0..n_events)
+        .map(|i| (i as f64 * fs).round() as usize)
+        .collect();
+    let input = MultimodalInput::new().with_ecg(r_peaks, fs, 0.0).unwrap();
+
+    for &win_dur in &[30.0, 60.0, 300.0] {
+        for &hop_mult in &[1.0, 0.5, 0.1] {
+            let step_sec = win_dur * hop_mult;
+            let cfg = FeatureConfig {
+                window: WindowConfig {
+                    window_duration_sec: win_dur,
+                    step_sec,
+                    min_coverage: 0.8,
+                },
+                ..FeatureConfig::default()
+            };
+
+            let label = format!("win_{}s_hop_{:.1}x", win_dur as usize, hop_mult);
+            group.bench_function(BenchmarkId::new("window_hop_matrix", label), |b| {
+                b.iter(|| extract_features(&input, &cfg).unwrap());
+            });
+        }
+    }
+
+    // 3. Naive vs Optimized comparison on moderate workload (10,000 events)
+    let n_events_comp = 10_000;
+    let r_peaks_comp: Vec<usize> = (0..n_events_comp)
+        .map(|i| (i as f64 * 0.1 * fs).round() as usize)
+        .collect();
+    let input_comp = MultimodalInput::new()
+        .with_ecg(r_peaks_comp, fs, 0.0)
+        .unwrap();
+
+    let cfg_comp = FeatureConfig {
+        window: WindowConfig {
+            window_duration_sec: 60.0,
+            step_sec: 10.0, // Overlapping hops
+            min_coverage: 0.8,
+        },
+        ..FeatureConfig::default()
+    };
+
+    group.bench_function("comparison_optimized_10k_events", |b| {
+        b.iter(|| extract_features(&input_comp, &cfg_comp).unwrap());
+    });
+
+    group.bench_function("comparison_naive_10k_events", |b| {
+        b.iter(|| extract_features_naive(&input_comp, &cfg_comp).unwrap());
+    });
 
     group.finish();
 }

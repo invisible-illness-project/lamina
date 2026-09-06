@@ -120,45 +120,33 @@ impl PrecomputedCoupling {
         })
     }
 
-    /// Extract aggregated window coupling features for a specific window.
+    /// Extract aggregated window coupling features using pre-resolved observation index ranges.
     #[allow(clippy::too_many_arguments)]
-    pub fn extract_for_window(
+    pub fn extract_for_window_range(
         &self,
         r_peaks: Option<&[usize]>,
+        r_range: (usize, usize),
         ecg_fs: f64,
         ecg_off: f64,
         rsp_cycles: Option<&[RespirationCycle]>,
+        c_range: (usize, usize),
         rsp_fs: f64,
         rsp_off: f64,
-        window: &FeatureWindow,
+        delay_range: (usize, usize),
+        phase_range: (usize, usize),
+        assoc_range: (usize, usize),
+        _window: &FeatureWindow,
     ) -> Result<CouplingFeatures> {
         // 1. RSA
         let (rsa_bpm, rsa_rr) = if let (Some(r), Some(c)) = (r_peaks, rsp_cycles) {
-            let win_r: Vec<usize> = r
-                .iter()
-                .copied()
-                .filter(|&idx| {
-                    if let Ok(t) = sample_to_time(idx, ecg_fs, ecg_off) {
-                        t >= window.start_time_sec && t < window.end_time_sec
-                    } else {
-                        false
-                    }
-                })
-                .collect();
-            let win_c: Vec<RespirationCycle> = c
-                .iter()
-                .filter(|cyc| {
-                    if let Ok(t) = sample_to_time(cyc.inspiration_index, rsp_fs, rsp_off) {
-                        t >= window.start_time_sec && t < window.end_time_sec
-                    } else {
-                        false
-                    }
-                })
-                .cloned()
-                .collect();
+            let (r_s, r_e) = (r_range.0.min(r.len()), r_range.1.min(r.len()));
+            let (c_s, c_e) = (c_range.0.min(c.len()), c_range.1.min(c.len()));
+
+            let win_r = &r[r_s..r_e];
+            let win_c = &c[c_s..c_e];
 
             if !win_r.is_empty() && !win_c.is_empty() {
-                if let Ok(res) = rsa(&win_r, ecg_fs, ecg_off, &win_c, rsp_fs, rsp_off) {
+                if let Ok(res) = rsa(win_r, ecg_fs, ecg_off, win_c, rsp_fs, rsp_off) {
                     (Some(res.amplitude_bpm), Some(res.amplitude_rr_sec))
                 } else {
                     (None, None)
@@ -171,12 +159,9 @@ impl PrecomputedCoupling {
         };
 
         // 2. Cardiorespiratory Phase Coupling
-        let win_phases: Vec<f64> = self
-            .cr_phases
-            .iter()
-            .filter(|(t, _)| *t >= window.start_time_sec && *t < window.end_time_sec)
-            .map(|(_, p)| *p)
-            .collect();
+        let p_s = phase_range.0.min(self.cr_phases.len());
+        let p_e = phase_range.1.min(self.cr_phases.len());
+        let win_phases: Vec<f64> = self.cr_phases[p_s..p_e].iter().map(|(_, p)| *p).collect();
 
         let (conc, mean_p) = if !win_phases.is_empty() {
             if let Ok(coupling_res) = cardiorespiratory_phase_coupling(&win_phases) {
@@ -192,10 +177,10 @@ impl PrecomputedCoupling {
         };
 
         // 3. ECG-PPG Pulse Delay
-        let win_delays: Vec<f64> = self
-            .pulse_delays
+        let d_s = delay_range.0.min(self.pulse_delays.len());
+        let d_e = delay_range.1.min(self.pulse_delays.len());
+        let win_delays: Vec<f64> = self.pulse_delays[d_s..d_e]
             .iter()
-            .filter(|(t, _)| *t >= window.start_time_sec && *t < window.end_time_sec)
             .map(|(_, d)| *d)
             .collect();
 
@@ -212,11 +197,9 @@ impl PrecomputedCoupling {
         };
 
         // 4. EDA Cardiorespiratory Associations
-        let scr_assoc_count = self
-            .eda_assocs
-            .iter()
-            .filter(|&t| *t >= window.start_time_sec && *t < window.end_time_sec)
-            .count();
+        let a_s = assoc_range.0.min(self.eda_assocs.len());
+        let a_e = assoc_range.1.min(self.eda_assocs.len());
+        let scr_assoc_count = a_e.saturating_sub(a_s);
 
         Ok(CouplingFeatures {
             rsa_amplitude_bpm: rsa_bpm,
@@ -227,6 +210,114 @@ impl PrecomputedCoupling {
             pulse_delay_std_sec: delay_std,
             scr_cardiac_association_count: scr_assoc_count,
         })
+    }
+
+    /// Extract aggregated window coupling features for a specific window.
+    #[allow(clippy::too_many_arguments)]
+    pub fn extract_for_window(
+        &self,
+        r_peaks: Option<&[usize]>,
+        ecg_fs: f64,
+        ecg_off: f64,
+        rsp_cycles: Option<&[RespirationCycle]>,
+        rsp_fs: f64,
+        rsp_off: f64,
+        window: &FeatureWindow,
+    ) -> Result<CouplingFeatures> {
+        let r_range = if let Some(r) = r_peaks {
+            let mut s = None;
+            let mut e = None;
+            for (i, &idx) in r.iter().enumerate() {
+                if matches!(
+                    sample_to_time(idx, ecg_fs, ecg_off),
+                    Ok(t) if t >= window.start_time_sec && t < window.end_time_sec
+                ) {
+                    if s.is_none() {
+                        s = Some(i);
+                    }
+                    e = Some(i + 1);
+                }
+            }
+            (s.unwrap_or(0), e.unwrap_or(0))
+        } else {
+            (0, 0)
+        };
+
+        let c_range = if let Some(c) = rsp_cycles {
+            let mut s = None;
+            let mut e = None;
+            for (i, cyc) in c.iter().enumerate() {
+                if matches!(
+                    sample_to_time(cyc.inspiration_index, rsp_fs, rsp_off),
+                    Ok(t) if t >= window.start_time_sec && t < window.end_time_sec
+                ) {
+                    if s.is_none() {
+                        s = Some(i);
+                    }
+                    e = Some(i + 1);
+                }
+            }
+            (s.unwrap_or(0), e.unwrap_or(0))
+        } else {
+            (0, 0)
+        };
+
+        let delay_range = {
+            let mut s = None;
+            let mut e = None;
+            for (i, (t, _)) in self.pulse_delays.iter().enumerate() {
+                if *t >= window.start_time_sec && *t < window.end_time_sec {
+                    if s.is_none() {
+                        s = Some(i);
+                    }
+                    e = Some(i + 1);
+                }
+            }
+            (s.unwrap_or(0), e.unwrap_or(0))
+        };
+
+        let phase_range = {
+            let mut s = None;
+            let mut e = None;
+            for (i, (t, _)) in self.cr_phases.iter().enumerate() {
+                if *t >= window.start_time_sec && *t < window.end_time_sec {
+                    if s.is_none() {
+                        s = Some(i);
+                    }
+                    e = Some(i + 1);
+                }
+            }
+            (s.unwrap_or(0), e.unwrap_or(0))
+        };
+
+        let assoc_range = {
+            let mut s = None;
+            let mut e = None;
+            for (i, t) in self.eda_assocs.iter().enumerate() {
+                if *t >= window.start_time_sec && *t < window.end_time_sec {
+                    if s.is_none() {
+                        s = Some(i);
+                    }
+                    e = Some(i + 1);
+                }
+            }
+            (s.unwrap_or(0), e.unwrap_or(0))
+        };
+
+        self.extract_for_window_range(
+            r_peaks,
+            r_range,
+            ecg_fs,
+            ecg_off,
+            rsp_cycles,
+            c_range,
+            rsp_fs,
+            rsp_off,
+            delay_range,
+            phase_range,
+            assoc_range,
+            window,
+        )
     }
 }
 

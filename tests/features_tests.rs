@@ -575,3 +575,119 @@ fn test_features_end_to_end_multimodal_pipeline() {
         assert!(fv.quality.usable_feature_count > 0);
     }
 }
+
+// ============================================================================
+// Group K — Ordering Invariant & Oracle Parity Hardening Tests
+// ============================================================================
+
+#[test]
+fn test_unsorted_events_returns_error() {
+    let cfg = FeatureConfig::default();
+
+    // Unsorted ECG peaks
+    let input_ecg = MultimodalInput::new()
+        .with_ecg(vec![500, 100, 300], 100.0, 0.0)
+        .unwrap();
+    assert!(matches!(
+        extract_features(&input_ecg, &cfg),
+        Err(SignalError::UnsortedEvents)
+    ));
+
+    // Unsorted PPG peaks
+    let input_ppg = MultimodalInput::new()
+        .with_ppg(vec![500, 100, 300], 100.0, 0.0)
+        .unwrap();
+    assert!(matches!(
+        extract_features(&input_ppg, &cfg),
+        Err(SignalError::UnsortedEvents)
+    ));
+
+    // Unsorted RSP cycles
+    let cycles = vec![
+        RespirationCycle {
+            inspiration_index: 200,
+            expiration_index: 250,
+            next_inspiration_index: 300,
+            duration_sec: 1.0,
+            respiratory_rate_bpm: 60.0,
+            amplitude: 1.0,
+        },
+        RespirationCycle {
+            inspiration_index: 50,
+            expiration_index: 100,
+            next_inspiration_index: 150,
+            duration_sec: 1.0,
+            respiratory_rate_bpm: 60.0,
+            amplitude: 1.0,
+        },
+    ];
+    let input_rsp = MultimodalInput::new().with_rsp(cycles, 100.0, 0.0).unwrap();
+    assert!(matches!(
+        extract_features(&input_rsp, &cfg),
+        Err(SignalError::UnsortedEvents)
+    ));
+}
+
+#[test]
+fn test_oracle_equivalence_small_hop_dense_events() {
+    let fs = 100.0;
+    // 60 seconds of signal with high beat density (approx 2 beats/sec)
+    let r_peaks: Vec<usize> = (0..120).map(|i| (i as f64 * 0.5 * fs) as usize).collect();
+    let ppg_peaks: Vec<usize> = r_peaks.iter().map(|&r| r + 20).collect();
+
+    let input = MultimodalInput::new()
+        .with_ecg(r_peaks, fs, 0.0)
+        .unwrap()
+        .with_ppg(ppg_peaks, fs, 0.0)
+        .unwrap();
+
+    let cfg = FeatureConfig {
+        window: WindowConfig {
+            window_duration_sec: 10.0,
+            step_sec: 1.0, // Highly overlapping 1s hop
+            min_coverage: 0.8,
+        },
+        ..FeatureConfig::default()
+    };
+
+    let fvs_opt = extract_features(&input, &cfg).unwrap();
+    let fvs_naive = extract_features_naive(&input, &cfg).unwrap();
+
+    assert_eq!(fvs_opt.len(), fvs_naive.len());
+    assert!(!fvs_opt.is_empty());
+
+    for (opt, naive) in fvs_opt.iter().zip(fvs_naive.iter()) {
+        assert!((opt.window.start_time_sec - naive.window.start_time_sec).abs() < 1e-6);
+        assert_eq!(opt.cardiac.beat_count, naive.cardiac.beat_count);
+
+        if let (Some(a), Some(b)) = (opt.cardiac.mean_hr_bpm, naive.cardiac.mean_hr_bpm) {
+            assert!((a - b).abs() < 1e-6);
+        } else {
+            assert_eq!(
+                opt.cardiac.mean_hr_bpm.is_some(),
+                naive.cardiac.mean_hr_bpm.is_some()
+            );
+        }
+
+        if let (Some(a), Some(b)) = (opt.cardiac.sdnn_ms, naive.cardiac.sdnn_ms) {
+            assert!((a - b).abs() < 1e-6);
+        } else {
+            assert_eq!(
+                opt.cardiac.sdnn_ms.is_some(),
+                naive.cardiac.sdnn_ms.is_some()
+            );
+        }
+
+        if let (Some(a), Some(b)) = (
+            opt.coupling.mean_pulse_delay_sec,
+            naive.coupling.mean_pulse_delay_sec,
+        ) {
+            assert!((a - b).abs() < 1e-6);
+        } else {
+            assert_eq!(
+                opt.coupling.mean_pulse_delay_sec.is_some(),
+                naive.coupling.mean_pulse_delay_sec.is_some()
+            );
+        }
+    }
+}

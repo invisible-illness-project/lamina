@@ -232,29 +232,40 @@ Lamina provides a configurable windowed feature extraction engine that transform
 ### 6.1 Window Generation & Time Boundaries (`window`)
 - **Half-Open Boundaries $[t_{\text{start}}, t_{\text{end}})$**: Sliding feature windows (`FeatureWindow`) are generated using exact physical timestamps (seconds).
 - **Physical to Sample Index Mapping (`time_range_to_sample_range`)**: Maps physical interval $[t_{\text{start}}, t_{\text{end}})$ to discrete sample indices $[i_{\text{start}}, i_{\text{end}})$ under $t_i = \text{offset\_sec} + \frac{i}{F_s}$ with strict half-open inclusion/exclusion without floating-point epsilons.
-- **Monotonic Range Lookup (`EventCursor`)**: Monotonic two-pointer index advancement resolves window event bounds in $O(N + W)$ total time across the recording.
+- **Monotonic Range Lookup (`EventCursor`)**: Monotonic two-pointer index advancement resolves window event bounds in $O(N + W)$ total time across the recording, eliminating per-window $O(N)$ full-recording scans.
 
 ### 6.2 Modality Feature Extraction & Boundary Conventions
 - **Cardiac Features (`cardiac`)**:
-  - **Terminating R-Peak Convention**: An RR interval $(R_{k-1}, R_k)$ is associated with window $[t_{\text{start}}, t_{\text{end}})$ if and only if terminating peak $t(R_k) \in [t_{\text{start}}, t_{\text{end}})$. Reconciles boundary-crossing intervals without orphan intervals or double-counting.
+  - **Pre-Resolved Window Bounds**: `cardiac_features_range()` accepts pre-resolved `(start_idx, end_idx)` bounds into the R-peak series, eliminating per-window scans over the entire recording.
+  - **Terminating R-Peak Boundary Convention**: An RR interval $(R_{k-1}, R_k)$ belongs to window $[t_{\text{start}}, t_{\text{end}})$ if and only if terminating peak $t(R_k) \in [t_{\text{start}}, t_{\text{end}})$. When $start\_idx > 0$, peak $R_{start\_idx - 1}$ is retained so the left-boundary-crossing RR interval remains available without orphan intervals or double-counting.
   - **Explicit HRV Statistics**: SDNN is explicitly calculated as the population standard deviation ($\sqrt{\frac{1}{M} \sum (RR_m - \overline{RR})^2}$); `rr_std_ms` is documented as an alias to `sdnn_ms`.
 - **EDA Features (`eda`)**: Mean/median/std Tonic SCL ($\mu\text{S}$), mean/std Phasic SCR ($\mu\text{S}$), SCR event count, normalized SCR rate ($\text{events/min}$), and mean/median SCR amplitude ($\mu\text{S}$) & rise time ($\text{seconds}$). Enforces $N_{\text{tonic}} == N_{\text{phasic}}$ signal dimension equality (`SignalError::DimensionMismatch`).
 - **Respiration Features (`respiration`)**: Mean/median/std respiratory rate ($\text{BPM}$), mean cycle duration ($\text{seconds}$), cycle count, and amplitude statistics ($\text{peak-to-trough}$).
-- **Multimodal Coupling Features (`coupling`)**: Precomputes recording-level coupling observations once (`PrecomputedCoupling`) and aggregates per window: within-window RSA heart rate modulation ($\Delta \text{BPM}$, $\Delta \text{RR}_{\text{sec}}$), cardiorespiratory phase concentration ($R \in [0.0, 1.0]$), mean phase ($\bar{\phi}$), mean/std ECG-PPG pulse delay ($\text{seconds}$), and SCR cardiorespiratory association counts.
+- **Multimodal Coupling Features (`coupling`)**: Precomputes recording-level coupling observations once (`PrecomputedCoupling`) and aggregates per window via pre-resolved observation ranges `(r_range, c_range, delay_range, phase_range, assoc_range)`: within-window RSA heart rate modulation ($\Delta \text{BPM}$, $\Delta \text{RR}_{\text{sec}}$), cardiorespiratory phase concentration ($R \in [0.0, 1.0]$), mean phase ($\bar{\phi}$), mean/std ECG-PPG pulse delay ($\text{seconds}$), and SCR cardiorespiratory association counts.
 
-### 6.3 Input Containers & Algorithmic Complexity (`mod`)
-- **Cohesive Input Containers (`MultimodalInput`)**: Bundles sample-indexed event vectors and continuous signal arrays with required timing metadata using `TimedEvents<T>` and `TimedSignal` containers.
-- **No Fabricated Measurements**: Absent data produces `None` statistics instead of artificial zeros ($0.0$).
-- **Complexity Breakdown**:
-  - **Window Range Lookup**: Monotonic cursor advancement takes $O(N + W)$ total operations.
-  - **Prefix / Count Aggregations**: Count, sum, and rate statistics take $O(1)$ per window.
-  - **Median Statistics**: Computed over $K$ window events in $O(K \log K)$ per window.
+### 6.3 Event Ordering Invariants & Fallible Validation
+- **Chronological Ordering Contract**: All event timestamp and sample index series (`ecg_r_peaks`, `ppg_peaks`, `eda_scr_events`, `rsp_cycles`) must be sorted in non-decreasing chronological order.
+- **Validation**: Enforced at `MultimodalInput` construction / boundary validation points via `validate_sorted_slice`, returning `Err(SignalError::UnsortedEvents)` if unsorted. Performed once per recording ($O(N)$), avoiding repeated per-window checks.
 
-### 6.4 Feature Quality Assessment & Coverage Semantics (`quality`)
-- **Usable Feature Coverage (`FeatureCoverage`)**: Evaluates modality coverage as the fraction of usable duration within window $[t_{\text{start}}, t_{\text{end}})$. Overall coverage is defined as the mean coverage across present modalities:
-  $$\text{overall} = \text{mean}(\text{coverage}_{\text{modality}} \text{ for present modalities})$$
-  Absent modalities produce `None` and do not penalize overall coverage.
-- **Transparent Quality Summary (`FeatureQuality`)**: Tracks usable coverage, modality validity flags (`cardiac_valid`, `eda_valid`, `respiration_valid`, `coupling_valid`), usable feature count vs schema total ($30$), and specific issue codes (`InsufficientBeats`, `InsufficientRespirationCycles`, `InsufficientScrEvents`, `LowCoverage`).
+### 6.4 Algorithmic Complexity Breakdown
+Complexity is distinguished by layer (range lookup vs. per-window aggregation):
+
+| Operation | Complexity | Description |
+| :--- | :---: | :--- |
+| Window generation | $O(W)$ | Computes $W$ feature windows from time bounds |
+| Monotonic event range lookup | $O(N + W)$ total | Monotonic `EventCursor` traversal across $W$ windows |
+| Binary-search range lookup | $O(\log N)$ per window | Fallback binary search lookup where monotonic cursor is uninitialized |
+| Count / rate statistics | $O(1)$ per window | Window-bounded element count and rate calculations |
+| Cardiac HRV statistics | $O(K)$ per window | Iterates over $K$ window-bounded beats/intervals |
+| Median / order statistics | $O(K \log K)$ per window | Sorting $K$ window observations for median estimation |
+| Coupling feature aggregation | $O(K_c)$ per window | Aggregating $K_c$ pre-matched coupling observations in window |
+
+### 6.5 Feature Quality Assessment & Coverage Semantics (`quality`)
+- **Temporal Availability Coverage**: Evaluates modality coverage strictly as the fraction of temporal overlap between window $[t_{\text{start}}, t_{\text{end}})$ and modality recording bounds:
+  $$\text{coverage}_{\text{modality}} = \frac{\text{overlap}(\text{window}, \text{modality bounds})}{\text{window duration}}$$
+  *Clarification*: This measures temporal data availability, **not** signal quality or artifact-free physiological quality.
+- **Separate Quality Checks**: Physiological event sufficiency is assessed separately via configurable thresholds (`min_beats`, `min_respiration_cycles`, `min_scr_events`).
+- **Transparent Quality Summary (`FeatureQuality`)**: Tracks temporal coverage, modality validity flags (`cardiac_valid`, `eda_valid`, `respiration_valid`, `coupling_valid`), usable feature count vs schema total ($30$), and specific issue codes (`InsufficientBeats`, `InsufficientRespirationCycles`, `InsufficientScrEvents`, `LowCoverage`).
 
 ---
 

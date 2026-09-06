@@ -21,6 +21,8 @@ pub enum SignalError {
     InsufficientPeaks { required: usize, provided: usize },
     /// Input array dimensions mismatch.
     DimensionMismatch,
+    /// Event series timestamps or sample indices are not chronologically sorted.
+    UnsortedEvents,
 }
 
 impl fmt::Display for SignalError {
@@ -65,6 +67,9 @@ impl fmt::Display for SignalError {
             }
             SignalError::DimensionMismatch => {
                 write!(f, "Input signal dimensions mismatch")
+            }
+            SignalError::UnsortedEvents => {
+                write!(f, "Event series is not chronologically sorted")
             }
         }
     }
