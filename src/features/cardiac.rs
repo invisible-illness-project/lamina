@@ -169,7 +169,10 @@ pub fn cardiac_features_range(
     })
 }
 
-/// Extract cardiac physiological features from ECG R-peaks intersecting a feature window.
+/// Extract cardiac physiological features from ECG R-peaks intersecting a single feature window.
+///
+/// Discovers window index bounds in $O(\log N)$ time using binary search before calling [`cardiac_features_range`].
+/// For batch extraction across multiple sliding windows, prefer using pre-resolved bounds from [`EventCursor`].
 pub fn cardiac_features(
     r_peaks: &[usize],
     sampling_rate: f64,
@@ -186,23 +189,16 @@ pub fn cardiac_features(
         return Ok(CardiacFeatures::empty());
     }
 
-    let mut start_idx = None;
-    let mut end_idx = None;
+    let start_idx = r_peaks.partition_point(|&idx| {
+        sample_to_time(idx, sampling_rate, offset_sec).unwrap_or(-1.0) < window.start_time_sec
+    });
+    let end_idx = r_peaks.partition_point(|&idx| {
+        sample_to_time(idx, sampling_rate, offset_sec).unwrap_or(-1.0) < window.end_time_sec
+    });
 
-    for (i, &idx) in r_peaks.iter().enumerate() {
-        let t = sample_to_time(idx, sampling_rate, offset_sec)?;
-        if t >= window.start_time_sec && t < window.end_time_sec {
-            if start_idx.is_none() {
-                start_idx = Some(i);
-            }
-            end_idx = Some(i + 1);
-        }
+    if start_idx >= end_idx {
+        return Ok(CardiacFeatures::empty());
     }
-
-    let (start_idx, end_idx) = match (start_idx, end_idx) {
-        (Some(s), Some(e)) => (s, e),
-        _ => return Ok(CardiacFeatures::empty()),
-    };
 
     cardiac_features_range(
         r_peaks,

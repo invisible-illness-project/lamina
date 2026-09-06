@@ -241,7 +241,7 @@ Lamina provides a configurable windowed feature extraction engine that transform
   - **Explicit HRV Statistics**: SDNN is explicitly calculated as the population standard deviation ($\sqrt{\frac{1}{M} \sum (RR_m - \overline{RR})^2}$); `rr_std_ms` is documented as an alias to `sdnn_ms`.
 - **EDA Features (`eda`)**: Mean/median/std Tonic SCL ($\mu\text{S}$), mean/std Phasic SCR ($\mu\text{S}$), SCR event count, normalized SCR rate ($\text{events/min}$), and mean/median SCR amplitude ($\mu\text{S}$) & rise time ($\text{seconds}$). Enforces $N_{\text{tonic}} == N_{\text{phasic}}$ signal dimension equality (`SignalError::DimensionMismatch`).
 - **Respiration Features (`respiration`)**: Mean/median/std respiratory rate ($\text{BPM}$), mean cycle duration ($\text{seconds}$), cycle count, and amplitude statistics ($\text{peak-to-trough}$).
-- **Multimodal Coupling Features (`coupling`)**: Precomputes recording-level coupling observations once (`PrecomputedCoupling`) and aggregates per window via pre-resolved observation ranges `(r_range, c_range, delay_range, phase_range, assoc_range)`: within-window RSA heart rate modulation ($\Delta \text{BPM}$, $\Delta \text{RR}_{\text{sec}}$), cardiorespiratory phase concentration ($R \in [0.0, 1.0]$), mean phase ($\bar{\phi}$), mean/std ECG-PPG pulse delay ($\text{seconds}$), and SCR cardiorespiratory association counts.
+- **Multimodal Coupling Features (`coupling`)**: Precomputes recording-level observation streams (`pulse_delays`, `cr_phases`, `eda_assocs`) once (`PrecomputedCoupling`) and aggregates them per window via pre-resolved range bounds `(r_range, c_range, delay_range, phase_range, assoc_range)`. RSA amplitude modulation ($\Delta \text{BPM}$, $\Delta \text{RR}_{\text{sec}}$) is evaluated as a window-local coupling metric over window-bounded beats and cycles. Also provides cardiorespiratory phase concentration ($R \in [0.0, 1.0]$), mean phase ($\bar{\phi}$), mean/std ECG-PPG pulse delay ($\text{seconds}$), and SCR cardiorespiratory association counts.
 
 ### 6.3 Event Ordering Invariants & Fallible Validation
 - **Chronological Ordering Contract**: All event timestamp and sample index series (`ecg_r_peaks`, `ppg_peaks`, `eda_scr_events`, `rsp_cycles`) must be sorted in non-decreasing chronological order.
@@ -254,11 +254,11 @@ Complexity is distinguished by layer (range lookup vs. per-window aggregation):
 | :--- | :---: | :--- |
 | Window generation | $O(W)$ | Computes $W$ feature windows from time bounds |
 | Monotonic event range lookup | $O(N + W)$ total | Monotonic `EventCursor` traversal across $W$ windows |
-| Binary-search range lookup | $O(\log N)$ per window | Fallback binary search lookup where monotonic cursor is uninitialized |
-| Count / rate statistics | $O(1)$ per window | Window-bounded element count and rate calculations |
+| Binary-search range lookup | $O(\log N)$ per window | Fallback binary search lookup for standalone single-window helper calls |
+| Count / rate statistics | $O(1)$ per window | Window-bounded element count ($e - s$) and rate calculations, given pre-resolved range bounds $(s, e)$ |
 | Cardiac HRV statistics | $O(K)$ per window | Iterates over $K$ window-bounded beats/intervals |
 | Median / order statistics | $O(K \log K)$ per window | Sorting $K$ window observations for median estimation |
-| Coupling feature aggregation | $O(K_c)$ per window | Aggregating $K_c$ pre-matched coupling observations in window |
+| Coupling feature aggregation | $O(K_c)$ per window | Aggregating $K_c$ pre-matched coupling observations in window (RSA computed over window beats/cycles) |
 
 ### 6.5 Feature Quality Assessment & Coverage Semantics (`quality`)
 - **Temporal Availability Coverage**: Evaluates modality coverage strictly as the fraction of temporal overlap between window $[t_{\text{start}}, t_{\text{end}})$ and modality recording bounds:

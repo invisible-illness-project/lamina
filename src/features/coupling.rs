@@ -28,6 +28,10 @@ pub struct CouplingFeatures {
 }
 
 /// Precomputed multimodal coupling observations across a full recording timeline.
+///
+/// Precomputes recording-wide coupling streams (`pulse_delays`, `cr_phases`, `eda_assocs`)
+/// to allow $O(1)$ window slice extraction over pre-resolved ranges. RSA amplitude is
+/// evaluated as a window-local coupling metric over window-bounded beats and cycles.
 #[derive(Debug, Clone, Default)]
 pub struct PrecomputedCoupling {
     /// ECG-PPG pulse delay matches: `(r_peak_time_sec, pulse_delay_sec)`
@@ -212,7 +216,10 @@ impl PrecomputedCoupling {
         })
     }
 
-    /// Extract aggregated window coupling features for a specific window.
+    /// Convenience method to extract aggregated coupling features for a single window.
+    ///
+    /// Resolves range bounds in $O(\log N)$ time using binary search before calling [`extract_for_window_range`].
+    /// For batch extraction across multiple sliding windows, prefer using pre-resolved bounds from [`EventCursor`].
     #[allow(clippy::too_many_arguments)]
     pub fn extract_for_window(
         &self,
@@ -225,83 +232,59 @@ impl PrecomputedCoupling {
         window: &FeatureWindow,
     ) -> Result<CouplingFeatures> {
         let r_range = if let Some(r) = r_peaks {
-            let mut s = None;
-            let mut e = None;
-            for (i, &idx) in r.iter().enumerate() {
-                if matches!(
-                    sample_to_time(idx, ecg_fs, ecg_off),
-                    Ok(t) if t >= window.start_time_sec && t < window.end_time_sec
-                ) {
-                    if s.is_none() {
-                        s = Some(i);
-                    }
-                    e = Some(i + 1);
-                }
-            }
-            (s.unwrap_or(0), e.unwrap_or(0))
+            let s = r.partition_point(|&idx| {
+                sample_to_time(idx, ecg_fs, ecg_off).unwrap_or(-1.0) < window.start_time_sec
+            });
+            let e = r.partition_point(|&idx| {
+                sample_to_time(idx, ecg_fs, ecg_off).unwrap_or(-1.0) < window.end_time_sec
+            });
+            (s, e)
         } else {
             (0, 0)
         };
 
         let c_range = if let Some(c) = rsp_cycles {
-            let mut s = None;
-            let mut e = None;
-            for (i, cyc) in c.iter().enumerate() {
-                if matches!(
-                    sample_to_time(cyc.inspiration_index, rsp_fs, rsp_off),
-                    Ok(t) if t >= window.start_time_sec && t < window.end_time_sec
-                ) {
-                    if s.is_none() {
-                        s = Some(i);
-                    }
-                    e = Some(i + 1);
-                }
-            }
-            (s.unwrap_or(0), e.unwrap_or(0))
+            let s = c.partition_point(|cyc| {
+                sample_to_time(cyc.inspiration_index, rsp_fs, rsp_off).unwrap_or(-1.0)
+                    < window.start_time_sec
+            });
+            let e = c.partition_point(|cyc| {
+                sample_to_time(cyc.inspiration_index, rsp_fs, rsp_off).unwrap_or(-1.0)
+                    < window.end_time_sec
+            });
+            (s, e)
         } else {
             (0, 0)
         };
 
         let delay_range = {
-            let mut s = None;
-            let mut e = None;
-            for (i, (t, _)) in self.pulse_delays.iter().enumerate() {
-                if *t >= window.start_time_sec && *t < window.end_time_sec {
-                    if s.is_none() {
-                        s = Some(i);
-                    }
-                    e = Some(i + 1);
-                }
-            }
-            (s.unwrap_or(0), e.unwrap_or(0))
+            let s = self
+                .pulse_delays
+                .partition_point(|(t, _)| *t < window.start_time_sec);
+            let e = self
+                .pulse_delays
+                .partition_point(|(t, _)| *t < window.end_time_sec);
+            (s, e)
         };
 
         let phase_range = {
-            let mut s = None;
-            let mut e = None;
-            for (i, (t, _)) in self.cr_phases.iter().enumerate() {
-                if *t >= window.start_time_sec && *t < window.end_time_sec {
-                    if s.is_none() {
-                        s = Some(i);
-                    }
-                    e = Some(i + 1);
-                }
-            }
-            (s.unwrap_or(0), e.unwrap_or(0))
+            let s = self
+                .cr_phases
+                .partition_point(|(t, _)| *t < window.start_time_sec);
+            let e = self
+                .cr_phases
+                .partition_point(|(t, _)| *t < window.end_time_sec);
+            (s, e)
         };
 
         let assoc_range = {
-            let mut s = None;
-            let mut e = None;
-            for (i, t) in self.eda_assocs.iter().enumerate() {
-                if *t >= window.start_time_sec && *t < window.end_time_sec {
-                    if s.is_none() {
-                        s = Some(i);
-                    }
-                    e = Some(i + 1);
-                }
-            }
-            (s.unwrap_or(0), e.unwrap_or(0))
+            let s = self
+                .eda_assocs
+                .partition_point(|t| *t < window.start_time_sec);
+            let e = self
+                .eda_assocs
+                .partition_point(|t| *t < window.end_time_sec);
+            (s, e)
         };
 
         self.extract_for_window_range(
