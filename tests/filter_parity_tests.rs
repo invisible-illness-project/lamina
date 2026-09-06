@@ -414,8 +414,8 @@ fn test_group_d_end_to_end_filtering_parity() {
 
         // Primary acceptance criterion: end-to-end signal parity vs SciPy butter -> sosfiltfilt
         assert!(
-            abs_err_max < 0.05,
-            "End-to-end parity mismatch for {} [{}] order {}: max error = {}, rms = {}",
+            abs_err_max < 1e-10,
+            "End-to-end parity mismatch for {} [{}] order {}: max error = {:.6e}, rms = {:.6e}",
             cfg.filter_type,
             cfg.signal_name,
             cfg.order,
@@ -433,6 +433,25 @@ fn test_group_d_end_to_end_filtering_parity() {
         "Max Absolute Error: {:.6e}, Average RMS Error: {:.6e}",
         max_abs_error, avg_rms
     );
+}
+
+#[test]
+fn test_worst_case_configuration_regression() {
+    // Audit worst-case configuration (#118): Bandpass order 6, Fs = 500 Hz, cutoffs [0.5, 40.0], mixed signal
+    let fs = 500.0;
+    let n = 1000;
+    let t = Array1::linspace(0.0, (n - 1) as f64 / fs, n);
+    let mixed_signal =
+        t.mapv(|tv| (2.0 * PI * 1.0 * tv).sin() + 0.5 * (2.0 * PI * 125.0 * tv).sin());
+
+    let spec = FilterSpec::bandpass(fs, 0.5, 40.0, 6);
+    let filtered =
+        signal_filtfilt(&mixed_signal, &spec).expect("Worst-case bandpass order 6 failed");
+
+    assert_eq!(filtered.len(), n);
+    for &val in filtered.iter() {
+        assert!(val.is_finite());
+    }
 }
 
 #[test]

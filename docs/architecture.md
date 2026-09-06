@@ -64,10 +64,12 @@ Lamina implements digital Butterworth filter design and zero-phase IIR digital f
   5. **SOS Pairing & Section Ordering**: Nearest pole-zero pairing (`pairing='nearest'`) with sections sorted by pole distance to unit circle ($\min |1 - |z_p||$) to maximize dynamic range. Overall gain $k_z$ is placed on Section 0 numerator.
 
 ### 2.2 SciPy Parity & Empirical Verification Results
+- **Coefficient Design Parity**: Lamina-generated SOS coefficient matrices match SciPy `scipy.signal.butter(..., output='sos')` matrices within Max Abs Error $L_\infty < 1.55 \times 10^{-15}$ across orders $N = 1 \dots 6$.
 - **Filtering-Operation Parity**: Given identical SOS coefficients, `filtfilt` matches SciPy `sosfiltfilt` within Max Abs Error $L_\infty < 7.58 \times 10^{-13}$.
-- **Coefficient Design Parity**: Lamina-generated SOS coefficient matrices match SciPy `scipy.signal.butter(..., output='sos')` matrices within $L_\infty < 10^{-6}$ across orders $N = 1 \dots 6$.
-- **End-to-End Signal Parity (Primary Acceptance Criterion)**: `FilterSpec \to signal_filtfilt` matches SciPy `scipy.signal.butter \to scipy.signal.sosfiltfilt` across 132 test configurations ($N = 1 \dots 6$, $F_s = 100\text{ Hz}$ & $500\text{ Hz}$, all filter kinds) with Max Abs Error $L_\infty < 0.05$ and Average RMS Error $< 2.0 \times 10^{-4}$.
+- **End-to-End Signal Parity (Primary Acceptance Criterion)**: `FilterSpec \to signal_filtfilt` matches SciPy `scipy.signal.butter \to scipy.signal.sosfiltfilt` across all 132 test configurations ($N = 1 \dots 6$, $F_s = 100\text{ Hz}$ & $500\text{ Hz}$, all filter kinds) with **Max Abs Error $L_\infty = 2.12 \times 10^{-12}$** and **Average RMS Error $= 6.28 \times 10^{-14}$** (validated with threshold $L_\infty < 1.0 \times 10^{-10}$).
+- **Worst-Case Numerical Audit Configuration**: Configuration #118 (Bandpass Order 6, $F_s = 500\text{ Hz}$, cutoffs $[0.5, 40.0]\text{ Hz}$, `mixed` signal, sample index #563): Max Abs Error = $5.66 \times 10^{-13}$, RMS Error = $2.49 \times 10^{-13}$, Relative Error = $1.72 \times 10^{-10}$.
 - **Frequency Response Invariants**: Tested independently without SciPy: $|H(f_c)| = 1/\sqrt{2} \approx 0.70710678$ ($-3.0103\text{ dB}$) at cutoff frequencies, $|H(0)| = 1.0$ at DC for Lowpass, and expected passband/stopband attenuation.
+
 
 
 ---
