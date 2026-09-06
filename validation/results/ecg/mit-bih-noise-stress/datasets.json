@@ -1,0 +1,42 @@
+[
+  {
+    "dataset": "mit-bih-noise-stress",
+    "version": "1.0.0",
+    "source": "https://physionet.org/content/nstdb/",
+    "access_status": "validated",
+    "reason": "",
+    "subjects_evaluated": 7,
+    "recordings_evaluated": 7,
+    "modalities": [
+      "ecg"
+    ],
+    "lamina_ops": [
+      "ecg-clean",
+      "ecg-peaks"
+    ],
+    "lamina_version": "0.1.0",
+    "git_commit": "4d3f4b9ab8184ad5c4bea9d12dc453c864a9cd14",
+    "validation_date": "2026-09-06T16:21:51+00:00",
+    "metrics": {
+      "ecg_MLII_f1": 0.9228529529041564,
+      "ecg_MLII_fn": 47.42857142857143,
+      "ecg_MLII_fp": 332.85714285714283,
+      "ecg_MLII_mean_abs_timing_error_sec": 0.007698513928955579,
+      "ecg_MLII_median_timing_error_sec": -0.0019841269841269845,
+      "ecg_MLII_n_detected": 2480.285714285714,
+      "ecg_MLII_n_peaks": 2480.285714285714,
+      "ecg_MLII_n_reference": 2194.8571428571427,
+      "ecg_MLII_precision": 0.8795440926775078,
+      "ecg_MLII_recall": 0.9779765957716755,
+      "ecg_MLII_tolerance_sec": 0.15,
+      "ecg_MLII_tp": 2147.4285714285716,
+      "hr_bias": 9.802749659829946,
+      "hr_mae": 9.999591008696783,
+      "hr_n": 359.7142857142857,
+      "hr_pearson_r": 0.5114525777805383,
+      "hr_rmse": 16.61966969993275
+    },
+    "limitations": [],
+    "failures": []
+  }
+]

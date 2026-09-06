@@ -1,0 +1,28 @@
+{
+  "created_utc": "2026-09-06T15:52:13+00:00",
+  "lamina_git_commit": "ac7f7663c052888dce7dc9cf8bbbb78c96241a0f",
+  "lamina_git_branch": "validation/adapters-ppg",
+  "lamina_version": "0.1.0",
+  "framework_version": "0.1.0",
+  "python_version": "3.12.12",
+  "package_versions": {
+    "numpy": "2.2.5",
+    "scipy": "1.16.2",
+    "pandas": "2.3.2",
+    "wfdb": "4.3.1",
+    "matplotlib": "3.10.3",
+    "pytest": "9.1.1"
+  },
+  "seed": 42,
+  "tolerances": {
+    "peak_match_sec": 0.15,
+    "rsp_match_sec": 0.5,
+    "scr_match_sec": 1.0
+  },
+  "config_snapshot": {
+    "datasets": [
+      "bidmc",
+      "wrist-ppg-exercise"
+    ]
+  }
+}

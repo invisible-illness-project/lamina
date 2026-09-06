@@ -1,0 +1,3 @@
+dataset,subject_id,recording_id,status,modalities,error
+big-ideas,003,003_eda,failed,eda,LaminaBridgeError: bridge op 'eda-peaks' failed [lamina_error]: Invalid cutoff frequency: Cutoff frequency (5) must be strictly less than Nyquist frequency (2)
+big-ideas,015,015_eda,failed,eda,LaminaBridgeError: bridge op 'eda-peaks' failed [lamina_error]: Invalid cutoff frequency: Cutoff frequency (5) must be strictly less than Nyquist frequency (2)

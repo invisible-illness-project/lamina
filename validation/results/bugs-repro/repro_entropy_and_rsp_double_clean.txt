@@ -1,0 +1,22 @@
+lamina_version: {'bridge_version': '0.1.0', 'lamina_version': '0.1.0'}
+
+=== (a) sample_entropy on signals with no template matches ===
+  constant(1.0) x 200             : ERROR: bridge op 'sample-entropy' failed [lamina_error]: Invalid cutoff frequency: Tolerance threshold r (0) must be > 0.0 and finite
+  linear ramp x 200               : {'is_infinite': False, 'm': 2, 'r': 0.058024427363432655, 'sample_entropy': -0.0}
+  random walk x 500 (control)     : {'is_infinite': False, 'm': 2, 'r': 2.1619262270557504, 'sample_entropy': 0.26074846051426465}
+
+=== (b) rsp_cycles_config double-cleaning probe ===
+If rsp_cycles_config did NOT re-clean internally, pre-cleaned input would pass through the pipeline unchanged and (near-)identical cycles would result only if cleaning were idempotent (it is not: a 3rd-order zero-phase bandpass applied twice attenuates band edges).
+  rsp_cycles(raw): 44 cycles, median rate 15.00 brpm, first inspirations [25, 124, 225, 325, 425, 525]
+  rsp_cycles(rsp_clean(raw)): 44 cycles, median rate 15.00 brpm, first inspirations [24, 124, 225, 325, 425, 525]
+
+  identical inspiration indices: False
+  symmetric-difference size: 2
+  -> outputs differ: input is processed through the internal cleaning stage again (double filtering when caller pre-cleans).
+  rsp_cycles(rsp_clean^2(raw)): 44 cycles, median rate 15.00 brpm, first inspirations [24, 124, 225, 325, 425, 525]
+
+=== (a2) sample_entropy with explicit small r (zero-match probe) ===
+  r=0.001: {'is_infinite': True, 'm': 2, 'r': 0.001, 'sample_entropy': None}
+  r=0.0001: {'is_infinite': True, 'm': 2, 'r': 0.0001, 'sample_entropy': None}
+  r=1e-06: {'is_infinite': True, 'm': 2, 'r': 1e-06, 'sample_entropy': None}
+  constant, r=0.1: {'is_infinite': False, 'm': 2, 'r': 0.1, 'sample_entropy': -0.0}

@@ -1,0 +1,9 @@
+lamina_version: {'bridge_version': '0.1.0', 'lamina_version': '0.1.0'}
+signal: n=43200, true beats=149 (25% tall PVCs, amp ratio ~3:1)
+  default                       : detected= 149  recall=1.000 precision=1.000 F1=1.000
+  threshold_multiplier=0.1      : detected= 149  recall=1.000 precision=1.000 F1=1.000
+  threshold_multiplier=0.5      : detected= 149  recall=1.000 precision=1.000 F1=1.000
+
+=== variant: 15 s run of consecutive tall PVCs amid small normals ===
+  default                     : det= 149 recall=1.000 F1=1.000 | post-run(45-60s) recall=1.000
+  threshold_multiplier=0.1    : det= 149 recall=1.000 F1=1.000 | post-run(45-60s) recall=1.000

@@ -1,0 +1,5 @@
+lamina_version: {'bridge_version': '0.1.0', 'lamina_version': '0.1.0'}
+signal: n=30720, fs=256.0, 228 narrow-biphasic beats @ ~115 bpm
+  default                       : det= 228 recall=1.000 prec=1.000 F1=1.000
+  threshold_multiplier=0.1      : det= 228 recall=1.000 prec=1.000 F1=1.000
+  integration_window_sec=0.08   : det= 228 recall=1.000 prec=1.000 F1=1.000

@@ -1,0 +1,55 @@
+[
+  {
+    "dataset": "mit-bih-arrhythmia",
+    "version": "1.0.0",
+    "source": "https://physionet.org/content/mitdb/",
+    "access_status": "validated",
+    "reason": "",
+    "subjects_evaluated": 48,
+    "recordings_evaluated": 48,
+    "modalities": [
+      "ecg"
+    ],
+    "lamina_ops": [
+      "ecg-clean",
+      "ecg-peaks",
+      "hrv"
+    ],
+    "lamina_version": "0.1.0",
+    "git_commit": "4d3f4b9ab8184ad5c4bea9d12dc453c864a9cd14",
+    "validation_date": "2026-09-06T16:17:09+00:00",
+    "metrics": {
+      "ecg_MLII_f1": 0.9881053333541184,
+      "ecg_MLII_fn": 29.782608695652176,
+      "ecg_MLII_fp": 14.826086956521738,
+      "ecg_MLII_mean_abs_timing_error_sec": 0.004477026191509208,
+      "ecg_MLII_median_timing_error_sec": -0.002415458937198068,
+      "ecg_MLII_n_detected": 2269.3478260869565,
+      "ecg_MLII_n_peaks": 2269.3478260869565,
+      "ecg_MLII_n_reference": 2284.304347826087,
+      "ecg_MLII_precision": 0.9928152694340121,
+      "ecg_MLII_recall": 0.9857685047633981,
+      "ecg_MLII_tolerance_sec": 0.15,
+      "ecg_MLII_tp": 2254.521739130435,
+      "ecg_V5_f1": 0.8416937149601653,
+      "ecg_V5_fn": 535.5,
+      "ecg_V5_fp": 1.0,
+      "ecg_V5_mean_abs_timing_error_sec": 0.006690495453981882,
+      "ecg_V5_median_timing_error_sec": 0.004166666666666667,
+      "ecg_V5_n_detected": 1673.5,
+      "ecg_V5_n_peaks": 1673.5,
+      "ecg_V5_n_reference": 2208.0,
+      "ecg_V5_precision": 0.9991379310344828,
+      "ecg_V5_recall": 0.7597577388963661,
+      "ecg_V5_tolerance_sec": 0.15,
+      "ecg_V5_tp": 1672.5,
+      "hr_bias": -0.19895285655169834,
+      "hr_mae": 0.9271889851115364,
+      "hr_n": 359.5833333333333,
+      "hr_pearson_r": 0.9081462224089419,
+      "hr_rmse": 2.203646079589887
+    },
+    "limitations": [],
+    "failures": []
+  }
+]

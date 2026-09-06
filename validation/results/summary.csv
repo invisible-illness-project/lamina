@@ -1,0 +1,19 @@
+dataset,status,recordings_ok,recordings_failed,reason,error,started_at,finished_at
+autonomic-aging,validated,12,0,,,2026-09-06T16:22:20+00:00,2026-09-06T16:22:46+00:00
+bidmc,validated,12,0,,,2026-09-06T15:51:44+00:00,2026-09-06T15:51:53+00:00
+big-ideas,failed,0,2,,,2026-09-06T16:27:35+00:00,2026-09-06T16:33:45+00:00
+cohface,inaccessible,0,0,"needs-registration: Zenodo record files are restricted (EULA, academic signatory)",,,
+ibvp,inaccessible,0,0,needs-registration: requires EULA signed by an academic supervisor,,,
+mimic-iii-ext-ppg,inaccessible,0,0,requires PhysioNet credentialed access to the parent MIMIC-III Waveform Database; HTTP 403 verified from validation environment,,,
+mimic-iii-waveform,inaccessible,0,0,requires PhysioNet credentialed access (CITI training + signed DUA); HTTP 403 verified from validation environment,,,
+mit-bih-arrhythmia,validated,48,0,,,2026-09-06T16:10:14+00:00,2026-09-06T16:17:09+00:00
+mit-bih-noise-stress,validated,7,0,,,2026-09-06T16:20:45+00:00,2026-09-06T16:21:51+00:00
+mmpd,inaccessible,0,0,needs-registration: requires signed release agreement by faculty e-mail,,,
+pulsedb,inaccessible,0,0,"hosts unreachable/credentialed from validation environment: pulsedb.org connection fails, Box/Drive mirrors blocked, Kaggle download requires authentication",,,
+pure,inaccessible,0,0,needs-registration: download requires e-mail application to TU Ilmenau,,,
+scamps,validated,30,0,,,2026-09-06T15:39:32+00:00,2026-09-06T15:39:33+00:00
+ubfc-phys,inaccessible,0,0,download size exceeds environment timebox,,,
+ubfc-rppg,inaccessible,0,0,blocked-host: official Google Sites page unreachable; Kaggle mirror requires authentication,,,
+wearable-exam-stress,partially_validated,15,15,,,2026-09-06T16:51:09+00:00,2026-09-06T16:51:29+00:00
+wesad,validated,15,0,,,2026-09-06T16:10:32+00:00,2026-09-06T16:12:13+00:00
+wrist-ppg-exercise,validated,19,0,,,2026-09-06T15:51:53+00:00,2026-09-06T15:52:13+00:00

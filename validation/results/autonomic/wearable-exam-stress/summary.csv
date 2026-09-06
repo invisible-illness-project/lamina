@@ -1,0 +1,2 @@
+dataset,status,recordings_ok,recordings_failed,reason,error,started_at,finished_at
+wearable-exam-stress,partially_validated,15,15,,,2026-09-06T16:51:09+00:00,2026-09-06T16:51:29+00:00

@@ -1,0 +1,593 @@
+[
+  {
+    "dataset": "autonomic-aging",
+    "version": "1.0.0",
+    "source": "https://physionet.org/content/autonomic-aging-cardiovascular/",
+    "access_status": "validated",
+    "reason": "",
+    "subjects_evaluated": 12,
+    "recordings_evaluated": 12,
+    "modalities": [
+      "ecg"
+    ],
+    "lamina_ops": [
+      "ecg-peaks",
+      "hrv"
+    ],
+    "lamina_version": "0.1.0",
+    "git_commit": "6edb51c4655583360a7b03be9defb64f02065aba",
+    "validation_date": "2026-09-06T16:22:46+00:00",
+    "metrics": {
+      "ecg_ecg1_n_peaks": 663.4166666666666,
+      "ecg_ecg2_n_peaks": 701.0,
+      "structural_ecg_ecg1_n_peaks": 663.4166666666666,
+      "structural_ecg_ecg2_n_peaks": 701.0
+    },
+    "limitations": [],
+    "failures": [],
+    "source_results_dir": "/home/kimi/work/validation/results/autonomic/autonomic-aging"
+  },
+  {
+    "dataset": "bidmc",
+    "version": "1.0.0",
+    "source": "https://physionet.org/content/bidmc/ (mirror: https://archive.physionet.org/physiobank/database/bidmc/)",
+    "access_status": "validated",
+    "reason": "",
+    "subjects_evaluated": 12,
+    "recordings_evaluated": 12,
+    "modalities": [
+      "ppg",
+      "rsp",
+      "ecg"
+    ],
+    "lamina_ops": [
+      "ppg-clean",
+      "ppg-peaks",
+      "rsp-clean",
+      "rsp-cycles",
+      "ecg-peaks",
+      "hrv"
+    ],
+    "lamina_version": "0.1.0",
+    "git_commit": "ac7f7663c052888dce7dc9cf8bbbb78c96241a0f",
+    "validation_date": "2026-09-06T15:51:53+00:00",
+    "metrics": {
+      "ecg_ecg_n_peaks": 672.1666666666666,
+      "ppg_ppg_n_peaks": 703.75,
+      "rsp_resp_f1": 0.9437355712009116,
+      "rsp_resp_fn": 1.1666666666666667,
+      "rsp_resp_fp": 10.75,
+      "rsp_resp_mean_abs_timing_error_sec": 0.07425673304274692,
+      "rsp_resp_median_timing_error_sec": -0.009,
+      "rsp_resp_n_cycles": 145.16666666666666,
+      "rsp_resp_n_detected": 145.16666666666666,
+      "rsp_resp_n_reference": 135.58333333333334,
+      "rsp_resp_precision": 0.9116631831173031,
+      "rsp_resp_recall": 0.9916667214983245,
+      "rsp_resp_tolerance_sec": 0.5,
+      "rsp_resp_tp": 134.41666666666666,
+      "structural_ecg_ecg_n_peaks": 672.1666666666666,
+      "structural_ppg_ppg_n_peaks": 703.75,
+      "structural_rsp_resp_mean_rate_bpm": 18.774146519266736
+    },
+    "limitations": [],
+    "failures": [],
+    "source_results_dir": "/home/kimi/work/validation/results/ppg"
+  },
+  {
+    "dataset": "big-ideas",
+    "version": "1.0.0",
+    "source": "https://physionet.org/content/big-ideas-glycemic-wearable/",
+    "access_status": "failed",
+    "reason": "",
+    "subjects_evaluated": 0,
+    "recordings_evaluated": 0,
+    "modalities": [
+      "eda"
+    ],
+    "lamina_ops": [
+      "eda-clean",
+      "eda-decompose",
+      "eda-peaks"
+    ],
+    "lamina_version": "0.1.0",
+    "git_commit": "bce7d7b821adab060762fae82b5bf2846425665d",
+    "validation_date": "2026-09-06T16:33:45+00:00",
+    "metrics": {},
+    "limitations": [],
+    "failures": [
+      "LaminaBridgeError: bridge op 'eda-peaks' failed [lamina_error]: Invalid cutoff frequency: Cutoff frequency (5) must be strictly less than Nyquist frequency (2)",
+      "LaminaBridgeError: bridge op 'eda-peaks' failed [lamina_error]: Invalid cutoff frequency: Cutoff frequency (5) must be strictly less than Nyquist frequency (2)"
+    ],
+    "source_results_dir": "/home/kimi/work/validation/results/autonomic/big-ideas"
+  },
+  {
+    "dataset": "cohface",
+    "version": "1.0",
+    "source": "https://www.idiap.ch/en/dataset/cohface",
+    "access_status": "inaccessible",
+    "reason": "needs-registration: Zenodo record files are restricted (EULA, academic signatory)",
+    "subjects_evaluated": 0,
+    "recordings_evaluated": 0,
+    "modalities": [
+      "rgb_video",
+      "bvp"
+    ],
+    "lamina_ops": [
+      "rppg-algorithm",
+      "ppg-clean",
+      "ppg-peaks"
+    ],
+    "lamina_version": "",
+    "git_commit": "",
+    "validation_date": "",
+    "metrics": {},
+    "note": "not executed in any contributing run; status is the adapter's recorded access-check result"
+  },
+  {
+    "dataset": "ibvp",
+    "version": "1.0",
+    "source": "https://github.com/physiotherapy/iBVP-dataset (see paper)",
+    "access_status": "inaccessible",
+    "reason": "needs-registration: requires EULA signed by an academic supervisor",
+    "subjects_evaluated": 0,
+    "recordings_evaluated": 0,
+    "modalities": [
+      "rgb_video",
+      "bvp"
+    ],
+    "lamina_ops": [
+      "rppg-algorithm",
+      "ppg-clean",
+      "ppg-peaks"
+    ],
+    "lamina_version": "",
+    "git_commit": "",
+    "validation_date": "",
+    "metrics": {},
+    "note": "not executed in any contributing run; status is the adapter's recorded access-check result"
+  },
+  {
+    "dataset": "mimic-iii-ext-ppg",
+    "version": "1.0",
+    "source": "https://physionet.org/content/mimic3wdb/ (derived records)",
+    "access_status": "inaccessible",
+    "reason": "requires PhysioNet credentialed access to the parent MIMIC-III Waveform Database; HTTP 403 verified from validation environment",
+    "subjects_evaluated": 0,
+    "recordings_evaluated": 0,
+    "modalities": [
+      "ppg",
+      "abp"
+    ],
+    "lamina_ops": [
+      "ppg-clean",
+      "ppg-peaks"
+    ],
+    "lamina_version": "",
+    "git_commit": "",
+    "validation_date": "",
+    "metrics": {},
+    "note": "not executed in any contributing run; status is the adapter's recorded access-check result"
+  },
+  {
+    "dataset": "mimic-iii-waveform",
+    "version": "1.0",
+    "source": "https://physionet.org/content/mimic3wdb/",
+    "access_status": "inaccessible",
+    "reason": "requires PhysioNet credentialed access (CITI training + signed DUA); HTTP 403 verified from validation environment",
+    "subjects_evaluated": 0,
+    "recordings_evaluated": 0,
+    "modalities": [
+      "ppg",
+      "ecg",
+      "abp",
+      "rsp"
+    ],
+    "lamina_ops": [
+      "ppg-clean",
+      "ppg-peaks",
+      "hrv"
+    ],
+    "lamina_version": "",
+    "git_commit": "",
+    "validation_date": "",
+    "metrics": {},
+    "note": "not executed in any contributing run; status is the adapter's recorded access-check result"
+  },
+  {
+    "dataset": "mit-bih-arrhythmia",
+    "version": "1.0.0",
+    "source": "https://physionet.org/content/mitdb/",
+    "access_status": "validated",
+    "reason": "",
+    "subjects_evaluated": 48,
+    "recordings_evaluated": 48,
+    "modalities": [
+      "ecg"
+    ],
+    "lamina_ops": [
+      "ecg-clean",
+      "ecg-peaks",
+      "hrv"
+    ],
+    "lamina_version": "0.1.0",
+    "git_commit": "4d3f4b9ab8184ad5c4bea9d12dc453c864a9cd14",
+    "validation_date": "2026-09-06T16:17:09+00:00",
+    "metrics": {
+      "ecg_MLII_f1": 0.9881053333541184,
+      "ecg_MLII_fn": 29.782608695652176,
+      "ecg_MLII_fp": 14.826086956521738,
+      "ecg_MLII_mean_abs_timing_error_sec": 0.004477026191509208,
+      "ecg_MLII_median_timing_error_sec": -0.002415458937198068,
+      "ecg_MLII_n_detected": 2269.3478260869565,
+      "ecg_MLII_n_peaks": 2269.3478260869565,
+      "ecg_MLII_n_reference": 2284.304347826087,
+      "ecg_MLII_precision": 0.9928152694340121,
+      "ecg_MLII_recall": 0.9857685047633981,
+      "ecg_MLII_tolerance_sec": 0.15,
+      "ecg_MLII_tp": 2254.521739130435,
+      "ecg_V5_f1": 0.8416937149601653,
+      "ecg_V5_fn": 535.5,
+      "ecg_V5_fp": 1.0,
+      "ecg_V5_mean_abs_timing_error_sec": 0.006690495453981882,
+      "ecg_V5_median_timing_error_sec": 0.004166666666666667,
+      "ecg_V5_n_detected": 1673.5,
+      "ecg_V5_n_peaks": 1673.5,
+      "ecg_V5_n_reference": 2208.0,
+      "ecg_V5_precision": 0.9991379310344828,
+      "ecg_V5_recall": 0.7597577388963661,
+      "ecg_V5_tolerance_sec": 0.15,
+      "ecg_V5_tp": 1672.5,
+      "hr_bias": -0.19895285655169834,
+      "hr_mae": 0.9271889851115364,
+      "hr_n": 359.5833333333333,
+      "hr_pearson_r": 0.9081462224089419,
+      "hr_rmse": 2.203646079589887
+    },
+    "limitations": [],
+    "failures": [],
+    "source_results_dir": "/home/kimi/work/validation/results/ecg/mit-bih-arrhythmia"
+  },
+  {
+    "dataset": "mit-bih-noise-stress",
+    "version": "1.0.0",
+    "source": "https://physionet.org/content/nstdb/",
+    "access_status": "validated",
+    "reason": "",
+    "subjects_evaluated": 7,
+    "recordings_evaluated": 7,
+    "modalities": [
+      "ecg"
+    ],
+    "lamina_ops": [
+      "ecg-clean",
+      "ecg-peaks"
+    ],
+    "lamina_version": "0.1.0",
+    "git_commit": "4d3f4b9ab8184ad5c4bea9d12dc453c864a9cd14",
+    "validation_date": "2026-09-06T16:21:51+00:00",
+    "metrics": {
+      "ecg_MLII_f1": 0.9228529529041564,
+      "ecg_MLII_fn": 47.42857142857143,
+      "ecg_MLII_fp": 332.85714285714283,
+      "ecg_MLII_mean_abs_timing_error_sec": 0.007698513928955579,
+      "ecg_MLII_median_timing_error_sec": -0.0019841269841269845,
+      "ecg_MLII_n_detected": 2480.285714285714,
+      "ecg_MLII_n_peaks": 2480.285714285714,
+      "ecg_MLII_n_reference": 2194.8571428571427,
+      "ecg_MLII_precision": 0.8795440926775078,
+      "ecg_MLII_recall": 0.9779765957716755,
+      "ecg_MLII_tolerance_sec": 0.15,
+      "ecg_MLII_tp": 2147.4285714285716,
+      "hr_bias": 9.802749659829946,
+      "hr_mae": 9.999591008696783,
+      "hr_n": 359.7142857142857,
+      "hr_pearson_r": 0.5114525777805383,
+      "hr_rmse": 16.61966969993275
+    },
+    "limitations": [],
+    "failures": [],
+    "source_results_dir": "/home/kimi/work/validation/results/ecg/mit-bih-noise-stress"
+  },
+  {
+    "dataset": "mmpd",
+    "version": "1.0",
+    "source": "https://github.com/McJackTang/MMPD_rPPG_dataset",
+    "access_status": "inaccessible",
+    "reason": "needs-registration: requires signed release agreement by faculty e-mail",
+    "subjects_evaluated": 0,
+    "recordings_evaluated": 0,
+    "modalities": [
+      "rgb_video",
+      "bvp"
+    ],
+    "lamina_ops": [
+      "rppg-algorithm",
+      "ppg-clean",
+      "ppg-peaks"
+    ],
+    "lamina_version": "",
+    "git_commit": "",
+    "validation_date": "",
+    "metrics": {},
+    "note": "not executed in any contributing run; status is the adapter's recorded access-check result"
+  },
+  {
+    "dataset": "pulsedb",
+    "version": "1.0",
+    "source": "https://pulsedb.org/ (PhysioNet: https://physionet.org/content/pulsedb/; Kaggle: https://www.kaggle.com/datasets/weiaiwang/pulsedb)",
+    "access_status": "inaccessible",
+    "reason": "hosts unreachable/credentialed from validation environment: pulsedb.org connection fails, Box/Drive mirrors blocked, Kaggle download requires authentication",
+    "subjects_evaluated": 0,
+    "recordings_evaluated": 0,
+    "modalities": [
+      "ppg",
+      "ecg",
+      "abp"
+    ],
+    "lamina_ops": [
+      "ppg-clean",
+      "ppg-peaks"
+    ],
+    "lamina_version": "",
+    "git_commit": "",
+    "validation_date": "",
+    "metrics": {},
+    "note": "not executed in any contributing run; status is the adapter's recorded access-check result"
+  },
+  {
+    "dataset": "pure",
+    "version": "1.0",
+    "source": "https://www.tu-ilmenau.de/neurob/data-sets-code/pulse-rate-detection-dataset-pure",
+    "access_status": "inaccessible",
+    "reason": "needs-registration: download requires e-mail application to TU Ilmenau",
+    "subjects_evaluated": 0,
+    "recordings_evaluated": 0,
+    "modalities": [
+      "rgb_video",
+      "bvp"
+    ],
+    "lamina_ops": [
+      "rppg-algorithm",
+      "ppg-clean",
+      "ppg-peaks"
+    ],
+    "lamina_version": "",
+    "git_commit": "",
+    "validation_date": "",
+    "metrics": {},
+    "note": "not executed in any contributing run; status is the adapter's recorded access-check result"
+  },
+  {
+    "dataset": "scamps",
+    "version": "1.0",
+    "source": "https://github.com/danielmcduff/scamps",
+    "access_status": "validated",
+    "reason": "",
+    "subjects_evaluated": 10,
+    "recordings_evaluated": 30,
+    "modalities": [
+      "rgb_video",
+      "bvp"
+    ],
+    "lamina_ops": [
+      "rppg-algorithm",
+      "ppg-clean",
+      "ppg-peaks"
+    ],
+    "lamina_version": "0.1.0",
+    "git_commit": "3856c2ab331b86089c6359d1406262cc47e7bc87",
+    "validation_date": "2026-09-06T15:39:33+00:00",
+    "metrics": {
+      "hr_bias": 1.9450111597098407,
+      "hr_mae": 13.132022680696632,
+      "hr_n": 14.0,
+      "hr_pearson_r": 0.17524556213451803,
+      "hr_rmse": 15.081825537819066,
+      "ppg_rppg_waveform_f1": 0.5175588354205802,
+      "ppg_rppg_waveform_fn": 18.3,
+      "ppg_rppg_waveform_fp": 16.533333333333335,
+      "ppg_rppg_waveform_mean_abs_timing_error_sec": 0.07842904505510288,
+      "ppg_rppg_waveform_median_timing_error_sec": -0.020000000000000004,
+      "ppg_rppg_waveform_n_detected": 35.53333333333333,
+      "ppg_rppg_waveform_n_peaks": 35.53333333333333,
+      "ppg_rppg_waveform_n_reference": 37.3,
+      "ppg_rppg_waveform_precision": 0.5365089404602952,
+      "ppg_rppg_waveform_recall": 0.5029314675222858,
+      "ppg_rppg_waveform_tolerance_sec": 0.15,
+      "ppg_rppg_waveform_tp": 19.0
+    },
+    "limitations": [],
+    "failures": [],
+    "source_results_dir": "/home/kimi/work/validation/results/rppg"
+  },
+  {
+    "dataset": "ubfc-phys",
+    "version": "1.0",
+    "source": "https://sites.google.com/view/ybenezeth/ubfc-phys",
+    "access_status": "inaccessible",
+    "reason": "download size exceeds environment timebox",
+    "subjects_evaluated": 0,
+    "recordings_evaluated": 0,
+    "modalities": [
+      "rgb_video",
+      "bvp",
+      "eda"
+    ],
+    "lamina_ops": [
+      "rppg-algorithm",
+      "ppg-clean",
+      "ppg-peaks",
+      "eda-clean",
+      "eda-decompose",
+      "eda-peaks"
+    ],
+    "lamina_version": "",
+    "git_commit": "",
+    "validation_date": "",
+    "metrics": {},
+    "note": "not executed in any contributing run; status is the adapter's recorded access-check result"
+  },
+  {
+    "dataset": "ubfc-rppg",
+    "version": "2.0",
+    "source": "https://sites.google.com/view/ybenezeth/ubfcrppg",
+    "access_status": "inaccessible",
+    "reason": "blocked-host: official Google Sites page unreachable; Kaggle mirror requires authentication",
+    "subjects_evaluated": 0,
+    "recordings_evaluated": 0,
+    "modalities": [
+      "rgb_video",
+      "bvp"
+    ],
+    "lamina_ops": [
+      "rppg-algorithm",
+      "ppg-clean",
+      "ppg-peaks"
+    ],
+    "lamina_version": "",
+    "git_commit": "",
+    "validation_date": "",
+    "metrics": {},
+    "note": "not executed in any contributing run; status is the adapter's recorded access-check result"
+  },
+  {
+    "dataset": "wearable-exam-stress",
+    "version": "1.0.0",
+    "source": "https://physionet.org/content/wearable-exam-stress/",
+    "access_status": "partially_validated",
+    "reason": "",
+    "subjects_evaluated": 5,
+    "recordings_evaluated": 15,
+    "modalities": [
+      "bvp",
+      "eda"
+    ],
+    "lamina_ops": [
+      "ppg-peaks",
+      "eda-clean",
+      "eda-decompose",
+      "eda-peaks"
+    ],
+    "lamina_version": "0.1.0",
+    "git_commit": "2df48a8151cebd3ffe8803b2d50116233a26dcb3",
+    "validation_date": "2026-09-06T16:51:29+00:00",
+    "metrics": {
+      "bvp_wrist_bvp_n_peaks": 10880.866666666667,
+      "hr_bias": -26.096065631837515,
+      "hr_mae": 36.19756132968153,
+      "hr_n": 15015.4,
+      "hr_pearson_r": 0.03256165057664626,
+      "hr_rmse": 45.21815923941925,
+      "structural_bvp_wrist_bvp_n_peaks": 10880.866666666667
+    },
+    "limitations": [],
+    "failures": [
+      "LaminaBridgeError: bridge op 'eda-peaks' failed [lamina_error]: Invalid cutoff frequency: Cutoff frequency (5) must be strictly less than Nyquist frequency (2)",
+      "LaminaBridgeError: bridge op 'eda-peaks' failed [lamina_error]: Invalid cutoff frequency: Cutoff frequency (5) must be strictly less than Nyquist frequency (2)",
+      "LaminaBridgeError: bridge op 'eda-peaks' failed [lamina_error]: Invalid cutoff frequency: Cutoff frequency (5) must be strictly less than Nyquist frequency (2)",
+      "LaminaBridgeError: bridge op 'eda-peaks' failed [lamina_error]: Invalid cutoff frequency: Cutoff frequency (5) must be strictly less than Nyquist frequency (2)",
+      "LaminaBridgeError: bridge op 'eda-peaks' failed [lamina_error]: Invalid cutoff frequency: Cutoff frequency (5) must be strictly less than Nyquist frequency (2)",
+      "LaminaBridgeError: bridge op 'eda-peaks' failed [lamina_error]: Invalid cutoff frequency: Cutoff frequency (5) must be strictly less than Nyquist frequency (2)",
+      "LaminaBridgeError: bridge op 'eda-peaks' failed [lamina_error]: Invalid cutoff frequency: Cutoff frequency (5) must be strictly less than Nyquist frequency (2)",
+      "LaminaBridgeError: bridge op 'eda-peaks' failed [lamina_error]: Invalid cutoff frequency: Cutoff frequency (5) must be strictly less than Nyquist frequency (2)",
+      "LaminaBridgeError: bridge op 'eda-peaks' failed [lamina_error]: Invalid cutoff frequency: Cutoff frequency (5) must be strictly less than Nyquist frequency (2)",
+      "LaminaBridgeError: bridge op 'eda-peaks' failed [lamina_error]: Invalid cutoff frequency: Cutoff frequency (5) must be strictly less than Nyquist frequency (2)",
+      "LaminaBridgeError: bridge op 'eda-peaks' failed [lamina_error]: Invalid cutoff frequency: Cutoff frequency (5) must be strictly less than Nyquist frequency (2)",
+      "LaminaBridgeError: bridge op 'eda-peaks' failed [lamina_error]: Invalid cutoff frequency: Cutoff frequency (5) must be strictly less than Nyquist frequency (2)",
+      "LaminaBridgeError: bridge op 'eda-peaks' failed [lamina_error]: Invalid cutoff frequency: Cutoff frequency (5) must be strictly less than Nyquist frequency (2)",
+      "LaminaBridgeError: bridge op 'eda-peaks' failed [lamina_error]: Invalid cutoff frequency: Cutoff frequency (5) must be strictly less than Nyquist frequency (2)",
+      "LaminaBridgeError: bridge op 'eda-peaks' failed [lamina_error]: Invalid cutoff frequency: Cutoff frequency (5) must be strictly less than Nyquist frequency (2)"
+    ],
+    "source_results_dir": "/home/kimi/work/validation/results/autonomic/wearable-exam-stress"
+  },
+  {
+    "dataset": "wesad",
+    "version": "1.0",
+    "source": "https://ubicomp.eti.uni-siegen.de/home/datasets/icmi18/",
+    "access_status": "validated",
+    "reason": "",
+    "subjects_evaluated": 5,
+    "recordings_evaluated": 15,
+    "modalities": [
+      "ecg",
+      "eda",
+      "bvp",
+      "rsp"
+    ],
+    "lamina_ops": [
+      "ecg-peaks",
+      "ppg-peaks",
+      "eda-peaks",
+      "rsp-cycles",
+      "hrv"
+    ],
+    "lamina_version": "0.1.0",
+    "git_commit": "e5cbc3570884825bea38ffb6f47604c4c3c05bd7",
+    "validation_date": "2026-09-06T16:12:13+00:00",
+    "metrics": {
+      "bvp_wrist_bvp_n_peaks": 266.53333333333336,
+      "ecg_chest_ecg_n_peaks": 276.73333333333335,
+      "hr_bias": 2.0881006012940104,
+      "hr_mae": 14.319036345061761,
+      "hr_n": 220.0,
+      "hr_pearson_r": 0.17252801580275554,
+      "hr_rmse": 21.301602792677993,
+      "rsp_chest_rsp_n_cycles": 70.66666666666667,
+      "structural_bvp_wrist_bvp_n_peaks": 266.53333333333336,
+      "structural_ecg_chest_ecg_n_peaks": 276.73333333333335,
+      "structural_eda_chest_eda_n_scr": 37.8,
+      "structural_rsp_chest_rsp_mean_rate_bpm": 19.094975511717156
+    },
+    "limitations": [],
+    "failures": [],
+    "source_results_dir": "/home/kimi/work/validation/results/autonomic/wesad"
+  },
+  {
+    "dataset": "wrist-ppg-exercise",
+    "version": "1.0.0",
+    "source": "https://physionet.org/content/wrist-ppg-during-exercise/",
+    "access_status": "validated",
+    "reason": "",
+    "subjects_evaluated": 8,
+    "recordings_evaluated": 19,
+    "modalities": [
+      "ppg",
+      "ecg",
+      "acc"
+    ],
+    "lamina_ops": [
+      "ppg-clean",
+      "ppg-peaks",
+      "ecg-peaks",
+      "hrv"
+    ],
+    "lamina_version": "0.1.0",
+    "git_commit": "ac7f7663c052888dce7dc9cf8bbbb78c96241a0f",
+    "validation_date": "2026-09-06T15:52:13+00:00",
+    "metrics": {
+      "ecg_ecg_f1": 0.8768781166304342,
+      "ecg_ecg_fn": 56.21052631578947,
+      "ecg_ecg_fp": 81.0,
+      "ecg_ecg_mean_abs_timing_error_sec": 0.024297749399219283,
+      "ecg_ecg_median_timing_error_sec": -0.011924342105263159,
+      "ecg_ecg_n_detected": 624.2105263157895,
+      "ecg_ecg_n_peaks": 624.2105263157895,
+      "ecg_ecg_n_reference": 599.421052631579,
+      "ecg_ecg_precision": 0.8764338114926047,
+      "ecg_ecg_recall": 0.8953865085465088,
+      "ecg_ecg_tolerance_sec": 0.15,
+      "ecg_ecg_tp": 543.2105263157895,
+      "hr_bias": -3.1410681100977897,
+      "hr_mae": 20.748426540312792,
+      "hr_n": 175.3684210526316,
+      "hr_pearson_r": 0.08049547009174994,
+      "hr_rmse": 23.00710883989096,
+      "ppg_ppg_n_peaks": 546.6315789473684,
+      "structural_ppg_ppg_n_peaks": 546.6315789473684
+    },
+    "limitations": [],
+    "failures": [],
+    "source_results_dir": "/home/kimi/work/validation/results/ppg"
+  }
+]

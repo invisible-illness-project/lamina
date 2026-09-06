@@ -1,0 +1,143 @@
+dataset,recording_id,metric,value,units,notes
+wesad,S2_baseline,condition_mean_hr_bpm,71.75,bpm,known-groups analysis; Lamina chest-ECG peaks / 4-min window; structural (no ground truth)
+wesad,S2_baseline,condition_scr_rate_per_min,0.0,1/min,known-groups analysis; Lamina chest-EDA SCR count / 4-min window; structural (no ground truth)
+wesad,S2_stress,condition_mean_hr_bpm,76.75,bpm,known-groups analysis; Lamina chest-ECG peaks / 4-min window; structural (no ground truth)
+wesad,S2_stress,condition_scr_rate_per_min,1.0,1/min,known-groups analysis; Lamina chest-EDA SCR count / 4-min window; structural (no ground truth)
+wesad,S2_amusement,condition_mean_hr_bpm,67.0,bpm,known-groups analysis; Lamina chest-ECG peaks / 4-min window; structural (no ground truth)
+wesad,S2_amusement,condition_scr_rate_per_min,6.0,1/min,known-groups analysis; Lamina chest-EDA SCR count / 4-min window; structural (no ground truth)
+wesad,S3_baseline,condition_mean_hr_bpm,55.25,bpm,known-groups analysis; Lamina chest-ECG peaks / 4-min window; structural (no ground truth)
+wesad,S3_baseline,condition_scr_rate_per_min,36.75,1/min,known-groups analysis; Lamina chest-EDA SCR count / 4-min window; structural (no ground truth)
+wesad,S3_stress,condition_mean_hr_bpm,83.0,bpm,known-groups analysis; Lamina chest-ECG peaks / 4-min window; structural (no ground truth)
+wesad,S3_stress,condition_scr_rate_per_min,9.75,1/min,known-groups analysis; Lamina chest-EDA SCR count / 4-min window; structural (no ground truth)
+wesad,S3_amusement,condition_mean_hr_bpm,54.25,bpm,known-groups analysis; Lamina chest-ECG peaks / 4-min window; structural (no ground truth)
+wesad,S3_amusement,condition_scr_rate_per_min,32.0,1/min,known-groups analysis; Lamina chest-EDA SCR count / 4-min window; structural (no ground truth)
+wesad,S4_baseline,condition_mean_hr_bpm,59.5,bpm,known-groups analysis; Lamina chest-ECG peaks / 4-min window; structural (no ground truth)
+wesad,S4_baseline,condition_scr_rate_per_min,0.25,1/min,known-groups analysis; Lamina chest-EDA SCR count / 4-min window; structural (no ground truth)
+wesad,S4_stress,condition_mean_hr_bpm,79.0,bpm,known-groups analysis; Lamina chest-ECG peaks / 4-min window; structural (no ground truth)
+wesad,S4_stress,condition_scr_rate_per_min,5.25,1/min,known-groups analysis; Lamina chest-EDA SCR count / 4-min window; structural (no ground truth)
+wesad,S4_amusement,condition_mean_hr_bpm,62.5,bpm,known-groups analysis; Lamina chest-ECG peaks / 4-min window; structural (no ground truth)
+wesad,S4_amusement,condition_scr_rate_per_min,1.25,1/min,known-groups analysis; Lamina chest-EDA SCR count / 4-min window; structural (no ground truth)
+wesad,S5_baseline,condition_mean_hr_bpm,62.25,bpm,known-groups analysis; Lamina chest-ECG peaks / 4-min window; structural (no ground truth)
+wesad,S5_baseline,condition_scr_rate_per_min,0.5,1/min,known-groups analysis; Lamina chest-EDA SCR count / 4-min window; structural (no ground truth)
+wesad,S5_stress,condition_mean_hr_bpm,88.25,bpm,known-groups analysis; Lamina chest-ECG peaks / 4-min window; structural (no ground truth)
+wesad,S5_stress,condition_scr_rate_per_min,8.5,1/min,known-groups analysis; Lamina chest-EDA SCR count / 4-min window; structural (no ground truth)
+wesad,S5_amusement,condition_mean_hr_bpm,66.75,bpm,known-groups analysis; Lamina chest-ECG peaks / 4-min window; structural (no ground truth)
+wesad,S5_amusement,condition_scr_rate_per_min,2.75,1/min,known-groups analysis; Lamina chest-EDA SCR count / 4-min window; structural (no ground truth)
+wesad,S6_baseline,condition_mean_hr_bpm,67.0,bpm,known-groups analysis; Lamina chest-ECG peaks / 4-min window; structural (no ground truth)
+wesad,S6_baseline,condition_scr_rate_per_min,10.5,1/min,known-groups analysis; Lamina chest-EDA SCR count / 4-min window; structural (no ground truth)
+wesad,S6_stress,condition_mean_hr_bpm,77.25,bpm,known-groups analysis; Lamina chest-ECG peaks / 4-min window; structural (no ground truth)
+wesad,S6_stress,condition_scr_rate_per_min,11.75,1/min,known-groups analysis; Lamina chest-EDA SCR count / 4-min window; structural (no ground truth)
+wesad,S6_amusement,condition_mean_hr_bpm,67.25,bpm,known-groups analysis; Lamina chest-ECG peaks / 4-min window; structural (no ground truth)
+wesad,S6_amusement,condition_scr_rate_per_min,15.5,1/min,known-groups analysis; Lamina chest-EDA SCR count / 4-min window; structural (no ground truth)
+wesad,ALL,known_groups_median_hr_baseline,62.25,bpm,median across subjects (baseline)
+wesad,ALL,known_groups_median_hr_stress,79.0,bpm,median across subjects (stress)
+wesad,ALL,known_groups_delta_hr_stress_minus_baseline,16.75,bpm,"expected positive for hr/scr (stress > baseline); population-trend consistency check, NOT accuracy validation"
+wesad,ALL,known_groups_median_scr_baseline,0.5,1/min,median across subjects (baseline)
+wesad,ALL,known_groups_median_scr_stress,8.5,1/min,median across subjects (stress)
+wesad,ALL,known_groups_delta_scr_stress_minus_baseline,8.0,1/min,"expected positive for hr/scr (stress > baseline); population-trend consistency check, NOT accuracy validation"
+wesad,ALL,known_groups_median_rr_baseline,16.503,brpm,median across subjects (baseline)
+wesad,ALL,known_groups_median_rr_stress,21.142,brpm,median across subjects (stress)
+wesad,ALL,known_groups_delta_rr_stress_minus_baseline,4.638,brpm,"expected positive for hr/scr (stress > baseline); population-trend consistency check, NOT accuracy validation"
+autonomic-aging,0048,rmssd_ms,40.01933890050559,ms,bridge hrv op on Lamina ECG1 peaks; stratum=young_18_39; structural (no ground truth)
+autonomic-aging,0048,mean_nn_ms,835.6108786610879,ms,bridge hrv op; stratum=young_18_39
+autonomic-aging,0128,rmssd_ms,72.49353803188131,ms,bridge hrv op on Lamina ECG1 peaks; stratum=young_18_39; structural (no ground truth)
+autonomic-aging,0128,mean_nn_ms,887.3333333333334,ms,bridge hrv op; stratum=young_18_39
+autonomic-aging,0214,rmssd_ms,13.949032173434063,ms,bridge hrv op on Lamina ECG1 peaks; stratum=middle_40_69; structural (no ground truth)
+autonomic-aging,0214,mean_nn_ms,852.8805120910384,ms,bridge hrv op; stratum=middle_40_69
+autonomic-aging,0237,rmssd_ms,18.61106487525877,ms,bridge hrv op on Lamina ECG1 peaks; stratum=old_70_plus; structural (no ground truth)
+autonomic-aging,0237,mean_nn_ms,920.0536809815951,ms,bridge hrv op; stratum=old_70_plus
+autonomic-aging,0276,rmssd_ms,131.79397880685192,ms,bridge hrv op on Lamina ECG1 peaks; stratum=old_70_plus; structural (no ground truth)
+autonomic-aging,0276,mean_nn_ms,1032.4948275862068,ms,bridge hrv op; stratum=old_70_plus
+autonomic-aging,0342,rmssd_ms,64.49851799483002,ms,bridge hrv op on Lamina ECG1 peaks; stratum=young_18_39; structural (no ground truth)
+autonomic-aging,0342,mean_nn_ms,1256.2557651991615,ms,bridge hrv op; stratum=young_18_39
+autonomic-aging,0353,rmssd_ms,14.812954725002173,ms,bridge hrv op on Lamina ECG1 peaks; stratum=middle_40_69; structural (no ground truth)
+autonomic-aging,0353,mean_nn_ms,713.9666269368296,ms,bridge hrv op; stratum=middle_40_69
+autonomic-aging,0432,rmssd_ms,30.417302485637894,ms,bridge hrv op on Lamina ECG1 peaks; stratum=young_18_39; structural (no ground truth)
+autonomic-aging,0432,mean_nn_ms,835.2161785216178,ms,bridge hrv op; stratum=young_18_39
+autonomic-aging,0554,rmssd_ms,315.5917923156652,ms,bridge hrv op on Lamina ECG1 peaks; stratum=old_70_plus; structural (no ground truth)
+autonomic-aging,0554,mean_nn_ms,642.3787553648069,ms,bridge hrv op; stratum=old_70_plus
+autonomic-aging,0637,rmssd_ms,153.89174175964797,ms,bridge hrv op on Lamina ECG1 peaks; stratum=old_70_plus; structural (no ground truth)
+autonomic-aging,0637,mean_nn_ms,1087.4897959183672,ms,bridge hrv op; stratum=old_70_plus
+autonomic-aging,0846,rmssd_ms,35.03139163664498,ms,bridge hrv op on Lamina ECG1 peaks; stratum=middle_40_69; structural (no ground truth)
+autonomic-aging,0846,mean_nn_ms,955.4600638977636,ms,bridge hrv op; stratum=middle_40_69
+autonomic-aging,0909,rmssd_ms,57.481273247846104,ms,bridge hrv op on Lamina ECG1 peaks; stratum=middle_40_69; structural (no ground truth)
+autonomic-aging,0909,mean_nn_ms,1013.8762711864407,ms,bridge hrv op; stratum=middle_40_69
+autonomic-aging,ALL,rmssd_median_young_18_39,52.26,ms,group median over n=4 records; population-trend consistency check (expected: decreasing with age)
+autonomic-aging,ALL,rmssd_median_middle_40_69,24.92,ms,group median over n=4 records; population-trend consistency check (expected: decreasing with age)
+autonomic-aging,ALL,rmssd_median_old_70_plus,142.84,ms,group median over n=4 records; population-trend consistency check (expected: decreasing with age)
+autonomic-aging,ALL,rmssd_monotonic_decrease_with_age,0,bool,"1 = medians non-increasing young->middle->old (expected physiological direction); consistency check, not accuracy"
+wearable-exam-stress,S1_midterm_1,ibi_aligned_mae_ms,986.8,ms,Lamina BVP intervals vs E4 IBI.csv (proprietary reference); nearest-interval alignment ±0.5 s; n_matched=202; consistency check
+wearable-exam-stress,S1_midterm_1,hr_mae_active_segments_bpm,28.75,bpm,Lamina BVP HR vs E4 HR.csv restricted to seconds with BVP per-second std > 1 (off-wrist/flat stretches excluded); active fraction 0.25; consistency check
+wearable-exam-stress,S1_midterm_1,bvp_active_fraction,0.255,ratio,fraction of seconds with BVP per-second std > 1 (signal-contact quality indicator; DATASET property)
+wearable-exam-stress,S1_midterm_1,ibi_median_lamina_ms,1031.2,ms,distribution comparison (structural)
+wearable-exam-stress,S1_midterm_1,ibi_median_e4_ms,500.0,ms,E4 proprietary reference distribution
+wearable-exam-stress,S1_midterm_2,ibi_aligned_mae_ms,1032.0,ms,Lamina BVP intervals vs E4 IBI.csv (proprietary reference); nearest-interval alignment ±0.5 s; n_matched=723; consistency check
+wearable-exam-stress,S1_midterm_2,hr_mae_active_segments_bpm,36.98,bpm,Lamina BVP HR vs E4 HR.csv restricted to seconds with BVP per-second std > 1 (off-wrist/flat stretches excluded); active fraction 0.95; consistency check
+wearable-exam-stress,S1_midterm_2,bvp_active_fraction,0.949,ratio,fraction of seconds with BVP per-second std > 1 (signal-contact quality indicator; DATASET property)
+wearable-exam-stress,S1_midterm_2,ibi_median_lamina_ms,734.4,ms,distribution comparison (structural)
+wearable-exam-stress,S1_midterm_2,ibi_median_e4_ms,515.6,ms,E4 proprietary reference distribution
+wearable-exam-stress,S1_Final,ibi_aligned_mae_ms,1928.8,ms,Lamina BVP intervals vs E4 IBI.csv (proprietary reference); nearest-interval alignment ±0.5 s; n_matched=915; consistency check
+wearable-exam-stress,S1_Final,hr_mae_active_segments_bpm,38.65,bpm,Lamina BVP HR vs E4 HR.csv restricted to seconds with BVP per-second std > 1 (off-wrist/flat stretches excluded); active fraction 0.94; consistency check
+wearable-exam-stress,S1_Final,bvp_active_fraction,0.944,ratio,fraction of seconds with BVP per-second std > 1 (signal-contact quality indicator; DATASET property)
+wearable-exam-stress,S1_Final,ibi_median_lamina_ms,781.2,ms,distribution comparison (structural)
+wearable-exam-stress,S1_Final,ibi_median_e4_ms,562.5,ms,E4 proprietary reference distribution
+wearable-exam-stress,S2_midterm_1,ibi_aligned_mae_ms,604.4,ms,Lamina BVP intervals vs E4 IBI.csv (proprietary reference); nearest-interval alignment ±0.5 s; n_matched=301; consistency check
+wearable-exam-stress,S2_midterm_1,hr_mae_active_segments_bpm,29.84,bpm,Lamina BVP HR vs E4 HR.csv restricted to seconds with BVP per-second std > 1 (off-wrist/flat stretches excluded); active fraction 0.29; consistency check
+wearable-exam-stress,S2_midterm_1,bvp_active_fraction,0.291,ratio,fraction of seconds with BVP per-second std > 1 (signal-contact quality indicator; DATASET property)
+wearable-exam-stress,S2_midterm_1,ibi_median_lamina_ms,921.9,ms,distribution comparison (structural)
+wearable-exam-stress,S2_midterm_1,ibi_median_e4_ms,531.3,ms,E4 proprietary reference distribution
+wearable-exam-stress,S2_midterm_2,ibi_aligned_mae_ms,101.1,ms,Lamina BVP intervals vs E4 IBI.csv (proprietary reference); nearest-interval alignment ±0.5 s; n_matched=1999; consistency check
+wearable-exam-stress,S2_midterm_2,hr_mae_active_segments_bpm,29.13,bpm,Lamina BVP HR vs E4 HR.csv restricted to seconds with BVP per-second std > 1 (off-wrist/flat stretches excluded); active fraction 1.00; consistency check
+wearable-exam-stress,S2_midterm_2,bvp_active_fraction,0.996,ratio,fraction of seconds with BVP per-second std > 1 (signal-contact quality indicator; DATASET property)
+wearable-exam-stress,S2_midterm_2,ibi_median_lamina_ms,625.0,ms,distribution comparison (structural)
+wearable-exam-stress,S2_midterm_2,ibi_median_e4_ms,609.4,ms,E4 proprietary reference distribution
+wearable-exam-stress,S2_Final,ibi_aligned_mae_ms,28.9,ms,Lamina BVP intervals vs E4 IBI.csv (proprietary reference); nearest-interval alignment ±0.5 s; n_matched=8361; consistency check
+wearable-exam-stress,S2_Final,hr_mae_active_segments_bpm,33.65,bpm,Lamina BVP HR vs E4 HR.csv restricted to seconds with BVP per-second std > 1 (off-wrist/flat stretches excluded); active fraction 0.96; consistency check
+wearable-exam-stress,S2_Final,bvp_active_fraction,0.962,ratio,fraction of seconds with BVP per-second std > 1 (signal-contact quality indicator; DATASET property)
+wearable-exam-stress,S2_Final,ibi_median_lamina_ms,578.1,ms,distribution comparison (structural)
+wearable-exam-stress,S2_Final,ibi_median_e4_ms,562.5,ms,E4 proprietary reference distribution
+wearable-exam-stress,S3_midterm_1,ibi_aligned_mae_ms,838.8,ms,Lamina BVP intervals vs E4 IBI.csv (proprietary reference); nearest-interval alignment ±0.5 s; n_matched=209; consistency check
+wearable-exam-stress,S3_midterm_1,hr_mae_active_segments_bpm,28.27,bpm,Lamina BVP HR vs E4 HR.csv restricted to seconds with BVP per-second std > 1 (off-wrist/flat stretches excluded); active fraction 0.35; consistency check
+wearable-exam-stress,S3_midterm_1,bvp_active_fraction,0.346,ratio,fraction of seconds with BVP per-second std > 1 (signal-contact quality indicator; DATASET property)
+wearable-exam-stress,S3_midterm_1,ibi_median_lamina_ms,953.1,ms,distribution comparison (structural)
+wearable-exam-stress,S3_midterm_1,ibi_median_e4_ms,546.9,ms,E4 proprietary reference distribution
+wearable-exam-stress,S3_midterm_2,ibi_aligned_mae_ms,1202.0,ms,Lamina BVP intervals vs E4 IBI.csv (proprietary reference); nearest-interval alignment ±0.5 s; n_matched=249; consistency check
+wearable-exam-stress,S3_midterm_2,hr_mae_active_segments_bpm,30.94,bpm,Lamina BVP HR vs E4 HR.csv restricted to seconds with BVP per-second std > 1 (off-wrist/flat stretches excluded); active fraction 0.95; consistency check
+wearable-exam-stress,S3_midterm_2,bvp_active_fraction,0.954,ratio,fraction of seconds with BVP per-second std > 1 (signal-contact quality indicator; DATASET property)
+wearable-exam-stress,S3_midterm_2,ibi_median_lamina_ms,734.4,ms,distribution comparison (structural)
+wearable-exam-stress,S3_midterm_2,ibi_median_e4_ms,640.7,ms,E4 proprietary reference distribution
+wearable-exam-stress,S3_Final,ibi_aligned_mae_ms,494.8,ms,Lamina BVP intervals vs E4 IBI.csv (proprietary reference); nearest-interval alignment ±0.5 s; n_matched=820; consistency check
+wearable-exam-stress,S3_Final,hr_mae_active_segments_bpm,31.43,bpm,Lamina BVP HR vs E4 HR.csv restricted to seconds with BVP per-second std > 1 (off-wrist/flat stretches excluded); active fraction 0.98; consistency check
+wearable-exam-stress,S3_Final,bvp_active_fraction,0.983,ratio,fraction of seconds with BVP per-second std > 1 (signal-contact quality indicator; DATASET property)
+wearable-exam-stress,S3_Final,ibi_median_lamina_ms,718.8,ms,distribution comparison (structural)
+wearable-exam-stress,S3_Final,ibi_median_e4_ms,656.3,ms,E4 proprietary reference distribution
+wearable-exam-stress,S4_midterm_1,ibi_aligned_mae_ms,697.9,ms,Lamina BVP intervals vs E4 IBI.csv (proprietary reference); nearest-interval alignment ±0.5 s; n_matched=152; consistency check
+wearable-exam-stress,S4_midterm_1,hr_mae_active_segments_bpm,31.73,bpm,Lamina BVP HR vs E4 HR.csv restricted to seconds with BVP per-second std > 1 (off-wrist/flat stretches excluded); active fraction 0.17; consistency check
+wearable-exam-stress,S4_midterm_1,bvp_active_fraction,0.171,ratio,fraction of seconds with BVP per-second std > 1 (signal-contact quality indicator; DATASET property)
+wearable-exam-stress,S4_midterm_1,ibi_median_lamina_ms,968.8,ms,distribution comparison (structural)
+wearable-exam-stress,S4_midterm_1,ibi_median_e4_ms,468.8,ms,E4 proprietary reference distribution
+wearable-exam-stress,S4_midterm_2,ibi_aligned_mae_ms,520.4,ms,Lamina BVP intervals vs E4 IBI.csv (proprietary reference); nearest-interval alignment ±0.5 s; n_matched=310; consistency check
+wearable-exam-stress,S4_midterm_2,hr_mae_active_segments_bpm,33.5,bpm,Lamina BVP HR vs E4 HR.csv restricted to seconds with BVP per-second std > 1 (off-wrist/flat stretches excluded); active fraction 0.78; consistency check
+wearable-exam-stress,S4_midterm_2,bvp_active_fraction,0.78,ratio,fraction of seconds with BVP per-second std > 1 (signal-contact quality indicator; DATASET property)
+wearable-exam-stress,S4_midterm_2,ibi_median_lamina_ms,703.1,ms,distribution comparison (structural)
+wearable-exam-stress,S4_midterm_2,ibi_median_e4_ms,515.6,ms,E4 proprietary reference distribution
+wearable-exam-stress,S4_Final,ibi_aligned_mae_ms,1781.1,ms,Lamina BVP intervals vs E4 IBI.csv (proprietary reference); nearest-interval alignment ±0.5 s; n_matched=526; consistency check
+wearable-exam-stress,S4_Final,hr_mae_active_segments_bpm,26.37,bpm,Lamina BVP HR vs E4 HR.csv restricted to seconds with BVP per-second std > 1 (off-wrist/flat stretches excluded); active fraction 0.91; consistency check
+wearable-exam-stress,S4_Final,bvp_active_fraction,0.912,ratio,fraction of seconds with BVP per-second std > 1 (signal-contact quality indicator; DATASET property)
+wearable-exam-stress,S4_Final,ibi_median_lamina_ms,750.0,ms,distribution comparison (structural)
+wearable-exam-stress,S4_Final,ibi_median_e4_ms,812.5,ms,E4 proprietary reference distribution
+wearable-exam-stress,S5_midterm_1,ibi_aligned_mae_ms,651.3,ms,Lamina BVP intervals vs E4 IBI.csv (proprietary reference); nearest-interval alignment ±0.5 s; n_matched=164; consistency check
+wearable-exam-stress,S5_midterm_1,hr_mae_active_segments_bpm,30.36,bpm,Lamina BVP HR vs E4 HR.csv restricted to seconds with BVP per-second std > 1 (off-wrist/flat stretches excluded); active fraction 0.24; consistency check
+wearable-exam-stress,S5_midterm_1,bvp_active_fraction,0.241,ratio,fraction of seconds with BVP per-second std > 1 (signal-contact quality indicator; DATASET property)
+wearable-exam-stress,S5_midterm_1,ibi_median_lamina_ms,1062.5,ms,distribution comparison (structural)
+wearable-exam-stress,S5_midterm_1,ibi_median_e4_ms,500.0,ms,E4 proprietary reference distribution
+wearable-exam-stress,S5_midterm_2,ibi_aligned_mae_ms,45.4,ms,Lamina BVP intervals vs E4 IBI.csv (proprietary reference); nearest-interval alignment ±0.5 s; n_matched=4056; consistency check
+wearable-exam-stress,S5_midterm_2,hr_mae_active_segments_bpm,32.67,bpm,Lamina BVP HR vs E4 HR.csv restricted to seconds with BVP per-second std > 1 (off-wrist/flat stretches excluded); active fraction 1.00; consistency check
+wearable-exam-stress,S5_midterm_2,bvp_active_fraction,0.999,ratio,fraction of seconds with BVP per-second std > 1 (signal-contact quality indicator; DATASET property)
+wearable-exam-stress,S5_midterm_2,ibi_median_lamina_ms,562.5,ms,distribution comparison (structural)
+wearable-exam-stress,S5_midterm_2,ibi_median_e4_ms,546.9,ms,E4 proprietary reference distribution
+wearable-exam-stress,S5_Final,ibi_aligned_mae_ms,394.2,ms,Lamina BVP intervals vs E4 IBI.csv (proprietary reference); nearest-interval alignment ±0.5 s; n_matched=2752; consistency check
+wearable-exam-stress,S5_Final,hr_mae_active_segments_bpm,26.4,bpm,Lamina BVP HR vs E4 HR.csv restricted to seconds with BVP per-second std > 1 (off-wrist/flat stretches excluded); active fraction 0.99; consistency check
+wearable-exam-stress,S5_Final,bvp_active_fraction,0.987,ratio,fraction of seconds with BVP per-second std > 1 (signal-contact quality indicator; DATASET property)
+wearable-exam-stress,S5_Final,ibi_median_lamina_ms,671.9,ms,distribution comparison (structural)
+wearable-exam-stress,S5_Final,ibi_median_e4_ms,593.8,ms,E4 proprietary reference distribution

@@ -1,0 +1,22 @@
+lamina_version: {'bridge_version': '0.1.0', 'lamina_version': '0.1.0'}
+
+synthetic video: 30.0 fps, 20.0 s, GT HR 75.0 bpm; RGB intensity anti-phase with blood volume
+
+algorithm  r(wave, GT BVP)  HR as-is  HR flipped  n_pk as-is  n_pk flip
+green              -0.985     75.00       75.00          25         25
+chrom               0.979     75.13       75.00          25         25
+pos                -0.983     75.00       74.87          25         25
+
+GT HR = 75.0 bpm
+
+Interpretation: r<0 means the emitted waveform is in intensity phase
+(inverted vs blood volume); r>0 means BVP phase. A sign-sensitive
+downstream detector (ppg-peaks/Elgendi) then gives different HR for
+wave vs -wave.
+
+=== asymmetric-BVP variant (fast rise / slow decay) ===
+algorithm  r(wave,GT)  HR as-is  HR flipped  n_pk as-is  n_pk flip
+green         -0.983     75.52       75.00          25         25
+chrom          0.939     75.00       75.66          25         25
+pos           -0.964     75.66       75.00          25         25
+GT HR = 75.0 bpm, GT beats in 20 s = 25

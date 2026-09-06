@@ -1,0 +1,25 @@
+lamina_version: {'bridge_version': '0.1.0', 'lamina_version': '0.1.0'}
+signal: n=10800, all finite: True
+
+default config -> 36 peaks
+
+threshold_multiplier sweep:
+         0.1: ok, 36 peaks
+        0.25: ok, 36 peaks
+         0.5: ok, 36 peaks
+         0.9: ok, 36 peaks
+        0.99: ok, 35 peaks
+      0.9999: ok, 33 peaks
+         1.0: ERROR: bridge op 'ecg-peaks' failed [lamina_error]: Input signal contains non-finite values (NaN or Infinity)
+   1.0000001: ERROR: bridge op 'ecg-peaks' failed [lamina_error]: Input signal contains non-finite values (NaN or Infinity)
+         1.1: ERROR: bridge op 'ecg-peaks' failed [lamina_error]: Input signal contains non-finite values (NaN or Infinity)
+         1.5: ERROR: bridge op 'ecg-peaks' failed [lamina_error]: Input signal contains non-finite values (NaN or Infinity)
+         2.0: ERROR: bridge op 'ecg-peaks' failed [lamina_error]: Input signal contains non-finite values (NaN or Infinity)
+         3.0: ERROR: bridge op 'ecg-peaks' failed [lamina_error]: Input signal contains non-finite values (NaN or Infinity)
+
+Other config fields at threshold_multiplier=0.25 (sanity: they work):
+  {'refractory_period_sec': 0.3}: ok, 36 peaks
+  {'integration_window_sec': 0.08}: ok, 36 peaks
+  {'lowcut': 3.0, 'highcut': 20.0}: ok, 36 peaks
+  {'searchback': False}: ok, 36 peaks
+  {'filter_order': 3}: ok, 36 peaks

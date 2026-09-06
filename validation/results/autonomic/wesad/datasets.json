@@ -1,0 +1,43 @@
+[
+  {
+    "dataset": "wesad",
+    "version": "1.0",
+    "source": "https://ubicomp.eti.uni-siegen.de/home/datasets/icmi18/",
+    "access_status": "validated",
+    "reason": "",
+    "subjects_evaluated": 5,
+    "recordings_evaluated": 15,
+    "modalities": [
+      "ecg",
+      "eda",
+      "bvp",
+      "rsp"
+    ],
+    "lamina_ops": [
+      "ecg-peaks",
+      "ppg-peaks",
+      "eda-peaks",
+      "rsp-cycles",
+      "hrv"
+    ],
+    "lamina_version": "0.1.0",
+    "git_commit": "e5cbc3570884825bea38ffb6f47604c4c3c05bd7",
+    "validation_date": "2026-09-06T16:12:13+00:00",
+    "metrics": {
+      "bvp_wrist_bvp_n_peaks": 266.53333333333336,
+      "ecg_chest_ecg_n_peaks": 276.73333333333335,
+      "hr_bias": 2.0881006012940104,
+      "hr_mae": 14.319036345061761,
+      "hr_n": 220.0,
+      "hr_pearson_r": 0.17252801580275554,
+      "hr_rmse": 21.301602792677993,
+      "rsp_chest_rsp_n_cycles": 70.66666666666667,
+      "structural_bvp_wrist_bvp_n_peaks": 266.53333333333336,
+      "structural_ecg_chest_ecg_n_peaks": 276.73333333333335,
+      "structural_eda_chest_eda_n_scr": 37.8,
+      "structural_rsp_chest_rsp_mean_rate_bpm": 19.094975511717156
+    },
+    "limitations": [],
+    "failures": []
+  }
+]

@@ -1,0 +1,94 @@
+[
+  {
+    "dataset": "bidmc",
+    "version": "1.0.0",
+    "source": "https://physionet.org/content/bidmc/ (mirror: https://archive.physionet.org/physiobank/database/bidmc/)",
+    "access_status": "validated",
+    "reason": "",
+    "subjects_evaluated": 12,
+    "recordings_evaluated": 12,
+    "modalities": [
+      "ppg",
+      "rsp",
+      "ecg"
+    ],
+    "lamina_ops": [
+      "ppg-clean",
+      "ppg-peaks",
+      "rsp-clean",
+      "rsp-cycles",
+      "ecg-peaks",
+      "hrv"
+    ],
+    "lamina_version": "0.1.0",
+    "git_commit": "ac7f7663c052888dce7dc9cf8bbbb78c96241a0f",
+    "validation_date": "2026-09-06T15:51:53+00:00",
+    "metrics": {
+      "ecg_ecg_n_peaks": 672.1666666666666,
+      "ppg_ppg_n_peaks": 703.75,
+      "rsp_resp_f1": 0.9437355712009116,
+      "rsp_resp_fn": 1.1666666666666667,
+      "rsp_resp_fp": 10.75,
+      "rsp_resp_mean_abs_timing_error_sec": 0.07425673304274692,
+      "rsp_resp_median_timing_error_sec": -0.009,
+      "rsp_resp_n_cycles": 145.16666666666666,
+      "rsp_resp_n_detected": 145.16666666666666,
+      "rsp_resp_n_reference": 135.58333333333334,
+      "rsp_resp_precision": 0.9116631831173031,
+      "rsp_resp_recall": 0.9916667214983245,
+      "rsp_resp_tolerance_sec": 0.5,
+      "rsp_resp_tp": 134.41666666666666,
+      "structural_ecg_ecg_n_peaks": 672.1666666666666,
+      "structural_ppg_ppg_n_peaks": 703.75,
+      "structural_rsp_resp_mean_rate_bpm": 18.774146519266736
+    },
+    "limitations": [],
+    "failures": []
+  },
+  {
+    "dataset": "wrist-ppg-exercise",
+    "version": "1.0.0",
+    "source": "https://physionet.org/content/wrist-ppg-during-exercise/",
+    "access_status": "validated",
+    "reason": "",
+    "subjects_evaluated": 8,
+    "recordings_evaluated": 19,
+    "modalities": [
+      "ppg",
+      "ecg",
+      "acc"
+    ],
+    "lamina_ops": [
+      "ppg-clean",
+      "ppg-peaks",
+      "ecg-peaks",
+      "hrv"
+    ],
+    "lamina_version": "0.1.0",
+    "git_commit": "ac7f7663c052888dce7dc9cf8bbbb78c96241a0f",
+    "validation_date": "2026-09-06T15:52:13+00:00",
+    "metrics": {
+      "ecg_ecg_f1": 0.8768781166304342,
+      "ecg_ecg_fn": 56.21052631578947,
+      "ecg_ecg_fp": 81.0,
+      "ecg_ecg_mean_abs_timing_error_sec": 0.024297749399219283,
+      "ecg_ecg_median_timing_error_sec": -0.011924342105263159,
+      "ecg_ecg_n_detected": 624.2105263157895,
+      "ecg_ecg_n_peaks": 624.2105263157895,
+      "ecg_ecg_n_reference": 599.421052631579,
+      "ecg_ecg_precision": 0.8764338114926047,
+      "ecg_ecg_recall": 0.8953865085465088,
+      "ecg_ecg_tolerance_sec": 0.15,
+      "ecg_ecg_tp": 543.2105263157895,
+      "hr_bias": -3.1410681100977897,
+      "hr_mae": 20.748426540312792,
+      "hr_n": 175.3684210526316,
+      "hr_pearson_r": 0.08049547009174994,
+      "hr_rmse": 23.00710883989096,
+      "ppg_ppg_n_peaks": 546.6315789473684,
+      "structural_ppg_ppg_n_peaks": 546.6315789473684
+    },
+    "limitations": [],
+    "failures": []
+  }
+]

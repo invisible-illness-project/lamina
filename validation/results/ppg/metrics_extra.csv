@@ -1,0 +1,145 @@
+dataset,recording_id,metric,value,units,notes
+bidmc,bidmc01,interannotator_breath_f1,0.9850746268656716,fraction,ann2 matched against ann1 @0.5 s tolerance (greedy 1:1)
+bidmc,bidmc01,lamina_rsp_vs_ann2_f1,0.9970501474926253,fraction,robustness of runner metric to annotator choice (runner uses ann1)
+bidmc,bidmc01,hr_consistency_ppg_vs_ecg_mae,0.5191227025717476,bpm,"CONSISTENCY CHECK (not independent validation): Lamina ppg-peaks HR vs Lamina ecg-peaks HR, 60 s windows / 30 s step"
+bidmc,bidmc01,hr_consistency_ppg_vs_ecg_bias,-0.5005759595435648,bpm,mean(PPG-HR minus ECG-HR); both from Lamina
+bidmc,bidmc01,ecg_peaks_per_min,91.24847919201348,1/min,structural: Lamina ecg-peaks rate on II @125 Hz; plausible range ~40-180; 125 Hz is below the 5-15 Hz bandpass comfort zone (observation)
+bidmc,bidmc02,interannotator_breath_f1,0.9833333333333333,fraction,ann2 matched against ann1 @0.5 s tolerance (greedy 1:1)
+bidmc,bidmc02,lamina_rsp_vs_ann2_f1,0.983739837398374,fraction,robustness of runner metric to annotator choice (runner uses ann1)
+bidmc,bidmc02,hr_consistency_ppg_vs_ecg_mae,0.2360706885297077,bpm,"CONSISTENCY CHECK (not independent validation): Lamina ppg-peaks HR vs Lamina ecg-peaks HR, 60 s windows / 30 s step"
+bidmc,bidmc02,hr_consistency_ppg_vs_ecg_bias,0.024009681019081578,bpm,mean(PPG-HR minus ECG-HR); both from Lamina
+bidmc,bidmc02,ecg_peaks_per_min,90.9984833586107,1/min,structural: Lamina ecg-peaks rate on II @125 Hz; plausible range ~40-180; 125 Hz is below the 5-15 Hz bandpass comfort zone (observation)
+bidmc,bidmc03,interannotator_breath_f1,0.9712230215827339,fraction,ann2 matched against ann1 @0.5 s tolerance (greedy 1:1)
+bidmc,bidmc03,lamina_rsp_vs_ann2_f1,0.9964664310954063,fraction,robustness of runner metric to annotator choice (runner uses ann1)
+bidmc,bidmc03,hr_consistency_ppg_vs_ecg_mae,51.58227125443193,bpm,"CONSISTENCY CHECK (not independent validation): Lamina ppg-peaks HR vs Lamina ecg-peaks HR, 60 s windows / 30 s step"
+bidmc,bidmc03,hr_consistency_ppg_vs_ecg_bias,46.60171391282415,bpm,mean(PPG-HR minus ECG-HR); both from Lamina
+bidmc,bidmc03,ecg_peaks_per_min,19.124681255312414,1/min,structural: Lamina ecg-peaks rate on II @125 Hz; plausible range ~40-180; 125 Hz is below the 5-15 Hz bandpass comfort zone (observation)
+bidmc,bidmc04,interannotator_breath_f1,0.972972972972973,fraction,ann2 matched against ann1 @0.5 s tolerance (greedy 1:1)
+bidmc,bidmc04,lamina_rsp_vs_ann2_f1,0.9530685920577616,fraction,robustness of runner metric to annotator choice (runner uses ann1)
+bidmc,bidmc04,hr_consistency_ppg_vs_ecg_mae,1.6909269153927189,bpm,"CONSISTENCY CHECK (not independent validation): Lamina ppg-peaks HR vs Lamina ecg-peaks HR, 60 s windows / 30 s step"
+bidmc,bidmc04,hr_consistency_ppg_vs_ecg_bias,-1.6908317647492603,bpm,mean(PPG-HR minus ECG-HR); both from Lamina
+bidmc,bidmc04,ecg_peaks_per_min,92.24846252562459,1/min,structural: Lamina ecg-peaks rate on II @125 Hz; plausible range ~40-180; 125 Hz is below the 5-15 Hz bandpass comfort zone (observation)
+bidmc,bidmc05,interannotator_breath_f1,1.0,fraction,ann2 matched against ann1 @0.5 s tolerance (greedy 1:1)
+bidmc,bidmc05,lamina_rsp_vs_ann2_f1,0.6575342465753424,fraction,robustness of runner metric to annotator choice (runner uses ann1)
+bidmc,bidmc05,hr_consistency_ppg_vs_ecg_mae,0.8955761656646501,bpm,"CONSISTENCY CHECK (not independent validation): Lamina ppg-peaks HR vs Lamina ecg-peaks HR, 60 s windows / 30 s step"
+bidmc,bidmc05,hr_consistency_ppg_vs_ecg_bias,-0.8027089641033067,bpm,mean(PPG-HR minus ECG-HR); both from Lamina
+bidmc,bidmc05,ecg_peaks_per_min,98.12336461058983,1/min,structural: Lamina ecg-peaks rate on II @125 Hz; plausible range ~40-180; 125 Hz is below the 5-15 Hz bandpass comfort zone (observation)
+bidmc,bidmc06,interannotator_breath_f1,0.9810126582278481,fraction,ann2 matched against ann1 @0.5 s tolerance (greedy 1:1)
+bidmc,bidmc06,lamina_rsp_vs_ann2_f1,0.9937106918238994,fraction,robustness of runner metric to annotator choice (runner uses ann1)
+bidmc,bidmc06,hr_consistency_ppg_vs_ecg_mae,0.5425781090386228,bpm,"CONSISTENCY CHECK (not independent validation): Lamina ppg-peaks HR vs Lamina ecg-peaks HR, 60 s windows / 30 s step"
+bidmc,bidmc06,hr_consistency_ppg_vs_ecg_bias,-0.5362062296237288,bpm,mean(PPG-HR minus ECG-HR); both from Lamina
+bidmc,bidmc06,ecg_peaks_per_min,81.99863335611074,1/min,structural: Lamina ecg-peaks rate on II @125 Hz; plausible range ~40-180; 125 Hz is below the 5-15 Hz bandpass comfort zone (observation)
+bidmc,bidmc07,interannotator_breath_f1,0.9873417721518987,fraction,ann2 matched against ann1 @0.5 s tolerance (greedy 1:1)
+bidmc,bidmc07,lamina_rsp_vs_ann2_f1,0.9968652037617556,fraction,robustness of runner metric to annotator choice (runner uses ann1)
+bidmc,bidmc07,hr_consistency_ppg_vs_ecg_mae,0.02314206978156316,bpm,"CONSISTENCY CHECK (not independent validation): Lamina ppg-peaks HR vs Lamina ecg-peaks HR, 60 s windows / 30 s step"
+bidmc,bidmc07,hr_consistency_ppg_vs_ecg_bias,0.007476675600887006,bpm,mean(PPG-HR minus ECG-HR); both from Lamina
+bidmc,bidmc07,ecg_peaks_per_min,90.12349794170098,1/min,structural: Lamina ecg-peaks rate on II @125 Hz; plausible range ~40-180; 125 Hz is below the 5-15 Hz bandpass comfort zone (observation)
+bidmc,bidmc08,interannotator_breath_f1,0.9820359281437125,fraction,ann2 matched against ann1 @0.5 s tolerance (greedy 1:1)
+bidmc,bidmc08,lamina_rsp_vs_ann2_f1,0.9940828402366864,fraction,robustness of runner metric to annotator choice (runner uses ann1)
+bidmc,bidmc08,hr_consistency_ppg_vs_ecg_mae,0.03483144552803689,bpm,"CONSISTENCY CHECK (not independent validation): Lamina ppg-peaks HR vs Lamina ecg-peaks HR, 60 s windows / 30 s step"
+bidmc,bidmc08,hr_consistency_ppg_vs_ecg_bias,0.022792087306578425,bpm,mean(PPG-HR minus ECG-HR); both from Lamina
+bidmc,bidmc08,ecg_peaks_per_min,99.74833752770789,1/min,structural: Lamina ecg-peaks rate on II @125 Hz; plausible range ~40-180; 125 Hz is below the 5-15 Hz bandpass comfort zone (observation)
+bidmc,bidmc09,interannotator_breath_f1,0.9874213836477987,fraction,ann2 matched against ann1 @0.5 s tolerance (greedy 1:1)
+bidmc,bidmc09,lamina_rsp_vs_ann2_f1,0.99375,fraction,robustness of runner metric to annotator choice (runner uses ann1)
+bidmc,bidmc09,hr_consistency_ppg_vs_ecg_mae,0.24941253089479667,bpm,"CONSISTENCY CHECK (not independent validation): Lamina ppg-peaks HR vs Lamina ecg-peaks HR, 60 s windows / 30 s step"
+bidmc,bidmc09,hr_consistency_ppg_vs_ecg_bias,-0.23409071655024433,bpm,mean(PPG-HR minus ECG-HR); both from Lamina
+bidmc,bidmc09,ecg_peaks_per_min,76.74872085465243,1/min,structural: Lamina ecg-peaks rate on II @125 Hz; plausible range ~40-180; 125 Hz is below the 5-15 Hz bandpass comfort zone (observation)
+bidmc,bidmc10,interannotator_breath_f1,0.9591836734693879,fraction,ann2 matched against ann1 @0.5 s tolerance (greedy 1:1)
+bidmc,bidmc10,lamina_rsp_vs_ann2_f1,0.9801324503311258,fraction,robustness of runner metric to annotator choice (runner uses ann1)
+bidmc,bidmc10,hr_consistency_ppg_vs_ecg_mae,0.8558956939340637,bpm,"CONSISTENCY CHECK (not independent validation): Lamina ppg-peaks HR vs Lamina ecg-peaks HR, 60 s windows / 30 s step"
+bidmc,bidmc10,hr_consistency_ppg_vs_ecg_bias,-0.6217968590532972,bpm,mean(PPG-HR minus ECG-HR); both from Lamina
+bidmc,bidmc10,ecg_peaks_per_min,82.24862918951352,1/min,structural: Lamina ecg-peaks rate on II @125 Hz; plausible range ~40-180; 125 Hz is below the 5-15 Hz bandpass comfort zone (observation)
+bidmc,bidmc11,interannotator_breath_f1,0.9356223175965666,fraction,ann2 matched against ann1 @0.5 s tolerance (greedy 1:1)
+bidmc,bidmc11,lamina_rsp_vs_ann2_f1,0.9586776859504132,fraction,robustness of runner metric to annotator choice (runner uses ann1)
+bidmc,bidmc11,hr_consistency_ppg_vs_ecg_mae,0.049713475778192635,bpm,"CONSISTENCY CHECK (not independent validation): Lamina ppg-peaks HR vs Lamina ecg-peaks HR, 60 s windows / 30 s step"
+bidmc,bidmc11,hr_consistency_ppg_vs_ecg_bias,0.00727867510828825,bpm,mean(PPG-HR minus ECG-HR); both from Lamina
+bidmc,bidmc11,ecg_peaks_per_min,92.74845419243013,1/min,structural: Lamina ecg-peaks rate on II @125 Hz; plausible range ~40-180; 125 Hz is below the 5-15 Hz bandpass comfort zone (observation)
+bidmc,bidmc12,interannotator_breath_f1,0.9798657718120806,fraction,ann2 matched against ann1 @0.5 s tolerance (greedy 1:1)
+bidmc,bidmc12,lamina_rsp_vs_ann2_f1,0.9933774834437086,fraction,robustness of runner metric to annotator choice (runner uses ann1)
+bidmc,bidmc12,hr_consistency_ppg_vs_ecg_mae,0.2530367314968563,bpm,"CONSISTENCY CHECK (not independent validation): Lamina ppg-peaks HR vs Lamina ecg-peaks HR, 60 s windows / 30 s step"
+bidmc,bidmc12,hr_consistency_ppg_vs_ecg_bias,-0.18512020422224396,bpm,mean(PPG-HR minus ECG-HR); both from Lamina
+bidmc,bidmc12,ecg_peaks_per_min,92.87345210913152,1/min,structural: Lamina ecg-peaks rate on II @125 Hz; plausible range ~40-180; 125 Hz is below the 5-15 Hz bandpass comfort zone (observation)
+wrist-ppg-exercise,s1_high_resistance_bike,hr_bias_bpm,-3.7301370125604776,bpm,Bland-Altman-style bias (Lamina PPG-HR minus annotation-HR); activity=high_resistance_bike
+wrist-ppg-exercise,s1_high_resistance_bike,hr_loa_halfwidth_bpm,20.785971360282335,bpm,1.96*std of differences; activity=high_resistance_bike
+wrist-ppg-exercise,s1_high_resistance_bike,hr_windows_covered_fraction,1.0,fraction,windows with >=1 complete IBI on both channels; activity=high_resistance_bike
+wrist-ppg-exercise,s1_high_resistance_bike,hr_consistency_lamina_ecg_vs_annotation_mae,0.5487147788075605,bpm,CONSISTENCY CHECK: Lamina ecg-peaks HR vs annotation HR; activity=high_resistance_bike
+wrist-ppg-exercise,s1_low_resistance_bike,hr_bias_bpm,6.408680010601227,bpm,Bland-Altman-style bias (Lamina PPG-HR minus annotation-HR); activity=low_resistance_bike
+wrist-ppg-exercise,s1_low_resistance_bike,hr_loa_halfwidth_bpm,19.716139660369933,bpm,1.96*std of differences; activity=low_resistance_bike
+wrist-ppg-exercise,s1_low_resistance_bike,hr_windows_covered_fraction,1.0,fraction,windows with >=1 complete IBI on both channels; activity=low_resistance_bike
+wrist-ppg-exercise,s1_low_resistance_bike,hr_consistency_lamina_ecg_vs_annotation_mae,0.2755150778531454,bpm,CONSISTENCY CHECK: Lamina ecg-peaks HR vs annotation HR; activity=low_resistance_bike
+wrist-ppg-exercise,s1_walk,hr_bias_bpm,32.95565522209094,bpm,Bland-Altman-style bias (Lamina PPG-HR minus annotation-HR); activity=walk
+wrist-ppg-exercise,s1_walk,hr_loa_halfwidth_bpm,21.169471157624105,bpm,1.96*std of differences; activity=walk
+wrist-ppg-exercise,s1_walk,hr_windows_covered_fraction,1.0,fraction,windows with >=1 complete IBI on both channels; activity=walk
+wrist-ppg-exercise,s1_walk,hr_consistency_lamina_ecg_vs_annotation_mae,63.60401634054971,bpm,CONSISTENCY CHECK: Lamina ecg-peaks HR vs annotation HR; activity=walk
+wrist-ppg-exercise,s2_high_resistance_bike,hr_bias_bpm,-27.878255556670474,bpm,Bland-Altman-style bias (Lamina PPG-HR minus annotation-HR); activity=high_resistance_bike
+wrist-ppg-exercise,s2_high_resistance_bike,hr_loa_halfwidth_bpm,23.105257489388933,bpm,1.96*std of differences; activity=high_resistance_bike
+wrist-ppg-exercise,s2_high_resistance_bike,hr_windows_covered_fraction,1.0,fraction,windows with >=1 complete IBI on both channels; activity=high_resistance_bike
+wrist-ppg-exercise,s2_high_resistance_bike,hr_consistency_lamina_ecg_vs_annotation_mae,7.479816056873103,bpm,CONSISTENCY CHECK: Lamina ecg-peaks HR vs annotation HR; activity=high_resistance_bike
+wrist-ppg-exercise,s2_low_resistance_bike,hr_bias_bpm,-17.272158201797357,bpm,Bland-Altman-style bias (Lamina PPG-HR minus annotation-HR); activity=low_resistance_bike
+wrist-ppg-exercise,s2_low_resistance_bike,hr_loa_halfwidth_bpm,25.330967124612148,bpm,1.96*std of differences; activity=low_resistance_bike
+wrist-ppg-exercise,s2_low_resistance_bike,hr_windows_covered_fraction,1.0,fraction,windows with >=1 complete IBI on both channels; activity=low_resistance_bike
+wrist-ppg-exercise,s2_low_resistance_bike,hr_consistency_lamina_ecg_vs_annotation_mae,5.833681648277268,bpm,CONSISTENCY CHECK: Lamina ecg-peaks HR vs annotation HR; activity=low_resistance_bike
+wrist-ppg-exercise,s2_walk,hr_bias_bpm,11.425321724479977,bpm,Bland-Altman-style bias (Lamina PPG-HR minus annotation-HR); activity=walk
+wrist-ppg-exercise,s2_walk,hr_loa_halfwidth_bpm,27.083079138929286,bpm,1.96*std of differences; activity=walk
+wrist-ppg-exercise,s2_walk,hr_windows_covered_fraction,1.0,fraction,windows with >=1 complete IBI on both channels; activity=walk
+wrist-ppg-exercise,s2_walk,hr_consistency_lamina_ecg_vs_annotation_mae,25.525890385964715,bpm,CONSISTENCY CHECK: Lamina ecg-peaks HR vs annotation HR; activity=walk
+wrist-ppg-exercise,s3_high_resistance_bike,hr_bias_bpm,-23.9482227792002,bpm,Bland-Altman-style bias (Lamina PPG-HR minus annotation-HR); activity=high_resistance_bike
+wrist-ppg-exercise,s3_high_resistance_bike,hr_loa_halfwidth_bpm,23.427218523091256,bpm,1.96*std of differences; activity=high_resistance_bike
+wrist-ppg-exercise,s3_high_resistance_bike,hr_windows_covered_fraction,1.0,fraction,windows with >=1 complete IBI on both channels; activity=high_resistance_bike
+wrist-ppg-exercise,s3_high_resistance_bike,hr_consistency_lamina_ecg_vs_annotation_mae,12.35007621336898,bpm,CONSISTENCY CHECK: Lamina ecg-peaks HR vs annotation HR; activity=high_resistance_bike
+wrist-ppg-exercise,s3_low_resistance_bike,hr_bias_bpm,-4.8118757044214515,bpm,Bland-Altman-style bias (Lamina PPG-HR minus annotation-HR); activity=low_resistance_bike
+wrist-ppg-exercise,s3_low_resistance_bike,hr_loa_halfwidth_bpm,18.21283502067337,bpm,1.96*std of differences; activity=low_resistance_bike
+wrist-ppg-exercise,s3_low_resistance_bike,hr_windows_covered_fraction,1.0,fraction,windows with >=1 complete IBI on both channels; activity=low_resistance_bike
+wrist-ppg-exercise,s3_low_resistance_bike,hr_consistency_lamina_ecg_vs_annotation_mae,9.497099220418695,bpm,CONSISTENCY CHECK: Lamina ecg-peaks HR vs annotation HR; activity=low_resistance_bike
+wrist-ppg-exercise,s3_run,hr_bias_bpm,16.002946554034214,bpm,Bland-Altman-style bias (Lamina PPG-HR minus annotation-HR); activity=run
+wrist-ppg-exercise,s3_run,hr_loa_halfwidth_bpm,7.8428584157379575,bpm,1.96*std of differences; activity=run
+wrist-ppg-exercise,s3_run,hr_windows_covered_fraction,1.0,fraction,windows with >=1 complete IBI on both channels; activity=run
+wrist-ppg-exercise,s3_run,hr_consistency_lamina_ecg_vs_annotation_mae,0.4938914065803208,bpm,CONSISTENCY CHECK: Lamina ecg-peaks HR vs annotation HR; activity=run
+wrist-ppg-exercise,s3_walk,hr_bias_bpm,-8.175809038799352,bpm,Bland-Altman-style bias (Lamina PPG-HR minus annotation-HR); activity=walk
+wrist-ppg-exercise,s3_walk,hr_loa_halfwidth_bpm,11.582253536551136,bpm,1.96*std of differences; activity=walk
+wrist-ppg-exercise,s3_walk,hr_windows_covered_fraction,1.0,fraction,windows with >=1 complete IBI on both channels; activity=walk
+wrist-ppg-exercise,s3_walk,hr_consistency_lamina_ecg_vs_annotation_mae,6.041919076363767,bpm,CONSISTENCY CHECK: Lamina ecg-peaks HR vs annotation HR; activity=walk
+wrist-ppg-exercise,s4_run,hr_bias_bpm,-70.53618090857806,bpm,Bland-Altman-style bias (Lamina PPG-HR minus annotation-HR); activity=run
+wrist-ppg-exercise,s4_run,hr_loa_halfwidth_bpm,32.63570803211765,bpm,1.96*std of differences; activity=run
+wrist-ppg-exercise,s4_run,hr_windows_covered_fraction,1.0,fraction,windows with >=1 complete IBI on both channels; activity=run
+wrist-ppg-exercise,s4_run,hr_consistency_lamina_ecg_vs_annotation_mae,7.804600406620735,bpm,CONSISTENCY CHECK: Lamina ecg-peaks HR vs annotation HR; activity=run
+wrist-ppg-exercise,s5_low_resistance_bike,hr_bias_bpm,-25.219203718692338,bpm,Bland-Altman-style bias (Lamina PPG-HR minus annotation-HR); activity=low_resistance_bike
+wrist-ppg-exercise,s5_low_resistance_bike,hr_loa_halfwidth_bpm,22.861344651688924,bpm,1.96*std of differences; activity=low_resistance_bike
+wrist-ppg-exercise,s5_low_resistance_bike,hr_windows_covered_fraction,1.0,fraction,windows with >=1 complete IBI on both channels; activity=low_resistance_bike
+wrist-ppg-exercise,s5_low_resistance_bike,hr_consistency_lamina_ecg_vs_annotation_mae,1.276176687120087,bpm,CONSISTENCY CHECK: Lamina ecg-peaks HR vs annotation HR; activity=low_resistance_bike
+wrist-ppg-exercise,s5_run,hr_bias_bpm,-22.38369108301976,bpm,Bland-Altman-style bias (Lamina PPG-HR minus annotation-HR); activity=run
+wrist-ppg-exercise,s5_run,hr_loa_halfwidth_bpm,25.472959864805443,bpm,1.96*std of differences; activity=run
+wrist-ppg-exercise,s5_run,hr_windows_covered_fraction,1.0,fraction,windows with >=1 complete IBI on both channels; activity=run
+wrist-ppg-exercise,s5_run,hr_consistency_lamina_ecg_vs_annotation_mae,0.7170313898817697,bpm,CONSISTENCY CHECK: Lamina ecg-peaks HR vs annotation HR; activity=run
+wrist-ppg-exercise,s6_low_resistance_bike,hr_bias_bpm,-11.99435265120844,bpm,Bland-Altman-style bias (Lamina PPG-HR minus annotation-HR); activity=low_resistance_bike
+wrist-ppg-exercise,s6_low_resistance_bike,hr_loa_halfwidth_bpm,22.58375219272061,bpm,1.96*std of differences; activity=low_resistance_bike
+wrist-ppg-exercise,s6_low_resistance_bike,hr_windows_covered_fraction,1.0,fraction,windows with >=1 complete IBI on both channels; activity=low_resistance_bike
+wrist-ppg-exercise,s6_low_resistance_bike,hr_consistency_lamina_ecg_vs_annotation_mae,61.79467647495944,bpm,CONSISTENCY CHECK: Lamina ecg-peaks HR vs annotation HR; activity=low_resistance_bike
+wrist-ppg-exercise,s6_run,hr_bias_bpm,15.354814856752666,bpm,Bland-Altman-style bias (Lamina PPG-HR minus annotation-HR); activity=run
+wrist-ppg-exercise,s6_run,hr_loa_halfwidth_bpm,16.74390293834193,bpm,1.96*std of differences; activity=run
+wrist-ppg-exercise,s6_run,hr_windows_covered_fraction,1.0,fraction,windows with >=1 complete IBI on both channels; activity=run
+wrist-ppg-exercise,s6_run,hr_consistency_lamina_ecg_vs_annotation_mae,64.18883697150486,bpm,CONSISTENCY CHECK: Lamina ecg-peaks HR vs annotation HR; activity=run
+wrist-ppg-exercise,s6_walk,hr_bias_bpm,10.940905580066289,bpm,Bland-Altman-style bias (Lamina PPG-HR minus annotation-HR); activity=walk
+wrist-ppg-exercise,s6_walk,hr_loa_halfwidth_bpm,19.605668043312424,bpm,1.96*std of differences; activity=walk
+wrist-ppg-exercise,s6_walk,hr_windows_covered_fraction,1.0,fraction,windows with >=1 complete IBI on both channels; activity=walk
+wrist-ppg-exercise,s6_walk,hr_consistency_lamina_ecg_vs_annotation_mae,37.72879879573207,bpm,CONSISTENCY CHECK: Lamina ecg-peaks HR vs annotation HR; activity=walk
+wrist-ppg-exercise,s8_run,hr_bias_bpm,39.53732438136536,bpm,Bland-Altman-style bias (Lamina PPG-HR minus annotation-HR); activity=run
+wrist-ppg-exercise,s8_run,hr_loa_halfwidth_bpm,24.912179939813505,bpm,1.96*std of differences; activity=run
+wrist-ppg-exercise,s8_run,hr_windows_covered_fraction,1.0,fraction,windows with >=1 complete IBI on both channels; activity=run
+wrist-ppg-exercise,s8_run,hr_consistency_lamina_ecg_vs_annotation_mae,47.55666948602152,bpm,CONSISTENCY CHECK: Lamina ecg-peaks HR vs annotation HR; activity=run
+wrist-ppg-exercise,s8_walk,hr_bias_bpm,23.197080317599788,bpm,Bland-Altman-style bias (Lamina PPG-HR minus annotation-HR); activity=walk
+wrist-ppg-exercise,s8_walk,hr_loa_halfwidth_bpm,15.380129054387753,bpm,1.96*std of differences; activity=walk
+wrist-ppg-exercise,s8_walk,hr_windows_covered_fraction,1.0,fraction,windows with >=1 complete IBI on both channels; activity=walk
+wrist-ppg-exercise,s8_walk,hr_consistency_lamina_ecg_vs_annotation_mae,18.356347354603177,bpm,CONSISTENCY CHECK: Lamina ecg-peaks HR vs annotation HR; activity=walk
+wrist-ppg-exercise,s9_walk,hr_bias_bpm,0.4468639160994401,bpm,Bland-Altman-style bias (Lamina PPG-HR minus annotation-HR); activity=walk
+wrist-ppg-exercise,s9_walk,hr_loa_halfwidth_bpm,8.80060590758091,bpm,1.96*std of differences; activity=walk
+wrist-ppg-exercise,s9_walk,hr_windows_covered_fraction,1.0,fraction,windows with >=1 complete IBI on both channels; activity=walk
+wrist-ppg-exercise,s9_walk,hr_consistency_lamina_ecg_vs_annotation_mae,0.8219082113835257,bpm,CONSISTENCY CHECK: Lamina ecg-peaks HR vs annotation HR; activity=walk
+wrist-ppg-exercise,ACTIVITY:high_resistance_bike,activity_hr_bias_mean_bpm,-18.519,bpm,mean of per-recording Bland-Altman bias (Lamina PPG-HR minus annotation-HR); n=3 records
+wrist-ppg-exercise,ACTIVITY:high_resistance_bike,activity_hr_mae_mean_bpm,20.266,bpm,mean of per-recording HR MAE (8 s windows / 2 s step); n=3 records
+wrist-ppg-exercise,ACTIVITY:low_resistance_bike,activity_hr_bias_mean_bpm,-10.578,bpm,mean of per-recording Bland-Altman bias (Lamina PPG-HR minus annotation-HR); n=5 records
+wrist-ppg-exercise,ACTIVITY:low_resistance_bike,activity_hr_mae_mean_bpm,14.731,bpm,mean of per-recording HR MAE (8 s windows / 2 s step); n=5 records
+wrist-ppg-exercise,ACTIVITY:run,activity_hr_bias_mean_bpm,-4.405,bpm,mean of per-recording Bland-Altman bias (Lamina PPG-HR minus annotation-HR); n=5 records
+wrist-ppg-exercise,ACTIVITY:run,activity_hr_mae_mean_bpm,32.901,bpm,mean of per-recording HR MAE (8 s windows / 2 s step); n=5 records
+wrist-ppg-exercise,ACTIVITY:walk,activity_hr_bias_mean_bpm,11.798,bpm,mean of per-recording Bland-Altman bias (Lamina PPG-HR minus annotation-HR); n=6 records
+wrist-ppg-exercise,ACTIVITY:walk,activity_hr_mae_mean_bpm,15.876,bpm,mean of per-recording HR MAE (8 s windows / 2 s step); n=6 records
