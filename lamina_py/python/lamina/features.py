@@ -1,6 +1,5 @@
 """Multimodal feature extraction module for Lamina."""
 
-from typing import Optional, List
 import lamina._lamina as _native
 
 FeatureConfig = _native.PyFeatureConfig

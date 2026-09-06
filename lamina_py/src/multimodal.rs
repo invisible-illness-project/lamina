@@ -34,6 +34,14 @@ pub struct PyModalityQuality {
     pub valid: bool,
 }
 
+#[pymethods]
+impl PyModalityQuality {
+    #[new]
+    pub fn new(score: f64, valid: bool) -> Self {
+        Self { score, valid }
+    }
+}
+
 #[pyclass]
 #[derive(Clone)]
 pub struct PyMultimodalQuality {

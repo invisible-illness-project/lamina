@@ -1,6 +1,5 @@
 """Multimodal analysis, RSA, phase coupling, and quality assessment module for Lamina."""
 
-from typing import Optional, List
 import lamina._lamina as _native
 
 RsaResult = _native.PyRsaResult

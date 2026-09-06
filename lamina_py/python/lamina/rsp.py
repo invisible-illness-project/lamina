@@ -32,18 +32,17 @@ def findpeaks(
 def cycles(
     signal: Union[NDArray[np.float64], NDArray[np.float32], list],
     sampling_rate: float = 100.0,
-    peaks: Optional[Union[NDArray[np.int64], List[int]]] = None,
     config: Optional[RspProcessingConfig] = None,
 ) -> List[RespirationCycle]:
     """Extract individual respiration cycle structures."""
     arr = np.asarray(signal, dtype=np.float64)
-    p_vec = list(peaks) if peaks is not None else None
-    return _native.rsp_cycles(arr, sampling_rate, p_vec, config)
+    return _native.rsp_cycles(arr, sampling_rate, config)
 
 def rate(
-    rsp_cycles: List[RespirationCycle],
+    signal: Union[NDArray[np.float64], NDArray[np.float32], list],
     sampling_rate: float = 100.0,
-    signal_length: Optional[int] = None,
+    config: Optional[RspProcessingConfig] = None,
 ) -> NDArray[np.float64]:
     """Compute continuous respiratory rate curve in breaths per minute (BPM)."""
-    return np.asarray(_native.rsp_rate(rsp_cycles, sampling_rate, signal_length), dtype=np.float64)
+    arr = np.asarray(signal, dtype=np.float64)
+    return _native.rsp_rate(arr, sampling_rate, config)

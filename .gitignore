@@ -10,6 +10,10 @@ Cargo.lock
 __pycache__/
 *.py[cod]
 *$py.class
+*.so
+*.dylib
+*.dll
+coverage/
 
 # Locally generated testing datasets (optional, uncomment to track)
 golden_*.json

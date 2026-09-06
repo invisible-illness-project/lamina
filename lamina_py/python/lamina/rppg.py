@@ -1,6 +1,5 @@
 """Remote photoplethysmography (rPPG) video processing module for Lamina."""
 
-from typing import Optional
 import lamina._lamina as _native
 
 VideoFrame = _native.PyVideoFrame

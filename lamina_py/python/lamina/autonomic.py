@@ -1,6 +1,5 @@
 """Stateful autonomic nervous system estimation module for Lamina."""
 
-from typing import Optional
 import lamina._lamina as _native
 
 AutonomicEstimatorConfig = _native.PyAutonomicEstimatorConfig

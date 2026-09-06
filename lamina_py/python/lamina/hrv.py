@@ -7,22 +7,27 @@ from numpy.typing import NDArray
 import lamina._lamina as _native
 
 def peaks_to_intervals(
-    peaks: Union[NDArray[np.int64], List[int]],
+    peaks: Union[NDArray[np.int64], NDArray[np.bool_], List[int]],
     sampling_rate: float,
 ) -> NDArray[np.float64]:
-    """Convert R-peak / pulse-peak sample indices to inter-beat intervals in seconds."""
-    peak_vec = list(peaks)
-    arr = _native.peaks_to_intervals(peak_vec, sampling_rate)
-    return np.asarray(arr, dtype=np.float64)
+    """Convert peak indices or boolean peak mask to inter-beat intervals in seconds."""
+    arr = np.asarray(peaks)
+    if arr.dtype == np.bool_:
+        return _native.peaks_to_intervals(arr, sampling_rate)
+    else:
+        indices = [int(x) for x in arr]
+        res = _native.indices_to_intervals(indices, sampling_rate)
+        # Convert ms to sec for consistent unit contract in lamina.hrv
+        return np.asarray(res, dtype=np.float64) / 1000.0
 
 def indices_to_intervals(
     indices: Union[NDArray[np.int64], List[int]],
     sampling_rate: float,
 ) -> NDArray[np.float64]:
     """Convert ordered peak indices to inter-beat intervals in seconds."""
-    idx_vec = list(indices)
-    arr = _native.indices_to_intervals(idx_vec, sampling_rate)
-    return np.asarray(arr, dtype=np.float64)
+    idx_vec = [int(x) for x in indices]
+    res = _native.indices_to_intervals(idx_vec, sampling_rate)
+    return np.asarray(res, dtype=np.float64) / 1000.0
 
 def rmssd(
     rr_intervals: Union[NDArray[np.float64], NDArray[np.float32], list],
