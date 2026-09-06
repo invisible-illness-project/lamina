@@ -7,6 +7,7 @@ pub mod features;
 pub mod hrv;
 pub mod multimodal;
 pub mod ppg;
+pub mod rppg;
 pub mod rsp;
 pub mod signal;
 
