@@ -1,0 +1,36 @@
+2026-09-07 00:30:33,096 ERROR recording 003/003_eda failed:
+Traceback (most recent call last):
+  File "/home/kimi/work-autonomic/validation/validation/runner.py", line 214, in run_dataset
+    rr.metrics = process_recording(rec, bridge, options.tolerances)
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/kimi/work-autonomic/validation/validation/runner.py", line 143, in process_recording
+    r = bridge.eda_peaks(sig.samples, fs)
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/kimi/work-autonomic/validation/validation/bridge.py", line 156, in eda_peaks
+    return self.result("eda-peaks", _sig(signal, fs, config))
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/kimi/work-autonomic/validation/validation/bridge.py", line 127, in result
+    return self.run_op(op, payload)["result"]
+           ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/kimi/work-autonomic/validation/validation/bridge.py", line 118, in run_op
+    raise LaminaBridgeError(
+validation.bridge.LaminaBridgeError: bridge op 'eda-peaks' failed [lamina_error]: Invalid cutoff frequency: Cutoff frequency (5) must be strictly less than Nyquist frequency (2)
+
+2026-09-07 00:33:45,050 ERROR recording 015/015_eda failed:
+Traceback (most recent call last):
+  File "/home/kimi/work-autonomic/validation/validation/runner.py", line 214, in run_dataset
+    rr.metrics = process_recording(rec, bridge, options.tolerances)
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/kimi/work-autonomic/validation/validation/runner.py", line 143, in process_recording
+    r = bridge.eda_peaks(sig.samples, fs)
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/kimi/work-autonomic/validation/validation/bridge.py", line 156, in eda_peaks
+    return self.result("eda-peaks", _sig(signal, fs, config))
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/kimi/work-autonomic/validation/validation/bridge.py", line 127, in result
+    return self.run_op(op, payload)["result"]
+           ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/kimi/work-autonomic/validation/validation/bridge.py", line 118, in run_op
+    raise LaminaBridgeError(
+validation.bridge.LaminaBridgeError: bridge op 'eda-peaks' failed [lamina_error]: Invalid cutoff frequency: Cutoff frequency (5) must be strictly less than Nyquist frequency (2)
+

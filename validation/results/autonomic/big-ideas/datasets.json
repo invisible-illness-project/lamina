@@ -1,0 +1,28 @@
+[
+  {
+    "dataset": "big-ideas",
+    "version": "1.0.0",
+    "source": "https://physionet.org/content/big-ideas-glycemic-wearable/",
+    "access_status": "failed",
+    "reason": "",
+    "subjects_evaluated": 0,
+    "recordings_evaluated": 0,
+    "modalities": [
+      "eda"
+    ],
+    "lamina_ops": [
+      "eda-clean",
+      "eda-decompose",
+      "eda-peaks"
+    ],
+    "lamina_version": "0.1.0",
+    "git_commit": "bce7d7b821adab060762fae82b5bf2846425665d",
+    "validation_date": "2026-09-06T16:33:45+00:00",
+    "metrics": {},
+    "limitations": [],
+    "failures": [
+      "LaminaBridgeError: bridge op 'eda-peaks' failed [lamina_error]: Invalid cutoff frequency: Cutoff frequency (5) must be strictly less than Nyquist frequency (2)",
+      "LaminaBridgeError: bridge op 'eda-peaks' failed [lamina_error]: Invalid cutoff frequency: Cutoff frequency (5) must be strictly less than Nyquist frequency (2)"
+    ]
+  }
+]

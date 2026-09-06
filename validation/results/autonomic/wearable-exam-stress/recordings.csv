@@ -1,0 +1,31 @@
+dataset,subject_id,recording_id,status,modalities,error
+wearable-exam-stress,S1,S1_midterm_1,ok,bvp,
+wearable-exam-stress,S1,S1_midterm_1_eda,failed,eda,LaminaBridgeError: bridge op 'eda-peaks' failed [lamina_error]: Invalid cutoff frequency: Cutoff frequency (5) must be strictly less than Nyquist frequency (2)
+wearable-exam-stress,S1,S1_midterm_2,ok,bvp,
+wearable-exam-stress,S1,S1_midterm_2_eda,failed,eda,LaminaBridgeError: bridge op 'eda-peaks' failed [lamina_error]: Invalid cutoff frequency: Cutoff frequency (5) must be strictly less than Nyquist frequency (2)
+wearable-exam-stress,S1,S1_Final,ok,bvp,
+wearable-exam-stress,S1,S1_Final_eda,failed,eda,LaminaBridgeError: bridge op 'eda-peaks' failed [lamina_error]: Invalid cutoff frequency: Cutoff frequency (5) must be strictly less than Nyquist frequency (2)
+wearable-exam-stress,S2,S2_midterm_1,ok,bvp,
+wearable-exam-stress,S2,S2_midterm_1_eda,failed,eda,LaminaBridgeError: bridge op 'eda-peaks' failed [lamina_error]: Invalid cutoff frequency: Cutoff frequency (5) must be strictly less than Nyquist frequency (2)
+wearable-exam-stress,S2,S2_midterm_2,ok,bvp,
+wearable-exam-stress,S2,S2_midterm_2_eda,failed,eda,LaminaBridgeError: bridge op 'eda-peaks' failed [lamina_error]: Invalid cutoff frequency: Cutoff frequency (5) must be strictly less than Nyquist frequency (2)
+wearable-exam-stress,S2,S2_Final,ok,bvp,
+wearable-exam-stress,S2,S2_Final_eda,failed,eda,LaminaBridgeError: bridge op 'eda-peaks' failed [lamina_error]: Invalid cutoff frequency: Cutoff frequency (5) must be strictly less than Nyquist frequency (2)
+wearable-exam-stress,S3,S3_midterm_1,ok,bvp,
+wearable-exam-stress,S3,S3_midterm_1_eda,failed,eda,LaminaBridgeError: bridge op 'eda-peaks' failed [lamina_error]: Invalid cutoff frequency: Cutoff frequency (5) must be strictly less than Nyquist frequency (2)
+wearable-exam-stress,S3,S3_midterm_2,ok,bvp,
+wearable-exam-stress,S3,S3_midterm_2_eda,failed,eda,LaminaBridgeError: bridge op 'eda-peaks' failed [lamina_error]: Invalid cutoff frequency: Cutoff frequency (5) must be strictly less than Nyquist frequency (2)
+wearable-exam-stress,S3,S3_Final,ok,bvp,
+wearable-exam-stress,S3,S3_Final_eda,failed,eda,LaminaBridgeError: bridge op 'eda-peaks' failed [lamina_error]: Invalid cutoff frequency: Cutoff frequency (5) must be strictly less than Nyquist frequency (2)
+wearable-exam-stress,S4,S4_midterm_1,ok,bvp,
+wearable-exam-stress,S4,S4_midterm_1_eda,failed,eda,LaminaBridgeError: bridge op 'eda-peaks' failed [lamina_error]: Invalid cutoff frequency: Cutoff frequency (5) must be strictly less than Nyquist frequency (2)
+wearable-exam-stress,S4,S4_midterm_2,ok,bvp,
+wearable-exam-stress,S4,S4_midterm_2_eda,failed,eda,LaminaBridgeError: bridge op 'eda-peaks' failed [lamina_error]: Invalid cutoff frequency: Cutoff frequency (5) must be strictly less than Nyquist frequency (2)
+wearable-exam-stress,S4,S4_Final,ok,bvp,
+wearable-exam-stress,S4,S4_Final_eda,failed,eda,LaminaBridgeError: bridge op 'eda-peaks' failed [lamina_error]: Invalid cutoff frequency: Cutoff frequency (5) must be strictly less than Nyquist frequency (2)
+wearable-exam-stress,S5,S5_midterm_1,ok,bvp,
+wearable-exam-stress,S5,S5_midterm_1_eda,failed,eda,LaminaBridgeError: bridge op 'eda-peaks' failed [lamina_error]: Invalid cutoff frequency: Cutoff frequency (5) must be strictly less than Nyquist frequency (2)
+wearable-exam-stress,S5,S5_midterm_2,ok,bvp,
+wearable-exam-stress,S5,S5_midterm_2_eda,failed,eda,LaminaBridgeError: bridge op 'eda-peaks' failed [lamina_error]: Invalid cutoff frequency: Cutoff frequency (5) must be strictly less than Nyquist frequency (2)
+wearable-exam-stress,S5,S5_Final,ok,bvp,
+wearable-exam-stress,S5,S5_Final_eda,failed,eda,LaminaBridgeError: bridge op 'eda-peaks' failed [lamina_error]: Invalid cutoff frequency: Cutoff frequency (5) must be strictly less than Nyquist frequency (2)

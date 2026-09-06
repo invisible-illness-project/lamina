@@ -253,9 +253,12 @@ class WesadAdapter(DatasetAdapter):
                 detail=f"cache={cache}; subjects={present}",
             )
         try:
-            buf = _http_get(_WESAD_URL, timeout=20,
-                            range_header="bytes=0-0")
-            if buf:
+            # HEAD probe only: a GET (even ranged) follows the sciebo 303
+            # redirect and can end up streaming the whole 2.25 GB archive.
+            req = Request(_WESAD_URL, method="HEAD")
+            with urlopen(req, timeout=20) as resp:
+                size = int(resp.headers.get("Content-Length", "0"))
+            if size > 2_000_000_000:
                 return AccessReport(
                     status=AccessStatus.VALIDATED,
                     reason="remote zip reachable via range GET; per-subject "
@@ -332,12 +335,24 @@ class WesadAdapter(DatasetAdapter):
                 s = data_off + i * chunk
                 parts[i] = _fetch_range(_WESAD_URL, s, min(s + chunk - 1, data_end))
             list(ex.map(get, range(nchunks)))
-        comp = b"".join(p for p in parts if p is not None)
-        raw = zlib.decompress(comp, -15)
-        if len(raw) != usize:
-            raise RuntimeError(f"{subject}: uncompressed size mismatch")
+        # Stream-inflate to disk: the uncompressed pickle is ~1 GB and the
+        # runtime memory budget is 4 GB, so never materialize it in RAM.
+        d = zlib.decompressobj(-15)
         tmp = dest.with_suffix(".pkl.tmp")
-        tmp.write_bytes(raw)
+        written = 0
+        with open(tmp, "wb") as fh:
+            for p in parts:
+                if p is None:
+                    raise RuntimeError(f"{subject}: missing chunk")
+                buf = d.decompress(p)
+                fh.write(buf)
+                written += len(buf)
+            buf = d.flush()
+            fh.write(buf)
+            written += len(buf)
+        if written != usize:
+            tmp.unlink(missing_ok=True)
+            raise RuntimeError(f"{subject}: uncompressed size mismatch")
         tmp.replace(dest)
         return dest
 
@@ -602,21 +617,21 @@ class AutonomicAgingAdapter(DatasetAdapter):
             header = wfdb.rdheader(str(base))
             n = min(header.sig_len, int(_AA_MAX_SEC * header.fs))
             rec = wfdb.rdrecord(str(base), sampfrom=0, sampto=n)
-            idx_ecg1 = rec.sig_name.index("ECG1")
-            signals = {
-                "ecg1": Signal(
-                    samples=rec.p_signal[:, idx_ecg1].astype(float),
+            # Channel names vary by recording device: device 1 records expose
+            # ECG1/ECG2/NIBP, device 0 records expose ECG/NIBP.
+            ecg_chans = [i for i, nm in enumerate(rec.sig_name)
+                         if nm.upper().startswith("ECG")]
+            if not ecg_chans:
+                raise RuntimeError(f"record {r['id']}: no ECG channel in "
+                                   f"{rec.sig_name}")
+            signals = {}
+            for k, idx in enumerate(ecg_chans):
+                ch = rec.sig_name[idx]
+                signals[f"ecg{k + 1}"] = Signal(
+                    samples=rec.p_signal[:, idx].astype(float),
                     sampling_rate=float(rec.fs), modality="ecg",
-                    units=rec.units[idx_ecg1], subject_id=r["id"],
-                    recording_id=r["id"], channel="ECG1"),
-            }
-            if "ECG2" in rec.sig_name:
-                idx_ecg2 = rec.sig_name.index("ECG2")
-                signals["ecg2"] = Signal(
-                    samples=rec.p_signal[:, idx_ecg2].astype(float),
-                    sampling_rate=float(rec.fs), modality="ecg",
-                    units=rec.units[idx_ecg2], subject_id=r["id"],
-                    recording_id=r["id"], channel="ECG2")
+                    units=rec.units[idx], subject_id=r["id"],
+                    recording_id=r["id"], channel=ch)
             yield Recording(
                 recording_id=r["id"], subject_id=r["id"], signals=signals,
                 references={},  # no beat annotations -> structural metrics only
@@ -762,11 +777,6 @@ class WearableExamStressAdapter(DatasetAdapter):
                     units="a.u.", subject_id=student, recording_id=rid,
                     channel="BVP",
                     metadata={"epoch_sec": bvp_epoch}),
-                "wrist_eda": Signal(
-                    samples=eda, sampling_rate=eda_fs, modality="eda",
-                    units="uS", subject_id=student, recording_id=rid,
-                    channel="EDA",
-                    metadata={"epoch_sec": eda_epoch}),
             }
             references: dict = {}
             try:
@@ -785,6 +795,29 @@ class WearableExamStressAdapter(DatasetAdapter):
                         "hr_bpm_estimated = Lamina BVP-peak HR interpolated onto "
                         "the HR.csv grid; agreement metrics are consistency "
                         "evidence, not ground-truth accuracy."),
+                },
+            )
+            # EDA @4 Hz is yielded as a SEPARATE recording: Lamina's eda
+            # pipeline has a hardcoded 5 Hz lowpass cutoff (fails for
+            # fs <= 10 Hz — see bug-candidates.md BUG-A03), and one failing
+            # modality would otherwise fail the whole recording in the runner,
+            # hiding the BVP/HR results. The failure is therefore recorded
+            # explicitly and honestly as a per-recording failure.
+            yield Recording(
+                recording_id=f"{rid}_eda", subject_id=student,
+                signals={
+                    "wrist_eda": Signal(
+                        samples=eda, sampling_rate=eda_fs, modality="eda",
+                        units="uS", subject_id=student,
+                        recording_id=f"{rid}_eda", channel="EDA",
+                        metadata={"epoch_sec": eda_epoch}),
+                },
+                references={},
+                metadata={
+                    "session": session,
+                    "note": "structural EDA @4 Hz; expected to fail in Lamina "
+                            "eda-clean (hardcoded 5 Hz cutoff > Nyquist at "
+                            "fs=4 Hz) — failure is the documented finding.",
                 },
             )
 

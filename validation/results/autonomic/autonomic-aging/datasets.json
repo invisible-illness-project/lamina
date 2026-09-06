@@ -1,0 +1,29 @@
+[
+  {
+    "dataset": "autonomic-aging",
+    "version": "1.0.0",
+    "source": "https://physionet.org/content/autonomic-aging-cardiovascular/",
+    "access_status": "validated",
+    "reason": "",
+    "subjects_evaluated": 12,
+    "recordings_evaluated": 12,
+    "modalities": [
+      "ecg"
+    ],
+    "lamina_ops": [
+      "ecg-peaks",
+      "hrv"
+    ],
+    "lamina_version": "0.1.0",
+    "git_commit": "6edb51c4655583360a7b03be9defb64f02065aba",
+    "validation_date": "2026-09-06T16:22:46+00:00",
+    "metrics": {
+      "ecg_ecg1_n_peaks": 663.4166666666666,
+      "ecg_ecg2_n_peaks": 701.0,
+      "structural_ecg_ecg1_n_peaks": 663.4166666666666,
+      "structural_ecg_ecg2_n_peaks": 701.0
+    },
+    "limitations": [],
+    "failures": []
+  }
+]
