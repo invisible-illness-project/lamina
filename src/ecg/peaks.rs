@@ -159,16 +159,23 @@ pub fn ecg_findpeaks_config(
 
     // 1. Bandpass Filtering (5 - 15 Hz Butterworth SOS)
     let nyquist = sampling_rate / 2.0;
-    let valid_highcut = highcut.min(nyquist - 0.1);
-    let valid_lowcut = lowcut.min(valid_highcut - 0.1).max(0.1);
-
-    let filter_spec =
-        FilterSpec::bandpass(sampling_rate, valid_lowcut, valid_highcut, filter_order);
-    let filtered_ecg = signal_filtfilt(signal, &filter_spec)?;
-
-    if n < 5 {
-        return Ok(Vec::new());
+    if lowcut >= highcut || highcut >= nyquist {
+        return Err(SignalError::InvalidCutoffFrequency(format!(
+            "Cutoff frequencies ({}, {}) must satisfy 0 < lowcut < highcut < Nyquist ({})",
+            lowcut, highcut, nyquist
+        )));
     }
+
+    let required_samples = (3 * filter_order).max(integration_samples);
+    if n < required_samples {
+        return Err(SignalError::InsufficientSamples {
+            required: required_samples,
+            provided: n,
+        });
+    }
+
+    let filter_spec = FilterSpec::bandpass(sampling_rate, lowcut, highcut, filter_order);
+    let filtered_ecg = signal_filtfilt(signal, &filter_spec)?;
 
     // 2. 5-Point Derivative: d[n] = (1 / 8T) * (-x[n-2] - 2x[n-1] + 2x[n+1] + x[n+2])
     let dt_factor = sampling_rate / 8.0;
@@ -214,9 +221,8 @@ pub fn ecg_findpeaks_config(
     let mut spki = candidate_heights[(n_cands as f64 * 0.75) as usize];
     let mut npki = candidate_heights[(n_cands as f64 * 0.25) as usize];
 
-    if spki <= npki {
-        spki = candidate_heights[n_cands - 1];
-        npki = candidate_heights[0];
+    if spki <= npki || spki < 1e-12 {
+        return Ok(Vec::new());
     }
 
     let mut validated_integrated_peaks: Vec<usize> = Vec::new();
@@ -256,6 +262,10 @@ pub fn ecg_findpeaks_config(
                             if sb_val > threshold_i2 {
                                 validated_integrated_peaks.push(sb_cand);
                                 rr_intervals.push(sb_cand - last_idx);
+                                if rr_intervals.len() > 8 {
+                                    rr_intervals.remove(0);
+                                }
+                                last_peak_idx = Some(sb_cand);
                                 spki = 0.25 * sb_val + 0.75 * spki;
                                 break;
                             }

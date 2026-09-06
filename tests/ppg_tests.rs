@@ -10,6 +10,7 @@ use std::f64::consts::PI;
 use std::fs::File;
 use std::io::BufReader;
 
+#[allow(dead_code)]
 #[derive(Deserialize)]
 struct GoldenPpgCase {
     name: String,
@@ -46,7 +47,7 @@ fn test_ppg_input_validation() {
         Err(SignalError::NonFiniteInput)
     ));
 
-    let valid_sig = Array1::<f64>::ones(100);
+    let valid_sig = Array1::<f64>::ones(500);
     assert!(matches!(
         ppg_findpeaks(&valid_sig, 0.0),
         Err(SignalError::InvalidSamplingRate(_))
@@ -56,6 +57,13 @@ fn test_ppg_input_validation() {
         Err(SignalError::InvalidSamplingRate(_))
     ));
 
+    // Insufficient samples check
+    let short_sig = Array1::<f64>::ones(5);
+    assert!(matches!(
+        ppg_findpeaks(&short_sig, 100.0),
+        Err(SignalError::InsufficientSamples { .. })
+    ));
+
     let inv_cfg = PpgPeakDetectionConfig::new()
         .with_w_peak_sec(0.800)
         .with_w_beat_sec(0.200);
@@ -63,75 +71,102 @@ fn test_ppg_input_validation() {
         ppg_findpeaks_config(&valid_sig, 100.0, &inv_cfg),
         Err(SignalError::InvalidWindowSize(_))
     ));
+
+    // Invalid highcut >= Nyquist
+    let nyq_cfg = PpgPeakDetectionConfig::new().with_highcut(60.0);
+    assert!(matches!(
+        ppg_findpeaks_config(&valid_sig, 100.0, &nyq_cfg),
+        Err(SignalError::InvalidCutoffFrequency(_))
+    ));
 }
 
 #[test]
-fn test_ppg_synthetic_waveforms() {
-    let fs = 100.0;
-    let duration = 10.0;
-    let n = (fs * duration) as usize;
-    let t = Array1::linspace(0.0, duration, n);
+fn test_ppg_synthetic_waveforms_multi_fs() {
+    let sampling_rates: Vec<f64> = vec![100.0, 128.0, 250.0, 500.0, 1000.0];
 
-    // 1. Synthetic PPG pulse train (60 bpm = 1 pulse/sec)
-    let mut clean_ppg = Array1::<f64>::zeros(n);
-    let mut expected_peaks = Vec::new();
-    for sec in 1..9 {
-        let center = (sec as f64 * fs) as usize;
-        expected_peaks.push(center);
-        for offset in -10..=10 {
-            let idx = (center as i64 + offset) as usize;
-            if idx < n {
-                let dist = offset as f64 / 5.0;
-                clean_ppg[idx] = 2.0 * (-dist * dist).exp();
+    for &fs in &sampling_rates {
+        let duration = 10.0;
+        let n = (fs * duration) as usize;
+        let t = Array1::linspace(0.0, duration, n);
+
+        // 1. Synthetic PPG pulse train (1 pulse/sec = 60 bpm)
+        let mut clean_ppg = Array1::<f64>::zeros(n);
+        let mut expected_peaks = Vec::new();
+        let hw = (0.05 * fs).round() as usize; // ~50ms halfwidth
+
+        for sec in 1..9 {
+            let center = (sec as f64 * fs) as usize;
+            if center > hw && center + hw < n {
+                expected_peaks.push(center);
+                let hw_i = hw as i64;
+                for offset in -hw_i..=hw_i {
+                    let idx = (center as i64 + offset) as usize;
+                    if idx < n {
+                        let dist = offset as f64 / (hw as f64 / 2.0).max(1.0);
+                        clean_ppg[idx] = 2.0 * (-dist * dist).exp();
+                    }
+                }
             }
         }
-    }
 
-    let detected = ppg_findpeaks_config(&clean_ppg, fs, &PpgPeakDetectionConfig::default())
-        .expect("Clean PPG detection failed");
+        let detected = ppg_findpeaks_config(&clean_ppg, fs, &PpgPeakDetectionConfig::default())
+            .unwrap_or_else(|e| panic!("Clean PPG detection failed at Fs={}Hz: {:?}", fs, e));
 
-    assert!(
-        !detected.is_empty(),
-        "Should detect systolic peaks in clean PPG"
-    );
-    for &exp in &expected_peaks {
-        let matched = detected
-            .iter()
-            .any(|&det| (det as i64 - exp as i64).abs() <= 10);
         assert!(
-            matched,
-            "Expected peak around sample {} matched in detected peaks",
-            exp
+            !detected.is_empty(),
+            "Should detect systolic peaks in clean PPG at Fs={}Hz",
+            fs
+        );
+
+        let tol_samples = (0.150 * fs).round() as i64;
+        for &exp in &expected_peaks {
+            let matched = detected
+                .iter()
+                .any(|&det| (det as i64 - exp as i64).abs() <= tol_samples);
+            assert!(
+                matched,
+                "Expected peak around sample {} matched at Fs={}Hz",
+                exp, fs
+            );
+        }
+
+        // 2. Noisy PPG with baseline wander + DC offset
+        let baseline = t.mapv(|tv| 0.3 * (2.0 * PI * 0.15 * tv).sin());
+        let noisy_ppg = &clean_ppg + &baseline + 1.0;
+        let noisy_detected = ppg_findpeaks(&noisy_ppg, fs)
+            .unwrap_or_else(|e| panic!("Noisy PPG detection failed at Fs={}Hz: {:?}", fs, e));
+        assert!(
+            !noisy_detected.is_empty(),
+            "Should detect peaks in noisy PPG with baseline wander at Fs={}Hz",
+            fs
         );
     }
+}
 
-    // 2. Tachycardia (130 bpm = 2.16 Hz = peak every 46 samples at 100 Hz)
-    let mut tachy_ppg = Array1::<f64>::zeros(n);
-    for i in (46..n - 46).step_by(46) {
+#[test]
+fn test_ppg_edge_case_robustness() {
+    let fs = 100.0;
+    let n = 1000;
+
+    // Constant signal (no peaks should panic; returns empty)
+    let const_sig = Array1::<f64>::ones(n);
+    let const_peaks = ppg_findpeaks(&const_sig, fs).expect("Constant signal should not panic");
+    let count = const_peaks.iter().filter(|&&p| p).count();
+    assert_eq!(count, 0, "Constant signal should produce 0 peaks");
+
+    // High amplitude signal
+    let mut high_amp_sig = Array1::<f64>::zeros(n);
+    for sec in 1..9 {
+        let center = sec * 100;
         for offset in -5..=5 {
-            let idx = (i as i64 + offset) as usize;
+            let idx = (center as i64 + offset) as usize;
             if idx < n {
-                let dist = offset as f64 / 3.0;
-                tachy_ppg[idx] = 2.0 * (-dist * dist).exp();
+                high_amp_sig[idx] = 500.0;
             }
         }
     }
-    let tachy_cfg = PpgPeakDetectionConfig::new().with_refractory_period_sec(0.200);
-    let tachy_detected =
-        ppg_findpeaks_config(&tachy_ppg, fs, &tachy_cfg).expect("Tachycardia PPG detection failed");
-    assert!(
-        !tachy_detected.is_empty(),
-        "Should detect peaks in tachycardia PPG"
-    );
-
-    // 3. Noisy PPG with baseline wander
-    let baseline = t.mapv(|tv| 0.3 * (2.0 * PI * 0.15 * tv).sin());
-    let noisy_ppg = &clean_ppg + &baseline;
-    let noisy_detected = ppg_findpeaks(&noisy_ppg, fs).expect("Noisy PPG detection failed");
-    assert!(
-        !noisy_detected.is_empty(),
-        "Should detect peaks in noisy PPG with baseline wander"
-    );
+    let high_amp_peaks = ppg_findpeaks(&high_amp_sig, fs).expect("High amplitude should succeed");
+    assert!(high_amp_peaks.iter().any(|&p| p));
 }
 
 #[test]

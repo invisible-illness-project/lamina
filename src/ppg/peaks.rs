@@ -168,16 +168,30 @@ pub fn ppg_findpeaks_config(
 
     // 1. Preprocessing: Bandpass Filter 0.5 - 8.0 Hz
     let nyquist = sampling_rate / 2.0;
-    let valid_highcut = highcut.min(nyquist - 0.1);
-    let valid_lowcut = lowcut.min(valid_highcut - 0.1).max(0.1);
+    if lowcut >= highcut || highcut >= nyquist {
+        return Err(SignalError::InvalidCutoffFrequency(format!(
+            "Cutoff frequencies ({}, {}) must satisfy 0 < lowcut < highcut < Nyquist ({})",
+            lowcut, highcut, nyquist
+        )));
+    }
 
-    let filter_spec =
-        FilterSpec::bandpass(sampling_rate, valid_lowcut, valid_highcut, filter_order);
+    let required_samples = (3 * filter_order).max(w_beat_samples);
+    if n < required_samples {
+        return Err(SignalError::InsufficientSamples {
+            required: required_samples,
+            provided: n,
+        });
+    }
+
+    let filter_spec = FilterSpec::bandpass(sampling_rate, lowcut, highcut, filter_order);
     let filtered_ppg = signal_filtfilt(signal, &filter_spec)?;
 
     // 2. Squaring / Signal Enhancement
     let squared = filtered_ppg.mapv(|v| if v > 0.0 { v * v } else { 0.0 });
     let s_bar = squared.mean().unwrap_or(0.0);
+    if s_bar < 1e-12 {
+        return Ok(Vec::new());
+    }
 
     // 3. Short & Long Moving Averages
     let ma_peak = signal_smooth_moving_average(&squared, w_peak_samples)?;
@@ -205,12 +219,17 @@ pub fn ppg_findpeaks_config(
         blocks.push((block_start, n - 1));
     }
 
-    // 5. Candidate Peak Selection within Decision Blocks
+    // 5. Candidate Peak Selection within Decision Blocks (Filter blocks smaller than W_peak)
     let mut candidate_peaks: Vec<usize> = Vec::new();
     for (start, end) in blocks {
         if start > end || end >= n {
             continue;
         }
+        // Canonical Elgendi: Reject blocks shorter than W_peak duration (noise blocks)
+        if (end - start + 1) < w_peak_samples {
+            continue;
+        }
+
         let mut max_idx = start;
         let mut max_val = filtered_ppg[start];
 

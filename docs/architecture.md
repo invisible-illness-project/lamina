@@ -70,8 +70,6 @@ Lamina implements digital Butterworth filter design and zero-phase IIR digital f
 - **Worst-Case Numerical Audit Configuration**: Configuration #118 (Bandpass Order 6, $F_s = 500\text{ Hz}$, cutoffs $[0.5, 40.0]\text{ Hz}$, `mixed` signal, sample index #563): Max Abs Error = $5.66 \times 10^{-13}$, RMS Error = $2.49 \times 10^{-13}$, Relative Error = $1.72 \times 10^{-10}$.
 - **Frequency Response Invariants**: Tested independently without SciPy: $|H(f_c)| = 1/\sqrt{2} \approx 0.70710678$ ($-3.0103\text{ dB}$) at cutoff frequencies, $|H(0)| = 1.0$ at DC for Lowpass, and expected passband/stopband attenuation.
 
-
-
 ---
 
 ## 3. Generic Peak Detection Foundation (`signal_findpeaks_config`)
@@ -96,24 +94,47 @@ Generic peak detection encapsulates the [`find_peaks`](https://crates.io/crates/
 Lamina separates generic DSP primitives from domain-specific physiological interpretation.
 
 ### 4.1 ECG Pan-Tompkins QRS Detection Pipeline (`ecg_findpeaks_config`)
+- **Canonical Reference**: Pan, J., & Tompkins, W. J. (1985). *A real-time QRS detection algorithm*. IEEE Transactions on Biomedical Engineering, BME-32(3), 230-236.
 - **Pipeline Architecture**:
   $$\text{Raw ECG} \xrightarrow{\text{5--15Hz BP}} \text{Bandpassed} \xrightarrow{\text{5-Point Deriv}} \text{Derivative} \xrightarrow{\text{Square}} \text{Power} \xrightarrow{\text{150ms Moving Integral}} \text{Integrated} \xrightarrow{\text{Adaptive Dual-Threshold}} \text{R-Peaks}$$
-- **Bandpass Filtering**: 2nd-order Butterworth SOS bandpass filter (default 5–15 Hz) via `signal_filtfilt`.
-- **5-Point Derivative**: $d[n] = \frac{F_s}{8} (-x[n-2] - 2x[n-1] + 2x[n+1] + x[n+2])$, highlighting QRS slopes.
-- **Moving Window Integration**: $W = \text{round}(0.150 \cdot F_s)$ samples (150 ms) using `signal_smooth_moving_average`.
-- **Adaptive Dual Thresholding**: Signal peak ($SPKI$) and Noise peak ($NPKI$) tracking with $THRESHOLD_{I1} = NPKI + 0.25 (SPKI - NPKI)$ and searchback threshold $THRESHOLD_{I2} = 0.5 \cdot THRESHOLD_{I1}$.
-- **Physiological Boundaries**: 200 ms ($\text{round}(0.200 \cdot F_s)$ samples) refractory period enforcement and searchback for missed beats when $\Delta t > 1.66 \cdot \text{RR}_{\text{avg}}$.
-- **Fine-Alignment**: Validated integrated peaks are aligned to the exact R-peak maximum in the bandpassed signal.
+- **Bandpass Filtering**: 2nd/3rd-order Butterworth SOS bandpass filter (default 5–15 Hz) via zero-phase `signal_filtfilt`.
+- **5-Point Derivative**: $d[n] = \frac{F_s}{8} (-x[n-2] - 2x[n-1] + 2x[n+1] + x[n+2])$, highlighting QRS slope features while scaling linearly with sampling rate $F_s$.
+- **Moving Window Integration**: $W = \text{round}(0.150 \cdot F_s)$ samples (150 ms window) using prefix-sum `signal_smooth_moving_average`.
+- **Adaptive Dual Thresholding**: Signal peak ($SPKI$) and Noise peak ($NPKI$) level tracking with primary threshold $THRESHOLD_{I1} = NPKI + 0.25 (SPKI - NPKI)$ and searchback threshold $THRESHOLD_{I2} = 0.5 \cdot THRESHOLD_{I1}$.
+- **Physiological Boundaries**: 200 ms ($\text{round}(0.200 \cdot F_s)$ samples) refractory period enforcement and searchback for missed beats when $RR > 1.66 \cdot RR_{\text{avg}}$.
+- **R-Peak Fine Alignment**: Validated integrated candidate peaks are mapped back to exact maximum amplitude positions in `filtered_ecg` within a $\pm 150\text{ ms}$ search window.
 
 ### 4.2 PPG Elgendi Systolic Peak Detection Pipeline (`ppg_findpeaks_config`)
+- **Canonical Reference**: Elgendi, M. et al. (2012). *Systolic Peak Detection in Acceleration Photoplethysmogram Signals Based on Dual Moving Averages*. PLOS ONE, 7(10), e47582.
 - **Pipeline Architecture**:
   $$\text{Raw PPG} \xrightarrow{\text{0.5--8.0Hz BP}} \text{Bandpassed} \xrightarrow{\text{Clip \& Square}} \text{Enhanced} \xrightarrow{\text{Dual MAs}} (MA_{\text{peak}}, MA_{\text{beat}}) \xrightarrow{\text{Adaptive Block Thresh}} \text{Systolic Peaks}$$
-- **Bandpass Filtering**: 3rd-order Butterworth SOS bandpass filter (default 0.5–8.0 Hz) via `signal_filtfilt`.
+- **Bandpass Filtering**: 3rd-order Butterworth SOS bandpass filter (default 0.5–8.0 Hz) via zero-phase `signal_filtfilt`.
+- **Signal Enhancement**: Non-linear clipping & squaring ($S[n] = \max(0, x[n])^2$) emphasizing systolic pulse waves over diastolic ripples.
 - **Dual Moving Averages**:
   - Short MA ($W_{\text{peak}} \approx 111\text{ ms}$, $\text{round}(0.111 \cdot F_s)$) representing systolic peak duration.
-  - Long MA ($W_{\text{beat}} \approx 667\text{ ms}$, $\text{round}(0.667 \cdot F_s)$) representing heartbeat duration.
-- **Adaptive Block Thresholding**: $THRESHOLD = MA_{\text{beat}} + \alpha \cdot \bar{S}$, where $\alpha = 0.02$ and $\bar{S} = \text{mean}(\text{squared})$. Decision blocks are formed where $MA_{\text{peak}} > THRESHOLD$.
-- **Systolic Peak Selection**: Local maximum within each decision block with a 300 ms ($\text{round}(0.300 \cdot F_s)$ samples) pulse wave refractory period.
+  - Long MA ($W_{\text{beat}} \approx 667\text{ ms}$, $\text{round}(0.667 \cdot F_s)$) representing cardiac beat duration.
+- **Adaptive Block Thresholding**: $THRESHOLD = MA_{\text{beat}} + \alpha \cdot \bar{S}$, where $\alpha = 0.02$ and $\bar{S} = \text{mean}(S)$. Decision blocks are formed where $MA_{\text{peak}} > THRESHOLD$.
+- **Decision Block Filtering**: Canonical Elgendi block size verification ($width \ge W_{\text{peak}}$) rejecting narrow noise spikes.
+- **Systolic Peak Selection**: Local maximum within each valid decision block with a 300 ms ($\text{round}(0.300 \cdot F_s)$ samples) pulse wave refractory period.
+
+### 4.3 Offline (Non-Causal Zero-Phase) vs. Real-Time (Causal Streaming) Architectural Boundaries
+
+Lamina explicitly distinguishes between offline retrospective signal processing and streaming real-time execution:
+
+- **Offline Processing (`signal_filtfilt`, `ecg_findpeaks`, `ppg_findpeaks`)**:
+  - Employs zero-phase forward-backward filtering (`signal_filtfilt`) to eliminate phase distortion and group delay.
+  - Non-causal: requires the complete signal array to perform end reflection padding ($3 \times \text{order}$).
+  - retrospectively estimates global signal/noise levels ($SPKI$, $NPKI$, $\bar{S}$) across the full waveform.
+- **Streaming Real-Time Processing (Architectural Model for Future Modules)**:
+  - Requires single-pass causal IIR filtering (stateful `SosFilter` instances) with fixed group delay.
+  - Bounded latency $\Delta t \le \text{window\_size}$.
+  - Incremental running estimate updates ($SPKI$, $NPKI$) updated beat-by-beat without retrospective searchback.
+
+### 4.4 Scientific Validation & Clinical Disclaimer
+
+- **Validation Methodology**: Tested against NeuroKit2 reference implementations (`nk.ecg_peaks`, `nk.ppg_peaks`) across multiple sampling frequencies ($50, 100, 128, 250, 500, 1000\text{ Hz}$) and heart rates ($45\text{--}140\text{ bpm}$).
+- **Event Parity Metrics**: Evaluated with a time-domain tolerance $\Delta t \le 150\text{ ms}$ ($\text{round}(0.150 \cdot F_s)$ samples).
+- **Disclaimer**: Lamina is a general-purpose scientific signal-processing library designed for research and physiological data analysis. **It is not a medical device, nor has it been cleared by regulatory authorities (FDA, CE) for clinical diagnosis or monitoring.**
 
 ---
 
@@ -131,13 +152,13 @@ Lamina separates generic DSP primitives from domain-specific physiological inter
 
 ---
 
-## 5. Error Semantics
+## 6. Error Semantics
 
 Lamina uses a central `SignalError` type:
 - `EmptySignal`
 - `InvalidSamplingRate(f64)`
 - `InvalidCutoffFrequency(String)`
-- `InsufficientSamples { required: usize, provided: usize }`
+- `InsufficientSamples(usize)`
 - `InvalidWindowSize(usize)`
 - `InvalidFilterOrder(usize)`
 - `NonFiniteInput`
