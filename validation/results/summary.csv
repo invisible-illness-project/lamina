@@ -1,0 +1,10 @@
+dataset,status,recordings_ok,recordings_failed,reason,error,started_at,finished_at
+autonomic-aging,validated,12,0,,,2026-09-06T16:22:20+00:00,2026-09-06T16:22:46+00:00
+bidmc,validated,12,0,,,2026-09-06T15:51:44+00:00,2026-09-06T15:51:53+00:00
+big-ideas,failed,0,2,,,2026-09-06T16:27:35+00:00,2026-09-06T16:33:45+00:00
+mit-bih-arrhythmia,validated,48,0,,,2026-09-06T16:10:14+00:00,2026-09-06T16:17:09+00:00
+mit-bih-noise-stress,validated,7,0,,,2026-09-06T16:20:45+00:00,2026-09-06T16:21:51+00:00
+scamps,validated,30,0,,,2026-09-06T15:39:32+00:00,2026-09-06T15:39:33+00:00
+wearable-exam-stress,partially_validated,15,15,,,2026-09-06T16:51:09+00:00,2026-09-06T16:51:29+00:00
+wesad,validated,15,0,,,2026-09-06T16:10:32+00:00,2026-09-06T16:12:13+00:00
+wrist-ppg-exercise,validated,19,0,,,2026-09-06T15:51:53+00:00,2026-09-06T15:52:13+00:00
