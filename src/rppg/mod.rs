@@ -196,11 +196,24 @@ pub fn extract_rppg(
         0.0
     };
 
-    let valid_duration: f64 = segment_qualities
+    // Single-pass forward merging of chronologically generated valid intervals [start_sec, end_sec)
+    let mut merged_intervals: Vec<(f64, f64)> = Vec::new();
+    for q in segment_qualities
         .iter()
         .filter(|q| q.overall >= config.min_quality)
-        .map(|q| (q.end_sec - q.start_sec).max(0.0))
-        .sum();
+    {
+        if let Some(last) = merged_intervals.last_mut() {
+            if q.start_sec <= last.1 + 1e-6 {
+                last.1 = last.1.max(q.end_sec);
+            } else {
+                merged_intervals.push((q.start_sec, q.end_sec));
+            }
+        } else {
+            merged_intervals.push((q.start_sec, q.end_sec));
+        }
+    }
+
+    let valid_duration: f64 = merged_intervals.iter().map(|(a, b)| (b - a).max(0.0)).sum();
 
     let valid_fraction = if total_duration > 0.0 {
         (valid_duration / total_duration).clamp(0.0, 1.0)

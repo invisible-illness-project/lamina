@@ -497,7 +497,7 @@ fn test_gap_aware_valid_segments() {
         algorithm: RppgAlgorithmId::Pos,
     };
 
-    let segments = signal.valid_segments(1.0);
+    let segments = signal.valid_segments(1.0).unwrap();
     assert_eq!(segments.len(), 2);
     assert_eq!(segments[0].waveform.len(), 4);
     assert_eq!(segments[1].waveform.len(), 4);
@@ -521,6 +521,7 @@ fn test_valid_duration_fraction_unequal_lengths() {
 
     let signal = extract_rppg(&stream, &roi, &config).unwrap();
     assert!(signal.quality.valid_fraction > 0.8);
+    assert!(signal.quality.valid_fraction <= 1.0);
 }
 
 #[test]
@@ -538,7 +539,7 @@ fn test_downstream_ppg_integration_via_valid_segments() {
     };
 
     let rppg_signal = extract_rppg(&stream, &roi, &config).unwrap();
-    let valid_segs = rppg_signal.valid_segments(1.0);
+    let valid_segs = rppg_signal.valid_segments(1.0).unwrap();
     assert!(!valid_segs.is_empty());
 
     for seg in valid_segs {
@@ -548,4 +549,64 @@ fn test_downstream_ppg_integration_via_valid_segments() {
         assert_eq!(cleaned.len(), arr.len());
         assert_eq!(peaks.len(), arr.len());
     }
+}
+
+#[test]
+fn test_valid_duration_fraction_overlapping_windows_no_double_counting() {
+    let (stream, roi) = create_synthetic_video_stream(4.0, 30.0, 1.2, 10.0, 0.0, 0.0);
+    let config = RppgConfig {
+        algorithm: RppgAlgorithmId::Pos,
+        min_quality: 0.0,
+        window: RppgWindowConfig {
+            window_sec: 3.0,
+            step_sec: 0.5, // 83% overlap
+            min_window_fraction: 0.8,
+        },
+        ..RppgConfig::default()
+    };
+
+    let signal = extract_rppg(&stream, &roi, &config).unwrap();
+    // Overlapping windows covering 4s recording duration must yield valid_fraction <= 1.0 without unmerged sum overflow
+    assert!(signal.quality.valid_fraction <= 1.0);
+    assert!((signal.quality.valid_fraction - 1.0).abs() < 1e-3);
+}
+
+#[test]
+fn test_signal_quality_custom_band_lag_bounds() {
+    let fs = 30.0;
+    let band = (0.5, 3.0); // 30-180 BPM
+    let waveform: Vec<f64> = (0..100)
+        .map(|i| (2.0 * std::f64::consts::PI * 1.5 * (i as f64 / fs)).sin())
+        .collect();
+
+    let q = lamina::rppg::quality::assess_signal_quality(&waveform, fs, band);
+    assert!(q > 0.5);
+
+    // Invalid Nyquist band returns 0.0
+    let q_invalid = lamina::rppg::quality::assess_signal_quality(&waveform, fs, (0.5, 20.0));
+    assert_eq!(q_invalid, 0.0);
+}
+
+#[test]
+fn test_valid_segments_invalid_max_gap_returns_error() {
+    let signal = lamina::rppg::RppgSignal {
+        timestamps_sec: vec![0.0, 0.1, 0.2, 0.3],
+        waveform: vec![1.0, 2.0, 1.0, 0.0],
+        sampling_rate_hz: 10.0,
+        quality: lamina::rppg::RppgQualitySummary {
+            overall: 1.0,
+            valid_fraction: 1.0,
+            segments: Vec::new(),
+        },
+        algorithm: RppgAlgorithmId::Pos,
+    };
+
+    assert!(matches!(
+        signal.valid_segments(-0.5),
+        Err(SignalError::InvalidWindowSize(_))
+    ));
+    assert!(matches!(
+        signal.valid_segments(f64::NAN),
+        Err(SignalError::InvalidWindowSize(_))
+    ));
 }

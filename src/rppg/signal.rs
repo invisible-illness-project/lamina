@@ -253,10 +253,64 @@ impl RppgSignal {
     }
 
     /// Extract contiguous valid signal segments where waveform samples are finite and physical gaps do not exceed `max_gap_sec`.
-    pub fn valid_segments(&self, max_gap_sec: f64) -> Vec<RppgSegment> {
-        if self.waveform.is_empty() || self.timestamps_sec.len() != self.waveform.len() {
-            return Vec::new();
+    ///
+    /// Segment quality is computed as a duration-weighted overlap aggregation across quality windows covering the segment interval.
+    pub fn valid_segments(&self, max_gap_sec: f64) -> Result<Vec<RppgSegment>> {
+        if !max_gap_sec.is_finite() || max_gap_sec <= 0.0 {
+            return Err(SignalError::InvalidWindowSize(0));
         }
+
+        if self.waveform.is_empty() || self.timestamps_sec.len() != self.waveform.len() {
+            return Ok(Vec::new());
+        }
+
+        let aggregate_quality_for_range = |t_a: f64, t_b: f64| -> RppgSegmentQuality {
+            let mut total_dur = 0.0f64;
+            let mut w_overall = 0.0f64;
+            let mut w_roi = 0.0f64;
+            let mut w_motion = 0.0f64;
+            let mut w_illum = 0.0f64;
+            let mut w_signal = 0.0f64;
+
+            for q in &self.quality.segments {
+                let overlap_start = t_a.max(q.start_sec);
+                let overlap_end = t_b.min(q.end_sec);
+                let overlap_dur = (overlap_end - overlap_start).max(0.0);
+
+                if overlap_dur > 0.0 {
+                    total_dur += overlap_dur;
+                    w_overall += q.overall * overlap_dur;
+                    w_roi += q.roi_quality * overlap_dur;
+                    w_motion += q.motion_quality * overlap_dur;
+                    w_illum += q.illumination_quality * overlap_dur;
+                    w_signal += q.signal_quality * overlap_dur;
+                }
+            }
+
+            if total_dur > 0.0 {
+                RppgSegmentQuality {
+                    start_sec: t_a,
+                    end_sec: t_b,
+                    overall: w_overall / total_dur,
+                    roi_quality: w_roi / total_dur,
+                    motion_quality: w_motion / total_dur,
+                    illumination_quality: w_illum / total_dur,
+                    signal_quality: w_signal / total_dur,
+                    valid_fraction: 1.0,
+                }
+            } else {
+                RppgSegmentQuality {
+                    start_sec: t_a,
+                    end_sec: t_b,
+                    overall: self.quality.overall,
+                    roi_quality: 1.0,
+                    motion_quality: 1.0,
+                    illumination_quality: 1.0,
+                    signal_quality: 1.0,
+                    valid_fraction: 1.0,
+                }
+            }
+        };
 
         let mut segments = Vec::new();
         let mut cur_t = Vec::new();
@@ -276,22 +330,7 @@ impl RppgSignal {
                 if cur_w.len() >= 4 {
                     let start_sec = cur_t[0];
                     let end_sec = *cur_t.last().unwrap();
-                    let seg_q = self
-                        .quality
-                        .segments
-                        .iter()
-                        .find(|s| s.start_sec <= start_sec && s.end_sec >= end_sec)
-                        .cloned()
-                        .unwrap_or(RppgSegmentQuality {
-                            start_sec,
-                            end_sec,
-                            overall: self.quality.overall,
-                            roi_quality: 1.0,
-                            motion_quality: 1.0,
-                            illumination_quality: 1.0,
-                            signal_quality: 1.0,
-                            valid_fraction: 1.0,
-                        });
+                    let seg_q = aggregate_quality_for_range(start_sec, end_sec);
 
                     segments.push(RppgSegment {
                         start_sec,
@@ -318,22 +357,7 @@ impl RppgSignal {
         if cur_w.len() >= 4 {
             let start_sec = cur_t[0];
             let end_sec = *cur_t.last().unwrap();
-            let seg_q = self
-                .quality
-                .segments
-                .iter()
-                .find(|s| s.start_sec <= start_sec && s.end_sec >= end_sec)
-                .cloned()
-                .unwrap_or(RppgSegmentQuality {
-                    start_sec,
-                    end_sec,
-                    overall: self.quality.overall,
-                    roi_quality: 1.0,
-                    motion_quality: 1.0,
-                    illumination_quality: 1.0,
-                    signal_quality: 1.0,
-                    valid_fraction: 1.0,
-                });
+            let seg_q = aggregate_quality_for_range(start_sec, end_sec);
 
             segments.push(RppgSegment {
                 start_sec,
@@ -345,7 +369,7 @@ impl RppgSignal {
             });
         }
 
-        segments
+        Ok(segments)
     }
 
     /// Explicitly resample the optical pulse signal onto a uniform temporal grid at `target_fs` Hz.

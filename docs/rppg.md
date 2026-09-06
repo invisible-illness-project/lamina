@@ -121,8 +121,16 @@ $$P_{\text{POS}}(t) = S_1(t) + \alpha S_2(t)$$
 ### 5.3 Segment Quality Composite ($Q$)
 $$Q = \frac{w_{\text{roi}} q_{\text{roi}} + w_{\text{motion}} q_{\text{motion}} + w_{\text{illum}} q_{\text{illum}} + w_{\text{signal}} q_{\text{signal}}}{w_{\text{roi}} + w_{\text{motion}} + w_{\text{illum}} + w_{\text{signal}}} \quad \in [0.0, 1.0]$$
 
+Autocorrelation lag bounds for signal periodicity quality are derived from the configured physiological frequency band $[f_{\text{low}}, f_{\text{high}}]$:
+$$\text{min\_lag} = \left\lceil \frac{F_s}{f_{\text{high}}} \right\rceil, \quad \text{max\_lag} = \left\lfloor \frac{F_s}{f_{\text{low}}} \right\rfloor$$
+
 ### 5.4 Recording Valid Duration Fraction
-$$\text{valid\_fraction} = \frac{\sum_{j \in \text{Valid}} \text{duration}_j}{\text{total\_duration}} \quad \in [0.0, 1.0]$$
+To prevent double-counting overlapping window hops, `valid_fraction` measures the total length of the single-pass forward merged union of valid segment intervals:
+$$\text{valid\_fraction} = \frac{\text{duration}\left(\bigcup_i V_i\right)}{\text{total\_duration}} \quad \in [0.0, 1.0]$$
+
+### 5.5 Segment Duration-Weighted Quality Aggregation
+For contiguous valid segments extracted across gaps via `valid_segments()`, composite quality scores are computed by weighting overlapping quality windows by temporal overlap duration:
+$$Q_{\text{segment}} = \frac{\sum_j Q_j \cdot \text{duration}(\text{segment} \cap \text{quality}_j)}{\sum_j \text{duration}(\text{segment} \cap \text{quality}_j)}$$
 
 ---
 
@@ -134,7 +142,8 @@ $$\text{valid\_fraction} = \frac{\sum_{j \in \text{Valid}} \text{duration}_j}{\t
 | Physical timestamp range | $O(\log N_{\text{frames}})$ | Zero-copy binary search range determination |
 | Window-local preprocessing | $O(L)$ | Linear detrending & channel normalization per window |
 | CHROM / POS extraction | $O(W \times L)$ | Matrix projections over window length $L$ |
-| Quality evaluation | $O(W \times L)$ | Autocorrelation and derivative metrics |
+| Quality evaluation | $O(W \times L)$ | Discrete $\lceil F_s/f_{\text{high}} \rceil$ to $\lfloor F_s/f_{\text{low}} \rfloor$ autocorrelation |
 | Overlap-add stitching | $O(N_{\text{frames}})$ | Weighted accumulation across timeline |
-| Valid segment extraction | $O(M)$ | Gap-aware non-NaN segment splitting |
+| Valid interval union | $O(V)$ | Single-pass forward merge of valid intervals |
+| Valid segment extraction | $O(M)$ | Gap-aware non-NaN segment splitting with duration-weighted quality |
 | Uniform resampling | $O(M)$ | Linear interpolation onto target sampling grid |

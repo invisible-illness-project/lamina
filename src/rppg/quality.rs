@@ -58,7 +58,7 @@ pub fn assess_roi_quality(valid_pixel_counts: &[usize], min_pixels: usize) -> f6
     (0.5 * fraction + 0.5 * mean_ratio).clamp(0.0, 1.0)
 }
 
-/// Assess motion quality based on frame displacement and intensity derivative variation.
+/// Assess motion/artifact quality based on frame displacement and green intensity derivative variation as an intensity-artifact proxy.
 pub fn assess_motion_quality(displacements: &[f64], intensity_deriv_std: f64) -> f64 {
     let mean_disp = if !displacements.is_empty() {
         displacements.iter().sum::<f64>() / displacements.len() as f64
@@ -100,9 +100,23 @@ pub fn assess_illumination_quality(mean_intensities: &[f64]) -> f64 {
     (0.6 * range_score + 0.4 * stability_score).clamp(0.0, 1.0)
 }
 
-/// Assess pulse waveform spectral periodicity quality in the physiological pulse band.
+/// Assess pulse waveform spectral periodicity quality in the configured physiological pulse band $[f_{\text{low}}, f_{\text{high}}]$.
+///
+/// Discrete sample lag bounds are conservatively derived as $\text{min\_lag} = \lceil F_s / f_{\text{high}} \rceil$ and
+/// $\text{max\_lag} = \lfloor F_s / f_{\text{low}} \rfloor$ after validating $0 < f_{\text{low}} < f_{\text{high}} < \text{Nyquist}$.
 pub fn assess_signal_quality(waveform: &[f64], sampling_rate: f64, band: (f64, f64)) -> f64 {
-    if waveform.len() < 10 || sampling_rate <= 0.0 {
+    if waveform.len() < 10 || !sampling_rate.is_finite() || sampling_rate <= 0.0 {
+        return 0.0;
+    }
+
+    let (f_low, f_high) = band;
+    let nyquist = 0.5 * sampling_rate;
+    if !f_low.is_finite()
+        || !f_high.is_finite()
+        || f_low <= 0.0
+        || f_low >= f_high
+        || f_high >= nyquist
+    {
         return 0.0;
     }
 
@@ -113,13 +127,12 @@ pub fn assess_signal_quality(waveform: &[f64], sampling_rate: f64, band: (f64, f
         return 0.0; // Zero variance flatline signal
     }
 
-    // Autocorrelation peak in physiological lag range (0.4 s to 1.33 s for 45-150 BPM)
-    let min_lag = (0.4 * sampling_rate).round() as usize;
-    let max_lag = ((1.0 / band.0) * sampling_rate).round() as usize;
-    let max_lag = max_lag.min(n - 1);
+    // Discrete sample lags derived from physiological period range
+    let min_lag = ((sampling_rate / f_high).ceil() as usize).max(1);
+    let max_lag = (sampling_rate / f_low).floor() as usize;
 
     if min_lag >= max_lag || max_lag >= n {
-        return 0.5;
+        return 0.0;
     }
 
     let mut max_autocorr = 0.0f64;
@@ -138,6 +151,9 @@ pub fn assess_signal_quality(waveform: &[f64], sampling_rate: f64, band: (f64, f
 }
 
 /// Compute segment quality breakdown and overall composite score.
+///
+/// Sampling rate is derived strictly from actual segment timestamps. If timestamp regularity or duration
+/// is insufficient to compute $F_s$, signal quality defaults to 0.0 without nominal FPS fallbacks.
 pub fn evaluate_segment_quality(
     optical: &OpticalSignal,
     waveform: &[f64],
@@ -166,8 +182,10 @@ pub fn evaluate_segment_quality(
     let motion_q = assess_motion_quality(displacements, green_deriv_std);
     let illumination_q = assess_illumination_quality(&optical.green);
 
-    let fs = optical.mean_sampling_rate().unwrap_or(30.0);
-    let signal_q = assess_signal_quality(waveform, fs, band);
+    let signal_q = match optical.mean_sampling_rate() {
+        Ok(fs) => assess_signal_quality(waveform, fs, band),
+        Err(_) => 0.0,
+    };
 
     let valid_count = optical
         .valid_pixel_counts
