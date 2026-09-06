@@ -21,7 +21,8 @@ fn test_signal_findpeaks() {
     let signal = array![0.0, 1.0, 0.0, 2.0, 1.0, 3.0, 3.0, 0.0];
     let peaks = signal_findpeaks(&signal).expect("Peak detection failed");
 
-    let expected = array![false, true, false, true, false, false, false, false];
+    // find_peaks identifies strict local maxima at idx 1, 3 and plateau peak at idx 5
+    let expected = array![false, true, false, true, false, true, false, false];
     assert_eq!(peaks, expected);
 }
 

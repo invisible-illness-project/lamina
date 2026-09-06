@@ -1,13 +1,26 @@
 use criterion::{BenchmarkId, Criterion, criterion_group, criterion_main};
 use lamina::complexity::entropy::sample_entropy;
-use lamina::signal::filter::signal_filter;
-use lamina::signal::peaks::signal_findpeaks;
+use lamina::signal::filter::{FilterSpec, signal_filtfilt};
+use lamina::signal::peaks::{PeakDetectionConfig, signal_findpeaks_config};
 use lamina::signal::smooth::signal_smooth_moving_average;
 use ndarray::Array1;
 
+fn bench_filtfilt(c: &mut Criterion) {
+    let mut group = c.benchmark_group("signal_filtfilt_lowpass_order4");
+    for size in [1000, 10000, 100000].iter() {
+        let signal = Array1::from_elem(*size, 1.0);
+        let spec = FilterSpec::lowpass(100.0, 5.0, 4);
+
+        group.bench_with_input(BenchmarkId::from_parameter(size), size, |b, _| {
+            b.iter(|| signal_filtfilt(&signal, &spec).unwrap());
+        });
+    }
+    group.finish();
+}
+
 fn bench_moving_average(c: &mut Criterion) {
     let mut group = c.benchmark_group("signal_smooth_moving_average");
-    for size in [1000, 10000].iter() {
+    for size in [1000, 10000, 100000].iter() {
         let signal = Array1::from_elem(*size, 1.0);
         group.bench_with_input(BenchmarkId::from_parameter(size), size, |b, _| {
             b.iter(|| signal_smooth_moving_average(&signal, 51).unwrap());
@@ -17,25 +30,21 @@ fn bench_moving_average(c: &mut Criterion) {
 }
 
 fn bench_findpeaks(c: &mut Criterion) {
-    let mut group = c.benchmark_group("signal_findpeaks");
-    let size = 10000;
-    let mut signal = Array1::<f64>::zeros(size);
-    for i in (0..size).step_by(50) {
-        signal[i] = 10.0;
-    }
-    group.bench_function("10k_samples", |b| {
-        b.iter(|| signal_findpeaks(&signal).unwrap());
-    });
-    group.finish();
-}
+    let mut group = c.benchmark_group("signal_findpeaks_configured");
+    let config = PeakDetectionConfig::new()
+        .with_min_height(2.0)
+        .with_min_distance(30)
+        .with_min_prominence(1.0);
 
-fn bench_filter(c: &mut Criterion) {
-    let mut group = c.benchmark_group("signal_filter");
-    let size = 10000;
-    let signal = Array1::from_elem(size, 1.0);
-    group.bench_function("10k_samples_lowpass", |b| {
-        b.iter(|| signal_filter(&signal, 100.0, None, Some(5.0), 3).unwrap());
-    });
+    for size in [1000, 10000, 100000].iter() {
+        let mut signal = Array1::<f64>::zeros(*size);
+        for i in (0..*size).step_by(50) {
+            signal[i] = 5.0;
+        }
+        group.bench_with_input(BenchmarkId::from_parameter(size), size, |b, _| {
+            b.iter(|| signal_findpeaks_config(&signal, &config).unwrap());
+        });
+    }
     group.finish();
 }
 
@@ -54,9 +63,9 @@ fn bench_sample_entropy(c: &mut Criterion) {
 
 criterion_group!(
     benches,
+    bench_filtfilt,
     bench_moving_average,
     bench_findpeaks,
-    bench_filter,
     bench_sample_entropy
 );
 criterion_main!(benches);
