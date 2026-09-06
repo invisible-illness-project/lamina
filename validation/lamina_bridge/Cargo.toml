@@ -1,0 +1,20 @@
+[package]
+name = "lamina_bridge"
+version = "0.1.0"
+edition = "2021"
+description = "JSON bridge CLI that exercises the Lamina crate for the validation framework (validation-only; does not modify Lamina)"
+publish = false
+
+[dependencies]
+lamina = { path = "../.." }
+ndarray = "0.17.2"
+serde = { version = "1.0", features = ["derive"] }
+serde_json = "1.0"
+
+[[bin]]
+name = "lamina_bridge"
+path = "src/main.rs"
+
+[profile.release]
+# Reproducibility over micro-optimization for a validation bridge.
+debug = false

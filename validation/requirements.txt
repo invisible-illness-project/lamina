@@ -1,0 +1,8 @@
+# Validation framework Python dependencies (validation/).
+# The Rust bridge (lamina_bridge) builds via cargo and needs no Python packages.
+numpy>=1.24
+scipy>=1.10
+pandas>=2.0
+matplotlib>=3.7
+wfdb>=4.1        # PhysioNet access for ECG/PPG dataset adapters (Stage 2)
+pytest>=8.0      # framework test suite

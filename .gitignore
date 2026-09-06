@@ -14,3 +14,9 @@ __pycache__/
 # Locally generated testing datasets (optional, uncomment to track)
 golden_*.json
 golden_*.csv
+
+# Validation framework (validation/): build artifacts + run outputs
+validation/lamina_bridge/target/
+!validation/lamina_bridge/Cargo.lock
+validation/data/
+# results/ are committed deliverables (task §9) — do not ignore
