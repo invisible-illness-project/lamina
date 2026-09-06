@@ -1,0 +1,17 @@
+lamina_version: {'bridge_version': '0.1.0', 'lamina_version': '0.1.0'}
+
+eda_clean fs sweep:
+  fs=   4.0: ERROR: bridge op 'eda-clean' failed [lamina_error]: Invalid cutoff frequency: Cutoff frequency (5) must be strictly less than Nyquist frequency (2)
+  fs=   8.0: ERROR: bridge op 'eda-clean' failed [lamina_error]: Invalid cutoff frequency: Cutoff frequency (5) must be strictly less than Nyquist frequency (4)
+  fs=  10.0: ERROR: bridge op 'eda-clean' failed [lamina_error]: Invalid cutoff frequency: Cutoff frequency (5) must be strictly less than Nyquist frequency (5)
+  fs=  16.0: ok, len=960
+  fs=  32.0: ok, len=1920
+  fs= 100.0: ok, len=6000
+
+eda_peaks fs sweep (cleans internally):
+  fs=   4.0: ERROR: bridge op 'eda-peaks' failed [lamina_error]: Invalid cutoff frequency: Cutoff frequency (5) must be strictly less than Nyquist frequency (2)
+  fs=  10.0: ERROR: bridge op 'eda-peaks' failed [lamina_error]: Invalid cutoff frequency: Cutoff frequency (5) must be strictly less than Nyquist frequency (5)
+  fs=  16.0: ok, peaks=[]
+
+eda_decompose at fs=4 (expected NOT to fail):
+  ok: tonic len=240, phasic len=240

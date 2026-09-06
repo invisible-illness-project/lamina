@@ -1,0 +1,168 @@
+    Updating `rsproxy-sparse` index
+     Locking 162 packages to latest Rust 1.98.1 compatible versions
+      Adding biquad v0.4.2 (available: v0.6.0)
+      Adding criterion v0.5.1 (available: v0.8.2)
+      Adding flutter_rust_bridge v2.12.0 (available: v2.13.0)
+      Adding flutter_rust_bridge_macros v2.12.0 (available: v2.13.0)
+      Adding generic-array v0.14.7 (available: v0.14.9)
+      Adding statrs v0.18.0 (available: v0.19.1)
+ Downloading crates ...
+  Downloaded cast v0.3.0 (registry `rsproxy-sparse`)
+  Downloaded walkdir v2.5.0 (registry `rsproxy-sparse`)
+  Downloaded criterion v0.5.1 (registry `rsproxy-sparse`)
+  Downloaded tinytemplate v1.2.1 (registry `rsproxy-sparse`)
+  Downloaded plotters-backend v0.3.7 (registry `rsproxy-sparse`)
+  Downloaded regex-automata v0.4.18 (registry `rsproxy-sparse`)
+  Downloaded crossbeam-epoch v0.9.21 (registry `rsproxy-sparse`)
+  Downloaded regex v1.13.1 (registry `rsproxy-sparse`)
+  Downloaded anes v0.1.6 (registry `rsproxy-sparse`)
+  Downloaded rayon-core v1.13.0 (registry `rsproxy-sparse`)
+  Downloaded clap v4.6.6 (registry `rsproxy-sparse`)
+  Downloaded itertools v0.10.5 (registry `rsproxy-sparse`)
+  Downloaded ciborium-ll v0.2.2 (registry `rsproxy-sparse`)
+  Downloaded clap_builder v4.6.6 (registry `rsproxy-sparse`)
+  Downloaded oorandom v11.1.5 (registry `rsproxy-sparse`)
+  Downloaded zerocopy-derive v0.8.56 (registry `rsproxy-sparse`)
+  Downloaded crossbeam-deque v0.8.8 (registry `rsproxy-sparse`)
+  Downloaded criterion-plot v0.5.0 (registry `rsproxy-sparse`)
+  Downloaded syn v2.0.119 (registry `rsproxy-sparse`)
+  Downloaded ciborium v0.2.2 (registry `rsproxy-sparse`)
+  Downloaded is-terminal v0.4.17 (registry `rsproxy-sparse`)
+  Downloaded regex-syntax v0.8.11 (registry `rsproxy-sparse`)
+  Downloaded half v2.7.1 (registry `rsproxy-sparse`)
+  Downloaded once_cell v1.21.4 (registry `rsproxy-sparse`)
+  Downloaded either v1.18.0 (registry `rsproxy-sparse`)
+  Downloaded crossbeam-utils v0.8.23 (registry `rsproxy-sparse`)
+  Downloaded same-file v1.0.6 (registry `rsproxy-sparse`)
+  Downloaded plotters v0.3.7 (registry `rsproxy-sparse`)
+  Downloaded anstyle v1.0.14 (registry `rsproxy-sparse`)
+  Downloaded plotters-svg v0.3.7 (registry `rsproxy-sparse`)
+  Downloaded ciborium-io v0.2.2 (registry `rsproxy-sparse`)
+  Downloaded clap_lex v1.1.0 (registry `rsproxy-sparse`)
+  Downloaded aho-corasick v1.1.5 (registry `rsproxy-sparse`)
+  Downloaded rayon v1.12.0 (registry `rsproxy-sparse`)
+   Compiling autocfg v1.5.1
+   Compiling proc-macro2 v1.0.107
+   Compiling unicode-ident v1.0.24
+   Compiling quote v1.0.47
+   Compiling libm v0.2.16
+   Compiling num-traits v0.2.19
+   Compiling syn v2.0.119
+   Compiling zerocopy v0.8.56
+   Compiling zerocopy-derive v0.8.56
+   Compiling cfg-if v1.0.4
+   Compiling libc v0.2.189
+   Compiling num-integer v0.1.47
+   Compiling serde_core v1.0.229
+   Compiling getrandom v0.2.17
+   Compiling num-complex v0.4.6
+   Compiling crossbeam-utils v0.8.23
+   Compiling rand_core v0.6.4
+   Compiling ppv-lite86 v0.2.21
+   Compiling syn v3.0.5
+   Compiling matrixmultiply v0.3.11
+   Compiling bytemuck v1.25.2
+   Compiling serde v1.0.229
+   Compiling crossbeam-epoch v0.9.21
+   Compiling zmij v1.0.23
+   Compiling paste v1.0.15
+   Compiling safe_arch v0.7.4
+   Compiling serde_derive v1.0.229
+   Compiling rand_chacha v0.3.1
+   Compiling crossbeam-deque v0.8.8
+   Compiling serde_json v1.0.151
+   Compiling rawpointer v0.2.1
+   Compiling rand v0.8.8
+   Compiling wide v0.7.33
+   Compiling approx v0.5.1
+   Compiling itoa v1.0.18
+   Compiling rayon-core v1.13.0
+   Compiling memchr v2.8.3
+   Compiling strength_reduce v0.2.4
+   Compiling either v1.18.0
+   Compiling libm v0.1.4
+   Compiling transpose v0.2.3
+   Compiling simba v0.9.1
+   Compiling rand_distr v0.4.3
+   Compiling primal-check v0.3.4
+   Compiling num-rational v0.4.2
+   Compiling half v2.7.1
+   Compiling clap_lex v1.1.0
+   Compiling anstyle v1.0.14
+   Compiling ciborium-io v0.2.2
+   Compiling typenum v1.20.1
+   Compiling plotters-backend v0.3.7
+   Compiling regex-syntax v0.8.11
+   Compiling regex-automata v0.4.18
+   Compiling plotters-svg v0.3.7
+   Compiling nalgebra v0.33.3
+   Compiling ciborium-ll v0.2.2
+   Compiling clap_builder v4.6.6
+   Compiling rustfft v6.4.1
+   Compiling itertools v0.10.5
+   Compiling cast v0.3.0
+   Compiling same-file v1.0.6
+   Compiling walkdir v2.5.0
+   Compiling criterion-plot v0.5.0
+   Compiling biquad v0.4.2
+   Compiling rayon v1.12.0
+   Compiling realfft v3.5.0
+   Compiling clap v4.6.6
+   Compiling ciborium v0.2.2
+   Compiling statrs v0.18.0
+   Compiling plotters v0.3.7
+   Compiling regex v1.13.1
+   Compiling tinytemplate v1.2.1
+   Compiling ndarray v0.17.2
+   Compiling is-terminal v0.4.17
+   Compiling oorandom v11.1.5
+   Compiling anes v0.1.6
+   Compiling once_cell v1.21.4
+   Compiling find_peaks v0.1.5
+   Compiling lamina v0.1.0 (/home/kimi/work-bugs)
+   Compiling criterion v0.5.1
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 1m 17s
+     Running tests/filter_parity_tests.rs (/home/kimi/.lamina_bridge-target/debug/deps/filter_parity_tests-6f50d9f6c58c34ae)
+
+running 7 tests
+test test_boundary_and_constant_signals ... ok
+test test_group_a_mathematical_invariants ... ok
+test test_group_b_frequency_domain_responses ... ok
+test test_group_c_sos_coefficient_parity ... FAILED
+test test_group_d_end_to_end_filtering_parity ... FAILED
+test test_short_signal_insufficient_samples ... ok
+test test_worst_case_configuration_regression ... ok
+
+failures:
+
+---- test_group_c_sos_coefficient_parity stdout ----
+
+thread 'test_group_c_sos_coefficient_parity' (4238) panicked at tests/filter_parity_tests.rs:317:55:
+Failed to open golden filter JSON: Os { code: 2, kind: NotFound, message: "No such file or directory" }
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+
+---- test_group_d_end_to_end_filtering_parity stdout ----
+
+thread 'test_group_d_end_to_end_filtering_parity' (4239) panicked at tests/filter_parity_tests.rs:371:55:
+Failed to open golden filter JSON: Os { code: 2, kind: NotFound, message: "No such file or directory" }
+
+
+failures:
+    test_group_c_sos_coefficient_parity
+    test_group_d_end_to_end_filtering_parity
+
+test result: FAILED. 5 passed; 2 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+error: test failed, to rerun pass `--test filter_parity_tests`
+
+thread 'test_scipy_peak_detection_parity' (4272) panicked at tests/peaks_parity_tests.rs:26:54:
+Failed to open golden peaks JSON: Os { code: 2, kind: NotFound, message: "No such file or directory" }
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+
+
+failures:
+    test_scipy_peak_detection_parity
+
+test result: FAILED. 2 passed; 1 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+error: test failed, to rerun pass `--test peaks_parity_tests`
