@@ -1,0 +1,14 @@
+[package]
+name = "lamina_py"
+version = "0.1.0"
+edition = "2024"
+
+[lib]
+name = "_lamina"
+crate-type = ["cdylib"]
+
+[dependencies]
+lamina = { path = ".." }
+ndarray = "0.17.2"
+pyo3 = { version = "0.29", features = ["extension-module"] }
+numpy = "0.29"

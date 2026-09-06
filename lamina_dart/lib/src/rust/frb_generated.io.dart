@@ -3,7 +3,18 @@
 
 // ignore_for_file: unused_import, unused_element, unnecessary_import, duplicate_ignore, invalid_use_of_internal_member, annotate_overrides, non_constant_identifier_names, curly_braces_in_flow_control_structures, prefer_const_literals_to_create_immutables, unused_field
 
-import 'api/simple.dart';
+import 'api/autonomic.dart';
+import 'api/complexity.dart';
+import 'api/ecg.dart';
+import 'api/eda.dart';
+import 'api/error.dart';
+import 'api/features.dart';
+import 'api/hrv.dart';
+import 'api/multimodal.dart';
+import 'api/ppg.dart';
+import 'api/rppg.dart';
+import 'api/rsp.dart';
+import 'api/signal.dart';
 import 'dart:async';
 import 'dart:convert';
 import 'dart:ffi' as ffi;
@@ -18,20 +29,125 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
     required super.portManager,
   });
 
+  CrossPlatformFinalizerArg
+  get rust_arc_decrement_strong_count_AutonomicEstimatorPtr => wire
+      ._rust_arc_decrement_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerAutonomicEstimatorPtr;
+
+  @protected
+  AutonomicEstimator
+  dco_decode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerAutonomicEstimator(
+    dynamic raw,
+  );
+
+  @protected
+  AutonomicEstimator
+  dco_decode_Auto_Ref_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerAutonomicEstimator(
+    dynamic raw,
+  );
+
+  @protected
+  int dco_decode_CastedPrimitive_usize(dynamic raw);
+
+  @protected
+  AutonomicEstimator
+  dco_decode_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerAutonomicEstimator(
+    dynamic raw,
+  );
+
   @protected
   String dco_decode_String(dynamic raw);
+
+  @protected
+  AutonomicState dco_decode_autonomic_state(dynamic raw);
 
   @protected
   bool dco_decode_bool(dynamic raw);
 
   @protected
+  bool dco_decode_box_autoadd_bool(dynamic raw);
+
+  @protected
+  EcgPeakDetectionConfig dco_decode_box_autoadd_ecg_peak_detection_config(
+    dynamic raw,
+  );
+
+  @protected
+  EdaDecompositionConfig dco_decode_box_autoadd_eda_decomposition_config(
+    dynamic raw,
+  );
+
+  @protected
+  EdaPeakDetectionConfig dco_decode_box_autoadd_eda_peak_detection_config(
+    dynamic raw,
+  );
+
+  @protected
   double dco_decode_box_autoadd_f_64(dynamic raw);
+
+  @protected
+  FeatureWindow dco_decode_box_autoadd_feature_window(dynamic raw);
+
+  @protected
+  PeakDetectionConfig dco_decode_box_autoadd_peak_detection_config(dynamic raw);
+
+  @protected
+  PpgPeakDetectionConfig dco_decode_box_autoadd_ppg_peak_detection_config(
+    dynamic raw,
+  );
+
+  @protected
+  PulseTimingConfig dco_decode_box_autoadd_pulse_timing_config(dynamic raw);
+
+  @protected
+  RppgConfig dco_decode_box_autoadd_rppg_config(dynamic raw);
+
+  @protected
+  RspProcessingConfig dco_decode_box_autoadd_rsp_processing_config(dynamic raw);
+
+  @protected
+  CardiacFeatures dco_decode_cardiac_features(dynamic raw);
+
+  @protected
+  CardiacState dco_decode_cardiac_state(dynamic raw);
+
+  @protected
+  CouplingState dco_decode_coupling_state(dynamic raw);
+
+  @protected
+  EcgPeakDetectionConfig dco_decode_ecg_peak_detection_config(dynamic raw);
+
+  @protected
+  EdaComponentSignals dco_decode_eda_component_signals(dynamic raw);
+
+  @protected
+  EdaDecompositionConfig dco_decode_eda_decomposition_config(dynamic raw);
+
+  @protected
+  EdaFeatures dco_decode_eda_features(dynamic raw);
+
+  @protected
+  EdaPeakDetectionConfig dco_decode_eda_peak_detection_config(dynamic raw);
+
+  @protected
+  EdaPeakEvent dco_decode_eda_peak_event(dynamic raw);
+
+  @protected
+  ElectrodermalState dco_decode_electrodermal_state(dynamic raw);
 
   @protected
   double dco_decode_f_64(dynamic raw);
 
   @protected
-  List<bool> dco_decode_list_bool(dynamic raw);
+  FeatureWindow dco_decode_feature_window(dynamic raw);
+
+  @protected
+  int dco_decode_i_32(dynamic raw);
+
+  @protected
+  List<int> dco_decode_list_CastedPrimitive_usize(dynamic raw);
+
+  @protected
+  List<EdaPeakEvent> dco_decode_list_eda_peak_event(dynamic raw);
 
   @protected
   List<double> dco_decode_list_prim_f_64_loose(dynamic raw);
@@ -43,7 +159,94 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   Uint8List dco_decode_list_prim_u_8_strict(dynamic raw);
 
   @protected
+  List<PulseTimingResult> dco_decode_list_pulse_timing_result(dynamic raw);
+
+  @protected
+  List<RespirationCycle> dco_decode_list_respiration_cycle(dynamic raw);
+
+  @protected
+  int? dco_decode_opt_CastedPrimitive_usize(dynamic raw);
+
+  @protected
+  bool? dco_decode_opt_box_autoadd_bool(dynamic raw);
+
+  @protected
+  EcgPeakDetectionConfig? dco_decode_opt_box_autoadd_ecg_peak_detection_config(
+    dynamic raw,
+  );
+
+  @protected
+  EdaDecompositionConfig? dco_decode_opt_box_autoadd_eda_decomposition_config(
+    dynamic raw,
+  );
+
+  @protected
+  EdaPeakDetectionConfig? dco_decode_opt_box_autoadd_eda_peak_detection_config(
+    dynamic raw,
+  );
+
+  @protected
   double? dco_decode_opt_box_autoadd_f_64(dynamic raw);
+
+  @protected
+  PpgPeakDetectionConfig? dco_decode_opt_box_autoadd_ppg_peak_detection_config(
+    dynamic raw,
+  );
+
+  @protected
+  PulseTimingConfig? dco_decode_opt_box_autoadd_pulse_timing_config(
+    dynamic raw,
+  );
+
+  @protected
+  RppgConfig? dco_decode_opt_box_autoadd_rppg_config(dynamic raw);
+
+  @protected
+  RspProcessingConfig? dco_decode_opt_box_autoadd_rsp_processing_config(
+    dynamic raw,
+  );
+
+  @protected
+  PeakDetectionConfig dco_decode_peak_detection_config(dynamic raw);
+
+  @protected
+  PhaseCouplingResult dco_decode_phase_coupling_result(dynamic raw);
+
+  @protected
+  PpgPeakDetectionConfig dco_decode_ppg_peak_detection_config(dynamic raw);
+
+  @protected
+  PulseTimingConfig dco_decode_pulse_timing_config(dynamic raw);
+
+  @protected
+  PulseTimingResult dco_decode_pulse_timing_result(dynamic raw);
+
+  @protected
+  RespirationCycle dco_decode_respiration_cycle(dynamic raw);
+
+  @protected
+  RespirationFeatures dco_decode_respiration_features(dynamic raw);
+
+  @protected
+  RespiratoryState dco_decode_respiratory_state(dynamic raw);
+
+  @protected
+  RppgAlgorithmId dco_decode_rppg_algorithm_id(dynamic raw);
+
+  @protected
+  RppgConfig dco_decode_rppg_config(dynamic raw);
+
+  @protected
+  RppgSignalResult dco_decode_rppg_signal_result(dynamic raw);
+
+  @protected
+  RsaResult dco_decode_rsa_result(dynamic raw);
+
+  @protected
+  RspProcessingConfig dco_decode_rsp_processing_config(dynamic raw);
+
+  @protected
+  SignalError dco_decode_signal_error(dynamic raw);
 
   @protected
   int dco_decode_u_8(dynamic raw);
@@ -55,19 +258,140 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   BigInt dco_decode_usize(dynamic raw);
 
   @protected
+  AutonomicEstimator
+  sse_decode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerAutonomicEstimator(
+    SseDeserializer deserializer,
+  );
+
+  @protected
+  AutonomicEstimator
+  sse_decode_Auto_Ref_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerAutonomicEstimator(
+    SseDeserializer deserializer,
+  );
+
+  @protected
+  int sse_decode_CastedPrimitive_usize(SseDeserializer deserializer);
+
+  @protected
+  AutonomicEstimator
+  sse_decode_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerAutonomicEstimator(
+    SseDeserializer deserializer,
+  );
+
+  @protected
   String sse_decode_String(SseDeserializer deserializer);
+
+  @protected
+  AutonomicState sse_decode_autonomic_state(SseDeserializer deserializer);
 
   @protected
   bool sse_decode_bool(SseDeserializer deserializer);
 
   @protected
+  bool sse_decode_box_autoadd_bool(SseDeserializer deserializer);
+
+  @protected
+  EcgPeakDetectionConfig sse_decode_box_autoadd_ecg_peak_detection_config(
+    SseDeserializer deserializer,
+  );
+
+  @protected
+  EdaDecompositionConfig sse_decode_box_autoadd_eda_decomposition_config(
+    SseDeserializer deserializer,
+  );
+
+  @protected
+  EdaPeakDetectionConfig sse_decode_box_autoadd_eda_peak_detection_config(
+    SseDeserializer deserializer,
+  );
+
+  @protected
   double sse_decode_box_autoadd_f_64(SseDeserializer deserializer);
+
+  @protected
+  FeatureWindow sse_decode_box_autoadd_feature_window(
+    SseDeserializer deserializer,
+  );
+
+  @protected
+  PeakDetectionConfig sse_decode_box_autoadd_peak_detection_config(
+    SseDeserializer deserializer,
+  );
+
+  @protected
+  PpgPeakDetectionConfig sse_decode_box_autoadd_ppg_peak_detection_config(
+    SseDeserializer deserializer,
+  );
+
+  @protected
+  PulseTimingConfig sse_decode_box_autoadd_pulse_timing_config(
+    SseDeserializer deserializer,
+  );
+
+  @protected
+  RppgConfig sse_decode_box_autoadd_rppg_config(SseDeserializer deserializer);
+
+  @protected
+  RspProcessingConfig sse_decode_box_autoadd_rsp_processing_config(
+    SseDeserializer deserializer,
+  );
+
+  @protected
+  CardiacFeatures sse_decode_cardiac_features(SseDeserializer deserializer);
+
+  @protected
+  CardiacState sse_decode_cardiac_state(SseDeserializer deserializer);
+
+  @protected
+  CouplingState sse_decode_coupling_state(SseDeserializer deserializer);
+
+  @protected
+  EcgPeakDetectionConfig sse_decode_ecg_peak_detection_config(
+    SseDeserializer deserializer,
+  );
+
+  @protected
+  EdaComponentSignals sse_decode_eda_component_signals(
+    SseDeserializer deserializer,
+  );
+
+  @protected
+  EdaDecompositionConfig sse_decode_eda_decomposition_config(
+    SseDeserializer deserializer,
+  );
+
+  @protected
+  EdaFeatures sse_decode_eda_features(SseDeserializer deserializer);
+
+  @protected
+  EdaPeakDetectionConfig sse_decode_eda_peak_detection_config(
+    SseDeserializer deserializer,
+  );
+
+  @protected
+  EdaPeakEvent sse_decode_eda_peak_event(SseDeserializer deserializer);
+
+  @protected
+  ElectrodermalState sse_decode_electrodermal_state(
+    SseDeserializer deserializer,
+  );
 
   @protected
   double sse_decode_f_64(SseDeserializer deserializer);
 
   @protected
-  List<bool> sse_decode_list_bool(SseDeserializer deserializer);
+  FeatureWindow sse_decode_feature_window(SseDeserializer deserializer);
+
+  @protected
+  int sse_decode_i_32(SseDeserializer deserializer);
+
+  @protected
+  List<int> sse_decode_list_CastedPrimitive_usize(SseDeserializer deserializer);
+
+  @protected
+  List<EdaPeakEvent> sse_decode_list_eda_peak_event(
+    SseDeserializer deserializer,
+  );
 
   @protected
   List<double> sse_decode_list_prim_f_64_loose(SseDeserializer deserializer);
@@ -79,7 +403,114 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   Uint8List sse_decode_list_prim_u_8_strict(SseDeserializer deserializer);
 
   @protected
+  List<PulseTimingResult> sse_decode_list_pulse_timing_result(
+    SseDeserializer deserializer,
+  );
+
+  @protected
+  List<RespirationCycle> sse_decode_list_respiration_cycle(
+    SseDeserializer deserializer,
+  );
+
+  @protected
+  int? sse_decode_opt_CastedPrimitive_usize(SseDeserializer deserializer);
+
+  @protected
+  bool? sse_decode_opt_box_autoadd_bool(SseDeserializer deserializer);
+
+  @protected
+  EcgPeakDetectionConfig? sse_decode_opt_box_autoadd_ecg_peak_detection_config(
+    SseDeserializer deserializer,
+  );
+
+  @protected
+  EdaDecompositionConfig? sse_decode_opt_box_autoadd_eda_decomposition_config(
+    SseDeserializer deserializer,
+  );
+
+  @protected
+  EdaPeakDetectionConfig? sse_decode_opt_box_autoadd_eda_peak_detection_config(
+    SseDeserializer deserializer,
+  );
+
+  @protected
   double? sse_decode_opt_box_autoadd_f_64(SseDeserializer deserializer);
+
+  @protected
+  PpgPeakDetectionConfig? sse_decode_opt_box_autoadd_ppg_peak_detection_config(
+    SseDeserializer deserializer,
+  );
+
+  @protected
+  PulseTimingConfig? sse_decode_opt_box_autoadd_pulse_timing_config(
+    SseDeserializer deserializer,
+  );
+
+  @protected
+  RppgConfig? sse_decode_opt_box_autoadd_rppg_config(
+    SseDeserializer deserializer,
+  );
+
+  @protected
+  RspProcessingConfig? sse_decode_opt_box_autoadd_rsp_processing_config(
+    SseDeserializer deserializer,
+  );
+
+  @protected
+  PeakDetectionConfig sse_decode_peak_detection_config(
+    SseDeserializer deserializer,
+  );
+
+  @protected
+  PhaseCouplingResult sse_decode_phase_coupling_result(
+    SseDeserializer deserializer,
+  );
+
+  @protected
+  PpgPeakDetectionConfig sse_decode_ppg_peak_detection_config(
+    SseDeserializer deserializer,
+  );
+
+  @protected
+  PulseTimingConfig sse_decode_pulse_timing_config(
+    SseDeserializer deserializer,
+  );
+
+  @protected
+  PulseTimingResult sse_decode_pulse_timing_result(
+    SseDeserializer deserializer,
+  );
+
+  @protected
+  RespirationCycle sse_decode_respiration_cycle(SseDeserializer deserializer);
+
+  @protected
+  RespirationFeatures sse_decode_respiration_features(
+    SseDeserializer deserializer,
+  );
+
+  @protected
+  RespiratoryState sse_decode_respiratory_state(SseDeserializer deserializer);
+
+  @protected
+  RppgAlgorithmId sse_decode_rppg_algorithm_id(SseDeserializer deserializer);
+
+  @protected
+  RppgConfig sse_decode_rppg_config(SseDeserializer deserializer);
+
+  @protected
+  RppgSignalResult sse_decode_rppg_signal_result(SseDeserializer deserializer);
+
+  @protected
+  RsaResult sse_decode_rsa_result(SseDeserializer deserializer);
+
+  @protected
+  RspProcessingConfig sse_decode_rsp_processing_config(
+    SseDeserializer deserializer,
+  );
+
+  @protected
+  SignalError sse_decode_signal_error(SseDeserializer deserializer);
 
   @protected
   int sse_decode_u_8(SseDeserializer deserializer);
@@ -91,22 +522,169 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   BigInt sse_decode_usize(SseDeserializer deserializer);
 
   @protected
-  int sse_decode_i_32(SseDeserializer deserializer);
+  void
+  sse_encode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerAutonomicEstimator(
+    AutonomicEstimator self,
+    SseSerializer serializer,
+  );
+
+  @protected
+  void
+  sse_encode_Auto_Ref_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerAutonomicEstimator(
+    AutonomicEstimator self,
+    SseSerializer serializer,
+  );
+
+  @protected
+  void sse_encode_CastedPrimitive_usize(int self, SseSerializer serializer);
+
+  @protected
+  void
+  sse_encode_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerAutonomicEstimator(
+    AutonomicEstimator self,
+    SseSerializer serializer,
+  );
 
   @protected
   void sse_encode_String(String self, SseSerializer serializer);
 
   @protected
+  void sse_encode_autonomic_state(
+    AutonomicState self,
+    SseSerializer serializer,
+  );
+
+  @protected
   void sse_encode_bool(bool self, SseSerializer serializer);
+
+  @protected
+  void sse_encode_box_autoadd_bool(bool self, SseSerializer serializer);
+
+  @protected
+  void sse_encode_box_autoadd_ecg_peak_detection_config(
+    EcgPeakDetectionConfig self,
+    SseSerializer serializer,
+  );
+
+  @protected
+  void sse_encode_box_autoadd_eda_decomposition_config(
+    EdaDecompositionConfig self,
+    SseSerializer serializer,
+  );
+
+  @protected
+  void sse_encode_box_autoadd_eda_peak_detection_config(
+    EdaPeakDetectionConfig self,
+    SseSerializer serializer,
+  );
 
   @protected
   void sse_encode_box_autoadd_f_64(double self, SseSerializer serializer);
 
   @protected
+  void sse_encode_box_autoadd_feature_window(
+    FeatureWindow self,
+    SseSerializer serializer,
+  );
+
+  @protected
+  void sse_encode_box_autoadd_peak_detection_config(
+    PeakDetectionConfig self,
+    SseSerializer serializer,
+  );
+
+  @protected
+  void sse_encode_box_autoadd_ppg_peak_detection_config(
+    PpgPeakDetectionConfig self,
+    SseSerializer serializer,
+  );
+
+  @protected
+  void sse_encode_box_autoadd_pulse_timing_config(
+    PulseTimingConfig self,
+    SseSerializer serializer,
+  );
+
+  @protected
+  void sse_encode_box_autoadd_rppg_config(
+    RppgConfig self,
+    SseSerializer serializer,
+  );
+
+  @protected
+  void sse_encode_box_autoadd_rsp_processing_config(
+    RspProcessingConfig self,
+    SseSerializer serializer,
+  );
+
+  @protected
+  void sse_encode_cardiac_features(
+    CardiacFeatures self,
+    SseSerializer serializer,
+  );
+
+  @protected
+  void sse_encode_cardiac_state(CardiacState self, SseSerializer serializer);
+
+  @protected
+  void sse_encode_coupling_state(CouplingState self, SseSerializer serializer);
+
+  @protected
+  void sse_encode_ecg_peak_detection_config(
+    EcgPeakDetectionConfig self,
+    SseSerializer serializer,
+  );
+
+  @protected
+  void sse_encode_eda_component_signals(
+    EdaComponentSignals self,
+    SseSerializer serializer,
+  );
+
+  @protected
+  void sse_encode_eda_decomposition_config(
+    EdaDecompositionConfig self,
+    SseSerializer serializer,
+  );
+
+  @protected
+  void sse_encode_eda_features(EdaFeatures self, SseSerializer serializer);
+
+  @protected
+  void sse_encode_eda_peak_detection_config(
+    EdaPeakDetectionConfig self,
+    SseSerializer serializer,
+  );
+
+  @protected
+  void sse_encode_eda_peak_event(EdaPeakEvent self, SseSerializer serializer);
+
+  @protected
+  void sse_encode_electrodermal_state(
+    ElectrodermalState self,
+    SseSerializer serializer,
+  );
+
+  @protected
   void sse_encode_f_64(double self, SseSerializer serializer);
 
   @protected
-  void sse_encode_list_bool(List<bool> self, SseSerializer serializer);
+  void sse_encode_feature_window(FeatureWindow self, SseSerializer serializer);
+
+  @protected
+  void sse_encode_i_32(int self, SseSerializer serializer);
+
+  @protected
+  void sse_encode_list_CastedPrimitive_usize(
+    List<int> self,
+    SseSerializer serializer,
+  );
+
+  @protected
+  void sse_encode_list_eda_peak_event(
+    List<EdaPeakEvent> self,
+    SseSerializer serializer,
+  );
 
   @protected
   void sse_encode_list_prim_f_64_loose(
@@ -127,7 +705,145 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   );
 
   @protected
+  void sse_encode_list_pulse_timing_result(
+    List<PulseTimingResult> self,
+    SseSerializer serializer,
+  );
+
+  @protected
+  void sse_encode_list_respiration_cycle(
+    List<RespirationCycle> self,
+    SseSerializer serializer,
+  );
+
+  @protected
+  void sse_encode_opt_CastedPrimitive_usize(
+    int? self,
+    SseSerializer serializer,
+  );
+
+  @protected
+  void sse_encode_opt_box_autoadd_bool(bool? self, SseSerializer serializer);
+
+  @protected
+  void sse_encode_opt_box_autoadd_ecg_peak_detection_config(
+    EcgPeakDetectionConfig? self,
+    SseSerializer serializer,
+  );
+
+  @protected
+  void sse_encode_opt_box_autoadd_eda_decomposition_config(
+    EdaDecompositionConfig? self,
+    SseSerializer serializer,
+  );
+
+  @protected
+  void sse_encode_opt_box_autoadd_eda_peak_detection_config(
+    EdaPeakDetectionConfig? self,
+    SseSerializer serializer,
+  );
+
+  @protected
   void sse_encode_opt_box_autoadd_f_64(double? self, SseSerializer serializer);
+
+  @protected
+  void sse_encode_opt_box_autoadd_ppg_peak_detection_config(
+    PpgPeakDetectionConfig? self,
+    SseSerializer serializer,
+  );
+
+  @protected
+  void sse_encode_opt_box_autoadd_pulse_timing_config(
+    PulseTimingConfig? self,
+    SseSerializer serializer,
+  );
+
+  @protected
+  void sse_encode_opt_box_autoadd_rppg_config(
+    RppgConfig? self,
+    SseSerializer serializer,
+  );
+
+  @protected
+  void sse_encode_opt_box_autoadd_rsp_processing_config(
+    RspProcessingConfig? self,
+    SseSerializer serializer,
+  );
+
+  @protected
+  void sse_encode_peak_detection_config(
+    PeakDetectionConfig self,
+    SseSerializer serializer,
+  );
+
+  @protected
+  void sse_encode_phase_coupling_result(
+    PhaseCouplingResult self,
+    SseSerializer serializer,
+  );
+
+  @protected
+  void sse_encode_ppg_peak_detection_config(
+    PpgPeakDetectionConfig self,
+    SseSerializer serializer,
+  );
+
+  @protected
+  void sse_encode_pulse_timing_config(
+    PulseTimingConfig self,
+    SseSerializer serializer,
+  );
+
+  @protected
+  void sse_encode_pulse_timing_result(
+    PulseTimingResult self,
+    SseSerializer serializer,
+  );
+
+  @protected
+  void sse_encode_respiration_cycle(
+    RespirationCycle self,
+    SseSerializer serializer,
+  );
+
+  @protected
+  void sse_encode_respiration_features(
+    RespirationFeatures self,
+    SseSerializer serializer,
+  );
+
+  @protected
+  void sse_encode_respiratory_state(
+    RespiratoryState self,
+    SseSerializer serializer,
+  );
+
+  @protected
+  void sse_encode_rppg_algorithm_id(
+    RppgAlgorithmId self,
+    SseSerializer serializer,
+  );
+
+  @protected
+  void sse_encode_rppg_config(RppgConfig self, SseSerializer serializer);
+
+  @protected
+  void sse_encode_rppg_signal_result(
+    RppgSignalResult self,
+    SseSerializer serializer,
+  );
+
+  @protected
+  void sse_encode_rsa_result(RsaResult self, SseSerializer serializer);
+
+  @protected
+  void sse_encode_rsp_processing_config(
+    RspProcessingConfig self,
+    SseSerializer serializer,
+  );
+
+  @protected
+  void sse_encode_signal_error(SignalError self, SseSerializer serializer);
 
   @protected
   void sse_encode_u_8(int self, SseSerializer serializer);
@@ -137,9 +853,6 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
 
   @protected
   void sse_encode_usize(BigInt self, SseSerializer serializer);
-
-  @protected
-  void sse_encode_i_32(int self, SseSerializer serializer);
 }
 
 // Section: wire_class
@@ -155,4 +868,38 @@ class RustLibWire implements BaseWire {
   /// The symbols are looked up in [dynamicLibrary].
   RustLibWire(ffi.DynamicLibrary dynamicLibrary)
     : _lookup = dynamicLibrary.lookup;
+
+  void
+  rust_arc_increment_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerAutonomicEstimator(
+    ffi.Pointer<ffi.Void> ptr,
+  ) {
+    return _rust_arc_increment_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerAutonomicEstimator(
+      ptr,
+    );
+  }
+
+  late final _rust_arc_increment_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerAutonomicEstimatorPtr =
+      _lookup<ffi.NativeFunction<ffi.Void Function(ffi.Pointer<ffi.Void>)>>(
+        'frbgen_lamina_dart_rust_arc_increment_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerAutonomicEstimator',
+      );
+  late final _rust_arc_increment_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerAutonomicEstimator =
+      _rust_arc_increment_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerAutonomicEstimatorPtr
+          .asFunction<void Function(ffi.Pointer<ffi.Void>)>();
+
+  void
+  rust_arc_decrement_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerAutonomicEstimator(
+    ffi.Pointer<ffi.Void> ptr,
+  ) {
+    return _rust_arc_decrement_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerAutonomicEstimator(
+      ptr,
+    );
+  }
+
+  late final _rust_arc_decrement_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerAutonomicEstimatorPtr =
+      _lookup<ffi.NativeFunction<ffi.Void Function(ffi.Pointer<ffi.Void>)>>(
+        'frbgen_lamina_dart_rust_arc_decrement_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerAutonomicEstimator',
+      );
+  late final _rust_arc_decrement_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerAutonomicEstimator =
+      _rust_arc_decrement_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerAutonomicEstimatorPtr
+          .asFunction<void Function(ffi.Pointer<ffi.Void>)>();
 }

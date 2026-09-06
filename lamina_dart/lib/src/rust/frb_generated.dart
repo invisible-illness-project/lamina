@@ -3,7 +3,18 @@
 
 // ignore_for_file: unused_import, unused_element, unnecessary_import, duplicate_ignore, invalid_use_of_internal_member, annotate_overrides, non_constant_identifier_names, curly_braces_in_flow_control_structures, prefer_const_literals_to_create_immutables, unused_field
 
-import 'api/simple.dart';
+import 'api/autonomic.dart';
+import 'api/complexity.dart';
+import 'api/ecg.dart';
+import 'api/eda.dart';
+import 'api/error.dart';
+import 'api/features.dart';
+import 'api/hrv.dart';
+import 'api/multimodal.dart';
+import 'api/ppg.dart';
+import 'api/rppg.dart';
+import 'api/rsp.dart';
+import 'api/signal.dart';
 import 'dart:async';
 import 'dart:convert';
 import 'frb_generated.dart';
@@ -54,9 +65,7 @@ class RustLib extends BaseEntrypoint<RustLibApi, RustLibApiImpl, RustLibWire> {
       RustLibWire.fromExternalLibrary;
 
   @override
-  Future<void> executeRustInitializers() async {
-    await api.crateApiSimpleInitApp();
-  }
+  Future<void> executeRustInitializers() async {}
 
   @override
   ExternalLibraryLoaderConfig get defaultExternalLibraryLoaderConfig =>
@@ -66,7 +75,7 @@ class RustLib extends BaseEntrypoint<RustLibApi, RustLibApiImpl, RustLibWire> {
   String get codegenVersion => '2.12.0';
 
   @override
-  int get rustContentHash => 994225293;
+  int get rustContentHash => 1499871726;
 
   static const kDefaultExternalLibraryLoaderConfig =
       ExternalLibraryLoaderConfig(
@@ -78,87 +87,233 @@ class RustLib extends BaseEntrypoint<RustLibApi, RustLibApiImpl, RustLibWire> {
 }
 
 abstract class RustLibApi extends BaseApi {
-  Future<void> crateApiSimpleInitApp();
+  Future<AutonomicEstimator> crateApiAutonomicAutonomicEstimatorDefault();
 
-  Future<Float64List> crateApiSimpleProcessEcgClean({
+  Future<AutonomicState> crateApiAutonomicAutonomicEstimatorEstimateFromVector({
+    required AutonomicEstimator that,
+  });
+
+  Future<AutonomicEstimator> crateApiAutonomicAutonomicEstimatorNew();
+
+  Future<PhaseCouplingResult>
+  crateApiMultimodalComputeCardiorespiratoryPhaseCoupling({
+    required List<double> phases,
+  });
+
+  Future<List<PulseTimingResult>> crateApiMultimodalComputeEcgPpgTiming({
+    required List<int> ecgPeaks,
+    required double ecgSamplingRate,
+    required double ecgOffsetSec,
+    required List<int> ppgPeaks,
+    required double ppgSamplingRate,
+    required double ppgOffsetSec,
+    PulseTimingConfig? config,
+  });
+
+  Future<RsaResult> crateApiMultimodalComputeRsa({
+    required List<int> rPeaks,
+    required double ecgSamplingRate,
+    required double ecgOffsetSec,
+    required List<RespirationCycle> rspCycles,
+    required double rspSamplingRate,
+    required double rspOffsetSec,
+  });
+
+  Future<EcgPeakDetectionConfig> crateApiEcgEcgPeakDetectionConfigDefault();
+
+  Future<EdaDecompositionConfig> crateApiEdaEdaDecompositionConfigDefault();
+
+  Future<EdaPeakDetectionConfig> crateApiEdaEdaPeakDetectionConfigDefault();
+
+  Future<CardiacFeatures> crateApiFeaturesExtractCardiacFeatures({
+    required List<int> rPeaks,
+    required double samplingRate,
+    required double offsetSec,
+    required FeatureWindow window,
+  });
+
+  Future<EdaFeatures> crateApiFeaturesExtractEdaFeatures({
+    required List<double> tonic,
+    required List<double> phasic,
+    required List<EdaPeakEvent> events,
+    required double samplingRate,
+    required double offsetSec,
+    required FeatureWindow window,
+  });
+
+  Future<RespirationFeatures> crateApiFeaturesExtractRespirationFeatures({
+    required List<RespirationCycle> cycles,
+    required double samplingRate,
+    required double offsetSec,
+    required FeatureWindow window,
+  });
+
+  Future<RppgSignalResult> crateApiRppgExtractRppgFromOpticalSignal({
+    required List<double> timestampsSec,
+    required List<double> red,
+    required List<double> green,
+    required List<double> blue,
+    required List<int> validPixels,
+    RppgConfig? config,
+  });
+
+  Future<PeakDetectionConfig> crateApiSignalPeakDetectionConfigDefault();
+
+  Future<PpgPeakDetectionConfig> crateApiPpgPpgPeakDetectionConfigDefault();
+
+  Future<Float64List> crateApiEcgProcessEcgClean({
     required List<double> signal,
     required double samplingRate,
     required String method,
   });
 
-  Future<List<bool>> crateApiSimpleProcessEcgFindpeaks({
+  Future<List<int>> crateApiEcgProcessEcgFindpeaks({
+    required List<double> signal,
+    required double samplingRate,
+    EcgPeakDetectionConfig? config,
+  });
+
+  Future<Uint8List> crateApiEcgProcessEcgFindpeaksMask({
     required List<double> signal,
     required double samplingRate,
   });
 
-  Future<Float64List> crateApiSimpleProcessEdaClean({
+  Future<Float64List> crateApiEdaProcessEdaClean({
     required List<double> signal,
     required double samplingRate,
   });
 
-  Future<List<bool>> crateApiSimpleProcessEdaFindpeaks({
+  Future<EdaComponentSignals> crateApiEdaProcessEdaDecompose({
+    required List<double> signal,
+    required double samplingRate,
+    EdaDecompositionConfig? config,
+  });
+
+  Future<List<int>> crateApiEdaProcessEdaFindpeaks({
     required List<double> phasicSignal,
+    required double samplingRate,
+    EdaPeakDetectionConfig? config,
   });
 
-  Future<Float64List> crateApiSimpleProcessEdaPhasic({
+  Future<List<EdaPeakEvent>> crateApiEdaProcessEdaFindpeaksEvents({
+    required List<double> phasicSignal,
+    required double samplingRate,
+    EdaPeakDetectionConfig? config,
+  });
+
+  Future<Uint8List> crateApiEdaProcessEdaFindpeaksMask({
+    required List<double> phasicSignal,
+    required double samplingRate,
+  });
+
+  Future<Float64List> crateApiEdaProcessEdaPhasic({
     required List<double> signal,
     required double samplingRate,
   });
 
-  Future<double?> crateApiSimpleProcessHrvMeanNn({
-    required List<double> intervals,
-  });
+  Future<double> crateApiHrvProcessHrvMeanNn({required List<double> intervals});
 
-  Future<double?> crateApiSimpleProcessHrvRmssd({
-    required List<double> intervals,
-  });
+  Future<double> crateApiHrvProcessHrvPnn50({required List<double> intervals});
 
-  Future<Float64List> crateApiSimpleProcessPeaksToIntervals({
-    required List<bool> peaks,
+  Future<double> crateApiHrvProcessHrvRmssd({required List<double> intervals});
+
+  Future<double> crateApiHrvProcessHrvSdnn({required List<double> intervals});
+
+  Future<Float64List> crateApiHrvProcessPeaksToIntervals({
+    required List<int> peaks,
     required double samplingRate,
+    required int totalSamples,
   });
 
-  Future<Float64List> crateApiSimpleProcessPpgClean({
+  Future<Float64List> crateApiPpgProcessPpgClean({
     required List<double> signal,
     required double samplingRate,
   });
 
-  Future<List<bool>> crateApiSimpleProcessPpgFindpeaks({
+  Future<List<int>> crateApiPpgProcessPpgFindpeaks({
+    required List<double> signal,
+    required double samplingRate,
+    PpgPeakDetectionConfig? config,
+  });
+
+  Future<Uint8List> crateApiPpgProcessPpgFindpeaksMask({
     required List<double> signal,
     required double samplingRate,
   });
 
-  Future<Float64List> crateApiSimpleProcessRspClean({
+  Future<Float64List> crateApiRspProcessRspClean({
     required List<double> signal,
     required double samplingRate,
   });
 
-  Future<List<bool>> crateApiSimpleProcessRspFindpeaks({
+  Future<List<RespirationCycle>> crateApiRspProcessRspCycles({
     required List<double> cleanedSignal,
+    required double samplingRate,
+    RspProcessingConfig? config,
   });
 
-  Future<double> crateApiSimpleProcessSampleEntropy({
+  Future<List<int>> crateApiRspProcessRspFindpeaks({
+    required List<double> cleanedSignal,
+    required double samplingRate,
+    RspProcessingConfig? config,
+  });
+
+  Future<Uint8List> crateApiRspProcessRspFindpeaksMask({
+    required List<double> cleanedSignal,
+    required double samplingRate,
+    RspProcessingConfig? config,
+  });
+
+  Future<Float64List> crateApiRspProcessRspRate({
+    required List<double> cleanedSignal,
+    required double samplingRate,
+    RspProcessingConfig? config,
+  });
+
+  Future<double> crateApiComplexityProcessSampleEntropy({
     required List<double> signal,
-    required BigInt m,
+    required int m,
     required double r,
   });
 
-  Future<Float64List> crateApiSimpleProcessSignalFilter({
+  Future<Float64List> crateApiSignalProcessSignalFilter({
     required List<double> signal,
     required double samplingRate,
     double? lowcut,
     double? highcut,
-    required BigInt order,
+    required int order,
   });
 
-  Future<List<bool>> crateApiSimpleProcessSignalFindpeaks({
+  Future<List<int>> crateApiSignalProcessSignalFindpeaks({
     required List<double> signal,
   });
 
-  Future<Float64List> crateApiSimpleProcessSignalSmoothMovingAverage({
+  Future<List<int>> crateApiSignalProcessSignalFindpeaksConfig({
     required List<double> signal,
-    required BigInt windowSize,
+    required PeakDetectionConfig config,
   });
+
+  Future<Float64List> crateApiSignalProcessSignalSmoothMovingAverage({
+    required List<double> signal,
+    required int windowSize,
+  });
+
+  Future<PulseTimingConfig> crateApiMultimodalPulseTimingConfigDefault();
+
+  Future<RppgAlgorithmId> crateApiRppgRppgAlgorithmIdDefault();
+
+  Future<RppgConfig> crateApiRppgRppgConfigDefault();
+
+  Future<RspProcessingConfig> crateApiRspRspProcessingConfigDefault();
+
+  RustArcIncrementStrongCountFnType
+  get rust_arc_increment_strong_count_AutonomicEstimator;
+
+  RustArcDecrementStrongCountFnType
+  get rust_arc_decrement_strong_count_AutonomicEstimator;
+
+  CrossPlatformFinalizerArg
+  get rust_arc_decrement_strong_count_AutonomicEstimatorPtr;
 }
 
 class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
@@ -170,7 +325,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   });
 
   @override
-  Future<void> crateApiSimpleInitApp() {
+  Future<AutonomicEstimator> crateApiAutonomicAutonomicEstimatorDefault() {
     return handler.executeNormal(
       NormalTask(
         callFfi: (port_) {
@@ -183,21 +338,573 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
           );
         },
         codec: SseCodec(
-          decodeSuccessData: sse_decode_unit,
+          decodeSuccessData:
+              sse_decode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerAutonomicEstimator,
           decodeErrorData: null,
         ),
-        constMeta: kCrateApiSimpleInitAppConstMeta,
+        constMeta: kCrateApiAutonomicAutonomicEstimatorDefaultConstMeta,
         argValues: [],
         apiImpl: this,
       ),
     );
   }
 
-  TaskConstMeta get kCrateApiSimpleInitAppConstMeta =>
-      const TaskConstMeta(debugName: "init_app", argNames: []);
+  TaskConstMeta get kCrateApiAutonomicAutonomicEstimatorDefaultConstMeta =>
+      const TaskConstMeta(
+        debugName: "AutonomicEstimator_default",
+        argNames: [],
+      );
 
   @override
-  Future<Float64List> crateApiSimpleProcessEcgClean({
+  Future<AutonomicState> crateApiAutonomicAutonomicEstimatorEstimateFromVector({
+    required AutonomicEstimator that,
+  }) {
+    return handler.executeNormal(
+      NormalTask(
+        callFfi: (port_) {
+          final serializer = SseSerializer(generalizedFrbRustBinding);
+          sse_encode_Auto_Ref_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerAutonomicEstimator(
+            that,
+            serializer,
+          );
+          pdeCallFfi(
+            generalizedFrbRustBinding,
+            serializer,
+            funcId: 2,
+            port: port_,
+          );
+        },
+        codec: SseCodec(
+          decodeSuccessData: sse_decode_autonomic_state,
+          decodeErrorData: sse_decode_signal_error,
+        ),
+        constMeta:
+            kCrateApiAutonomicAutonomicEstimatorEstimateFromVectorConstMeta,
+        argValues: [that],
+        apiImpl: this,
+      ),
+    );
+  }
+
+  TaskConstMeta
+  get kCrateApiAutonomicAutonomicEstimatorEstimateFromVectorConstMeta =>
+      const TaskConstMeta(
+        debugName: "AutonomicEstimator_estimate_from_vector",
+        argNames: ["that"],
+      );
+
+  @override
+  Future<AutonomicEstimator> crateApiAutonomicAutonomicEstimatorNew() {
+    return handler.executeNormal(
+      NormalTask(
+        callFfi: (port_) {
+          final serializer = SseSerializer(generalizedFrbRustBinding);
+          pdeCallFfi(
+            generalizedFrbRustBinding,
+            serializer,
+            funcId: 3,
+            port: port_,
+          );
+        },
+        codec: SseCodec(
+          decodeSuccessData:
+              sse_decode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerAutonomicEstimator,
+          decodeErrorData: null,
+        ),
+        constMeta: kCrateApiAutonomicAutonomicEstimatorNewConstMeta,
+        argValues: [],
+        apiImpl: this,
+      ),
+    );
+  }
+
+  TaskConstMeta get kCrateApiAutonomicAutonomicEstimatorNewConstMeta =>
+      const TaskConstMeta(debugName: "AutonomicEstimator_new", argNames: []);
+
+  @override
+  Future<PhaseCouplingResult>
+  crateApiMultimodalComputeCardiorespiratoryPhaseCoupling({
+    required List<double> phases,
+  }) {
+    return handler.executeNormal(
+      NormalTask(
+        callFfi: (port_) {
+          final serializer = SseSerializer(generalizedFrbRustBinding);
+          sse_encode_list_prim_f_64_loose(phases, serializer);
+          pdeCallFfi(
+            generalizedFrbRustBinding,
+            serializer,
+            funcId: 4,
+            port: port_,
+          );
+        },
+        codec: SseCodec(
+          decodeSuccessData: sse_decode_phase_coupling_result,
+          decodeErrorData: sse_decode_signal_error,
+        ),
+        constMeta:
+            kCrateApiMultimodalComputeCardiorespiratoryPhaseCouplingConstMeta,
+        argValues: [phases],
+        apiImpl: this,
+      ),
+    );
+  }
+
+  TaskConstMeta
+  get kCrateApiMultimodalComputeCardiorespiratoryPhaseCouplingConstMeta =>
+      const TaskConstMeta(
+        debugName: "compute_cardiorespiratory_phase_coupling",
+        argNames: ["phases"],
+      );
+
+  @override
+  Future<List<PulseTimingResult>> crateApiMultimodalComputeEcgPpgTiming({
+    required List<int> ecgPeaks,
+    required double ecgSamplingRate,
+    required double ecgOffsetSec,
+    required List<int> ppgPeaks,
+    required double ppgSamplingRate,
+    required double ppgOffsetSec,
+    PulseTimingConfig? config,
+  }) {
+    return handler.executeNormal(
+      NormalTask(
+        callFfi: (port_) {
+          final serializer = SseSerializer(generalizedFrbRustBinding);
+          sse_encode_list_CastedPrimitive_usize(ecgPeaks, serializer);
+          sse_encode_f_64(ecgSamplingRate, serializer);
+          sse_encode_f_64(ecgOffsetSec, serializer);
+          sse_encode_list_CastedPrimitive_usize(ppgPeaks, serializer);
+          sse_encode_f_64(ppgSamplingRate, serializer);
+          sse_encode_f_64(ppgOffsetSec, serializer);
+          sse_encode_opt_box_autoadd_pulse_timing_config(config, serializer);
+          pdeCallFfi(
+            generalizedFrbRustBinding,
+            serializer,
+            funcId: 5,
+            port: port_,
+          );
+        },
+        codec: SseCodec(
+          decodeSuccessData: sse_decode_list_pulse_timing_result,
+          decodeErrorData: sse_decode_signal_error,
+        ),
+        constMeta: kCrateApiMultimodalComputeEcgPpgTimingConstMeta,
+        argValues: [
+          ecgPeaks,
+          ecgSamplingRate,
+          ecgOffsetSec,
+          ppgPeaks,
+          ppgSamplingRate,
+          ppgOffsetSec,
+          config,
+        ],
+        apiImpl: this,
+      ),
+    );
+  }
+
+  TaskConstMeta get kCrateApiMultimodalComputeEcgPpgTimingConstMeta =>
+      const TaskConstMeta(
+        debugName: "compute_ecg_ppg_timing",
+        argNames: [
+          "ecgPeaks",
+          "ecgSamplingRate",
+          "ecgOffsetSec",
+          "ppgPeaks",
+          "ppgSamplingRate",
+          "ppgOffsetSec",
+          "config",
+        ],
+      );
+
+  @override
+  Future<RsaResult> crateApiMultimodalComputeRsa({
+    required List<int> rPeaks,
+    required double ecgSamplingRate,
+    required double ecgOffsetSec,
+    required List<RespirationCycle> rspCycles,
+    required double rspSamplingRate,
+    required double rspOffsetSec,
+  }) {
+    return handler.executeNormal(
+      NormalTask(
+        callFfi: (port_) {
+          final serializer = SseSerializer(generalizedFrbRustBinding);
+          sse_encode_list_CastedPrimitive_usize(rPeaks, serializer);
+          sse_encode_f_64(ecgSamplingRate, serializer);
+          sse_encode_f_64(ecgOffsetSec, serializer);
+          sse_encode_list_respiration_cycle(rspCycles, serializer);
+          sse_encode_f_64(rspSamplingRate, serializer);
+          sse_encode_f_64(rspOffsetSec, serializer);
+          pdeCallFfi(
+            generalizedFrbRustBinding,
+            serializer,
+            funcId: 6,
+            port: port_,
+          );
+        },
+        codec: SseCodec(
+          decodeSuccessData: sse_decode_rsa_result,
+          decodeErrorData: sse_decode_signal_error,
+        ),
+        constMeta: kCrateApiMultimodalComputeRsaConstMeta,
+        argValues: [
+          rPeaks,
+          ecgSamplingRate,
+          ecgOffsetSec,
+          rspCycles,
+          rspSamplingRate,
+          rspOffsetSec,
+        ],
+        apiImpl: this,
+      ),
+    );
+  }
+
+  TaskConstMeta get kCrateApiMultimodalComputeRsaConstMeta =>
+      const TaskConstMeta(
+        debugName: "compute_rsa",
+        argNames: [
+          "rPeaks",
+          "ecgSamplingRate",
+          "ecgOffsetSec",
+          "rspCycles",
+          "rspSamplingRate",
+          "rspOffsetSec",
+        ],
+      );
+
+  @override
+  Future<EcgPeakDetectionConfig> crateApiEcgEcgPeakDetectionConfigDefault() {
+    return handler.executeNormal(
+      NormalTask(
+        callFfi: (port_) {
+          final serializer = SseSerializer(generalizedFrbRustBinding);
+          pdeCallFfi(
+            generalizedFrbRustBinding,
+            serializer,
+            funcId: 7,
+            port: port_,
+          );
+        },
+        codec: SseCodec(
+          decodeSuccessData: sse_decode_ecg_peak_detection_config,
+          decodeErrorData: null,
+        ),
+        constMeta: kCrateApiEcgEcgPeakDetectionConfigDefaultConstMeta,
+        argValues: [],
+        apiImpl: this,
+      ),
+    );
+  }
+
+  TaskConstMeta get kCrateApiEcgEcgPeakDetectionConfigDefaultConstMeta =>
+      const TaskConstMeta(
+        debugName: "ecg_peak_detection_config_default",
+        argNames: [],
+      );
+
+  @override
+  Future<EdaDecompositionConfig> crateApiEdaEdaDecompositionConfigDefault() {
+    return handler.executeNormal(
+      NormalTask(
+        callFfi: (port_) {
+          final serializer = SseSerializer(generalizedFrbRustBinding);
+          pdeCallFfi(
+            generalizedFrbRustBinding,
+            serializer,
+            funcId: 8,
+            port: port_,
+          );
+        },
+        codec: SseCodec(
+          decodeSuccessData: sse_decode_eda_decomposition_config,
+          decodeErrorData: null,
+        ),
+        constMeta: kCrateApiEdaEdaDecompositionConfigDefaultConstMeta,
+        argValues: [],
+        apiImpl: this,
+      ),
+    );
+  }
+
+  TaskConstMeta get kCrateApiEdaEdaDecompositionConfigDefaultConstMeta =>
+      const TaskConstMeta(
+        debugName: "eda_decomposition_config_default",
+        argNames: [],
+      );
+
+  @override
+  Future<EdaPeakDetectionConfig> crateApiEdaEdaPeakDetectionConfigDefault() {
+    return handler.executeNormal(
+      NormalTask(
+        callFfi: (port_) {
+          final serializer = SseSerializer(generalizedFrbRustBinding);
+          pdeCallFfi(
+            generalizedFrbRustBinding,
+            serializer,
+            funcId: 9,
+            port: port_,
+          );
+        },
+        codec: SseCodec(
+          decodeSuccessData: sse_decode_eda_peak_detection_config,
+          decodeErrorData: null,
+        ),
+        constMeta: kCrateApiEdaEdaPeakDetectionConfigDefaultConstMeta,
+        argValues: [],
+        apiImpl: this,
+      ),
+    );
+  }
+
+  TaskConstMeta get kCrateApiEdaEdaPeakDetectionConfigDefaultConstMeta =>
+      const TaskConstMeta(
+        debugName: "eda_peak_detection_config_default",
+        argNames: [],
+      );
+
+  @override
+  Future<CardiacFeatures> crateApiFeaturesExtractCardiacFeatures({
+    required List<int> rPeaks,
+    required double samplingRate,
+    required double offsetSec,
+    required FeatureWindow window,
+  }) {
+    return handler.executeNormal(
+      NormalTask(
+        callFfi: (port_) {
+          final serializer = SseSerializer(generalizedFrbRustBinding);
+          sse_encode_list_CastedPrimitive_usize(rPeaks, serializer);
+          sse_encode_f_64(samplingRate, serializer);
+          sse_encode_f_64(offsetSec, serializer);
+          sse_encode_box_autoadd_feature_window(window, serializer);
+          pdeCallFfi(
+            generalizedFrbRustBinding,
+            serializer,
+            funcId: 10,
+            port: port_,
+          );
+        },
+        codec: SseCodec(
+          decodeSuccessData: sse_decode_cardiac_features,
+          decodeErrorData: sse_decode_signal_error,
+        ),
+        constMeta: kCrateApiFeaturesExtractCardiacFeaturesConstMeta,
+        argValues: [rPeaks, samplingRate, offsetSec, window],
+        apiImpl: this,
+      ),
+    );
+  }
+
+  TaskConstMeta get kCrateApiFeaturesExtractCardiacFeaturesConstMeta =>
+      const TaskConstMeta(
+        debugName: "extract_cardiac_features",
+        argNames: ["rPeaks", "samplingRate", "offsetSec", "window"],
+      );
+
+  @override
+  Future<EdaFeatures> crateApiFeaturesExtractEdaFeatures({
+    required List<double> tonic,
+    required List<double> phasic,
+    required List<EdaPeakEvent> events,
+    required double samplingRate,
+    required double offsetSec,
+    required FeatureWindow window,
+  }) {
+    return handler.executeNormal(
+      NormalTask(
+        callFfi: (port_) {
+          final serializer = SseSerializer(generalizedFrbRustBinding);
+          sse_encode_list_prim_f_64_loose(tonic, serializer);
+          sse_encode_list_prim_f_64_loose(phasic, serializer);
+          sse_encode_list_eda_peak_event(events, serializer);
+          sse_encode_f_64(samplingRate, serializer);
+          sse_encode_f_64(offsetSec, serializer);
+          sse_encode_box_autoadd_feature_window(window, serializer);
+          pdeCallFfi(
+            generalizedFrbRustBinding,
+            serializer,
+            funcId: 11,
+            port: port_,
+          );
+        },
+        codec: SseCodec(
+          decodeSuccessData: sse_decode_eda_features,
+          decodeErrorData: sse_decode_signal_error,
+        ),
+        constMeta: kCrateApiFeaturesExtractEdaFeaturesConstMeta,
+        argValues: [tonic, phasic, events, samplingRate, offsetSec, window],
+        apiImpl: this,
+      ),
+    );
+  }
+
+  TaskConstMeta get kCrateApiFeaturesExtractEdaFeaturesConstMeta =>
+      const TaskConstMeta(
+        debugName: "extract_eda_features",
+        argNames: [
+          "tonic",
+          "phasic",
+          "events",
+          "samplingRate",
+          "offsetSec",
+          "window",
+        ],
+      );
+
+  @override
+  Future<RespirationFeatures> crateApiFeaturesExtractRespirationFeatures({
+    required List<RespirationCycle> cycles,
+    required double samplingRate,
+    required double offsetSec,
+    required FeatureWindow window,
+  }) {
+    return handler.executeNormal(
+      NormalTask(
+        callFfi: (port_) {
+          final serializer = SseSerializer(generalizedFrbRustBinding);
+          sse_encode_list_respiration_cycle(cycles, serializer);
+          sse_encode_f_64(samplingRate, serializer);
+          sse_encode_f_64(offsetSec, serializer);
+          sse_encode_box_autoadd_feature_window(window, serializer);
+          pdeCallFfi(
+            generalizedFrbRustBinding,
+            serializer,
+            funcId: 12,
+            port: port_,
+          );
+        },
+        codec: SseCodec(
+          decodeSuccessData: sse_decode_respiration_features,
+          decodeErrorData: sse_decode_signal_error,
+        ),
+        constMeta: kCrateApiFeaturesExtractRespirationFeaturesConstMeta,
+        argValues: [cycles, samplingRate, offsetSec, window],
+        apiImpl: this,
+      ),
+    );
+  }
+
+  TaskConstMeta get kCrateApiFeaturesExtractRespirationFeaturesConstMeta =>
+      const TaskConstMeta(
+        debugName: "extract_respiration_features",
+        argNames: ["cycles", "samplingRate", "offsetSec", "window"],
+      );
+
+  @override
+  Future<RppgSignalResult> crateApiRppgExtractRppgFromOpticalSignal({
+    required List<double> timestampsSec,
+    required List<double> red,
+    required List<double> green,
+    required List<double> blue,
+    required List<int> validPixels,
+    RppgConfig? config,
+  }) {
+    return handler.executeNormal(
+      NormalTask(
+        callFfi: (port_) {
+          final serializer = SseSerializer(generalizedFrbRustBinding);
+          sse_encode_list_prim_f_64_loose(timestampsSec, serializer);
+          sse_encode_list_prim_f_64_loose(red, serializer);
+          sse_encode_list_prim_f_64_loose(green, serializer);
+          sse_encode_list_prim_f_64_loose(blue, serializer);
+          sse_encode_list_CastedPrimitive_usize(validPixels, serializer);
+          sse_encode_opt_box_autoadd_rppg_config(config, serializer);
+          pdeCallFfi(
+            generalizedFrbRustBinding,
+            serializer,
+            funcId: 13,
+            port: port_,
+          );
+        },
+        codec: SseCodec(
+          decodeSuccessData: sse_decode_rppg_signal_result,
+          decodeErrorData: sse_decode_signal_error,
+        ),
+        constMeta: kCrateApiRppgExtractRppgFromOpticalSignalConstMeta,
+        argValues: [timestampsSec, red, green, blue, validPixels, config],
+        apiImpl: this,
+      ),
+    );
+  }
+
+  TaskConstMeta get kCrateApiRppgExtractRppgFromOpticalSignalConstMeta =>
+      const TaskConstMeta(
+        debugName: "extract_rppg_from_optical_signal",
+        argNames: [
+          "timestampsSec",
+          "red",
+          "green",
+          "blue",
+          "validPixels",
+          "config",
+        ],
+      );
+
+  @override
+  Future<PeakDetectionConfig> crateApiSignalPeakDetectionConfigDefault() {
+    return handler.executeNormal(
+      NormalTask(
+        callFfi: (port_) {
+          final serializer = SseSerializer(generalizedFrbRustBinding);
+          pdeCallFfi(
+            generalizedFrbRustBinding,
+            serializer,
+            funcId: 14,
+            port: port_,
+          );
+        },
+        codec: SseCodec(
+          decodeSuccessData: sse_decode_peak_detection_config,
+          decodeErrorData: null,
+        ),
+        constMeta: kCrateApiSignalPeakDetectionConfigDefaultConstMeta,
+        argValues: [],
+        apiImpl: this,
+      ),
+    );
+  }
+
+  TaskConstMeta get kCrateApiSignalPeakDetectionConfigDefaultConstMeta =>
+      const TaskConstMeta(
+        debugName: "peak_detection_config_default",
+        argNames: [],
+      );
+
+  @override
+  Future<PpgPeakDetectionConfig> crateApiPpgPpgPeakDetectionConfigDefault() {
+    return handler.executeNormal(
+      NormalTask(
+        callFfi: (port_) {
+          final serializer = SseSerializer(generalizedFrbRustBinding);
+          pdeCallFfi(
+            generalizedFrbRustBinding,
+            serializer,
+            funcId: 15,
+            port: port_,
+          );
+        },
+        codec: SseCodec(
+          decodeSuccessData: sse_decode_ppg_peak_detection_config,
+          decodeErrorData: null,
+        ),
+        constMeta: kCrateApiPpgPpgPeakDetectionConfigDefaultConstMeta,
+        argValues: [],
+        apiImpl: this,
+      ),
+    );
+  }
+
+  TaskConstMeta get kCrateApiPpgPpgPeakDetectionConfigDefaultConstMeta =>
+      const TaskConstMeta(
+        debugName: "ppg_peak_detection_config_default",
+        argNames: [],
+      );
+
+  @override
+  Future<Float64List> crateApiEcgProcessEcgClean({
     required List<double> signal,
     required double samplingRate,
     required String method,
@@ -212,29 +919,68 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
           pdeCallFfi(
             generalizedFrbRustBinding,
             serializer,
-            funcId: 2,
+            funcId: 16,
             port: port_,
           );
         },
         codec: SseCodec(
           decodeSuccessData: sse_decode_list_prim_f_64_strict,
-          decodeErrorData: null,
+          decodeErrorData: sse_decode_signal_error,
         ),
-        constMeta: kCrateApiSimpleProcessEcgCleanConstMeta,
+        constMeta: kCrateApiEcgProcessEcgCleanConstMeta,
         argValues: [signal, samplingRate, method],
         apiImpl: this,
       ),
     );
   }
 
-  TaskConstMeta get kCrateApiSimpleProcessEcgCleanConstMeta =>
+  TaskConstMeta get kCrateApiEcgProcessEcgCleanConstMeta => const TaskConstMeta(
+    debugName: "process_ecg_clean",
+    argNames: ["signal", "samplingRate", "method"],
+  );
+
+  @override
+  Future<List<int>> crateApiEcgProcessEcgFindpeaks({
+    required List<double> signal,
+    required double samplingRate,
+    EcgPeakDetectionConfig? config,
+  }) {
+    return handler.executeNormal(
+      NormalTask(
+        callFfi: (port_) {
+          final serializer = SseSerializer(generalizedFrbRustBinding);
+          sse_encode_list_prim_f_64_loose(signal, serializer);
+          sse_encode_f_64(samplingRate, serializer);
+          sse_encode_opt_box_autoadd_ecg_peak_detection_config(
+            config,
+            serializer,
+          );
+          pdeCallFfi(
+            generalizedFrbRustBinding,
+            serializer,
+            funcId: 17,
+            port: port_,
+          );
+        },
+        codec: SseCodec(
+          decodeSuccessData: sse_decode_list_CastedPrimitive_usize,
+          decodeErrorData: sse_decode_signal_error,
+        ),
+        constMeta: kCrateApiEcgProcessEcgFindpeaksConstMeta,
+        argValues: [signal, samplingRate, config],
+        apiImpl: this,
+      ),
+    );
+  }
+
+  TaskConstMeta get kCrateApiEcgProcessEcgFindpeaksConstMeta =>
       const TaskConstMeta(
-        debugName: "process_ecg_clean",
-        argNames: ["signal", "samplingRate", "method"],
+        debugName: "process_ecg_findpeaks",
+        argNames: ["signal", "samplingRate", "config"],
       );
 
   @override
-  Future<List<bool>> crateApiSimpleProcessEcgFindpeaks({
+  Future<Uint8List> crateApiEcgProcessEcgFindpeaksMask({
     required List<double> signal,
     required double samplingRate,
   }) {
@@ -247,29 +993,29 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
           pdeCallFfi(
             generalizedFrbRustBinding,
             serializer,
-            funcId: 3,
+            funcId: 18,
             port: port_,
           );
         },
         codec: SseCodec(
-          decodeSuccessData: sse_decode_list_bool,
-          decodeErrorData: null,
+          decodeSuccessData: sse_decode_list_prim_u_8_strict,
+          decodeErrorData: sse_decode_signal_error,
         ),
-        constMeta: kCrateApiSimpleProcessEcgFindpeaksConstMeta,
+        constMeta: kCrateApiEcgProcessEcgFindpeaksMaskConstMeta,
         argValues: [signal, samplingRate],
         apiImpl: this,
       ),
     );
   }
 
-  TaskConstMeta get kCrateApiSimpleProcessEcgFindpeaksConstMeta =>
+  TaskConstMeta get kCrateApiEcgProcessEcgFindpeaksMaskConstMeta =>
       const TaskConstMeta(
-        debugName: "process_ecg_findpeaks",
+        debugName: "process_ecg_findpeaks_mask",
         argNames: ["signal", "samplingRate"],
       );
 
   @override
-  Future<Float64List> crateApiSimpleProcessEdaClean({
+  Future<Float64List> crateApiEdaProcessEdaClean({
     required List<double> signal,
     required double samplingRate,
   }) {
@@ -282,62 +1028,183 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
           pdeCallFfi(
             generalizedFrbRustBinding,
             serializer,
-            funcId: 4,
+            funcId: 19,
             port: port_,
           );
         },
         codec: SseCodec(
           decodeSuccessData: sse_decode_list_prim_f_64_strict,
-          decodeErrorData: null,
+          decodeErrorData: sse_decode_signal_error,
         ),
-        constMeta: kCrateApiSimpleProcessEdaCleanConstMeta,
+        constMeta: kCrateApiEdaProcessEdaCleanConstMeta,
         argValues: [signal, samplingRate],
         apiImpl: this,
       ),
     );
   }
 
-  TaskConstMeta get kCrateApiSimpleProcessEdaCleanConstMeta =>
+  TaskConstMeta get kCrateApiEdaProcessEdaCleanConstMeta => const TaskConstMeta(
+    debugName: "process_eda_clean",
+    argNames: ["signal", "samplingRate"],
+  );
+
+  @override
+  Future<EdaComponentSignals> crateApiEdaProcessEdaDecompose({
+    required List<double> signal,
+    required double samplingRate,
+    EdaDecompositionConfig? config,
+  }) {
+    return handler.executeNormal(
+      NormalTask(
+        callFfi: (port_) {
+          final serializer = SseSerializer(generalizedFrbRustBinding);
+          sse_encode_list_prim_f_64_loose(signal, serializer);
+          sse_encode_f_64(samplingRate, serializer);
+          sse_encode_opt_box_autoadd_eda_decomposition_config(
+            config,
+            serializer,
+          );
+          pdeCallFfi(
+            generalizedFrbRustBinding,
+            serializer,
+            funcId: 20,
+            port: port_,
+          );
+        },
+        codec: SseCodec(
+          decodeSuccessData: sse_decode_eda_component_signals,
+          decodeErrorData: sse_decode_signal_error,
+        ),
+        constMeta: kCrateApiEdaProcessEdaDecomposeConstMeta,
+        argValues: [signal, samplingRate, config],
+        apiImpl: this,
+      ),
+    );
+  }
+
+  TaskConstMeta get kCrateApiEdaProcessEdaDecomposeConstMeta =>
       const TaskConstMeta(
-        debugName: "process_eda_clean",
-        argNames: ["signal", "samplingRate"],
+        debugName: "process_eda_decompose",
+        argNames: ["signal", "samplingRate", "config"],
       );
 
   @override
-  Future<List<bool>> crateApiSimpleProcessEdaFindpeaks({
+  Future<List<int>> crateApiEdaProcessEdaFindpeaks({
     required List<double> phasicSignal,
+    required double samplingRate,
+    EdaPeakDetectionConfig? config,
   }) {
     return handler.executeNormal(
       NormalTask(
         callFfi: (port_) {
           final serializer = SseSerializer(generalizedFrbRustBinding);
           sse_encode_list_prim_f_64_loose(phasicSignal, serializer);
+          sse_encode_f_64(samplingRate, serializer);
+          sse_encode_opt_box_autoadd_eda_peak_detection_config(
+            config,
+            serializer,
+          );
           pdeCallFfi(
             generalizedFrbRustBinding,
             serializer,
-            funcId: 5,
+            funcId: 21,
             port: port_,
           );
         },
         codec: SseCodec(
-          decodeSuccessData: sse_decode_list_bool,
-          decodeErrorData: null,
+          decodeSuccessData: sse_decode_list_CastedPrimitive_usize,
+          decodeErrorData: sse_decode_signal_error,
         ),
-        constMeta: kCrateApiSimpleProcessEdaFindpeaksConstMeta,
-        argValues: [phasicSignal],
+        constMeta: kCrateApiEdaProcessEdaFindpeaksConstMeta,
+        argValues: [phasicSignal, samplingRate, config],
         apiImpl: this,
       ),
     );
   }
 
-  TaskConstMeta get kCrateApiSimpleProcessEdaFindpeaksConstMeta =>
+  TaskConstMeta get kCrateApiEdaProcessEdaFindpeaksConstMeta =>
       const TaskConstMeta(
         debugName: "process_eda_findpeaks",
-        argNames: ["phasicSignal"],
+        argNames: ["phasicSignal", "samplingRate", "config"],
       );
 
   @override
-  Future<Float64List> crateApiSimpleProcessEdaPhasic({
+  Future<List<EdaPeakEvent>> crateApiEdaProcessEdaFindpeaksEvents({
+    required List<double> phasicSignal,
+    required double samplingRate,
+    EdaPeakDetectionConfig? config,
+  }) {
+    return handler.executeNormal(
+      NormalTask(
+        callFfi: (port_) {
+          final serializer = SseSerializer(generalizedFrbRustBinding);
+          sse_encode_list_prim_f_64_loose(phasicSignal, serializer);
+          sse_encode_f_64(samplingRate, serializer);
+          sse_encode_opt_box_autoadd_eda_peak_detection_config(
+            config,
+            serializer,
+          );
+          pdeCallFfi(
+            generalizedFrbRustBinding,
+            serializer,
+            funcId: 22,
+            port: port_,
+          );
+        },
+        codec: SseCodec(
+          decodeSuccessData: sse_decode_list_eda_peak_event,
+          decodeErrorData: sse_decode_signal_error,
+        ),
+        constMeta: kCrateApiEdaProcessEdaFindpeaksEventsConstMeta,
+        argValues: [phasicSignal, samplingRate, config],
+        apiImpl: this,
+      ),
+    );
+  }
+
+  TaskConstMeta get kCrateApiEdaProcessEdaFindpeaksEventsConstMeta =>
+      const TaskConstMeta(
+        debugName: "process_eda_findpeaks_events",
+        argNames: ["phasicSignal", "samplingRate", "config"],
+      );
+
+  @override
+  Future<Uint8List> crateApiEdaProcessEdaFindpeaksMask({
+    required List<double> phasicSignal,
+    required double samplingRate,
+  }) {
+    return handler.executeNormal(
+      NormalTask(
+        callFfi: (port_) {
+          final serializer = SseSerializer(generalizedFrbRustBinding);
+          sse_encode_list_prim_f_64_loose(phasicSignal, serializer);
+          sse_encode_f_64(samplingRate, serializer);
+          pdeCallFfi(
+            generalizedFrbRustBinding,
+            serializer,
+            funcId: 23,
+            port: port_,
+          );
+        },
+        codec: SseCodec(
+          decodeSuccessData: sse_decode_list_prim_u_8_strict,
+          decodeErrorData: sse_decode_signal_error,
+        ),
+        constMeta: kCrateApiEdaProcessEdaFindpeaksMaskConstMeta,
+        argValues: [phasicSignal, samplingRate],
+        apiImpl: this,
+      ),
+    );
+  }
+
+  TaskConstMeta get kCrateApiEdaProcessEdaFindpeaksMaskConstMeta =>
+      const TaskConstMeta(
+        debugName: "process_eda_findpeaks_mask",
+        argNames: ["phasicSignal", "samplingRate"],
+      );
+
+  @override
+  Future<Float64List> crateApiEdaProcessEdaPhasic({
     required List<double> signal,
     required double samplingRate,
   }) {
@@ -350,29 +1217,29 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
           pdeCallFfi(
             generalizedFrbRustBinding,
             serializer,
-            funcId: 6,
+            funcId: 24,
             port: port_,
           );
         },
         codec: SseCodec(
           decodeSuccessData: sse_decode_list_prim_f_64_strict,
-          decodeErrorData: null,
+          decodeErrorData: sse_decode_signal_error,
         ),
-        constMeta: kCrateApiSimpleProcessEdaPhasicConstMeta,
+        constMeta: kCrateApiEdaProcessEdaPhasicConstMeta,
         argValues: [signal, samplingRate],
         apiImpl: this,
       ),
     );
   }
 
-  TaskConstMeta get kCrateApiSimpleProcessEdaPhasicConstMeta =>
+  TaskConstMeta get kCrateApiEdaProcessEdaPhasicConstMeta =>
       const TaskConstMeta(
         debugName: "process_eda_phasic",
         argNames: ["signal", "samplingRate"],
       );
 
   @override
-  Future<double?> crateApiSimpleProcessHrvMeanNn({
+  Future<double> crateApiHrvProcessHrvMeanNn({
     required List<double> intervals,
   }) {
     return handler.executeNormal(
@@ -383,31 +1250,29 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
           pdeCallFfi(
             generalizedFrbRustBinding,
             serializer,
-            funcId: 7,
+            funcId: 25,
             port: port_,
           );
         },
         codec: SseCodec(
-          decodeSuccessData: sse_decode_opt_box_autoadd_f_64,
-          decodeErrorData: null,
+          decodeSuccessData: sse_decode_f_64,
+          decodeErrorData: sse_decode_signal_error,
         ),
-        constMeta: kCrateApiSimpleProcessHrvMeanNnConstMeta,
+        constMeta: kCrateApiHrvProcessHrvMeanNnConstMeta,
         argValues: [intervals],
         apiImpl: this,
       ),
     );
   }
 
-  TaskConstMeta get kCrateApiSimpleProcessHrvMeanNnConstMeta =>
+  TaskConstMeta get kCrateApiHrvProcessHrvMeanNnConstMeta =>
       const TaskConstMeta(
         debugName: "process_hrv_mean_nn",
         argNames: ["intervals"],
       );
 
   @override
-  Future<double?> crateApiSimpleProcessHrvRmssd({
-    required List<double> intervals,
-  }) {
+  Future<double> crateApiHrvProcessHrvPnn50({required List<double> intervals}) {
     return handler.executeNormal(
       NormalTask(
         callFfi: (port_) {
@@ -416,64 +1281,125 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
           pdeCallFfi(
             generalizedFrbRustBinding,
             serializer,
-            funcId: 8,
+            funcId: 26,
             port: port_,
           );
         },
         codec: SseCodec(
-          decodeSuccessData: sse_decode_opt_box_autoadd_f_64,
-          decodeErrorData: null,
+          decodeSuccessData: sse_decode_f_64,
+          decodeErrorData: sse_decode_signal_error,
         ),
-        constMeta: kCrateApiSimpleProcessHrvRmssdConstMeta,
+        constMeta: kCrateApiHrvProcessHrvPnn50ConstMeta,
         argValues: [intervals],
         apiImpl: this,
       ),
     );
   }
 
-  TaskConstMeta get kCrateApiSimpleProcessHrvRmssdConstMeta =>
-      const TaskConstMeta(
-        debugName: "process_hrv_rmssd",
-        argNames: ["intervals"],
-      );
+  TaskConstMeta get kCrateApiHrvProcessHrvPnn50ConstMeta => const TaskConstMeta(
+    debugName: "process_hrv_pnn50",
+    argNames: ["intervals"],
+  );
 
   @override
-  Future<Float64List> crateApiSimpleProcessPeaksToIntervals({
-    required List<bool> peaks,
-    required double samplingRate,
-  }) {
+  Future<double> crateApiHrvProcessHrvRmssd({required List<double> intervals}) {
     return handler.executeNormal(
       NormalTask(
         callFfi: (port_) {
           final serializer = SseSerializer(generalizedFrbRustBinding);
-          sse_encode_list_bool(peaks, serializer);
-          sse_encode_f_64(samplingRate, serializer);
+          sse_encode_list_prim_f_64_loose(intervals, serializer);
           pdeCallFfi(
             generalizedFrbRustBinding,
             serializer,
-            funcId: 9,
+            funcId: 27,
             port: port_,
           );
         },
         codec: SseCodec(
-          decodeSuccessData: sse_decode_list_prim_f_64_strict,
-          decodeErrorData: null,
+          decodeSuccessData: sse_decode_f_64,
+          decodeErrorData: sse_decode_signal_error,
         ),
-        constMeta: kCrateApiSimpleProcessPeaksToIntervalsConstMeta,
-        argValues: [peaks, samplingRate],
+        constMeta: kCrateApiHrvProcessHrvRmssdConstMeta,
+        argValues: [intervals],
         apiImpl: this,
       ),
     );
   }
 
-  TaskConstMeta get kCrateApiSimpleProcessPeaksToIntervalsConstMeta =>
+  TaskConstMeta get kCrateApiHrvProcessHrvRmssdConstMeta => const TaskConstMeta(
+    debugName: "process_hrv_rmssd",
+    argNames: ["intervals"],
+  );
+
+  @override
+  Future<double> crateApiHrvProcessHrvSdnn({required List<double> intervals}) {
+    return handler.executeNormal(
+      NormalTask(
+        callFfi: (port_) {
+          final serializer = SseSerializer(generalizedFrbRustBinding);
+          sse_encode_list_prim_f_64_loose(intervals, serializer);
+          pdeCallFfi(
+            generalizedFrbRustBinding,
+            serializer,
+            funcId: 28,
+            port: port_,
+          );
+        },
+        codec: SseCodec(
+          decodeSuccessData: sse_decode_f_64,
+          decodeErrorData: sse_decode_signal_error,
+        ),
+        constMeta: kCrateApiHrvProcessHrvSdnnConstMeta,
+        argValues: [intervals],
+        apiImpl: this,
+      ),
+    );
+  }
+
+  TaskConstMeta get kCrateApiHrvProcessHrvSdnnConstMeta => const TaskConstMeta(
+    debugName: "process_hrv_sdnn",
+    argNames: ["intervals"],
+  );
+
+  @override
+  Future<Float64List> crateApiHrvProcessPeaksToIntervals({
+    required List<int> peaks,
+    required double samplingRate,
+    required int totalSamples,
+  }) {
+    return handler.executeNormal(
+      NormalTask(
+        callFfi: (port_) {
+          final serializer = SseSerializer(generalizedFrbRustBinding);
+          sse_encode_list_CastedPrimitive_usize(peaks, serializer);
+          sse_encode_f_64(samplingRate, serializer);
+          sse_encode_CastedPrimitive_usize(totalSamples, serializer);
+          pdeCallFfi(
+            generalizedFrbRustBinding,
+            serializer,
+            funcId: 29,
+            port: port_,
+          );
+        },
+        codec: SseCodec(
+          decodeSuccessData: sse_decode_list_prim_f_64_strict,
+          decodeErrorData: sse_decode_signal_error,
+        ),
+        constMeta: kCrateApiHrvProcessPeaksToIntervalsConstMeta,
+        argValues: [peaks, samplingRate, totalSamples],
+        apiImpl: this,
+      ),
+    );
+  }
+
+  TaskConstMeta get kCrateApiHrvProcessPeaksToIntervalsConstMeta =>
       const TaskConstMeta(
         debugName: "process_peaks_to_intervals",
-        argNames: ["peaks", "samplingRate"],
+        argNames: ["peaks", "samplingRate", "totalSamples"],
       );
 
   @override
-  Future<Float64List> crateApiSimpleProcessPpgClean({
+  Future<Float64List> crateApiPpgProcessPpgClean({
     required List<double> signal,
     required double samplingRate,
   }) {
@@ -486,31 +1412,31 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
           pdeCallFfi(
             generalizedFrbRustBinding,
             serializer,
-            funcId: 10,
+            funcId: 30,
             port: port_,
           );
         },
         codec: SseCodec(
           decodeSuccessData: sse_decode_list_prim_f_64_strict,
-          decodeErrorData: null,
+          decodeErrorData: sse_decode_signal_error,
         ),
-        constMeta: kCrateApiSimpleProcessPpgCleanConstMeta,
+        constMeta: kCrateApiPpgProcessPpgCleanConstMeta,
         argValues: [signal, samplingRate],
         apiImpl: this,
       ),
     );
   }
 
-  TaskConstMeta get kCrateApiSimpleProcessPpgCleanConstMeta =>
-      const TaskConstMeta(
-        debugName: "process_ppg_clean",
-        argNames: ["signal", "samplingRate"],
-      );
+  TaskConstMeta get kCrateApiPpgProcessPpgCleanConstMeta => const TaskConstMeta(
+    debugName: "process_ppg_clean",
+    argNames: ["signal", "samplingRate"],
+  );
 
   @override
-  Future<List<bool>> crateApiSimpleProcessPpgFindpeaks({
+  Future<List<int>> crateApiPpgProcessPpgFindpeaks({
     required List<double> signal,
     required double samplingRate,
+    PpgPeakDetectionConfig? config,
   }) {
     return handler.executeNormal(
       NormalTask(
@@ -518,32 +1444,36 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
           final serializer = SseSerializer(generalizedFrbRustBinding);
           sse_encode_list_prim_f_64_loose(signal, serializer);
           sse_encode_f_64(samplingRate, serializer);
+          sse_encode_opt_box_autoadd_ppg_peak_detection_config(
+            config,
+            serializer,
+          );
           pdeCallFfi(
             generalizedFrbRustBinding,
             serializer,
-            funcId: 11,
+            funcId: 31,
             port: port_,
           );
         },
         codec: SseCodec(
-          decodeSuccessData: sse_decode_list_bool,
-          decodeErrorData: null,
+          decodeSuccessData: sse_decode_list_CastedPrimitive_usize,
+          decodeErrorData: sse_decode_signal_error,
         ),
-        constMeta: kCrateApiSimpleProcessPpgFindpeaksConstMeta,
-        argValues: [signal, samplingRate],
+        constMeta: kCrateApiPpgProcessPpgFindpeaksConstMeta,
+        argValues: [signal, samplingRate, config],
         apiImpl: this,
       ),
     );
   }
 
-  TaskConstMeta get kCrateApiSimpleProcessPpgFindpeaksConstMeta =>
+  TaskConstMeta get kCrateApiPpgProcessPpgFindpeaksConstMeta =>
       const TaskConstMeta(
         debugName: "process_ppg_findpeaks",
-        argNames: ["signal", "samplingRate"],
+        argNames: ["signal", "samplingRate", "config"],
       );
 
   @override
-  Future<Float64List> crateApiSimpleProcessRspClean({
+  Future<Uint8List> crateApiPpgProcessPpgFindpeaksMask({
     required List<double> signal,
     required double samplingRate,
   }) {
@@ -556,64 +1486,212 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
           pdeCallFfi(
             generalizedFrbRustBinding,
             serializer,
-            funcId: 12,
+            funcId: 32,
             port: port_,
           );
         },
         codec: SseCodec(
-          decodeSuccessData: sse_decode_list_prim_f_64_strict,
-          decodeErrorData: null,
+          decodeSuccessData: sse_decode_list_prim_u_8_strict,
+          decodeErrorData: sse_decode_signal_error,
         ),
-        constMeta: kCrateApiSimpleProcessRspCleanConstMeta,
+        constMeta: kCrateApiPpgProcessPpgFindpeaksMaskConstMeta,
         argValues: [signal, samplingRate],
         apiImpl: this,
       ),
     );
   }
 
-  TaskConstMeta get kCrateApiSimpleProcessRspCleanConstMeta =>
+  TaskConstMeta get kCrateApiPpgProcessPpgFindpeaksMaskConstMeta =>
       const TaskConstMeta(
-        debugName: "process_rsp_clean",
+        debugName: "process_ppg_findpeaks_mask",
         argNames: ["signal", "samplingRate"],
       );
 
   @override
-  Future<List<bool>> crateApiSimpleProcessRspFindpeaks({
+  Future<Float64List> crateApiRspProcessRspClean({
+    required List<double> signal,
+    required double samplingRate,
+  }) {
+    return handler.executeNormal(
+      NormalTask(
+        callFfi: (port_) {
+          final serializer = SseSerializer(generalizedFrbRustBinding);
+          sse_encode_list_prim_f_64_loose(signal, serializer);
+          sse_encode_f_64(samplingRate, serializer);
+          pdeCallFfi(
+            generalizedFrbRustBinding,
+            serializer,
+            funcId: 33,
+            port: port_,
+          );
+        },
+        codec: SseCodec(
+          decodeSuccessData: sse_decode_list_prim_f_64_strict,
+          decodeErrorData: sse_decode_signal_error,
+        ),
+        constMeta: kCrateApiRspProcessRspCleanConstMeta,
+        argValues: [signal, samplingRate],
+        apiImpl: this,
+      ),
+    );
+  }
+
+  TaskConstMeta get kCrateApiRspProcessRspCleanConstMeta => const TaskConstMeta(
+    debugName: "process_rsp_clean",
+    argNames: ["signal", "samplingRate"],
+  );
+
+  @override
+  Future<List<RespirationCycle>> crateApiRspProcessRspCycles({
     required List<double> cleanedSignal,
+    required double samplingRate,
+    RspProcessingConfig? config,
   }) {
     return handler.executeNormal(
       NormalTask(
         callFfi: (port_) {
           final serializer = SseSerializer(generalizedFrbRustBinding);
           sse_encode_list_prim_f_64_loose(cleanedSignal, serializer);
+          sse_encode_f_64(samplingRate, serializer);
+          sse_encode_opt_box_autoadd_rsp_processing_config(config, serializer);
           pdeCallFfi(
             generalizedFrbRustBinding,
             serializer,
-            funcId: 13,
+            funcId: 34,
             port: port_,
           );
         },
         codec: SseCodec(
-          decodeSuccessData: sse_decode_list_bool,
-          decodeErrorData: null,
+          decodeSuccessData: sse_decode_list_respiration_cycle,
+          decodeErrorData: sse_decode_signal_error,
         ),
-        constMeta: kCrateApiSimpleProcessRspFindpeaksConstMeta,
-        argValues: [cleanedSignal],
+        constMeta: kCrateApiRspProcessRspCyclesConstMeta,
+        argValues: [cleanedSignal, samplingRate, config],
         apiImpl: this,
       ),
     );
   }
 
-  TaskConstMeta get kCrateApiSimpleProcessRspFindpeaksConstMeta =>
+  TaskConstMeta get kCrateApiRspProcessRspCyclesConstMeta =>
       const TaskConstMeta(
-        debugName: "process_rsp_findpeaks",
-        argNames: ["cleanedSignal"],
+        debugName: "process_rsp_cycles",
+        argNames: ["cleanedSignal", "samplingRate", "config"],
       );
 
   @override
-  Future<double> crateApiSimpleProcessSampleEntropy({
+  Future<List<int>> crateApiRspProcessRspFindpeaks({
+    required List<double> cleanedSignal,
+    required double samplingRate,
+    RspProcessingConfig? config,
+  }) {
+    return handler.executeNormal(
+      NormalTask(
+        callFfi: (port_) {
+          final serializer = SseSerializer(generalizedFrbRustBinding);
+          sse_encode_list_prim_f_64_loose(cleanedSignal, serializer);
+          sse_encode_f_64(samplingRate, serializer);
+          sse_encode_opt_box_autoadd_rsp_processing_config(config, serializer);
+          pdeCallFfi(
+            generalizedFrbRustBinding,
+            serializer,
+            funcId: 35,
+            port: port_,
+          );
+        },
+        codec: SseCodec(
+          decodeSuccessData: sse_decode_list_CastedPrimitive_usize,
+          decodeErrorData: sse_decode_signal_error,
+        ),
+        constMeta: kCrateApiRspProcessRspFindpeaksConstMeta,
+        argValues: [cleanedSignal, samplingRate, config],
+        apiImpl: this,
+      ),
+    );
+  }
+
+  TaskConstMeta get kCrateApiRspProcessRspFindpeaksConstMeta =>
+      const TaskConstMeta(
+        debugName: "process_rsp_findpeaks",
+        argNames: ["cleanedSignal", "samplingRate", "config"],
+      );
+
+  @override
+  Future<Uint8List> crateApiRspProcessRspFindpeaksMask({
+    required List<double> cleanedSignal,
+    required double samplingRate,
+    RspProcessingConfig? config,
+  }) {
+    return handler.executeNormal(
+      NormalTask(
+        callFfi: (port_) {
+          final serializer = SseSerializer(generalizedFrbRustBinding);
+          sse_encode_list_prim_f_64_loose(cleanedSignal, serializer);
+          sse_encode_f_64(samplingRate, serializer);
+          sse_encode_opt_box_autoadd_rsp_processing_config(config, serializer);
+          pdeCallFfi(
+            generalizedFrbRustBinding,
+            serializer,
+            funcId: 36,
+            port: port_,
+          );
+        },
+        codec: SseCodec(
+          decodeSuccessData: sse_decode_list_prim_u_8_strict,
+          decodeErrorData: sse_decode_signal_error,
+        ),
+        constMeta: kCrateApiRspProcessRspFindpeaksMaskConstMeta,
+        argValues: [cleanedSignal, samplingRate, config],
+        apiImpl: this,
+      ),
+    );
+  }
+
+  TaskConstMeta get kCrateApiRspProcessRspFindpeaksMaskConstMeta =>
+      const TaskConstMeta(
+        debugName: "process_rsp_findpeaks_mask",
+        argNames: ["cleanedSignal", "samplingRate", "config"],
+      );
+
+  @override
+  Future<Float64List> crateApiRspProcessRspRate({
+    required List<double> cleanedSignal,
+    required double samplingRate,
+    RspProcessingConfig? config,
+  }) {
+    return handler.executeNormal(
+      NormalTask(
+        callFfi: (port_) {
+          final serializer = SseSerializer(generalizedFrbRustBinding);
+          sse_encode_list_prim_f_64_loose(cleanedSignal, serializer);
+          sse_encode_f_64(samplingRate, serializer);
+          sse_encode_opt_box_autoadd_rsp_processing_config(config, serializer);
+          pdeCallFfi(
+            generalizedFrbRustBinding,
+            serializer,
+            funcId: 37,
+            port: port_,
+          );
+        },
+        codec: SseCodec(
+          decodeSuccessData: sse_decode_list_prim_f_64_strict,
+          decodeErrorData: sse_decode_signal_error,
+        ),
+        constMeta: kCrateApiRspProcessRspRateConstMeta,
+        argValues: [cleanedSignal, samplingRate, config],
+        apiImpl: this,
+      ),
+    );
+  }
+
+  TaskConstMeta get kCrateApiRspProcessRspRateConstMeta => const TaskConstMeta(
+    debugName: "process_rsp_rate",
+    argNames: ["cleanedSignal", "samplingRate", "config"],
+  );
+
+  @override
+  Future<double> crateApiComplexityProcessSampleEntropy({
     required List<double> signal,
-    required BigInt m,
+    required int m,
     required double r,
   }) {
     return handler.executeNormal(
@@ -621,39 +1699,39 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
         callFfi: (port_) {
           final serializer = SseSerializer(generalizedFrbRustBinding);
           sse_encode_list_prim_f_64_loose(signal, serializer);
-          sse_encode_usize(m, serializer);
+          sse_encode_CastedPrimitive_usize(m, serializer);
           sse_encode_f_64(r, serializer);
           pdeCallFfi(
             generalizedFrbRustBinding,
             serializer,
-            funcId: 14,
+            funcId: 38,
             port: port_,
           );
         },
         codec: SseCodec(
           decodeSuccessData: sse_decode_f_64,
-          decodeErrorData: null,
+          decodeErrorData: sse_decode_signal_error,
         ),
-        constMeta: kCrateApiSimpleProcessSampleEntropyConstMeta,
+        constMeta: kCrateApiComplexityProcessSampleEntropyConstMeta,
         argValues: [signal, m, r],
         apiImpl: this,
       ),
     );
   }
 
-  TaskConstMeta get kCrateApiSimpleProcessSampleEntropyConstMeta =>
+  TaskConstMeta get kCrateApiComplexityProcessSampleEntropyConstMeta =>
       const TaskConstMeta(
         debugName: "process_sample_entropy",
         argNames: ["signal", "m", "r"],
       );
 
   @override
-  Future<Float64List> crateApiSimpleProcessSignalFilter({
+  Future<Float64List> crateApiSignalProcessSignalFilter({
     required List<double> signal,
     required double samplingRate,
     double? lowcut,
     double? highcut,
-    required BigInt order,
+    required int order,
   }) {
     return handler.executeNormal(
       NormalTask(
@@ -663,33 +1741,33 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
           sse_encode_f_64(samplingRate, serializer);
           sse_encode_opt_box_autoadd_f_64(lowcut, serializer);
           sse_encode_opt_box_autoadd_f_64(highcut, serializer);
-          sse_encode_usize(order, serializer);
+          sse_encode_CastedPrimitive_usize(order, serializer);
           pdeCallFfi(
             generalizedFrbRustBinding,
             serializer,
-            funcId: 15,
+            funcId: 39,
             port: port_,
           );
         },
         codec: SseCodec(
           decodeSuccessData: sse_decode_list_prim_f_64_strict,
-          decodeErrorData: null,
+          decodeErrorData: sse_decode_signal_error,
         ),
-        constMeta: kCrateApiSimpleProcessSignalFilterConstMeta,
+        constMeta: kCrateApiSignalProcessSignalFilterConstMeta,
         argValues: [signal, samplingRate, lowcut, highcut, order],
         apiImpl: this,
       ),
     );
   }
 
-  TaskConstMeta get kCrateApiSimpleProcessSignalFilterConstMeta =>
+  TaskConstMeta get kCrateApiSignalProcessSignalFilterConstMeta =>
       const TaskConstMeta(
         debugName: "process_signal_filter",
         argNames: ["signal", "samplingRate", "lowcut", "highcut", "order"],
       );
 
   @override
-  Future<List<bool>> crateApiSimpleProcessSignalFindpeaks({
+  Future<List<int>> crateApiSignalProcessSignalFindpeaks({
     required List<double> signal,
   }) {
     return handler.executeNormal(
@@ -700,66 +1778,276 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
           pdeCallFfi(
             generalizedFrbRustBinding,
             serializer,
-            funcId: 16,
+            funcId: 40,
             port: port_,
           );
         },
         codec: SseCodec(
-          decodeSuccessData: sse_decode_list_bool,
-          decodeErrorData: null,
+          decodeSuccessData: sse_decode_list_CastedPrimitive_usize,
+          decodeErrorData: sse_decode_signal_error,
         ),
-        constMeta: kCrateApiSimpleProcessSignalFindpeaksConstMeta,
+        constMeta: kCrateApiSignalProcessSignalFindpeaksConstMeta,
         argValues: [signal],
         apiImpl: this,
       ),
     );
   }
 
-  TaskConstMeta get kCrateApiSimpleProcessSignalFindpeaksConstMeta =>
+  TaskConstMeta get kCrateApiSignalProcessSignalFindpeaksConstMeta =>
       const TaskConstMeta(
         debugName: "process_signal_findpeaks",
         argNames: ["signal"],
       );
 
   @override
-  Future<Float64List> crateApiSimpleProcessSignalSmoothMovingAverage({
+  Future<List<int>> crateApiSignalProcessSignalFindpeaksConfig({
     required List<double> signal,
-    required BigInt windowSize,
+    required PeakDetectionConfig config,
   }) {
     return handler.executeNormal(
       NormalTask(
         callFfi: (port_) {
           final serializer = SseSerializer(generalizedFrbRustBinding);
           sse_encode_list_prim_f_64_loose(signal, serializer);
-          sse_encode_usize(windowSize, serializer);
+          sse_encode_box_autoadd_peak_detection_config(config, serializer);
           pdeCallFfi(
             generalizedFrbRustBinding,
             serializer,
-            funcId: 17,
+            funcId: 41,
+            port: port_,
+          );
+        },
+        codec: SseCodec(
+          decodeSuccessData: sse_decode_list_CastedPrimitive_usize,
+          decodeErrorData: sse_decode_signal_error,
+        ),
+        constMeta: kCrateApiSignalProcessSignalFindpeaksConfigConstMeta,
+        argValues: [signal, config],
+        apiImpl: this,
+      ),
+    );
+  }
+
+  TaskConstMeta get kCrateApiSignalProcessSignalFindpeaksConfigConstMeta =>
+      const TaskConstMeta(
+        debugName: "process_signal_findpeaks_config",
+        argNames: ["signal", "config"],
+      );
+
+  @override
+  Future<Float64List> crateApiSignalProcessSignalSmoothMovingAverage({
+    required List<double> signal,
+    required int windowSize,
+  }) {
+    return handler.executeNormal(
+      NormalTask(
+        callFfi: (port_) {
+          final serializer = SseSerializer(generalizedFrbRustBinding);
+          sse_encode_list_prim_f_64_loose(signal, serializer);
+          sse_encode_CastedPrimitive_usize(windowSize, serializer);
+          pdeCallFfi(
+            generalizedFrbRustBinding,
+            serializer,
+            funcId: 42,
             port: port_,
           );
         },
         codec: SseCodec(
           decodeSuccessData: sse_decode_list_prim_f_64_strict,
-          decodeErrorData: null,
+          decodeErrorData: sse_decode_signal_error,
         ),
-        constMeta: kCrateApiSimpleProcessSignalSmoothMovingAverageConstMeta,
+        constMeta: kCrateApiSignalProcessSignalSmoothMovingAverageConstMeta,
         argValues: [signal, windowSize],
         apiImpl: this,
       ),
     );
   }
 
-  TaskConstMeta get kCrateApiSimpleProcessSignalSmoothMovingAverageConstMeta =>
+  TaskConstMeta get kCrateApiSignalProcessSignalSmoothMovingAverageConstMeta =>
       const TaskConstMeta(
         debugName: "process_signal_smooth_moving_average",
         argNames: ["signal", "windowSize"],
       );
 
+  @override
+  Future<PulseTimingConfig> crateApiMultimodalPulseTimingConfigDefault() {
+    return handler.executeNormal(
+      NormalTask(
+        callFfi: (port_) {
+          final serializer = SseSerializer(generalizedFrbRustBinding);
+          pdeCallFfi(
+            generalizedFrbRustBinding,
+            serializer,
+            funcId: 43,
+            port: port_,
+          );
+        },
+        codec: SseCodec(
+          decodeSuccessData: sse_decode_pulse_timing_config,
+          decodeErrorData: null,
+        ),
+        constMeta: kCrateApiMultimodalPulseTimingConfigDefaultConstMeta,
+        argValues: [],
+        apiImpl: this,
+      ),
+    );
+  }
+
+  TaskConstMeta get kCrateApiMultimodalPulseTimingConfigDefaultConstMeta =>
+      const TaskConstMeta(
+        debugName: "pulse_timing_config_default",
+        argNames: [],
+      );
+
+  @override
+  Future<RppgAlgorithmId> crateApiRppgRppgAlgorithmIdDefault() {
+    return handler.executeNormal(
+      NormalTask(
+        callFfi: (port_) {
+          final serializer = SseSerializer(generalizedFrbRustBinding);
+          pdeCallFfi(
+            generalizedFrbRustBinding,
+            serializer,
+            funcId: 44,
+            port: port_,
+          );
+        },
+        codec: SseCodec(
+          decodeSuccessData: sse_decode_rppg_algorithm_id,
+          decodeErrorData: null,
+        ),
+        constMeta: kCrateApiRppgRppgAlgorithmIdDefaultConstMeta,
+        argValues: [],
+        apiImpl: this,
+      ),
+    );
+  }
+
+  TaskConstMeta get kCrateApiRppgRppgAlgorithmIdDefaultConstMeta =>
+      const TaskConstMeta(debugName: "rppg_algorithm_id_default", argNames: []);
+
+  @override
+  Future<RppgConfig> crateApiRppgRppgConfigDefault() {
+    return handler.executeNormal(
+      NormalTask(
+        callFfi: (port_) {
+          final serializer = SseSerializer(generalizedFrbRustBinding);
+          pdeCallFfi(
+            generalizedFrbRustBinding,
+            serializer,
+            funcId: 45,
+            port: port_,
+          );
+        },
+        codec: SseCodec(
+          decodeSuccessData: sse_decode_rppg_config,
+          decodeErrorData: null,
+        ),
+        constMeta: kCrateApiRppgRppgConfigDefaultConstMeta,
+        argValues: [],
+        apiImpl: this,
+      ),
+    );
+  }
+
+  TaskConstMeta get kCrateApiRppgRppgConfigDefaultConstMeta =>
+      const TaskConstMeta(debugName: "rppg_config_default", argNames: []);
+
+  @override
+  Future<RspProcessingConfig> crateApiRspRspProcessingConfigDefault() {
+    return handler.executeNormal(
+      NormalTask(
+        callFfi: (port_) {
+          final serializer = SseSerializer(generalizedFrbRustBinding);
+          pdeCallFfi(
+            generalizedFrbRustBinding,
+            serializer,
+            funcId: 46,
+            port: port_,
+          );
+        },
+        codec: SseCodec(
+          decodeSuccessData: sse_decode_rsp_processing_config,
+          decodeErrorData: null,
+        ),
+        constMeta: kCrateApiRspRspProcessingConfigDefaultConstMeta,
+        argValues: [],
+        apiImpl: this,
+      ),
+    );
+  }
+
+  TaskConstMeta get kCrateApiRspRspProcessingConfigDefaultConstMeta =>
+      const TaskConstMeta(
+        debugName: "rsp_processing_config_default",
+        argNames: [],
+      );
+
+  RustArcIncrementStrongCountFnType
+  get rust_arc_increment_strong_count_AutonomicEstimator => wire
+      .rust_arc_increment_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerAutonomicEstimator;
+
+  RustArcDecrementStrongCountFnType
+  get rust_arc_decrement_strong_count_AutonomicEstimator => wire
+      .rust_arc_decrement_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerAutonomicEstimator;
+
+  @protected
+  AutonomicEstimator
+  dco_decode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerAutonomicEstimator(
+    dynamic raw,
+  ) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    return AutonomicEstimatorImpl.frbInternalDcoDecode(raw as List<dynamic>);
+  }
+
+  @protected
+  AutonomicEstimator
+  dco_decode_Auto_Ref_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerAutonomicEstimator(
+    dynamic raw,
+  ) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    return AutonomicEstimatorImpl.frbInternalDcoDecode(raw as List<dynamic>);
+  }
+
+  @protected
+  int dco_decode_CastedPrimitive_usize(dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    throw UnimplementedError(
+      'Not implemented in this codec, please use the other one',
+    );
+  }
+
+  @protected
+  AutonomicEstimator
+  dco_decode_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerAutonomicEstimator(
+    dynamic raw,
+  ) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    return AutonomicEstimatorImpl.frbInternalDcoDecode(raw as List<dynamic>);
+  }
+
   @protected
   String dco_decode_String(dynamic raw) {
     // Codec=Dco (DartCObject based), see doc to use other codecs
     return raw as String;
+  }
+
+  @protected
+  AutonomicState dco_decode_autonomic_state(dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    final arr = raw as List<dynamic>;
+    if (arr.length != 8)
+      throw Exception('unexpected arr length: expect 8 but see ${arr.length}');
+    return AutonomicState(
+      timestamp: dco_decode_f_64(arr[0]),
+      durationSec: dco_decode_f_64(arr[1]),
+      cardiac: dco_decode_cardiac_state(arr[2]),
+      electrodermal: dco_decode_electrodermal_state(arr[3]),
+      respiratory: dco_decode_respiratory_state(arr[4]),
+      coupling: dco_decode_coupling_state(arr[5]),
+      activationScore: dco_decode_opt_box_autoadd_f_64(arr[6]),
+      regulationScore: dco_decode_opt_box_autoadd_f_64(arr[7]),
+    );
   }
 
   @protected
@@ -769,9 +2057,231 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   }
 
   @protected
+  bool dco_decode_box_autoadd_bool(dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    return raw as bool;
+  }
+
+  @protected
+  EcgPeakDetectionConfig dco_decode_box_autoadd_ecg_peak_detection_config(
+    dynamic raw,
+  ) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    return dco_decode_ecg_peak_detection_config(raw);
+  }
+
+  @protected
+  EdaDecompositionConfig dco_decode_box_autoadd_eda_decomposition_config(
+    dynamic raw,
+  ) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    return dco_decode_eda_decomposition_config(raw);
+  }
+
+  @protected
+  EdaPeakDetectionConfig dco_decode_box_autoadd_eda_peak_detection_config(
+    dynamic raw,
+  ) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    return dco_decode_eda_peak_detection_config(raw);
+  }
+
+  @protected
   double dco_decode_box_autoadd_f_64(dynamic raw) {
     // Codec=Dco (DartCObject based), see doc to use other codecs
     return raw as double;
+  }
+
+  @protected
+  FeatureWindow dco_decode_box_autoadd_feature_window(dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    return dco_decode_feature_window(raw);
+  }
+
+  @protected
+  PeakDetectionConfig dco_decode_box_autoadd_peak_detection_config(
+    dynamic raw,
+  ) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    return dco_decode_peak_detection_config(raw);
+  }
+
+  @protected
+  PpgPeakDetectionConfig dco_decode_box_autoadd_ppg_peak_detection_config(
+    dynamic raw,
+  ) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    return dco_decode_ppg_peak_detection_config(raw);
+  }
+
+  @protected
+  PulseTimingConfig dco_decode_box_autoadd_pulse_timing_config(dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    return dco_decode_pulse_timing_config(raw);
+  }
+
+  @protected
+  RppgConfig dco_decode_box_autoadd_rppg_config(dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    return dco_decode_rppg_config(raw);
+  }
+
+  @protected
+  RspProcessingConfig dco_decode_box_autoadd_rsp_processing_config(
+    dynamic raw,
+  ) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    return dco_decode_rsp_processing_config(raw);
+  }
+
+  @protected
+  CardiacFeatures dco_decode_cardiac_features(dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    final arr = raw as List<dynamic>;
+    if (arr.length != 8)
+      throw Exception('unexpected arr length: expect 8 but see ${arr.length}');
+    return CardiacFeatures(
+      meanHrBpm: dco_decode_opt_box_autoadd_f_64(arr[0]),
+      medianHrBpm: dco_decode_opt_box_autoadd_f_64(arr[1]),
+      sdnnMs: dco_decode_opt_box_autoadd_f_64(arr[2]),
+      rmssdMs: dco_decode_opt_box_autoadd_f_64(arr[3]),
+      pnn50: dco_decode_opt_box_autoadd_f_64(arr[4]),
+      rrMeanMs: dco_decode_opt_box_autoadd_f_64(arr[5]),
+      rrStdMs: dco_decode_opt_box_autoadd_f_64(arr[6]),
+      beatCount: dco_decode_CastedPrimitive_usize(arr[7]),
+    );
+  }
+
+  @protected
+  CardiacState dco_decode_cardiac_state(dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    final arr = raw as List<dynamic>;
+    if (arr.length != 4)
+      throw Exception('unexpected arr length: expect 4 but see ${arr.length}');
+    return CardiacState(
+      variabilityIndex: dco_decode_opt_box_autoadd_f_64(arr[0]),
+      heartRateIndex: dco_decode_opt_box_autoadd_f_64(arr[1]),
+      recoveryEvidence: dco_decode_opt_box_autoadd_f_64(arr[2]),
+      beatCount: dco_decode_CastedPrimitive_usize(arr[3]),
+    );
+  }
+
+  @protected
+  CouplingState dco_decode_coupling_state(dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    final arr = raw as List<dynamic>;
+    if (arr.length != 4)
+      throw Exception('unexpected arr length: expect 4 but see ${arr.length}');
+    return CouplingState(
+      resphrCouplingIndex: dco_decode_opt_box_autoadd_f_64(arr[0]),
+      phaseCouplingIndex: dco_decode_opt_box_autoadd_f_64(arr[1]),
+      pulseDelayIndex: dco_decode_opt_box_autoadd_f_64(arr[2]),
+      associationCount: dco_decode_CastedPrimitive_usize(arr[3]),
+    );
+  }
+
+  @protected
+  EcgPeakDetectionConfig dco_decode_ecg_peak_detection_config(dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    final arr = raw as List<dynamic>;
+    if (arr.length != 7)
+      throw Exception('unexpected arr length: expect 7 but see ${arr.length}');
+    return EcgPeakDetectionConfig(
+      lowcut: dco_decode_opt_box_autoadd_f_64(arr[0]),
+      highcut: dco_decode_opt_box_autoadd_f_64(arr[1]),
+      filterOrder: dco_decode_opt_CastedPrimitive_usize(arr[2]),
+      integrationWindowSec: dco_decode_opt_box_autoadd_f_64(arr[3]),
+      refractoryPeriodSec: dco_decode_opt_box_autoadd_f_64(arr[4]),
+      searchback: dco_decode_opt_box_autoadd_bool(arr[5]),
+      thresholdMultiplier: dco_decode_opt_box_autoadd_f_64(arr[6]),
+    );
+  }
+
+  @protected
+  EdaComponentSignals dco_decode_eda_component_signals(dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    final arr = raw as List<dynamic>;
+    if (arr.length != 2)
+      throw Exception('unexpected arr length: expect 2 but see ${arr.length}');
+    return EdaComponentSignals(
+      tonic: dco_decode_list_prim_f_64_strict(arr[0]),
+      phasic: dco_decode_list_prim_f_64_strict(arr[1]),
+    );
+  }
+
+  @protected
+  EdaDecompositionConfig dco_decode_eda_decomposition_config(dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    final arr = raw as List<dynamic>;
+    if (arr.length != 2)
+      throw Exception('unexpected arr length: expect 2 but see ${arr.length}');
+    return EdaDecompositionConfig(
+      tonicCutoffHz: dco_decode_opt_box_autoadd_f_64(arr[0]),
+      filterOrder: dco_decode_opt_CastedPrimitive_usize(arr[1]),
+    );
+  }
+
+  @protected
+  EdaFeatures dco_decode_eda_features(dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    final arr = raw as List<dynamic>;
+    if (arr.length != 10)
+      throw Exception('unexpected arr length: expect 10 but see ${arr.length}');
+    return EdaFeatures(
+      meanTonicUs: dco_decode_opt_box_autoadd_f_64(arr[0]),
+      medianTonicUs: dco_decode_opt_box_autoadd_f_64(arr[1]),
+      tonicStdUs: dco_decode_opt_box_autoadd_f_64(arr[2]),
+      meanPhasicUs: dco_decode_opt_box_autoadd_f_64(arr[3]),
+      phasicStdUs: dco_decode_opt_box_autoadd_f_64(arr[4]),
+      scrCount: dco_decode_CastedPrimitive_usize(arr[5]),
+      scrRatePerMin: dco_decode_opt_box_autoadd_f_64(arr[6]),
+      meanScrAmplitudeUs: dco_decode_opt_box_autoadd_f_64(arr[7]),
+      medianScrAmplitudeUs: dco_decode_opt_box_autoadd_f_64(arr[8]),
+      meanScrRiseTimeSec: dco_decode_opt_box_autoadd_f_64(arr[9]),
+    );
+  }
+
+  @protected
+  EdaPeakDetectionConfig dco_decode_eda_peak_detection_config(dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    final arr = raw as List<dynamic>;
+    if (arr.length != 5)
+      throw Exception('unexpected arr length: expect 5 but see ${arr.length}');
+    return EdaPeakDetectionConfig(
+      minAmplitude: dco_decode_opt_box_autoadd_f_64(arr[0]),
+      minProminence: dco_decode_opt_box_autoadd_f_64(arr[1]),
+      minDistanceSec: dco_decode_opt_box_autoadd_f_64(arr[2]),
+      minRiseTimeSec: dco_decode_opt_box_autoadd_f_64(arr[3]),
+      maxRiseTimeSec: dco_decode_opt_box_autoadd_f_64(arr[4]),
+    );
+  }
+
+  @protected
+  EdaPeakEvent dco_decode_eda_peak_event(dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    final arr = raw as List<dynamic>;
+    if (arr.length != 4)
+      throw Exception('unexpected arr length: expect 4 but see ${arr.length}');
+    return EdaPeakEvent(
+      onsetIndex: dco_decode_CastedPrimitive_usize(arr[0]),
+      peakIndex: dco_decode_CastedPrimitive_usize(arr[1]),
+      amplitude: dco_decode_f_64(arr[2]),
+      riseTimeSec: dco_decode_f_64(arr[3]),
+    );
+  }
+
+  @protected
+  ElectrodermalState dco_decode_electrodermal_state(dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    final arr = raw as List<dynamic>;
+    if (arr.length != 4)
+      throw Exception('unexpected arr length: expect 4 but see ${arr.length}');
+    return ElectrodermalState(
+      tonicLevelIndex: dco_decode_opt_box_autoadd_f_64(arr[0]),
+      phasicActivationIndex: dco_decode_opt_box_autoadd_f_64(arr[1]),
+      scrRateIndex: dco_decode_opt_box_autoadd_f_64(arr[2]),
+      scrCount: dco_decode_CastedPrimitive_usize(arr[3]),
+    );
   }
 
   @protected
@@ -781,9 +2291,35 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   }
 
   @protected
-  List<bool> dco_decode_list_bool(dynamic raw) {
+  FeatureWindow dco_decode_feature_window(dynamic raw) {
     // Codec=Dco (DartCObject based), see doc to use other codecs
-    return (raw as List<dynamic>).map(dco_decode_bool).toList();
+    final arr = raw as List<dynamic>;
+    if (arr.length != 2)
+      throw Exception('unexpected arr length: expect 2 but see ${arr.length}');
+    return FeatureWindow(
+      startTimeSec: dco_decode_f_64(arr[0]),
+      endTimeSec: dco_decode_f_64(arr[1]),
+    );
+  }
+
+  @protected
+  int dco_decode_i_32(dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    return raw as int;
+  }
+
+  @protected
+  List<int> dco_decode_list_CastedPrimitive_usize(dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    return (raw as List<dynamic>)
+        .map(dco_decode_CastedPrimitive_usize)
+        .toList();
+  }
+
+  @protected
+  List<EdaPeakEvent> dco_decode_list_eda_peak_event(dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    return (raw as List<dynamic>).map(dco_decode_eda_peak_event).toList();
   }
 
   @protected
@@ -805,9 +2341,288 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   }
 
   @protected
+  List<PulseTimingResult> dco_decode_list_pulse_timing_result(dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    return (raw as List<dynamic>).map(dco_decode_pulse_timing_result).toList();
+  }
+
+  @protected
+  List<RespirationCycle> dco_decode_list_respiration_cycle(dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    return (raw as List<dynamic>).map(dco_decode_respiration_cycle).toList();
+  }
+
+  @protected
+  int? dco_decode_opt_CastedPrimitive_usize(dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    return raw == null ? null : dco_decode_CastedPrimitive_usize(raw);
+  }
+
+  @protected
+  bool? dco_decode_opt_box_autoadd_bool(dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    return raw == null ? null : dco_decode_box_autoadd_bool(raw);
+  }
+
+  @protected
+  EcgPeakDetectionConfig? dco_decode_opt_box_autoadd_ecg_peak_detection_config(
+    dynamic raw,
+  ) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    return raw == null
+        ? null
+        : dco_decode_box_autoadd_ecg_peak_detection_config(raw);
+  }
+
+  @protected
+  EdaDecompositionConfig? dco_decode_opt_box_autoadd_eda_decomposition_config(
+    dynamic raw,
+  ) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    return raw == null
+        ? null
+        : dco_decode_box_autoadd_eda_decomposition_config(raw);
+  }
+
+  @protected
+  EdaPeakDetectionConfig? dco_decode_opt_box_autoadd_eda_peak_detection_config(
+    dynamic raw,
+  ) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    return raw == null
+        ? null
+        : dco_decode_box_autoadd_eda_peak_detection_config(raw);
+  }
+
+  @protected
   double? dco_decode_opt_box_autoadd_f_64(dynamic raw) {
     // Codec=Dco (DartCObject based), see doc to use other codecs
     return raw == null ? null : dco_decode_box_autoadd_f_64(raw);
+  }
+
+  @protected
+  PpgPeakDetectionConfig? dco_decode_opt_box_autoadd_ppg_peak_detection_config(
+    dynamic raw,
+  ) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    return raw == null
+        ? null
+        : dco_decode_box_autoadd_ppg_peak_detection_config(raw);
+  }
+
+  @protected
+  PulseTimingConfig? dco_decode_opt_box_autoadd_pulse_timing_config(
+    dynamic raw,
+  ) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    return raw == null ? null : dco_decode_box_autoadd_pulse_timing_config(raw);
+  }
+
+  @protected
+  RppgConfig? dco_decode_opt_box_autoadd_rppg_config(dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    return raw == null ? null : dco_decode_box_autoadd_rppg_config(raw);
+  }
+
+  @protected
+  RspProcessingConfig? dco_decode_opt_box_autoadd_rsp_processing_config(
+    dynamic raw,
+  ) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    return raw == null
+        ? null
+        : dco_decode_box_autoadd_rsp_processing_config(raw);
+  }
+
+  @protected
+  PeakDetectionConfig dco_decode_peak_detection_config(dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    final arr = raw as List<dynamic>;
+    if (arr.length != 5)
+      throw Exception('unexpected arr length: expect 5 but see ${arr.length}');
+    return PeakDetectionConfig(
+      minHeight: dco_decode_opt_box_autoadd_f_64(arr[0]),
+      minDistance: dco_decode_opt_CastedPrimitive_usize(arr[1]),
+      minProminence: dco_decode_opt_box_autoadd_f_64(arr[2]),
+      minWidth: dco_decode_opt_CastedPrimitive_usize(arr[3]),
+      threshold: dco_decode_opt_box_autoadd_f_64(arr[4]),
+    );
+  }
+
+  @protected
+  PhaseCouplingResult dco_decode_phase_coupling_result(dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    final arr = raw as List<dynamic>;
+    if (arr.length != 3)
+      throw Exception('unexpected arr length: expect 3 but see ${arr.length}');
+    return PhaseCouplingResult(
+      meanPhaseRad: dco_decode_f_64(arr[0]),
+      vectorLength: dco_decode_f_64(arr[1]),
+      sampleCount: dco_decode_CastedPrimitive_usize(arr[2]),
+    );
+  }
+
+  @protected
+  PpgPeakDetectionConfig dco_decode_ppg_peak_detection_config(dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    final arr = raw as List<dynamic>;
+    if (arr.length != 7)
+      throw Exception('unexpected arr length: expect 7 but see ${arr.length}');
+    return PpgPeakDetectionConfig(
+      lowcut: dco_decode_opt_box_autoadd_f_64(arr[0]),
+      highcut: dco_decode_opt_box_autoadd_f_64(arr[1]),
+      filterOrder: dco_decode_opt_CastedPrimitive_usize(arr[2]),
+      wPeakSec: dco_decode_opt_box_autoadd_f_64(arr[3]),
+      wBeatSec: dco_decode_opt_box_autoadd_f_64(arr[4]),
+      alpha: dco_decode_opt_box_autoadd_f_64(arr[5]),
+      refractoryPeriodSec: dco_decode_opt_box_autoadd_f_64(arr[6]),
+    );
+  }
+
+  @protected
+  PulseTimingConfig dco_decode_pulse_timing_config(dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    final arr = raw as List<dynamic>;
+    if (arr.length != 2)
+      throw Exception('unexpected arr length: expect 2 but see ${arr.length}');
+    return PulseTimingConfig(
+      minDelaySec: dco_decode_opt_box_autoadd_f_64(arr[0]),
+      maxDelaySec: dco_decode_opt_box_autoadd_f_64(arr[1]),
+    );
+  }
+
+  @protected
+  PulseTimingResult dco_decode_pulse_timing_result(dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    final arr = raw as List<dynamic>;
+    if (arr.length != 5)
+      throw Exception('unexpected arr length: expect 5 but see ${arr.length}');
+    return PulseTimingResult(
+      ecgPeakIndex: dco_decode_CastedPrimitive_usize(arr[0]),
+      ppgPeakIndex: dco_decode_CastedPrimitive_usize(arr[1]),
+      ecgTimestampSec: dco_decode_f_64(arr[2]),
+      ppgTimestampSec: dco_decode_f_64(arr[3]),
+      pulseDelaySec: dco_decode_f_64(arr[4]),
+    );
+  }
+
+  @protected
+  RespirationCycle dco_decode_respiration_cycle(dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    final arr = raw as List<dynamic>;
+    if (arr.length != 6)
+      throw Exception('unexpected arr length: expect 6 but see ${arr.length}');
+    return RespirationCycle(
+      inspirationIndex: dco_decode_CastedPrimitive_usize(arr[0]),
+      expirationIndex: dco_decode_CastedPrimitive_usize(arr[1]),
+      nextInspirationIndex: dco_decode_CastedPrimitive_usize(arr[2]),
+      durationSec: dco_decode_f_64(arr[3]),
+      respiratoryRateBpm: dco_decode_f_64(arr[4]),
+      amplitude: dco_decode_f_64(arr[5]),
+    );
+  }
+
+  @protected
+  RespirationFeatures dco_decode_respiration_features(dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    final arr = raw as List<dynamic>;
+    if (arr.length != 7)
+      throw Exception('unexpected arr length: expect 7 but see ${arr.length}');
+    return RespirationFeatures(
+      meanRateBpm: dco_decode_opt_box_autoadd_f_64(arr[0]),
+      medianRateBpm: dco_decode_opt_box_autoadd_f_64(arr[1]),
+      rateStdBpm: dco_decode_opt_box_autoadd_f_64(arr[2]),
+      meanCycleDurationSec: dco_decode_opt_box_autoadd_f_64(arr[3]),
+      cycleCount: dco_decode_CastedPrimitive_usize(arr[4]),
+      meanAmplitude: dco_decode_opt_box_autoadd_f_64(arr[5]),
+      amplitudeStd: dco_decode_opt_box_autoadd_f_64(arr[6]),
+    );
+  }
+
+  @protected
+  RespiratoryState dco_decode_respiratory_state(dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    final arr = raw as List<dynamic>;
+    if (arr.length != 4)
+      throw Exception('unexpected arr length: expect 4 but see ${arr.length}');
+    return RespiratoryState(
+      rateIndex: dco_decode_opt_box_autoadd_f_64(arr[0]),
+      amplitudeIndex: dco_decode_opt_box_autoadd_f_64(arr[1]),
+      regularityIndex: dco_decode_opt_box_autoadd_f_64(arr[2]),
+      cycleCount: dco_decode_CastedPrimitive_usize(arr[3]),
+    );
+  }
+
+  @protected
+  RppgAlgorithmId dco_decode_rppg_algorithm_id(dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    return RppgAlgorithmId.values[raw as int];
+  }
+
+  @protected
+  RppgConfig dco_decode_rppg_config(dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    final arr = raw as List<dynamic>;
+    if (arr.length != 4)
+      throw Exception('unexpected arr length: expect 4 but see ${arr.length}');
+    return RppgConfig(
+      algorithm: dco_decode_rppg_algorithm_id(arr[0]),
+      minQuality: dco_decode_f_64(arr[1]),
+      minimumRoiPixels: dco_decode_CastedPrimitive_usize(arr[2]),
+      maxGapSec: dco_decode_f_64(arr[3]),
+    );
+  }
+
+  @protected
+  RppgSignalResult dco_decode_rppg_signal_result(dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    final arr = raw as List<dynamic>;
+    if (arr.length != 3)
+      throw Exception('unexpected arr length: expect 3 but see ${arr.length}');
+    return RppgSignalResult(
+      timestampsSec: dco_decode_list_prim_f_64_strict(arr[0]),
+      pulseSignal: dco_decode_list_prim_f_64_strict(arr[1]),
+      meanQuality: dco_decode_f_64(arr[2]),
+    );
+  }
+
+  @protected
+  RsaResult dco_decode_rsa_result(dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    final arr = raw as List<dynamic>;
+    if (arr.length != 4)
+      throw Exception('unexpected arr length: expect 4 but see ${arr.length}');
+    return RsaResult(
+      amplitudeBpm: dco_decode_f_64(arr[0]),
+      amplitudeRrSec: dco_decode_f_64(arr[1]),
+      validBeats: dco_decode_CastedPrimitive_usize(arr[2]),
+      validCycles: dco_decode_CastedPrimitive_usize(arr[3]),
+    );
+  }
+
+  @protected
+  RspProcessingConfig dco_decode_rsp_processing_config(dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    final arr = raw as List<dynamic>;
+    if (arr.length != 6)
+      throw Exception('unexpected arr length: expect 6 but see ${arr.length}');
+    return RspProcessingConfig(
+      lowcut: dco_decode_opt_box_autoadd_f_64(arr[0]),
+      highcut: dco_decode_opt_box_autoadd_f_64(arr[1]),
+      filterOrder: dco_decode_opt_CastedPrimitive_usize(arr[2]),
+      minBreathIntervalSec: dco_decode_opt_box_autoadd_f_64(arr[3]),
+      maxBreathIntervalSec: dco_decode_opt_box_autoadd_f_64(arr[4]),
+      minAmplitude: dco_decode_opt_box_autoadd_f_64(arr[5]),
+    );
+  }
+
+  @protected
+  SignalError dco_decode_signal_error(dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    final arr = raw as List<dynamic>;
+    if (arr.length != 1)
+      throw Exception('unexpected arr length: expect 1 but see ${arr.length}');
+    return SignalError(message: dco_decode_String(arr[0]));
   }
 
   @protected
@@ -829,10 +2644,76 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   }
 
   @protected
+  AutonomicEstimator
+  sse_decode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerAutonomicEstimator(
+    SseDeserializer deserializer,
+  ) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    return AutonomicEstimatorImpl.frbInternalSseDecode(
+      sse_decode_usize(deserializer),
+      sse_decode_i_32(deserializer),
+    );
+  }
+
+  @protected
+  AutonomicEstimator
+  sse_decode_Auto_Ref_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerAutonomicEstimator(
+    SseDeserializer deserializer,
+  ) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    return AutonomicEstimatorImpl.frbInternalSseDecode(
+      sse_decode_usize(deserializer),
+      sse_decode_i_32(deserializer),
+    );
+  }
+
+  @protected
+  int sse_decode_CastedPrimitive_usize(SseDeserializer deserializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    var inner = sse_decode_usize(deserializer);
+    return inner.toInt();
+  }
+
+  @protected
+  AutonomicEstimator
+  sse_decode_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerAutonomicEstimator(
+    SseDeserializer deserializer,
+  ) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    return AutonomicEstimatorImpl.frbInternalSseDecode(
+      sse_decode_usize(deserializer),
+      sse_decode_i_32(deserializer),
+    );
+  }
+
+  @protected
   String sse_decode_String(SseDeserializer deserializer) {
     // Codec=Sse (Serialization based), see doc to use other codecs
     var inner = sse_decode_list_prim_u_8_strict(deserializer);
     return utf8.decoder.convert(inner);
+  }
+
+  @protected
+  AutonomicState sse_decode_autonomic_state(SseDeserializer deserializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    var var_timestamp = sse_decode_f_64(deserializer);
+    var var_durationSec = sse_decode_f_64(deserializer);
+    var var_cardiac = sse_decode_cardiac_state(deserializer);
+    var var_electrodermal = sse_decode_electrodermal_state(deserializer);
+    var var_respiratory = sse_decode_respiratory_state(deserializer);
+    var var_coupling = sse_decode_coupling_state(deserializer);
+    var var_activationScore = sse_decode_opt_box_autoadd_f_64(deserializer);
+    var var_regulationScore = sse_decode_opt_box_autoadd_f_64(deserializer);
+    return AutonomicState(
+      timestamp: var_timestamp,
+      durationSec: var_durationSec,
+      cardiac: var_cardiac,
+      electrodermal: var_electrodermal,
+      respiratory: var_respiratory,
+      coupling: var_coupling,
+      activationScore: var_activationScore,
+      regulationScore: var_regulationScore,
+    );
   }
 
   @protected
@@ -842,9 +2723,268 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   }
 
   @protected
+  bool sse_decode_box_autoadd_bool(SseDeserializer deserializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    return (sse_decode_bool(deserializer));
+  }
+
+  @protected
+  EcgPeakDetectionConfig sse_decode_box_autoadd_ecg_peak_detection_config(
+    SseDeserializer deserializer,
+  ) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    return (sse_decode_ecg_peak_detection_config(deserializer));
+  }
+
+  @protected
+  EdaDecompositionConfig sse_decode_box_autoadd_eda_decomposition_config(
+    SseDeserializer deserializer,
+  ) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    return (sse_decode_eda_decomposition_config(deserializer));
+  }
+
+  @protected
+  EdaPeakDetectionConfig sse_decode_box_autoadd_eda_peak_detection_config(
+    SseDeserializer deserializer,
+  ) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    return (sse_decode_eda_peak_detection_config(deserializer));
+  }
+
+  @protected
   double sse_decode_box_autoadd_f_64(SseDeserializer deserializer) {
     // Codec=Sse (Serialization based), see doc to use other codecs
     return (sse_decode_f_64(deserializer));
+  }
+
+  @protected
+  FeatureWindow sse_decode_box_autoadd_feature_window(
+    SseDeserializer deserializer,
+  ) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    return (sse_decode_feature_window(deserializer));
+  }
+
+  @protected
+  PeakDetectionConfig sse_decode_box_autoadd_peak_detection_config(
+    SseDeserializer deserializer,
+  ) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    return (sse_decode_peak_detection_config(deserializer));
+  }
+
+  @protected
+  PpgPeakDetectionConfig sse_decode_box_autoadd_ppg_peak_detection_config(
+    SseDeserializer deserializer,
+  ) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    return (sse_decode_ppg_peak_detection_config(deserializer));
+  }
+
+  @protected
+  PulseTimingConfig sse_decode_box_autoadd_pulse_timing_config(
+    SseDeserializer deserializer,
+  ) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    return (sse_decode_pulse_timing_config(deserializer));
+  }
+
+  @protected
+  RppgConfig sse_decode_box_autoadd_rppg_config(SseDeserializer deserializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    return (sse_decode_rppg_config(deserializer));
+  }
+
+  @protected
+  RspProcessingConfig sse_decode_box_autoadd_rsp_processing_config(
+    SseDeserializer deserializer,
+  ) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    return (sse_decode_rsp_processing_config(deserializer));
+  }
+
+  @protected
+  CardiacFeatures sse_decode_cardiac_features(SseDeserializer deserializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    var var_meanHrBpm = sse_decode_opt_box_autoadd_f_64(deserializer);
+    var var_medianHrBpm = sse_decode_opt_box_autoadd_f_64(deserializer);
+    var var_sdnnMs = sse_decode_opt_box_autoadd_f_64(deserializer);
+    var var_rmssdMs = sse_decode_opt_box_autoadd_f_64(deserializer);
+    var var_pnn50 = sse_decode_opt_box_autoadd_f_64(deserializer);
+    var var_rrMeanMs = sse_decode_opt_box_autoadd_f_64(deserializer);
+    var var_rrStdMs = sse_decode_opt_box_autoadd_f_64(deserializer);
+    var var_beatCount = sse_decode_CastedPrimitive_usize(deserializer);
+    return CardiacFeatures(
+      meanHrBpm: var_meanHrBpm,
+      medianHrBpm: var_medianHrBpm,
+      sdnnMs: var_sdnnMs,
+      rmssdMs: var_rmssdMs,
+      pnn50: var_pnn50,
+      rrMeanMs: var_rrMeanMs,
+      rrStdMs: var_rrStdMs,
+      beatCount: var_beatCount,
+    );
+  }
+
+  @protected
+  CardiacState sse_decode_cardiac_state(SseDeserializer deserializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    var var_variabilityIndex = sse_decode_opt_box_autoadd_f_64(deserializer);
+    var var_heartRateIndex = sse_decode_opt_box_autoadd_f_64(deserializer);
+    var var_recoveryEvidence = sse_decode_opt_box_autoadd_f_64(deserializer);
+    var var_beatCount = sse_decode_CastedPrimitive_usize(deserializer);
+    return CardiacState(
+      variabilityIndex: var_variabilityIndex,
+      heartRateIndex: var_heartRateIndex,
+      recoveryEvidence: var_recoveryEvidence,
+      beatCount: var_beatCount,
+    );
+  }
+
+  @protected
+  CouplingState sse_decode_coupling_state(SseDeserializer deserializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    var var_resphrCouplingIndex = sse_decode_opt_box_autoadd_f_64(deserializer);
+    var var_phaseCouplingIndex = sse_decode_opt_box_autoadd_f_64(deserializer);
+    var var_pulseDelayIndex = sse_decode_opt_box_autoadd_f_64(deserializer);
+    var var_associationCount = sse_decode_CastedPrimitive_usize(deserializer);
+    return CouplingState(
+      resphrCouplingIndex: var_resphrCouplingIndex,
+      phaseCouplingIndex: var_phaseCouplingIndex,
+      pulseDelayIndex: var_pulseDelayIndex,
+      associationCount: var_associationCount,
+    );
+  }
+
+  @protected
+  EcgPeakDetectionConfig sse_decode_ecg_peak_detection_config(
+    SseDeserializer deserializer,
+  ) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    var var_lowcut = sse_decode_opt_box_autoadd_f_64(deserializer);
+    var var_highcut = sse_decode_opt_box_autoadd_f_64(deserializer);
+    var var_filterOrder = sse_decode_opt_CastedPrimitive_usize(deserializer);
+    var var_integrationWindowSec = sse_decode_opt_box_autoadd_f_64(
+      deserializer,
+    );
+    var var_refractoryPeriodSec = sse_decode_opt_box_autoadd_f_64(deserializer);
+    var var_searchback = sse_decode_opt_box_autoadd_bool(deserializer);
+    var var_thresholdMultiplier = sse_decode_opt_box_autoadd_f_64(deserializer);
+    return EcgPeakDetectionConfig(
+      lowcut: var_lowcut,
+      highcut: var_highcut,
+      filterOrder: var_filterOrder,
+      integrationWindowSec: var_integrationWindowSec,
+      refractoryPeriodSec: var_refractoryPeriodSec,
+      searchback: var_searchback,
+      thresholdMultiplier: var_thresholdMultiplier,
+    );
+  }
+
+  @protected
+  EdaComponentSignals sse_decode_eda_component_signals(
+    SseDeserializer deserializer,
+  ) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    var var_tonic = sse_decode_list_prim_f_64_strict(deserializer);
+    var var_phasic = sse_decode_list_prim_f_64_strict(deserializer);
+    return EdaComponentSignals(tonic: var_tonic, phasic: var_phasic);
+  }
+
+  @protected
+  EdaDecompositionConfig sse_decode_eda_decomposition_config(
+    SseDeserializer deserializer,
+  ) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    var var_tonicCutoffHz = sse_decode_opt_box_autoadd_f_64(deserializer);
+    var var_filterOrder = sse_decode_opt_CastedPrimitive_usize(deserializer);
+    return EdaDecompositionConfig(
+      tonicCutoffHz: var_tonicCutoffHz,
+      filterOrder: var_filterOrder,
+    );
+  }
+
+  @protected
+  EdaFeatures sse_decode_eda_features(SseDeserializer deserializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    var var_meanTonicUs = sse_decode_opt_box_autoadd_f_64(deserializer);
+    var var_medianTonicUs = sse_decode_opt_box_autoadd_f_64(deserializer);
+    var var_tonicStdUs = sse_decode_opt_box_autoadd_f_64(deserializer);
+    var var_meanPhasicUs = sse_decode_opt_box_autoadd_f_64(deserializer);
+    var var_phasicStdUs = sse_decode_opt_box_autoadd_f_64(deserializer);
+    var var_scrCount = sse_decode_CastedPrimitive_usize(deserializer);
+    var var_scrRatePerMin = sse_decode_opt_box_autoadd_f_64(deserializer);
+    var var_meanScrAmplitudeUs = sse_decode_opt_box_autoadd_f_64(deserializer);
+    var var_medianScrAmplitudeUs = sse_decode_opt_box_autoadd_f_64(
+      deserializer,
+    );
+    var var_meanScrRiseTimeSec = sse_decode_opt_box_autoadd_f_64(deserializer);
+    return EdaFeatures(
+      meanTonicUs: var_meanTonicUs,
+      medianTonicUs: var_medianTonicUs,
+      tonicStdUs: var_tonicStdUs,
+      meanPhasicUs: var_meanPhasicUs,
+      phasicStdUs: var_phasicStdUs,
+      scrCount: var_scrCount,
+      scrRatePerMin: var_scrRatePerMin,
+      meanScrAmplitudeUs: var_meanScrAmplitudeUs,
+      medianScrAmplitudeUs: var_medianScrAmplitudeUs,
+      meanScrRiseTimeSec: var_meanScrRiseTimeSec,
+    );
+  }
+
+  @protected
+  EdaPeakDetectionConfig sse_decode_eda_peak_detection_config(
+    SseDeserializer deserializer,
+  ) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    var var_minAmplitude = sse_decode_opt_box_autoadd_f_64(deserializer);
+    var var_minProminence = sse_decode_opt_box_autoadd_f_64(deserializer);
+    var var_minDistanceSec = sse_decode_opt_box_autoadd_f_64(deserializer);
+    var var_minRiseTimeSec = sse_decode_opt_box_autoadd_f_64(deserializer);
+    var var_maxRiseTimeSec = sse_decode_opt_box_autoadd_f_64(deserializer);
+    return EdaPeakDetectionConfig(
+      minAmplitude: var_minAmplitude,
+      minProminence: var_minProminence,
+      minDistanceSec: var_minDistanceSec,
+      minRiseTimeSec: var_minRiseTimeSec,
+      maxRiseTimeSec: var_maxRiseTimeSec,
+    );
+  }
+
+  @protected
+  EdaPeakEvent sse_decode_eda_peak_event(SseDeserializer deserializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    var var_onsetIndex = sse_decode_CastedPrimitive_usize(deserializer);
+    var var_peakIndex = sse_decode_CastedPrimitive_usize(deserializer);
+    var var_amplitude = sse_decode_f_64(deserializer);
+    var var_riseTimeSec = sse_decode_f_64(deserializer);
+    return EdaPeakEvent(
+      onsetIndex: var_onsetIndex,
+      peakIndex: var_peakIndex,
+      amplitude: var_amplitude,
+      riseTimeSec: var_riseTimeSec,
+    );
+  }
+
+  @protected
+  ElectrodermalState sse_decode_electrodermal_state(
+    SseDeserializer deserializer,
+  ) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    var var_tonicLevelIndex = sse_decode_opt_box_autoadd_f_64(deserializer);
+    var var_phasicActivationIndex = sse_decode_opt_box_autoadd_f_64(
+      deserializer,
+    );
+    var var_scrRateIndex = sse_decode_opt_box_autoadd_f_64(deserializer);
+    var var_scrCount = sse_decode_CastedPrimitive_usize(deserializer);
+    return ElectrodermalState(
+      tonicLevelIndex: var_tonicLevelIndex,
+      phasicActivationIndex: var_phasicActivationIndex,
+      scrRateIndex: var_scrRateIndex,
+      scrCount: var_scrCount,
+    );
   }
 
   @protected
@@ -854,13 +2994,46 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   }
 
   @protected
-  List<bool> sse_decode_list_bool(SseDeserializer deserializer) {
+  FeatureWindow sse_decode_feature_window(SseDeserializer deserializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    var var_startTimeSec = sse_decode_f_64(deserializer);
+    var var_endTimeSec = sse_decode_f_64(deserializer);
+    return FeatureWindow(
+      startTimeSec: var_startTimeSec,
+      endTimeSec: var_endTimeSec,
+    );
+  }
+
+  @protected
+  int sse_decode_i_32(SseDeserializer deserializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    return deserializer.buffer.getInt32();
+  }
+
+  @protected
+  List<int> sse_decode_list_CastedPrimitive_usize(
+    SseDeserializer deserializer,
+  ) {
     // Codec=Sse (Serialization based), see doc to use other codecs
 
     var len_ = sse_decode_i_32(deserializer);
-    var ans_ = <bool>[];
+    var ans_ = <int>[];
     for (var idx_ = 0; idx_ < len_; ++idx_) {
-      ans_.add(sse_decode_bool(deserializer));
+      ans_.add(sse_decode_CastedPrimitive_usize(deserializer));
+    }
+    return ans_;
+  }
+
+  @protected
+  List<EdaPeakEvent> sse_decode_list_eda_peak_event(
+    SseDeserializer deserializer,
+  ) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+
+    var len_ = sse_decode_i_32(deserializer);
+    var ans_ = <EdaPeakEvent>[];
+    for (var idx_ = 0; idx_ < len_; ++idx_) {
+      ans_.add(sse_decode_eda_peak_event(deserializer));
     }
     return ans_;
   }
@@ -887,6 +3060,95 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   }
 
   @protected
+  List<PulseTimingResult> sse_decode_list_pulse_timing_result(
+    SseDeserializer deserializer,
+  ) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+
+    var len_ = sse_decode_i_32(deserializer);
+    var ans_ = <PulseTimingResult>[];
+    for (var idx_ = 0; idx_ < len_; ++idx_) {
+      ans_.add(sse_decode_pulse_timing_result(deserializer));
+    }
+    return ans_;
+  }
+
+  @protected
+  List<RespirationCycle> sse_decode_list_respiration_cycle(
+    SseDeserializer deserializer,
+  ) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+
+    var len_ = sse_decode_i_32(deserializer);
+    var ans_ = <RespirationCycle>[];
+    for (var idx_ = 0; idx_ < len_; ++idx_) {
+      ans_.add(sse_decode_respiration_cycle(deserializer));
+    }
+    return ans_;
+  }
+
+  @protected
+  int? sse_decode_opt_CastedPrimitive_usize(SseDeserializer deserializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+
+    if (sse_decode_bool(deserializer)) {
+      return (sse_decode_CastedPrimitive_usize(deserializer));
+    } else {
+      return null;
+    }
+  }
+
+  @protected
+  bool? sse_decode_opt_box_autoadd_bool(SseDeserializer deserializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+
+    if (sse_decode_bool(deserializer)) {
+      return (sse_decode_box_autoadd_bool(deserializer));
+    } else {
+      return null;
+    }
+  }
+
+  @protected
+  EcgPeakDetectionConfig? sse_decode_opt_box_autoadd_ecg_peak_detection_config(
+    SseDeserializer deserializer,
+  ) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+
+    if (sse_decode_bool(deserializer)) {
+      return (sse_decode_box_autoadd_ecg_peak_detection_config(deserializer));
+    } else {
+      return null;
+    }
+  }
+
+  @protected
+  EdaDecompositionConfig? sse_decode_opt_box_autoadd_eda_decomposition_config(
+    SseDeserializer deserializer,
+  ) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+
+    if (sse_decode_bool(deserializer)) {
+      return (sse_decode_box_autoadd_eda_decomposition_config(deserializer));
+    } else {
+      return null;
+    }
+  }
+
+  @protected
+  EdaPeakDetectionConfig? sse_decode_opt_box_autoadd_eda_peak_detection_config(
+    SseDeserializer deserializer,
+  ) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+
+    if (sse_decode_bool(deserializer)) {
+      return (sse_decode_box_autoadd_eda_peak_detection_config(deserializer));
+    } else {
+      return null;
+    }
+  }
+
+  @protected
   double? sse_decode_opt_box_autoadd_f_64(SseDeserializer deserializer) {
     // Codec=Sse (Serialization based), see doc to use other codecs
 
@@ -895,6 +3157,290 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
     } else {
       return null;
     }
+  }
+
+  @protected
+  PpgPeakDetectionConfig? sse_decode_opt_box_autoadd_ppg_peak_detection_config(
+    SseDeserializer deserializer,
+  ) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+
+    if (sse_decode_bool(deserializer)) {
+      return (sse_decode_box_autoadd_ppg_peak_detection_config(deserializer));
+    } else {
+      return null;
+    }
+  }
+
+  @protected
+  PulseTimingConfig? sse_decode_opt_box_autoadd_pulse_timing_config(
+    SseDeserializer deserializer,
+  ) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+
+    if (sse_decode_bool(deserializer)) {
+      return (sse_decode_box_autoadd_pulse_timing_config(deserializer));
+    } else {
+      return null;
+    }
+  }
+
+  @protected
+  RppgConfig? sse_decode_opt_box_autoadd_rppg_config(
+    SseDeserializer deserializer,
+  ) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+
+    if (sse_decode_bool(deserializer)) {
+      return (sse_decode_box_autoadd_rppg_config(deserializer));
+    } else {
+      return null;
+    }
+  }
+
+  @protected
+  RspProcessingConfig? sse_decode_opt_box_autoadd_rsp_processing_config(
+    SseDeserializer deserializer,
+  ) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+
+    if (sse_decode_bool(deserializer)) {
+      return (sse_decode_box_autoadd_rsp_processing_config(deserializer));
+    } else {
+      return null;
+    }
+  }
+
+  @protected
+  PeakDetectionConfig sse_decode_peak_detection_config(
+    SseDeserializer deserializer,
+  ) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    var var_minHeight = sse_decode_opt_box_autoadd_f_64(deserializer);
+    var var_minDistance = sse_decode_opt_CastedPrimitive_usize(deserializer);
+    var var_minProminence = sse_decode_opt_box_autoadd_f_64(deserializer);
+    var var_minWidth = sse_decode_opt_CastedPrimitive_usize(deserializer);
+    var var_threshold = sse_decode_opt_box_autoadd_f_64(deserializer);
+    return PeakDetectionConfig(
+      minHeight: var_minHeight,
+      minDistance: var_minDistance,
+      minProminence: var_minProminence,
+      minWidth: var_minWidth,
+      threshold: var_threshold,
+    );
+  }
+
+  @protected
+  PhaseCouplingResult sse_decode_phase_coupling_result(
+    SseDeserializer deserializer,
+  ) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    var var_meanPhaseRad = sse_decode_f_64(deserializer);
+    var var_vectorLength = sse_decode_f_64(deserializer);
+    var var_sampleCount = sse_decode_CastedPrimitive_usize(deserializer);
+    return PhaseCouplingResult(
+      meanPhaseRad: var_meanPhaseRad,
+      vectorLength: var_vectorLength,
+      sampleCount: var_sampleCount,
+    );
+  }
+
+  @protected
+  PpgPeakDetectionConfig sse_decode_ppg_peak_detection_config(
+    SseDeserializer deserializer,
+  ) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    var var_lowcut = sse_decode_opt_box_autoadd_f_64(deserializer);
+    var var_highcut = sse_decode_opt_box_autoadd_f_64(deserializer);
+    var var_filterOrder = sse_decode_opt_CastedPrimitive_usize(deserializer);
+    var var_wPeakSec = sse_decode_opt_box_autoadd_f_64(deserializer);
+    var var_wBeatSec = sse_decode_opt_box_autoadd_f_64(deserializer);
+    var var_alpha = sse_decode_opt_box_autoadd_f_64(deserializer);
+    var var_refractoryPeriodSec = sse_decode_opt_box_autoadd_f_64(deserializer);
+    return PpgPeakDetectionConfig(
+      lowcut: var_lowcut,
+      highcut: var_highcut,
+      filterOrder: var_filterOrder,
+      wPeakSec: var_wPeakSec,
+      wBeatSec: var_wBeatSec,
+      alpha: var_alpha,
+      refractoryPeriodSec: var_refractoryPeriodSec,
+    );
+  }
+
+  @protected
+  PulseTimingConfig sse_decode_pulse_timing_config(
+    SseDeserializer deserializer,
+  ) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    var var_minDelaySec = sse_decode_opt_box_autoadd_f_64(deserializer);
+    var var_maxDelaySec = sse_decode_opt_box_autoadd_f_64(deserializer);
+    return PulseTimingConfig(
+      minDelaySec: var_minDelaySec,
+      maxDelaySec: var_maxDelaySec,
+    );
+  }
+
+  @protected
+  PulseTimingResult sse_decode_pulse_timing_result(
+    SseDeserializer deserializer,
+  ) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    var var_ecgPeakIndex = sse_decode_CastedPrimitive_usize(deserializer);
+    var var_ppgPeakIndex = sse_decode_CastedPrimitive_usize(deserializer);
+    var var_ecgTimestampSec = sse_decode_f_64(deserializer);
+    var var_ppgTimestampSec = sse_decode_f_64(deserializer);
+    var var_pulseDelaySec = sse_decode_f_64(deserializer);
+    return PulseTimingResult(
+      ecgPeakIndex: var_ecgPeakIndex,
+      ppgPeakIndex: var_ppgPeakIndex,
+      ecgTimestampSec: var_ecgTimestampSec,
+      ppgTimestampSec: var_ppgTimestampSec,
+      pulseDelaySec: var_pulseDelaySec,
+    );
+  }
+
+  @protected
+  RespirationCycle sse_decode_respiration_cycle(SseDeserializer deserializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    var var_inspirationIndex = sse_decode_CastedPrimitive_usize(deserializer);
+    var var_expirationIndex = sse_decode_CastedPrimitive_usize(deserializer);
+    var var_nextInspirationIndex = sse_decode_CastedPrimitive_usize(
+      deserializer,
+    );
+    var var_durationSec = sse_decode_f_64(deserializer);
+    var var_respiratoryRateBpm = sse_decode_f_64(deserializer);
+    var var_amplitude = sse_decode_f_64(deserializer);
+    return RespirationCycle(
+      inspirationIndex: var_inspirationIndex,
+      expirationIndex: var_expirationIndex,
+      nextInspirationIndex: var_nextInspirationIndex,
+      durationSec: var_durationSec,
+      respiratoryRateBpm: var_respiratoryRateBpm,
+      amplitude: var_amplitude,
+    );
+  }
+
+  @protected
+  RespirationFeatures sse_decode_respiration_features(
+    SseDeserializer deserializer,
+  ) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    var var_meanRateBpm = sse_decode_opt_box_autoadd_f_64(deserializer);
+    var var_medianRateBpm = sse_decode_opt_box_autoadd_f_64(deserializer);
+    var var_rateStdBpm = sse_decode_opt_box_autoadd_f_64(deserializer);
+    var var_meanCycleDurationSec = sse_decode_opt_box_autoadd_f_64(
+      deserializer,
+    );
+    var var_cycleCount = sse_decode_CastedPrimitive_usize(deserializer);
+    var var_meanAmplitude = sse_decode_opt_box_autoadd_f_64(deserializer);
+    var var_amplitudeStd = sse_decode_opt_box_autoadd_f_64(deserializer);
+    return RespirationFeatures(
+      meanRateBpm: var_meanRateBpm,
+      medianRateBpm: var_medianRateBpm,
+      rateStdBpm: var_rateStdBpm,
+      meanCycleDurationSec: var_meanCycleDurationSec,
+      cycleCount: var_cycleCount,
+      meanAmplitude: var_meanAmplitude,
+      amplitudeStd: var_amplitudeStd,
+    );
+  }
+
+  @protected
+  RespiratoryState sse_decode_respiratory_state(SseDeserializer deserializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    var var_rateIndex = sse_decode_opt_box_autoadd_f_64(deserializer);
+    var var_amplitudeIndex = sse_decode_opt_box_autoadd_f_64(deserializer);
+    var var_regularityIndex = sse_decode_opt_box_autoadd_f_64(deserializer);
+    var var_cycleCount = sse_decode_CastedPrimitive_usize(deserializer);
+    return RespiratoryState(
+      rateIndex: var_rateIndex,
+      amplitudeIndex: var_amplitudeIndex,
+      regularityIndex: var_regularityIndex,
+      cycleCount: var_cycleCount,
+    );
+  }
+
+  @protected
+  RppgAlgorithmId sse_decode_rppg_algorithm_id(SseDeserializer deserializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    var inner = sse_decode_i_32(deserializer);
+    return RppgAlgorithmId.values[inner];
+  }
+
+  @protected
+  RppgConfig sse_decode_rppg_config(SseDeserializer deserializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    var var_algorithm = sse_decode_rppg_algorithm_id(deserializer);
+    var var_minQuality = sse_decode_f_64(deserializer);
+    var var_minimumRoiPixels = sse_decode_CastedPrimitive_usize(deserializer);
+    var var_maxGapSec = sse_decode_f_64(deserializer);
+    return RppgConfig(
+      algorithm: var_algorithm,
+      minQuality: var_minQuality,
+      minimumRoiPixels: var_minimumRoiPixels,
+      maxGapSec: var_maxGapSec,
+    );
+  }
+
+  @protected
+  RppgSignalResult sse_decode_rppg_signal_result(SseDeserializer deserializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    var var_timestampsSec = sse_decode_list_prim_f_64_strict(deserializer);
+    var var_pulseSignal = sse_decode_list_prim_f_64_strict(deserializer);
+    var var_meanQuality = sse_decode_f_64(deserializer);
+    return RppgSignalResult(
+      timestampsSec: var_timestampsSec,
+      pulseSignal: var_pulseSignal,
+      meanQuality: var_meanQuality,
+    );
+  }
+
+  @protected
+  RsaResult sse_decode_rsa_result(SseDeserializer deserializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    var var_amplitudeBpm = sse_decode_f_64(deserializer);
+    var var_amplitudeRrSec = sse_decode_f_64(deserializer);
+    var var_validBeats = sse_decode_CastedPrimitive_usize(deserializer);
+    var var_validCycles = sse_decode_CastedPrimitive_usize(deserializer);
+    return RsaResult(
+      amplitudeBpm: var_amplitudeBpm,
+      amplitudeRrSec: var_amplitudeRrSec,
+      validBeats: var_validBeats,
+      validCycles: var_validCycles,
+    );
+  }
+
+  @protected
+  RspProcessingConfig sse_decode_rsp_processing_config(
+    SseDeserializer deserializer,
+  ) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    var var_lowcut = sse_decode_opt_box_autoadd_f_64(deserializer);
+    var var_highcut = sse_decode_opt_box_autoadd_f_64(deserializer);
+    var var_filterOrder = sse_decode_opt_CastedPrimitive_usize(deserializer);
+    var var_minBreathIntervalSec = sse_decode_opt_box_autoadd_f_64(
+      deserializer,
+    );
+    var var_maxBreathIntervalSec = sse_decode_opt_box_autoadd_f_64(
+      deserializer,
+    );
+    var var_minAmplitude = sse_decode_opt_box_autoadd_f_64(deserializer);
+    return RspProcessingConfig(
+      lowcut: var_lowcut,
+      highcut: var_highcut,
+      filterOrder: var_filterOrder,
+      minBreathIntervalSec: var_minBreathIntervalSec,
+      maxBreathIntervalSec: var_maxBreathIntervalSec,
+      minAmplitude: var_minAmplitude,
+    );
+  }
+
+  @protected
+  SignalError sse_decode_signal_error(SseDeserializer deserializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    var var_message = sse_decode_String(deserializer);
+    return SignalError(message: var_message);
   }
 
   @protected
@@ -915,9 +3461,48 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   }
 
   @protected
-  int sse_decode_i_32(SseDeserializer deserializer) {
+  void
+  sse_encode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerAutonomicEstimator(
+    AutonomicEstimator self,
+    SseSerializer serializer,
+  ) {
     // Codec=Sse (Serialization based), see doc to use other codecs
-    return deserializer.buffer.getInt32();
+    sse_encode_usize(
+      (self as AutonomicEstimatorImpl).frbInternalSseEncode(move: true),
+      serializer,
+    );
+  }
+
+  @protected
+  void
+  sse_encode_Auto_Ref_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerAutonomicEstimator(
+    AutonomicEstimator self,
+    SseSerializer serializer,
+  ) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    sse_encode_usize(
+      (self as AutonomicEstimatorImpl).frbInternalSseEncode(move: false),
+      serializer,
+    );
+  }
+
+  @protected
+  void sse_encode_CastedPrimitive_usize(int self, SseSerializer serializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    sse_encode_usize(sseEncodeCastedPrimitiveU64(self), serializer);
+  }
+
+  @protected
+  void
+  sse_encode_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerAutonomicEstimator(
+    AutonomicEstimator self,
+    SseSerializer serializer,
+  ) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    sse_encode_usize(
+      (self as AutonomicEstimatorImpl).frbInternalSseEncode(move: null),
+      serializer,
+    );
   }
 
   @protected
@@ -927,9 +3512,58 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   }
 
   @protected
+  void sse_encode_autonomic_state(
+    AutonomicState self,
+    SseSerializer serializer,
+  ) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    sse_encode_f_64(self.timestamp, serializer);
+    sse_encode_f_64(self.durationSec, serializer);
+    sse_encode_cardiac_state(self.cardiac, serializer);
+    sse_encode_electrodermal_state(self.electrodermal, serializer);
+    sse_encode_respiratory_state(self.respiratory, serializer);
+    sse_encode_coupling_state(self.coupling, serializer);
+    sse_encode_opt_box_autoadd_f_64(self.activationScore, serializer);
+    sse_encode_opt_box_autoadd_f_64(self.regulationScore, serializer);
+  }
+
+  @protected
   void sse_encode_bool(bool self, SseSerializer serializer) {
     // Codec=Sse (Serialization based), see doc to use other codecs
     serializer.buffer.putUint8(self ? 1 : 0);
+  }
+
+  @protected
+  void sse_encode_box_autoadd_bool(bool self, SseSerializer serializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    sse_encode_bool(self, serializer);
+  }
+
+  @protected
+  void sse_encode_box_autoadd_ecg_peak_detection_config(
+    EcgPeakDetectionConfig self,
+    SseSerializer serializer,
+  ) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    sse_encode_ecg_peak_detection_config(self, serializer);
+  }
+
+  @protected
+  void sse_encode_box_autoadd_eda_decomposition_config(
+    EdaDecompositionConfig self,
+    SseSerializer serializer,
+  ) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    sse_encode_eda_decomposition_config(self, serializer);
+  }
+
+  @protected
+  void sse_encode_box_autoadd_eda_peak_detection_config(
+    EdaPeakDetectionConfig self,
+    SseSerializer serializer,
+  ) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    sse_encode_eda_peak_detection_config(self, serializer);
   }
 
   @protected
@@ -939,17 +3573,217 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   }
 
   @protected
+  void sse_encode_box_autoadd_feature_window(
+    FeatureWindow self,
+    SseSerializer serializer,
+  ) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    sse_encode_feature_window(self, serializer);
+  }
+
+  @protected
+  void sse_encode_box_autoadd_peak_detection_config(
+    PeakDetectionConfig self,
+    SseSerializer serializer,
+  ) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    sse_encode_peak_detection_config(self, serializer);
+  }
+
+  @protected
+  void sse_encode_box_autoadd_ppg_peak_detection_config(
+    PpgPeakDetectionConfig self,
+    SseSerializer serializer,
+  ) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    sse_encode_ppg_peak_detection_config(self, serializer);
+  }
+
+  @protected
+  void sse_encode_box_autoadd_pulse_timing_config(
+    PulseTimingConfig self,
+    SseSerializer serializer,
+  ) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    sse_encode_pulse_timing_config(self, serializer);
+  }
+
+  @protected
+  void sse_encode_box_autoadd_rppg_config(
+    RppgConfig self,
+    SseSerializer serializer,
+  ) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    sse_encode_rppg_config(self, serializer);
+  }
+
+  @protected
+  void sse_encode_box_autoadd_rsp_processing_config(
+    RspProcessingConfig self,
+    SseSerializer serializer,
+  ) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    sse_encode_rsp_processing_config(self, serializer);
+  }
+
+  @protected
+  void sse_encode_cardiac_features(
+    CardiacFeatures self,
+    SseSerializer serializer,
+  ) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    sse_encode_opt_box_autoadd_f_64(self.meanHrBpm, serializer);
+    sse_encode_opt_box_autoadd_f_64(self.medianHrBpm, serializer);
+    sse_encode_opt_box_autoadd_f_64(self.sdnnMs, serializer);
+    sse_encode_opt_box_autoadd_f_64(self.rmssdMs, serializer);
+    sse_encode_opt_box_autoadd_f_64(self.pnn50, serializer);
+    sse_encode_opt_box_autoadd_f_64(self.rrMeanMs, serializer);
+    sse_encode_opt_box_autoadd_f_64(self.rrStdMs, serializer);
+    sse_encode_CastedPrimitive_usize(self.beatCount, serializer);
+  }
+
+  @protected
+  void sse_encode_cardiac_state(CardiacState self, SseSerializer serializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    sse_encode_opt_box_autoadd_f_64(self.variabilityIndex, serializer);
+    sse_encode_opt_box_autoadd_f_64(self.heartRateIndex, serializer);
+    sse_encode_opt_box_autoadd_f_64(self.recoveryEvidence, serializer);
+    sse_encode_CastedPrimitive_usize(self.beatCount, serializer);
+  }
+
+  @protected
+  void sse_encode_coupling_state(CouplingState self, SseSerializer serializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    sse_encode_opt_box_autoadd_f_64(self.resphrCouplingIndex, serializer);
+    sse_encode_opt_box_autoadd_f_64(self.phaseCouplingIndex, serializer);
+    sse_encode_opt_box_autoadd_f_64(self.pulseDelayIndex, serializer);
+    sse_encode_CastedPrimitive_usize(self.associationCount, serializer);
+  }
+
+  @protected
+  void sse_encode_ecg_peak_detection_config(
+    EcgPeakDetectionConfig self,
+    SseSerializer serializer,
+  ) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    sse_encode_opt_box_autoadd_f_64(self.lowcut, serializer);
+    sse_encode_opt_box_autoadd_f_64(self.highcut, serializer);
+    sse_encode_opt_CastedPrimitive_usize(self.filterOrder, serializer);
+    sse_encode_opt_box_autoadd_f_64(self.integrationWindowSec, serializer);
+    sse_encode_opt_box_autoadd_f_64(self.refractoryPeriodSec, serializer);
+    sse_encode_opt_box_autoadd_bool(self.searchback, serializer);
+    sse_encode_opt_box_autoadd_f_64(self.thresholdMultiplier, serializer);
+  }
+
+  @protected
+  void sse_encode_eda_component_signals(
+    EdaComponentSignals self,
+    SseSerializer serializer,
+  ) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    sse_encode_list_prim_f_64_strict(self.tonic, serializer);
+    sse_encode_list_prim_f_64_strict(self.phasic, serializer);
+  }
+
+  @protected
+  void sse_encode_eda_decomposition_config(
+    EdaDecompositionConfig self,
+    SseSerializer serializer,
+  ) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    sse_encode_opt_box_autoadd_f_64(self.tonicCutoffHz, serializer);
+    sse_encode_opt_CastedPrimitive_usize(self.filterOrder, serializer);
+  }
+
+  @protected
+  void sse_encode_eda_features(EdaFeatures self, SseSerializer serializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    sse_encode_opt_box_autoadd_f_64(self.meanTonicUs, serializer);
+    sse_encode_opt_box_autoadd_f_64(self.medianTonicUs, serializer);
+    sse_encode_opt_box_autoadd_f_64(self.tonicStdUs, serializer);
+    sse_encode_opt_box_autoadd_f_64(self.meanPhasicUs, serializer);
+    sse_encode_opt_box_autoadd_f_64(self.phasicStdUs, serializer);
+    sse_encode_CastedPrimitive_usize(self.scrCount, serializer);
+    sse_encode_opt_box_autoadd_f_64(self.scrRatePerMin, serializer);
+    sse_encode_opt_box_autoadd_f_64(self.meanScrAmplitudeUs, serializer);
+    sse_encode_opt_box_autoadd_f_64(self.medianScrAmplitudeUs, serializer);
+    sse_encode_opt_box_autoadd_f_64(self.meanScrRiseTimeSec, serializer);
+  }
+
+  @protected
+  void sse_encode_eda_peak_detection_config(
+    EdaPeakDetectionConfig self,
+    SseSerializer serializer,
+  ) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    sse_encode_opt_box_autoadd_f_64(self.minAmplitude, serializer);
+    sse_encode_opt_box_autoadd_f_64(self.minProminence, serializer);
+    sse_encode_opt_box_autoadd_f_64(self.minDistanceSec, serializer);
+    sse_encode_opt_box_autoadd_f_64(self.minRiseTimeSec, serializer);
+    sse_encode_opt_box_autoadd_f_64(self.maxRiseTimeSec, serializer);
+  }
+
+  @protected
+  void sse_encode_eda_peak_event(EdaPeakEvent self, SseSerializer serializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    sse_encode_CastedPrimitive_usize(self.onsetIndex, serializer);
+    sse_encode_CastedPrimitive_usize(self.peakIndex, serializer);
+    sse_encode_f_64(self.amplitude, serializer);
+    sse_encode_f_64(self.riseTimeSec, serializer);
+  }
+
+  @protected
+  void sse_encode_electrodermal_state(
+    ElectrodermalState self,
+    SseSerializer serializer,
+  ) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    sse_encode_opt_box_autoadd_f_64(self.tonicLevelIndex, serializer);
+    sse_encode_opt_box_autoadd_f_64(self.phasicActivationIndex, serializer);
+    sse_encode_opt_box_autoadd_f_64(self.scrRateIndex, serializer);
+    sse_encode_CastedPrimitive_usize(self.scrCount, serializer);
+  }
+
+  @protected
   void sse_encode_f_64(double self, SseSerializer serializer) {
     // Codec=Sse (Serialization based), see doc to use other codecs
     serializer.buffer.putFloat64(self);
   }
 
   @protected
-  void sse_encode_list_bool(List<bool> self, SseSerializer serializer) {
+  void sse_encode_feature_window(FeatureWindow self, SseSerializer serializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    sse_encode_f_64(self.startTimeSec, serializer);
+    sse_encode_f_64(self.endTimeSec, serializer);
+  }
+
+  @protected
+  void sse_encode_i_32(int self, SseSerializer serializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    serializer.buffer.putInt32(self);
+  }
+
+  @protected
+  void sse_encode_list_CastedPrimitive_usize(
+    List<int> self,
+    SseSerializer serializer,
+  ) {
     // Codec=Sse (Serialization based), see doc to use other codecs
     sse_encode_i_32(self.length, serializer);
     for (final item in self) {
-      sse_encode_bool(item, serializer);
+      sse_encode_CastedPrimitive_usize(item, serializer);
+    }
+  }
+
+  @protected
+  void sse_encode_list_eda_peak_event(
+    List<EdaPeakEvent> self,
+    SseSerializer serializer,
+  ) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    sse_encode_i_32(self.length, serializer);
+    for (final item in self) {
+      sse_encode_eda_peak_event(item, serializer);
     }
   }
 
@@ -986,6 +3820,92 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   }
 
   @protected
+  void sse_encode_list_pulse_timing_result(
+    List<PulseTimingResult> self,
+    SseSerializer serializer,
+  ) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    sse_encode_i_32(self.length, serializer);
+    for (final item in self) {
+      sse_encode_pulse_timing_result(item, serializer);
+    }
+  }
+
+  @protected
+  void sse_encode_list_respiration_cycle(
+    List<RespirationCycle> self,
+    SseSerializer serializer,
+  ) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    sse_encode_i_32(self.length, serializer);
+    for (final item in self) {
+      sse_encode_respiration_cycle(item, serializer);
+    }
+  }
+
+  @protected
+  void sse_encode_opt_CastedPrimitive_usize(
+    int? self,
+    SseSerializer serializer,
+  ) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+
+    sse_encode_bool(self != null, serializer);
+    if (self != null) {
+      sse_encode_CastedPrimitive_usize(self, serializer);
+    }
+  }
+
+  @protected
+  void sse_encode_opt_box_autoadd_bool(bool? self, SseSerializer serializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+
+    sse_encode_bool(self != null, serializer);
+    if (self != null) {
+      sse_encode_box_autoadd_bool(self, serializer);
+    }
+  }
+
+  @protected
+  void sse_encode_opt_box_autoadd_ecg_peak_detection_config(
+    EcgPeakDetectionConfig? self,
+    SseSerializer serializer,
+  ) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+
+    sse_encode_bool(self != null, serializer);
+    if (self != null) {
+      sse_encode_box_autoadd_ecg_peak_detection_config(self, serializer);
+    }
+  }
+
+  @protected
+  void sse_encode_opt_box_autoadd_eda_decomposition_config(
+    EdaDecompositionConfig? self,
+    SseSerializer serializer,
+  ) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+
+    sse_encode_bool(self != null, serializer);
+    if (self != null) {
+      sse_encode_box_autoadd_eda_decomposition_config(self, serializer);
+    }
+  }
+
+  @protected
+  void sse_encode_opt_box_autoadd_eda_peak_detection_config(
+    EdaPeakDetectionConfig? self,
+    SseSerializer serializer,
+  ) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+
+    sse_encode_bool(self != null, serializer);
+    if (self != null) {
+      sse_encode_box_autoadd_eda_peak_detection_config(self, serializer);
+    }
+  }
+
+  @protected
   void sse_encode_opt_box_autoadd_f_64(double? self, SseSerializer serializer) {
     // Codec=Sse (Serialization based), see doc to use other codecs
 
@@ -993,6 +3913,219 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
     if (self != null) {
       sse_encode_box_autoadd_f_64(self, serializer);
     }
+  }
+
+  @protected
+  void sse_encode_opt_box_autoadd_ppg_peak_detection_config(
+    PpgPeakDetectionConfig? self,
+    SseSerializer serializer,
+  ) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+
+    sse_encode_bool(self != null, serializer);
+    if (self != null) {
+      sse_encode_box_autoadd_ppg_peak_detection_config(self, serializer);
+    }
+  }
+
+  @protected
+  void sse_encode_opt_box_autoadd_pulse_timing_config(
+    PulseTimingConfig? self,
+    SseSerializer serializer,
+  ) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+
+    sse_encode_bool(self != null, serializer);
+    if (self != null) {
+      sse_encode_box_autoadd_pulse_timing_config(self, serializer);
+    }
+  }
+
+  @protected
+  void sse_encode_opt_box_autoadd_rppg_config(
+    RppgConfig? self,
+    SseSerializer serializer,
+  ) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+
+    sse_encode_bool(self != null, serializer);
+    if (self != null) {
+      sse_encode_box_autoadd_rppg_config(self, serializer);
+    }
+  }
+
+  @protected
+  void sse_encode_opt_box_autoadd_rsp_processing_config(
+    RspProcessingConfig? self,
+    SseSerializer serializer,
+  ) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+
+    sse_encode_bool(self != null, serializer);
+    if (self != null) {
+      sse_encode_box_autoadd_rsp_processing_config(self, serializer);
+    }
+  }
+
+  @protected
+  void sse_encode_peak_detection_config(
+    PeakDetectionConfig self,
+    SseSerializer serializer,
+  ) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    sse_encode_opt_box_autoadd_f_64(self.minHeight, serializer);
+    sse_encode_opt_CastedPrimitive_usize(self.minDistance, serializer);
+    sse_encode_opt_box_autoadd_f_64(self.minProminence, serializer);
+    sse_encode_opt_CastedPrimitive_usize(self.minWidth, serializer);
+    sse_encode_opt_box_autoadd_f_64(self.threshold, serializer);
+  }
+
+  @protected
+  void sse_encode_phase_coupling_result(
+    PhaseCouplingResult self,
+    SseSerializer serializer,
+  ) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    sse_encode_f_64(self.meanPhaseRad, serializer);
+    sse_encode_f_64(self.vectorLength, serializer);
+    sse_encode_CastedPrimitive_usize(self.sampleCount, serializer);
+  }
+
+  @protected
+  void sse_encode_ppg_peak_detection_config(
+    PpgPeakDetectionConfig self,
+    SseSerializer serializer,
+  ) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    sse_encode_opt_box_autoadd_f_64(self.lowcut, serializer);
+    sse_encode_opt_box_autoadd_f_64(self.highcut, serializer);
+    sse_encode_opt_CastedPrimitive_usize(self.filterOrder, serializer);
+    sse_encode_opt_box_autoadd_f_64(self.wPeakSec, serializer);
+    sse_encode_opt_box_autoadd_f_64(self.wBeatSec, serializer);
+    sse_encode_opt_box_autoadd_f_64(self.alpha, serializer);
+    sse_encode_opt_box_autoadd_f_64(self.refractoryPeriodSec, serializer);
+  }
+
+  @protected
+  void sse_encode_pulse_timing_config(
+    PulseTimingConfig self,
+    SseSerializer serializer,
+  ) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    sse_encode_opt_box_autoadd_f_64(self.minDelaySec, serializer);
+    sse_encode_opt_box_autoadd_f_64(self.maxDelaySec, serializer);
+  }
+
+  @protected
+  void sse_encode_pulse_timing_result(
+    PulseTimingResult self,
+    SseSerializer serializer,
+  ) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    sse_encode_CastedPrimitive_usize(self.ecgPeakIndex, serializer);
+    sse_encode_CastedPrimitive_usize(self.ppgPeakIndex, serializer);
+    sse_encode_f_64(self.ecgTimestampSec, serializer);
+    sse_encode_f_64(self.ppgTimestampSec, serializer);
+    sse_encode_f_64(self.pulseDelaySec, serializer);
+  }
+
+  @protected
+  void sse_encode_respiration_cycle(
+    RespirationCycle self,
+    SseSerializer serializer,
+  ) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    sse_encode_CastedPrimitive_usize(self.inspirationIndex, serializer);
+    sse_encode_CastedPrimitive_usize(self.expirationIndex, serializer);
+    sse_encode_CastedPrimitive_usize(self.nextInspirationIndex, serializer);
+    sse_encode_f_64(self.durationSec, serializer);
+    sse_encode_f_64(self.respiratoryRateBpm, serializer);
+    sse_encode_f_64(self.amplitude, serializer);
+  }
+
+  @protected
+  void sse_encode_respiration_features(
+    RespirationFeatures self,
+    SseSerializer serializer,
+  ) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    sse_encode_opt_box_autoadd_f_64(self.meanRateBpm, serializer);
+    sse_encode_opt_box_autoadd_f_64(self.medianRateBpm, serializer);
+    sse_encode_opt_box_autoadd_f_64(self.rateStdBpm, serializer);
+    sse_encode_opt_box_autoadd_f_64(self.meanCycleDurationSec, serializer);
+    sse_encode_CastedPrimitive_usize(self.cycleCount, serializer);
+    sse_encode_opt_box_autoadd_f_64(self.meanAmplitude, serializer);
+    sse_encode_opt_box_autoadd_f_64(self.amplitudeStd, serializer);
+  }
+
+  @protected
+  void sse_encode_respiratory_state(
+    RespiratoryState self,
+    SseSerializer serializer,
+  ) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    sse_encode_opt_box_autoadd_f_64(self.rateIndex, serializer);
+    sse_encode_opt_box_autoadd_f_64(self.amplitudeIndex, serializer);
+    sse_encode_opt_box_autoadd_f_64(self.regularityIndex, serializer);
+    sse_encode_CastedPrimitive_usize(self.cycleCount, serializer);
+  }
+
+  @protected
+  void sse_encode_rppg_algorithm_id(
+    RppgAlgorithmId self,
+    SseSerializer serializer,
+  ) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    sse_encode_i_32(self.index, serializer);
+  }
+
+  @protected
+  void sse_encode_rppg_config(RppgConfig self, SseSerializer serializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    sse_encode_rppg_algorithm_id(self.algorithm, serializer);
+    sse_encode_f_64(self.minQuality, serializer);
+    sse_encode_CastedPrimitive_usize(self.minimumRoiPixels, serializer);
+    sse_encode_f_64(self.maxGapSec, serializer);
+  }
+
+  @protected
+  void sse_encode_rppg_signal_result(
+    RppgSignalResult self,
+    SseSerializer serializer,
+  ) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    sse_encode_list_prim_f_64_strict(self.timestampsSec, serializer);
+    sse_encode_list_prim_f_64_strict(self.pulseSignal, serializer);
+    sse_encode_f_64(self.meanQuality, serializer);
+  }
+
+  @protected
+  void sse_encode_rsa_result(RsaResult self, SseSerializer serializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    sse_encode_f_64(self.amplitudeBpm, serializer);
+    sse_encode_f_64(self.amplitudeRrSec, serializer);
+    sse_encode_CastedPrimitive_usize(self.validBeats, serializer);
+    sse_encode_CastedPrimitive_usize(self.validCycles, serializer);
+  }
+
+  @protected
+  void sse_encode_rsp_processing_config(
+    RspProcessingConfig self,
+    SseSerializer serializer,
+  ) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    sse_encode_opt_box_autoadd_f_64(self.lowcut, serializer);
+    sse_encode_opt_box_autoadd_f_64(self.highcut, serializer);
+    sse_encode_opt_CastedPrimitive_usize(self.filterOrder, serializer);
+    sse_encode_opt_box_autoadd_f_64(self.minBreathIntervalSec, serializer);
+    sse_encode_opt_box_autoadd_f_64(self.maxBreathIntervalSec, serializer);
+    sse_encode_opt_box_autoadd_f_64(self.minAmplitude, serializer);
+  }
+
+  @protected
+  void sse_encode_signal_error(SignalError self, SseSerializer serializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    sse_encode_String(self.message, serializer);
   }
 
   @protected
@@ -1011,10 +4144,31 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
     // Codec=Sse (Serialization based), see doc to use other codecs
     serializer.buffer.putBigUint64(self);
   }
+}
 
-  @protected
-  void sse_encode_i_32(int self, SseSerializer serializer) {
-    // Codec=Sse (Serialization based), see doc to use other codecs
-    serializer.buffer.putInt32(self);
-  }
+@sealed
+class AutonomicEstimatorImpl extends RustOpaque implements AutonomicEstimator {
+  // Not to be used by end users
+  AutonomicEstimatorImpl.frbInternalDcoDecode(List<dynamic> wire)
+    : super.frbInternalDcoDecode(wire, _kStaticData);
+
+  // Not to be used by end users
+  AutonomicEstimatorImpl.frbInternalSseDecode(
+    BigInt ptr,
+    int externalSizeOnNative,
+  ) : super.frbInternalSseDecode(ptr, externalSizeOnNative, _kStaticData);
+
+  static final _kStaticData = RustArcStaticData(
+    rustArcIncrementStrongCount:
+        RustLib.instance.api.rust_arc_increment_strong_count_AutonomicEstimator,
+    rustArcDecrementStrongCount:
+        RustLib.instance.api.rust_arc_decrement_strong_count_AutonomicEstimator,
+    rustArcDecrementStrongCountPtr: RustLib
+        .instance
+        .api
+        .rust_arc_decrement_strong_count_AutonomicEstimatorPtr,
+  );
+
+  Future<AutonomicState> estimateFromVector() => RustLib.instance.api
+      .crateApiAutonomicAutonomicEstimatorEstimateFromVector(that: this);
 }

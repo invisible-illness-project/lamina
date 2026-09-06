@@ -1,7 +1,16 @@
+[workspace]
+members = [
+    ".",
+    "lamina_py",
+    "lamina_dart/rust",
+]
+
+
 [package]
 name = "lamina"
 version = "0.1.0"
 edition = "2024"
+
 
 [dependencies]
 ndarray = "0.17.2"

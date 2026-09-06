@@ -1,7 +1,6 @@
+import 'dart:typed_data';
 import 'package:flutter/material.dart';
-import 'dart:async';
-
-import 'package:lamina_dart/lamina_dart.dart' as lamina_dart;
+import 'package:lamina_dart/lamina_dart.dart';
 
 void main() {
   runApp(const MyApp());
@@ -15,56 +14,73 @@ class MyApp extends StatefulWidget {
 }
 
 class _MyAppState extends State<MyApp> {
-  late int sumResult;
-  late Future<int> sumAsyncResult;
+  String _status = 'Initializing Lamina...';
+  double? _rmssd;
+  int _peakCount = 0;
 
   @override
   void initState() {
     super.initState();
-    sumResult = lamina_dart.sum(1, 2);
-    sumAsyncResult = lamina_dart.sumAsync(3, 4);
+    _runDemo();
+  }
+
+  Future<void> _runDemo() async {
+    try {
+      await Lamina.init();
+      // Generate synthetic ECG R-peak intervals
+      final intervals = Float64List.fromList([
+        800.0,
+        810.0,
+        790.0,
+        805.0,
+        815.0,
+        795.0,
+      ]);
+      final rmssd = await Lamina.hrv.rmssd(intervals);
+
+      // Smooth moving average sample signal
+      final signal = Float64List.fromList([1.0, 3.0, 5.0, 3.0, 1.0]);
+      final peaks = await Lamina.signal.findPeaks(signal);
+
+      setState(() {
+        _rmssd = rmssd;
+        _peakCount = peaks.length;
+        _status = 'Lamina Rust Engine Initialized Successfully';
+      });
+    } catch (e) {
+      setState(() {
+        _status = 'Error: $e';
+      });
+    }
   }
 
   @override
   Widget build(BuildContext context) {
-    const textStyle = TextStyle(fontSize: 25);
-    const spacerSmall = SizedBox(height: 10);
+    const textStyle = TextStyle(fontSize: 18);
+    const spacer = SizedBox(height: 12);
     return MaterialApp(
       home: Scaffold(
-        appBar: AppBar(title: const Text('Native Packages')),
-        body: SingleChildScrollView(
-          child: Container(
-            padding: const EdgeInsets.all(10),
-            child: Column(
-              children: [
-                const Text(
-                  'This calls a native function through FFI that is shipped as source in the package. '
-                  'The native code is built as part of the Flutter Runner build.',
-                  style: textStyle,
-                  textAlign: TextAlign.center,
+        appBar: AppBar(title: const Text('Lamina SDK Example')),
+        body: Padding(
+          padding: const EdgeInsets.all(16.0),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                _status,
+                style: const TextStyle(
+                  fontSize: 20,
+                  fontWeight: FontWeight.bold,
                 ),
-                spacerSmall,
-                Text(
-                  'sum(1, 2) = $sumResult',
-                  style: textStyle,
-                  textAlign: TextAlign.center,
-                ),
-                spacerSmall,
-                FutureBuilder<int>(
-                  future: sumAsyncResult,
-                  builder: (BuildContext context, AsyncSnapshot<int> value) {
-                    final displayValue = (value.hasData)
-                        ? value.data
-                        : 'loading';
-                    return Text(
-                      'await sumAsync(3, 4) = $displayValue',
-                      style: textStyle,
-                      textAlign: TextAlign.center,
-                    );
-                  },
-                ),
-              ],
-            ),
+              ),
+              spacer,
+              Text(
+                'RMSSD (HRV): ${_rmssd != null ? "${_rmssd!.toStringAsFixed(2)} ms" : "Processing..."}',
+                style: textStyle,
+              ),
+              spacer,
+              Text('Peaks Detected: $_peakCount', style: textStyle),
+            ],
           ),
         ),
       ),

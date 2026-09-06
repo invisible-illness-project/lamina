@@ -26,6 +26,7 @@
 
 // Section: imports
 
+use crate::api::autonomic::*;
 use flutter_rust_bridge::for_generated::byteorder::{NativeEndian, ReadBytesExt, WriteBytesExt};
 use flutter_rust_bridge::for_generated::{transform_result_dco, Lifetimeable, Lockable};
 use flutter_rust_bridge::{Handler, IntoIntoDart};
@@ -38,7 +39,7 @@ flutter_rust_bridge::frb_generated_boilerplate!(
     default_rust_auto_opaque = RustAutoOpaqueMoi,
 );
 pub(crate) const FLUTTER_RUST_BRIDGE_CODEGEN_VERSION: &str = "2.12.0";
-pub(crate) const FLUTTER_RUST_BRIDGE_CODEGEN_CONTENT_HASH: i32 = 994225293;
+pub(crate) const FLUTTER_RUST_BRIDGE_CODEGEN_CONTENT_HASH: i32 = 1499871726;
 
 // Section: executor
 
@@ -46,7 +47,7 @@ flutter_rust_bridge::frb_generated_default_handler!();
 
 // Section: wire_funcs
 
-fn wire__crate__api__simple__init_app_impl(
+fn wire__crate__api__autonomic__AutonomicEstimator_default_impl(
     port_: flutter_rust_bridge::for_generated::MessagePort,
     ptr_: flutter_rust_bridge::for_generated::PlatformGeneralizedUint8ListPtr,
     rust_vec_len_: i32,
@@ -54,7 +55,7 @@ fn wire__crate__api__simple__init_app_impl(
 ) {
     FLUTTER_RUST_BRIDGE_HANDLER.wrap_normal::<flutter_rust_bridge::for_generated::SseCodec, _, _>(
         flutter_rust_bridge::for_generated::TaskInfo {
-            debug_name: "init_app",
+            debug_name: "AutonomicEstimator_default",
             port: Some(port_),
             mode: flutter_rust_bridge::for_generated::FfiCallMode::Normal,
         },
@@ -71,16 +72,568 @@ fn wire__crate__api__simple__init_app_impl(
             deserializer.end();
             move |context| {
                 transform_result_sse::<_, ()>((move || {
-                    let output_ok = Result::<_, ()>::Ok({
-                        crate::api::simple::init_app();
-                    })?;
+                    let output_ok =
+                        Result::<_, ()>::Ok(crate::api::autonomic::AutonomicEstimator::default())?;
                     Ok(output_ok)
                 })())
             }
         },
     )
 }
-fn wire__crate__api__simple__process_ecg_clean_impl(
+fn wire__crate__api__autonomic__AutonomicEstimator_estimate_from_vector_impl(
+    port_: flutter_rust_bridge::for_generated::MessagePort,
+    ptr_: flutter_rust_bridge::for_generated::PlatformGeneralizedUint8ListPtr,
+    rust_vec_len_: i32,
+    data_len_: i32,
+) {
+    FLUTTER_RUST_BRIDGE_HANDLER.wrap_normal::<flutter_rust_bridge::for_generated::SseCodec, _, _>(
+        flutter_rust_bridge::for_generated::TaskInfo {
+            debug_name: "AutonomicEstimator_estimate_from_vector",
+            port: Some(port_),
+            mode: flutter_rust_bridge::for_generated::FfiCallMode::Normal,
+        },
+        move || {
+            let message = unsafe {
+                flutter_rust_bridge::for_generated::Dart2RustMessageSse::from_wire(
+                    ptr_,
+                    rust_vec_len_,
+                    data_len_,
+                )
+            };
+            let mut deserializer =
+                flutter_rust_bridge::for_generated::SseDeserializer::new(message);
+            let api_that = <RustOpaqueMoi<
+                flutter_rust_bridge::for_generated::RustAutoOpaqueInner<AutonomicEstimator>,
+            >>::sse_decode(&mut deserializer);
+            deserializer.end();
+            move |context| {
+                transform_result_sse::<_, crate::api::error::SignalError>((move || {
+                    let mut api_that_guard = None;
+                    let decode_indices_ =
+                        flutter_rust_bridge::for_generated::lockable_compute_decode_order(vec![
+                            flutter_rust_bridge::for_generated::LockableOrderInfo::new(
+                                &api_that, 0, false,
+                            ),
+                        ]);
+                    for i in decode_indices_ {
+                        match i {
+                            0 => api_that_guard = Some(api_that.lockable_decode_sync_ref()),
+                            _ => unreachable!(),
+                        }
+                    }
+                    let api_that_guard = api_that_guard.unwrap();
+                    let output_ok =
+                        crate::api::autonomic::AutonomicEstimator::estimate_from_vector(
+                            &*api_that_guard,
+                        )?;
+                    Ok(output_ok)
+                })())
+            }
+        },
+    )
+}
+fn wire__crate__api__autonomic__AutonomicEstimator_new_impl(
+    port_: flutter_rust_bridge::for_generated::MessagePort,
+    ptr_: flutter_rust_bridge::for_generated::PlatformGeneralizedUint8ListPtr,
+    rust_vec_len_: i32,
+    data_len_: i32,
+) {
+    FLUTTER_RUST_BRIDGE_HANDLER.wrap_normal::<flutter_rust_bridge::for_generated::SseCodec, _, _>(
+        flutter_rust_bridge::for_generated::TaskInfo {
+            debug_name: "AutonomicEstimator_new",
+            port: Some(port_),
+            mode: flutter_rust_bridge::for_generated::FfiCallMode::Normal,
+        },
+        move || {
+            let message = unsafe {
+                flutter_rust_bridge::for_generated::Dart2RustMessageSse::from_wire(
+                    ptr_,
+                    rust_vec_len_,
+                    data_len_,
+                )
+            };
+            let mut deserializer =
+                flutter_rust_bridge::for_generated::SseDeserializer::new(message);
+            deserializer.end();
+            move |context| {
+                transform_result_sse::<_, ()>((move || {
+                    let output_ok =
+                        Result::<_, ()>::Ok(crate::api::autonomic::AutonomicEstimator::new())?;
+                    Ok(output_ok)
+                })())
+            }
+        },
+    )
+}
+fn wire__crate__api__multimodal__compute_cardiorespiratory_phase_coupling_impl(
+    port_: flutter_rust_bridge::for_generated::MessagePort,
+    ptr_: flutter_rust_bridge::for_generated::PlatformGeneralizedUint8ListPtr,
+    rust_vec_len_: i32,
+    data_len_: i32,
+) {
+    FLUTTER_RUST_BRIDGE_HANDLER.wrap_normal::<flutter_rust_bridge::for_generated::SseCodec, _, _>(
+        flutter_rust_bridge::for_generated::TaskInfo {
+            debug_name: "compute_cardiorespiratory_phase_coupling",
+            port: Some(port_),
+            mode: flutter_rust_bridge::for_generated::FfiCallMode::Normal,
+        },
+        move || {
+            let message = unsafe {
+                flutter_rust_bridge::for_generated::Dart2RustMessageSse::from_wire(
+                    ptr_,
+                    rust_vec_len_,
+                    data_len_,
+                )
+            };
+            let mut deserializer =
+                flutter_rust_bridge::for_generated::SseDeserializer::new(message);
+            let api_phases = <Vec<f64>>::sse_decode(&mut deserializer);
+            deserializer.end();
+            move |context| {
+                transform_result_sse::<_, crate::api::error::SignalError>((move || {
+                    let output_ok =
+                        crate::api::multimodal::compute_cardiorespiratory_phase_coupling(
+                            api_phases,
+                        )?;
+                    Ok(output_ok)
+                })())
+            }
+        },
+    )
+}
+fn wire__crate__api__multimodal__compute_ecg_ppg_timing_impl(
+    port_: flutter_rust_bridge::for_generated::MessagePort,
+    ptr_: flutter_rust_bridge::for_generated::PlatformGeneralizedUint8ListPtr,
+    rust_vec_len_: i32,
+    data_len_: i32,
+) {
+    FLUTTER_RUST_BRIDGE_HANDLER.wrap_normal::<flutter_rust_bridge::for_generated::SseCodec, _, _>(
+        flutter_rust_bridge::for_generated::TaskInfo {
+            debug_name: "compute_ecg_ppg_timing",
+            port: Some(port_),
+            mode: flutter_rust_bridge::for_generated::FfiCallMode::Normal,
+        },
+        move || {
+            let message = unsafe {
+                flutter_rust_bridge::for_generated::Dart2RustMessageSse::from_wire(
+                    ptr_,
+                    rust_vec_len_,
+                    data_len_,
+                )
+            };
+            let mut deserializer =
+                flutter_rust_bridge::for_generated::SseDeserializer::new(message);
+            let api_ecg_peaks = <Vec<usize>>::sse_decode(&mut deserializer);
+            let api_ecg_sampling_rate = <f64>::sse_decode(&mut deserializer);
+            let api_ecg_offset_sec = <f64>::sse_decode(&mut deserializer);
+            let api_ppg_peaks = <Vec<usize>>::sse_decode(&mut deserializer);
+            let api_ppg_sampling_rate = <f64>::sse_decode(&mut deserializer);
+            let api_ppg_offset_sec = <f64>::sse_decode(&mut deserializer);
+            let api_config =
+                <Option<crate::api::multimodal::PulseTimingConfig>>::sse_decode(&mut deserializer);
+            deserializer.end();
+            move |context| {
+                transform_result_sse::<_, crate::api::error::SignalError>((move || {
+                    let output_ok = crate::api::multimodal::compute_ecg_ppg_timing(
+                        api_ecg_peaks,
+                        api_ecg_sampling_rate,
+                        api_ecg_offset_sec,
+                        api_ppg_peaks,
+                        api_ppg_sampling_rate,
+                        api_ppg_offset_sec,
+                        api_config,
+                    )?;
+                    Ok(output_ok)
+                })())
+            }
+        },
+    )
+}
+fn wire__crate__api__multimodal__compute_rsa_impl(
+    port_: flutter_rust_bridge::for_generated::MessagePort,
+    ptr_: flutter_rust_bridge::for_generated::PlatformGeneralizedUint8ListPtr,
+    rust_vec_len_: i32,
+    data_len_: i32,
+) {
+    FLUTTER_RUST_BRIDGE_HANDLER.wrap_normal::<flutter_rust_bridge::for_generated::SseCodec, _, _>(
+        flutter_rust_bridge::for_generated::TaskInfo {
+            debug_name: "compute_rsa",
+            port: Some(port_),
+            mode: flutter_rust_bridge::for_generated::FfiCallMode::Normal,
+        },
+        move || {
+            let message = unsafe {
+                flutter_rust_bridge::for_generated::Dart2RustMessageSse::from_wire(
+                    ptr_,
+                    rust_vec_len_,
+                    data_len_,
+                )
+            };
+            let mut deserializer =
+                flutter_rust_bridge::for_generated::SseDeserializer::new(message);
+            let api_r_peaks = <Vec<usize>>::sse_decode(&mut deserializer);
+            let api_ecg_sampling_rate = <f64>::sse_decode(&mut deserializer);
+            let api_ecg_offset_sec = <f64>::sse_decode(&mut deserializer);
+            let api_rsp_cycles =
+                <Vec<crate::api::rsp::RespirationCycle>>::sse_decode(&mut deserializer);
+            let api_rsp_sampling_rate = <f64>::sse_decode(&mut deserializer);
+            let api_rsp_offset_sec = <f64>::sse_decode(&mut deserializer);
+            deserializer.end();
+            move |context| {
+                transform_result_sse::<_, crate::api::error::SignalError>((move || {
+                    let output_ok = crate::api::multimodal::compute_rsa(
+                        api_r_peaks,
+                        api_ecg_sampling_rate,
+                        api_ecg_offset_sec,
+                        api_rsp_cycles,
+                        api_rsp_sampling_rate,
+                        api_rsp_offset_sec,
+                    )?;
+                    Ok(output_ok)
+                })())
+            }
+        },
+    )
+}
+fn wire__crate__api__ecg__ecg_peak_detection_config_default_impl(
+    port_: flutter_rust_bridge::for_generated::MessagePort,
+    ptr_: flutter_rust_bridge::for_generated::PlatformGeneralizedUint8ListPtr,
+    rust_vec_len_: i32,
+    data_len_: i32,
+) {
+    FLUTTER_RUST_BRIDGE_HANDLER.wrap_normal::<flutter_rust_bridge::for_generated::SseCodec, _, _>(
+        flutter_rust_bridge::for_generated::TaskInfo {
+            debug_name: "ecg_peak_detection_config_default",
+            port: Some(port_),
+            mode: flutter_rust_bridge::for_generated::FfiCallMode::Normal,
+        },
+        move || {
+            let message = unsafe {
+                flutter_rust_bridge::for_generated::Dart2RustMessageSse::from_wire(
+                    ptr_,
+                    rust_vec_len_,
+                    data_len_,
+                )
+            };
+            let mut deserializer =
+                flutter_rust_bridge::for_generated::SseDeserializer::new(message);
+            deserializer.end();
+            move |context| {
+                transform_result_sse::<_, ()>((move || {
+                    let output_ok =
+                        Result::<_, ()>::Ok(crate::api::ecg::EcgPeakDetectionConfig::default())?;
+                    Ok(output_ok)
+                })())
+            }
+        },
+    )
+}
+fn wire__crate__api__eda__eda_decomposition_config_default_impl(
+    port_: flutter_rust_bridge::for_generated::MessagePort,
+    ptr_: flutter_rust_bridge::for_generated::PlatformGeneralizedUint8ListPtr,
+    rust_vec_len_: i32,
+    data_len_: i32,
+) {
+    FLUTTER_RUST_BRIDGE_HANDLER.wrap_normal::<flutter_rust_bridge::for_generated::SseCodec, _, _>(
+        flutter_rust_bridge::for_generated::TaskInfo {
+            debug_name: "eda_decomposition_config_default",
+            port: Some(port_),
+            mode: flutter_rust_bridge::for_generated::FfiCallMode::Normal,
+        },
+        move || {
+            let message = unsafe {
+                flutter_rust_bridge::for_generated::Dart2RustMessageSse::from_wire(
+                    ptr_,
+                    rust_vec_len_,
+                    data_len_,
+                )
+            };
+            let mut deserializer =
+                flutter_rust_bridge::for_generated::SseDeserializer::new(message);
+            deserializer.end();
+            move |context| {
+                transform_result_sse::<_, ()>((move || {
+                    let output_ok =
+                        Result::<_, ()>::Ok(crate::api::eda::EdaDecompositionConfig::default())?;
+                    Ok(output_ok)
+                })())
+            }
+        },
+    )
+}
+fn wire__crate__api__eda__eda_peak_detection_config_default_impl(
+    port_: flutter_rust_bridge::for_generated::MessagePort,
+    ptr_: flutter_rust_bridge::for_generated::PlatformGeneralizedUint8ListPtr,
+    rust_vec_len_: i32,
+    data_len_: i32,
+) {
+    FLUTTER_RUST_BRIDGE_HANDLER.wrap_normal::<flutter_rust_bridge::for_generated::SseCodec, _, _>(
+        flutter_rust_bridge::for_generated::TaskInfo {
+            debug_name: "eda_peak_detection_config_default",
+            port: Some(port_),
+            mode: flutter_rust_bridge::for_generated::FfiCallMode::Normal,
+        },
+        move || {
+            let message = unsafe {
+                flutter_rust_bridge::for_generated::Dart2RustMessageSse::from_wire(
+                    ptr_,
+                    rust_vec_len_,
+                    data_len_,
+                )
+            };
+            let mut deserializer =
+                flutter_rust_bridge::for_generated::SseDeserializer::new(message);
+            deserializer.end();
+            move |context| {
+                transform_result_sse::<_, ()>((move || {
+                    let output_ok =
+                        Result::<_, ()>::Ok(crate::api::eda::EdaPeakDetectionConfig::default())?;
+                    Ok(output_ok)
+                })())
+            }
+        },
+    )
+}
+fn wire__crate__api__features__extract_cardiac_features_impl(
+    port_: flutter_rust_bridge::for_generated::MessagePort,
+    ptr_: flutter_rust_bridge::for_generated::PlatformGeneralizedUint8ListPtr,
+    rust_vec_len_: i32,
+    data_len_: i32,
+) {
+    FLUTTER_RUST_BRIDGE_HANDLER.wrap_normal::<flutter_rust_bridge::for_generated::SseCodec, _, _>(
+        flutter_rust_bridge::for_generated::TaskInfo {
+            debug_name: "extract_cardiac_features",
+            port: Some(port_),
+            mode: flutter_rust_bridge::for_generated::FfiCallMode::Normal,
+        },
+        move || {
+            let message = unsafe {
+                flutter_rust_bridge::for_generated::Dart2RustMessageSse::from_wire(
+                    ptr_,
+                    rust_vec_len_,
+                    data_len_,
+                )
+            };
+            let mut deserializer =
+                flutter_rust_bridge::for_generated::SseDeserializer::new(message);
+            let api_r_peaks = <Vec<usize>>::sse_decode(&mut deserializer);
+            let api_sampling_rate = <f64>::sse_decode(&mut deserializer);
+            let api_offset_sec = <f64>::sse_decode(&mut deserializer);
+            let api_window = <crate::api::features::FeatureWindow>::sse_decode(&mut deserializer);
+            deserializer.end();
+            move |context| {
+                transform_result_sse::<_, crate::api::error::SignalError>((move || {
+                    let output_ok = crate::api::features::extract_cardiac_features(
+                        api_r_peaks,
+                        api_sampling_rate,
+                        api_offset_sec,
+                        api_window,
+                    )?;
+                    Ok(output_ok)
+                })())
+            }
+        },
+    )
+}
+fn wire__crate__api__features__extract_eda_features_impl(
+    port_: flutter_rust_bridge::for_generated::MessagePort,
+    ptr_: flutter_rust_bridge::for_generated::PlatformGeneralizedUint8ListPtr,
+    rust_vec_len_: i32,
+    data_len_: i32,
+) {
+    FLUTTER_RUST_BRIDGE_HANDLER.wrap_normal::<flutter_rust_bridge::for_generated::SseCodec, _, _>(
+        flutter_rust_bridge::for_generated::TaskInfo {
+            debug_name: "extract_eda_features",
+            port: Some(port_),
+            mode: flutter_rust_bridge::for_generated::FfiCallMode::Normal,
+        },
+        move || {
+            let message = unsafe {
+                flutter_rust_bridge::for_generated::Dart2RustMessageSse::from_wire(
+                    ptr_,
+                    rust_vec_len_,
+                    data_len_,
+                )
+            };
+            let mut deserializer =
+                flutter_rust_bridge::for_generated::SseDeserializer::new(message);
+            let api_tonic = <Vec<f64>>::sse_decode(&mut deserializer);
+            let api_phasic = <Vec<f64>>::sse_decode(&mut deserializer);
+            let api_events = <Vec<crate::api::eda::EdaPeakEvent>>::sse_decode(&mut deserializer);
+            let api_sampling_rate = <f64>::sse_decode(&mut deserializer);
+            let api_offset_sec = <f64>::sse_decode(&mut deserializer);
+            let api_window = <crate::api::features::FeatureWindow>::sse_decode(&mut deserializer);
+            deserializer.end();
+            move |context| {
+                transform_result_sse::<_, crate::api::error::SignalError>((move || {
+                    let output_ok = crate::api::features::extract_eda_features(
+                        api_tonic,
+                        api_phasic,
+                        api_events,
+                        api_sampling_rate,
+                        api_offset_sec,
+                        api_window,
+                    )?;
+                    Ok(output_ok)
+                })())
+            }
+        },
+    )
+}
+fn wire__crate__api__features__extract_respiration_features_impl(
+    port_: flutter_rust_bridge::for_generated::MessagePort,
+    ptr_: flutter_rust_bridge::for_generated::PlatformGeneralizedUint8ListPtr,
+    rust_vec_len_: i32,
+    data_len_: i32,
+) {
+    FLUTTER_RUST_BRIDGE_HANDLER.wrap_normal::<flutter_rust_bridge::for_generated::SseCodec, _, _>(
+        flutter_rust_bridge::for_generated::TaskInfo {
+            debug_name: "extract_respiration_features",
+            port: Some(port_),
+            mode: flutter_rust_bridge::for_generated::FfiCallMode::Normal,
+        },
+        move || {
+            let message = unsafe {
+                flutter_rust_bridge::for_generated::Dart2RustMessageSse::from_wire(
+                    ptr_,
+                    rust_vec_len_,
+                    data_len_,
+                )
+            };
+            let mut deserializer =
+                flutter_rust_bridge::for_generated::SseDeserializer::new(message);
+            let api_cycles =
+                <Vec<crate::api::rsp::RespirationCycle>>::sse_decode(&mut deserializer);
+            let api_sampling_rate = <f64>::sse_decode(&mut deserializer);
+            let api_offset_sec = <f64>::sse_decode(&mut deserializer);
+            let api_window = <crate::api::features::FeatureWindow>::sse_decode(&mut deserializer);
+            deserializer.end();
+            move |context| {
+                transform_result_sse::<_, crate::api::error::SignalError>((move || {
+                    let output_ok = crate::api::features::extract_respiration_features(
+                        api_cycles,
+                        api_sampling_rate,
+                        api_offset_sec,
+                        api_window,
+                    )?;
+                    Ok(output_ok)
+                })())
+            }
+        },
+    )
+}
+fn wire__crate__api__rppg__extract_rppg_from_optical_signal_impl(
+    port_: flutter_rust_bridge::for_generated::MessagePort,
+    ptr_: flutter_rust_bridge::for_generated::PlatformGeneralizedUint8ListPtr,
+    rust_vec_len_: i32,
+    data_len_: i32,
+) {
+    FLUTTER_RUST_BRIDGE_HANDLER.wrap_normal::<flutter_rust_bridge::for_generated::SseCodec, _, _>(
+        flutter_rust_bridge::for_generated::TaskInfo {
+            debug_name: "extract_rppg_from_optical_signal",
+            port: Some(port_),
+            mode: flutter_rust_bridge::for_generated::FfiCallMode::Normal,
+        },
+        move || {
+            let message = unsafe {
+                flutter_rust_bridge::for_generated::Dart2RustMessageSse::from_wire(
+                    ptr_,
+                    rust_vec_len_,
+                    data_len_,
+                )
+            };
+            let mut deserializer =
+                flutter_rust_bridge::for_generated::SseDeserializer::new(message);
+            let api_timestamps_sec = <Vec<f64>>::sse_decode(&mut deserializer);
+            let api_red = <Vec<f64>>::sse_decode(&mut deserializer);
+            let api_green = <Vec<f64>>::sse_decode(&mut deserializer);
+            let api_blue = <Vec<f64>>::sse_decode(&mut deserializer);
+            let api_valid_pixels = <Vec<usize>>::sse_decode(&mut deserializer);
+            let api_config = <Option<crate::api::rppg::RppgConfig>>::sse_decode(&mut deserializer);
+            deserializer.end();
+            move |context| {
+                transform_result_sse::<_, crate::api::error::SignalError>((move || {
+                    let output_ok = crate::api::rppg::extract_rppg_from_optical_signal(
+                        api_timestamps_sec,
+                        api_red,
+                        api_green,
+                        api_blue,
+                        api_valid_pixels,
+                        api_config,
+                    )?;
+                    Ok(output_ok)
+                })())
+            }
+        },
+    )
+}
+fn wire__crate__api__signal__peak_detection_config_default_impl(
+    port_: flutter_rust_bridge::for_generated::MessagePort,
+    ptr_: flutter_rust_bridge::for_generated::PlatformGeneralizedUint8ListPtr,
+    rust_vec_len_: i32,
+    data_len_: i32,
+) {
+    FLUTTER_RUST_BRIDGE_HANDLER.wrap_normal::<flutter_rust_bridge::for_generated::SseCodec, _, _>(
+        flutter_rust_bridge::for_generated::TaskInfo {
+            debug_name: "peak_detection_config_default",
+            port: Some(port_),
+            mode: flutter_rust_bridge::for_generated::FfiCallMode::Normal,
+        },
+        move || {
+            let message = unsafe {
+                flutter_rust_bridge::for_generated::Dart2RustMessageSse::from_wire(
+                    ptr_,
+                    rust_vec_len_,
+                    data_len_,
+                )
+            };
+            let mut deserializer =
+                flutter_rust_bridge::for_generated::SseDeserializer::new(message);
+            deserializer.end();
+            move |context| {
+                transform_result_sse::<_, ()>((move || {
+                    let output_ok =
+                        Result::<_, ()>::Ok(crate::api::signal::PeakDetectionConfig::default())?;
+                    Ok(output_ok)
+                })())
+            }
+        },
+    )
+}
+fn wire__crate__api__ppg__ppg_peak_detection_config_default_impl(
+    port_: flutter_rust_bridge::for_generated::MessagePort,
+    ptr_: flutter_rust_bridge::for_generated::PlatformGeneralizedUint8ListPtr,
+    rust_vec_len_: i32,
+    data_len_: i32,
+) {
+    FLUTTER_RUST_BRIDGE_HANDLER.wrap_normal::<flutter_rust_bridge::for_generated::SseCodec, _, _>(
+        flutter_rust_bridge::for_generated::TaskInfo {
+            debug_name: "ppg_peak_detection_config_default",
+            port: Some(port_),
+            mode: flutter_rust_bridge::for_generated::FfiCallMode::Normal,
+        },
+        move || {
+            let message = unsafe {
+                flutter_rust_bridge::for_generated::Dart2RustMessageSse::from_wire(
+                    ptr_,
+                    rust_vec_len_,
+                    data_len_,
+                )
+            };
+            let mut deserializer =
+                flutter_rust_bridge::for_generated::SseDeserializer::new(message);
+            deserializer.end();
+            move |context| {
+                transform_result_sse::<_, ()>((move || {
+                    let output_ok =
+                        Result::<_, ()>::Ok(crate::api::ppg::PpgPeakDetectionConfig::default())?;
+                    Ok(output_ok)
+                })())
+            }
+        },
+    )
+}
+fn wire__crate__api__ecg__process_ecg_clean_impl(
     port_: flutter_rust_bridge::for_generated::MessagePort,
     ptr_: flutter_rust_bridge::for_generated::PlatformGeneralizedUint8ListPtr,
     rust_vec_len_: i32,
@@ -107,19 +660,19 @@ fn wire__crate__api__simple__process_ecg_clean_impl(
             let api_method = <String>::sse_decode(&mut deserializer);
             deserializer.end();
             move |context| {
-                transform_result_sse::<_, ()>((move || {
-                    let output_ok = Result::<_, ()>::Ok(crate::api::simple::process_ecg_clean(
+                transform_result_sse::<_, crate::api::error::SignalError>((move || {
+                    let output_ok = crate::api::ecg::process_ecg_clean(
                         api_signal,
                         api_sampling_rate,
                         api_method,
-                    ))?;
+                    )?;
                     Ok(output_ok)
                 })())
             }
         },
     )
 }
-fn wire__crate__api__simple__process_ecg_findpeaks_impl(
+fn wire__crate__api__ecg__process_ecg_findpeaks_impl(
     port_: flutter_rust_bridge::for_generated::MessagePort,
     ptr_: flutter_rust_bridge::for_generated::PlatformGeneralizedUint8ListPtr,
     rust_vec_len_: i32,
@@ -143,11 +696,15 @@ fn wire__crate__api__simple__process_ecg_findpeaks_impl(
                 flutter_rust_bridge::for_generated::SseDeserializer::new(message);
             let api_signal = <Vec<f64>>::sse_decode(&mut deserializer);
             let api_sampling_rate = <f64>::sse_decode(&mut deserializer);
+            let api_config =
+                <Option<crate::api::ecg::EcgPeakDetectionConfig>>::sse_decode(&mut deserializer);
             deserializer.end();
             move |context| {
-                transform_result_sse::<_, ()>((move || {
-                    let output_ok = Result::<_, ()>::Ok(
-                        crate::api::simple::process_ecg_findpeaks(api_signal, api_sampling_rate),
+                transform_result_sse::<_, crate::api::error::SignalError>((move || {
+                    let output_ok = crate::api::ecg::process_ecg_findpeaks(
+                        api_signal,
+                        api_sampling_rate,
+                        api_config,
                     )?;
                     Ok(output_ok)
                 })())
@@ -155,7 +712,42 @@ fn wire__crate__api__simple__process_ecg_findpeaks_impl(
         },
     )
 }
-fn wire__crate__api__simple__process_eda_clean_impl(
+fn wire__crate__api__ecg__process_ecg_findpeaks_mask_impl(
+    port_: flutter_rust_bridge::for_generated::MessagePort,
+    ptr_: flutter_rust_bridge::for_generated::PlatformGeneralizedUint8ListPtr,
+    rust_vec_len_: i32,
+    data_len_: i32,
+) {
+    FLUTTER_RUST_BRIDGE_HANDLER.wrap_normal::<flutter_rust_bridge::for_generated::SseCodec, _, _>(
+        flutter_rust_bridge::for_generated::TaskInfo {
+            debug_name: "process_ecg_findpeaks_mask",
+            port: Some(port_),
+            mode: flutter_rust_bridge::for_generated::FfiCallMode::Normal,
+        },
+        move || {
+            let message = unsafe {
+                flutter_rust_bridge::for_generated::Dart2RustMessageSse::from_wire(
+                    ptr_,
+                    rust_vec_len_,
+                    data_len_,
+                )
+            };
+            let mut deserializer =
+                flutter_rust_bridge::for_generated::SseDeserializer::new(message);
+            let api_signal = <Vec<f64>>::sse_decode(&mut deserializer);
+            let api_sampling_rate = <f64>::sse_decode(&mut deserializer);
+            deserializer.end();
+            move |context| {
+                transform_result_sse::<_, crate::api::error::SignalError>((move || {
+                    let output_ok =
+                        crate::api::ecg::process_ecg_findpeaks_mask(api_signal, api_sampling_rate)?;
+                    Ok(output_ok)
+                })())
+            }
+        },
+    )
+}
+fn wire__crate__api__eda__process_eda_clean_impl(
     port_: flutter_rust_bridge::for_generated::MessagePort,
     ptr_: flutter_rust_bridge::for_generated::PlatformGeneralizedUint8ListPtr,
     rust_vec_len_: i32,
@@ -181,18 +773,56 @@ fn wire__crate__api__simple__process_eda_clean_impl(
             let api_sampling_rate = <f64>::sse_decode(&mut deserializer);
             deserializer.end();
             move |context| {
-                transform_result_sse::<_, ()>((move || {
-                    let output_ok = Result::<_, ()>::Ok(crate::api::simple::process_eda_clean(
-                        api_signal,
-                        api_sampling_rate,
-                    ))?;
+                transform_result_sse::<_, crate::api::error::SignalError>((move || {
+                    let output_ok =
+                        crate::api::eda::process_eda_clean(api_signal, api_sampling_rate)?;
                     Ok(output_ok)
                 })())
             }
         },
     )
 }
-fn wire__crate__api__simple__process_eda_findpeaks_impl(
+fn wire__crate__api__eda__process_eda_decompose_impl(
+    port_: flutter_rust_bridge::for_generated::MessagePort,
+    ptr_: flutter_rust_bridge::for_generated::PlatformGeneralizedUint8ListPtr,
+    rust_vec_len_: i32,
+    data_len_: i32,
+) {
+    FLUTTER_RUST_BRIDGE_HANDLER.wrap_normal::<flutter_rust_bridge::for_generated::SseCodec, _, _>(
+        flutter_rust_bridge::for_generated::TaskInfo {
+            debug_name: "process_eda_decompose",
+            port: Some(port_),
+            mode: flutter_rust_bridge::for_generated::FfiCallMode::Normal,
+        },
+        move || {
+            let message = unsafe {
+                flutter_rust_bridge::for_generated::Dart2RustMessageSse::from_wire(
+                    ptr_,
+                    rust_vec_len_,
+                    data_len_,
+                )
+            };
+            let mut deserializer =
+                flutter_rust_bridge::for_generated::SseDeserializer::new(message);
+            let api_signal = <Vec<f64>>::sse_decode(&mut deserializer);
+            let api_sampling_rate = <f64>::sse_decode(&mut deserializer);
+            let api_config =
+                <Option<crate::api::eda::EdaDecompositionConfig>>::sse_decode(&mut deserializer);
+            deserializer.end();
+            move |context| {
+                transform_result_sse::<_, crate::api::error::SignalError>((move || {
+                    let output_ok = crate::api::eda::process_eda_decompose(
+                        api_signal,
+                        api_sampling_rate,
+                        api_config,
+                    )?;
+                    Ok(output_ok)
+                })())
+            }
+        },
+    )
+}
+fn wire__crate__api__eda__process_eda_findpeaks_impl(
     port_: flutter_rust_bridge::for_generated::MessagePort,
     ptr_: flutter_rust_bridge::for_generated::PlatformGeneralizedUint8ListPtr,
     rust_vec_len_: i32,
@@ -215,11 +845,16 @@ fn wire__crate__api__simple__process_eda_findpeaks_impl(
             let mut deserializer =
                 flutter_rust_bridge::for_generated::SseDeserializer::new(message);
             let api_phasic_signal = <Vec<f64>>::sse_decode(&mut deserializer);
+            let api_sampling_rate = <f64>::sse_decode(&mut deserializer);
+            let api_config =
+                <Option<crate::api::eda::EdaPeakDetectionConfig>>::sse_decode(&mut deserializer);
             deserializer.end();
             move |context| {
-                transform_result_sse::<_, ()>((move || {
-                    let output_ok = Result::<_, ()>::Ok(
-                        crate::api::simple::process_eda_findpeaks(api_phasic_signal),
+                transform_result_sse::<_, crate::api::error::SignalError>((move || {
+                    let output_ok = crate::api::eda::process_eda_findpeaks(
+                        api_phasic_signal,
+                        api_sampling_rate,
+                        api_config,
                     )?;
                     Ok(output_ok)
                 })())
@@ -227,7 +862,84 @@ fn wire__crate__api__simple__process_eda_findpeaks_impl(
         },
     )
 }
-fn wire__crate__api__simple__process_eda_phasic_impl(
+fn wire__crate__api__eda__process_eda_findpeaks_events_impl(
+    port_: flutter_rust_bridge::for_generated::MessagePort,
+    ptr_: flutter_rust_bridge::for_generated::PlatformGeneralizedUint8ListPtr,
+    rust_vec_len_: i32,
+    data_len_: i32,
+) {
+    FLUTTER_RUST_BRIDGE_HANDLER.wrap_normal::<flutter_rust_bridge::for_generated::SseCodec, _, _>(
+        flutter_rust_bridge::for_generated::TaskInfo {
+            debug_name: "process_eda_findpeaks_events",
+            port: Some(port_),
+            mode: flutter_rust_bridge::for_generated::FfiCallMode::Normal,
+        },
+        move || {
+            let message = unsafe {
+                flutter_rust_bridge::for_generated::Dart2RustMessageSse::from_wire(
+                    ptr_,
+                    rust_vec_len_,
+                    data_len_,
+                )
+            };
+            let mut deserializer =
+                flutter_rust_bridge::for_generated::SseDeserializer::new(message);
+            let api_phasic_signal = <Vec<f64>>::sse_decode(&mut deserializer);
+            let api_sampling_rate = <f64>::sse_decode(&mut deserializer);
+            let api_config =
+                <Option<crate::api::eda::EdaPeakDetectionConfig>>::sse_decode(&mut deserializer);
+            deserializer.end();
+            move |context| {
+                transform_result_sse::<_, crate::api::error::SignalError>((move || {
+                    let output_ok = crate::api::eda::process_eda_findpeaks_events(
+                        api_phasic_signal,
+                        api_sampling_rate,
+                        api_config,
+                    )?;
+                    Ok(output_ok)
+                })())
+            }
+        },
+    )
+}
+fn wire__crate__api__eda__process_eda_findpeaks_mask_impl(
+    port_: flutter_rust_bridge::for_generated::MessagePort,
+    ptr_: flutter_rust_bridge::for_generated::PlatformGeneralizedUint8ListPtr,
+    rust_vec_len_: i32,
+    data_len_: i32,
+) {
+    FLUTTER_RUST_BRIDGE_HANDLER.wrap_normal::<flutter_rust_bridge::for_generated::SseCodec, _, _>(
+        flutter_rust_bridge::for_generated::TaskInfo {
+            debug_name: "process_eda_findpeaks_mask",
+            port: Some(port_),
+            mode: flutter_rust_bridge::for_generated::FfiCallMode::Normal,
+        },
+        move || {
+            let message = unsafe {
+                flutter_rust_bridge::for_generated::Dart2RustMessageSse::from_wire(
+                    ptr_,
+                    rust_vec_len_,
+                    data_len_,
+                )
+            };
+            let mut deserializer =
+                flutter_rust_bridge::for_generated::SseDeserializer::new(message);
+            let api_phasic_signal = <Vec<f64>>::sse_decode(&mut deserializer);
+            let api_sampling_rate = <f64>::sse_decode(&mut deserializer);
+            deserializer.end();
+            move |context| {
+                transform_result_sse::<_, crate::api::error::SignalError>((move || {
+                    let output_ok = crate::api::eda::process_eda_findpeaks_mask(
+                        api_phasic_signal,
+                        api_sampling_rate,
+                    )?;
+                    Ok(output_ok)
+                })())
+            }
+        },
+    )
+}
+fn wire__crate__api__eda__process_eda_phasic_impl(
     port_: flutter_rust_bridge::for_generated::MessagePort,
     ptr_: flutter_rust_bridge::for_generated::PlatformGeneralizedUint8ListPtr,
     rust_vec_len_: i32,
@@ -253,18 +965,16 @@ fn wire__crate__api__simple__process_eda_phasic_impl(
             let api_sampling_rate = <f64>::sse_decode(&mut deserializer);
             deserializer.end();
             move |context| {
-                transform_result_sse::<_, ()>((move || {
-                    let output_ok = Result::<_, ()>::Ok(crate::api::simple::process_eda_phasic(
-                        api_signal,
-                        api_sampling_rate,
-                    ))?;
+                transform_result_sse::<_, crate::api::error::SignalError>((move || {
+                    let output_ok =
+                        crate::api::eda::process_eda_phasic(api_signal, api_sampling_rate)?;
                     Ok(output_ok)
                 })())
             }
         },
     )
 }
-fn wire__crate__api__simple__process_hrv_mean_nn_impl(
+fn wire__crate__api__hrv__process_hrv_mean_nn_impl(
     port_: flutter_rust_bridge::for_generated::MessagePort,
     ptr_: flutter_rust_bridge::for_generated::PlatformGeneralizedUint8ListPtr,
     rust_vec_len_: i32,
@@ -289,17 +999,48 @@ fn wire__crate__api__simple__process_hrv_mean_nn_impl(
             let api_intervals = <Vec<f64>>::sse_decode(&mut deserializer);
             deserializer.end();
             move |context| {
-                transform_result_sse::<_, ()>((move || {
-                    let output_ok = Result::<_, ()>::Ok(crate::api::simple::process_hrv_mean_nn(
-                        api_intervals,
-                    ))?;
+                transform_result_sse::<_, crate::api::error::SignalError>((move || {
+                    let output_ok = crate::api::hrv::process_hrv_mean_nn(api_intervals)?;
                     Ok(output_ok)
                 })())
             }
         },
     )
 }
-fn wire__crate__api__simple__process_hrv_rmssd_impl(
+fn wire__crate__api__hrv__process_hrv_pnn50_impl(
+    port_: flutter_rust_bridge::for_generated::MessagePort,
+    ptr_: flutter_rust_bridge::for_generated::PlatformGeneralizedUint8ListPtr,
+    rust_vec_len_: i32,
+    data_len_: i32,
+) {
+    FLUTTER_RUST_BRIDGE_HANDLER.wrap_normal::<flutter_rust_bridge::for_generated::SseCodec, _, _>(
+        flutter_rust_bridge::for_generated::TaskInfo {
+            debug_name: "process_hrv_pnn50",
+            port: Some(port_),
+            mode: flutter_rust_bridge::for_generated::FfiCallMode::Normal,
+        },
+        move || {
+            let message = unsafe {
+                flutter_rust_bridge::for_generated::Dart2RustMessageSse::from_wire(
+                    ptr_,
+                    rust_vec_len_,
+                    data_len_,
+                )
+            };
+            let mut deserializer =
+                flutter_rust_bridge::for_generated::SseDeserializer::new(message);
+            let api_intervals = <Vec<f64>>::sse_decode(&mut deserializer);
+            deserializer.end();
+            move |context| {
+                transform_result_sse::<_, crate::api::error::SignalError>((move || {
+                    let output_ok = crate::api::hrv::process_hrv_pnn50(api_intervals)?;
+                    Ok(output_ok)
+                })())
+            }
+        },
+    )
+}
+fn wire__crate__api__hrv__process_hrv_rmssd_impl(
     port_: flutter_rust_bridge::for_generated::MessagePort,
     ptr_: flutter_rust_bridge::for_generated::PlatformGeneralizedUint8ListPtr,
     rust_vec_len_: i32,
@@ -324,16 +1065,48 @@ fn wire__crate__api__simple__process_hrv_rmssd_impl(
             let api_intervals = <Vec<f64>>::sse_decode(&mut deserializer);
             deserializer.end();
             move |context| {
-                transform_result_sse::<_, ()>((move || {
-                    let output_ok =
-                        Result::<_, ()>::Ok(crate::api::simple::process_hrv_rmssd(api_intervals))?;
+                transform_result_sse::<_, crate::api::error::SignalError>((move || {
+                    let output_ok = crate::api::hrv::process_hrv_rmssd(api_intervals)?;
                     Ok(output_ok)
                 })())
             }
         },
     )
 }
-fn wire__crate__api__simple__process_peaks_to_intervals_impl(
+fn wire__crate__api__hrv__process_hrv_sdnn_impl(
+    port_: flutter_rust_bridge::for_generated::MessagePort,
+    ptr_: flutter_rust_bridge::for_generated::PlatformGeneralizedUint8ListPtr,
+    rust_vec_len_: i32,
+    data_len_: i32,
+) {
+    FLUTTER_RUST_BRIDGE_HANDLER.wrap_normal::<flutter_rust_bridge::for_generated::SseCodec, _, _>(
+        flutter_rust_bridge::for_generated::TaskInfo {
+            debug_name: "process_hrv_sdnn",
+            port: Some(port_),
+            mode: flutter_rust_bridge::for_generated::FfiCallMode::Normal,
+        },
+        move || {
+            let message = unsafe {
+                flutter_rust_bridge::for_generated::Dart2RustMessageSse::from_wire(
+                    ptr_,
+                    rust_vec_len_,
+                    data_len_,
+                )
+            };
+            let mut deserializer =
+                flutter_rust_bridge::for_generated::SseDeserializer::new(message);
+            let api_intervals = <Vec<f64>>::sse_decode(&mut deserializer);
+            deserializer.end();
+            move |context| {
+                transform_result_sse::<_, crate::api::error::SignalError>((move || {
+                    let output_ok = crate::api::hrv::process_hrv_sdnn(api_intervals)?;
+                    Ok(output_ok)
+                })())
+            }
+        },
+    )
+}
+fn wire__crate__api__hrv__process_peaks_to_intervals_impl(
     port_: flutter_rust_bridge::for_generated::MessagePort,
     ptr_: flutter_rust_bridge::for_generated::PlatformGeneralizedUint8ListPtr,
     rust_vec_len_: i32,
@@ -355,23 +1128,24 @@ fn wire__crate__api__simple__process_peaks_to_intervals_impl(
             };
             let mut deserializer =
                 flutter_rust_bridge::for_generated::SseDeserializer::new(message);
-            let api_peaks = <Vec<bool>>::sse_decode(&mut deserializer);
+            let api_peaks = <Vec<usize>>::sse_decode(&mut deserializer);
             let api_sampling_rate = <f64>::sse_decode(&mut deserializer);
+            let api_total_samples = <usize>::sse_decode(&mut deserializer);
             deserializer.end();
             move |context| {
-                transform_result_sse::<_, ()>((move || {
-                    let output_ok =
-                        Result::<_, ()>::Ok(crate::api::simple::process_peaks_to_intervals(
-                            api_peaks,
-                            api_sampling_rate,
-                        ))?;
+                transform_result_sse::<_, crate::api::error::SignalError>((move || {
+                    let output_ok = crate::api::hrv::process_peaks_to_intervals(
+                        api_peaks,
+                        api_sampling_rate,
+                        api_total_samples,
+                    )?;
                     Ok(output_ok)
                 })())
             }
         },
     )
 }
-fn wire__crate__api__simple__process_ppg_clean_impl(
+fn wire__crate__api__ppg__process_ppg_clean_impl(
     port_: flutter_rust_bridge::for_generated::MessagePort,
     ptr_: flutter_rust_bridge::for_generated::PlatformGeneralizedUint8ListPtr,
     rust_vec_len_: i32,
@@ -397,18 +1171,16 @@ fn wire__crate__api__simple__process_ppg_clean_impl(
             let api_sampling_rate = <f64>::sse_decode(&mut deserializer);
             deserializer.end();
             move |context| {
-                transform_result_sse::<_, ()>((move || {
-                    let output_ok = Result::<_, ()>::Ok(crate::api::simple::process_ppg_clean(
-                        api_signal,
-                        api_sampling_rate,
-                    ))?;
+                transform_result_sse::<_, crate::api::error::SignalError>((move || {
+                    let output_ok =
+                        crate::api::ppg::process_ppg_clean(api_signal, api_sampling_rate)?;
                     Ok(output_ok)
                 })())
             }
         },
     )
 }
-fn wire__crate__api__simple__process_ppg_findpeaks_impl(
+fn wire__crate__api__ppg__process_ppg_findpeaks_impl(
     port_: flutter_rust_bridge::for_generated::MessagePort,
     ptr_: flutter_rust_bridge::for_generated::PlatformGeneralizedUint8ListPtr,
     rust_vec_len_: i32,
@@ -432,11 +1204,15 @@ fn wire__crate__api__simple__process_ppg_findpeaks_impl(
                 flutter_rust_bridge::for_generated::SseDeserializer::new(message);
             let api_signal = <Vec<f64>>::sse_decode(&mut deserializer);
             let api_sampling_rate = <f64>::sse_decode(&mut deserializer);
+            let api_config =
+                <Option<crate::api::ppg::PpgPeakDetectionConfig>>::sse_decode(&mut deserializer);
             deserializer.end();
             move |context| {
-                transform_result_sse::<_, ()>((move || {
-                    let output_ok = Result::<_, ()>::Ok(
-                        crate::api::simple::process_ppg_findpeaks(api_signal, api_sampling_rate),
+                transform_result_sse::<_, crate::api::error::SignalError>((move || {
+                    let output_ok = crate::api::ppg::process_ppg_findpeaks(
+                        api_signal,
+                        api_sampling_rate,
+                        api_config,
                     )?;
                     Ok(output_ok)
                 })())
@@ -444,7 +1220,42 @@ fn wire__crate__api__simple__process_ppg_findpeaks_impl(
         },
     )
 }
-fn wire__crate__api__simple__process_rsp_clean_impl(
+fn wire__crate__api__ppg__process_ppg_findpeaks_mask_impl(
+    port_: flutter_rust_bridge::for_generated::MessagePort,
+    ptr_: flutter_rust_bridge::for_generated::PlatformGeneralizedUint8ListPtr,
+    rust_vec_len_: i32,
+    data_len_: i32,
+) {
+    FLUTTER_RUST_BRIDGE_HANDLER.wrap_normal::<flutter_rust_bridge::for_generated::SseCodec, _, _>(
+        flutter_rust_bridge::for_generated::TaskInfo {
+            debug_name: "process_ppg_findpeaks_mask",
+            port: Some(port_),
+            mode: flutter_rust_bridge::for_generated::FfiCallMode::Normal,
+        },
+        move || {
+            let message = unsafe {
+                flutter_rust_bridge::for_generated::Dart2RustMessageSse::from_wire(
+                    ptr_,
+                    rust_vec_len_,
+                    data_len_,
+                )
+            };
+            let mut deserializer =
+                flutter_rust_bridge::for_generated::SseDeserializer::new(message);
+            let api_signal = <Vec<f64>>::sse_decode(&mut deserializer);
+            let api_sampling_rate = <f64>::sse_decode(&mut deserializer);
+            deserializer.end();
+            move |context| {
+                transform_result_sse::<_, crate::api::error::SignalError>((move || {
+                    let output_ok =
+                        crate::api::ppg::process_ppg_findpeaks_mask(api_signal, api_sampling_rate)?;
+                    Ok(output_ok)
+                })())
+            }
+        },
+    )
+}
+fn wire__crate__api__rsp__process_rsp_clean_impl(
     port_: flutter_rust_bridge::for_generated::MessagePort,
     ptr_: flutter_rust_bridge::for_generated::PlatformGeneralizedUint8ListPtr,
     rust_vec_len_: i32,
@@ -470,18 +1281,56 @@ fn wire__crate__api__simple__process_rsp_clean_impl(
             let api_sampling_rate = <f64>::sse_decode(&mut deserializer);
             deserializer.end();
             move |context| {
-                transform_result_sse::<_, ()>((move || {
-                    let output_ok = Result::<_, ()>::Ok(crate::api::simple::process_rsp_clean(
-                        api_signal,
-                        api_sampling_rate,
-                    ))?;
+                transform_result_sse::<_, crate::api::error::SignalError>((move || {
+                    let output_ok =
+                        crate::api::rsp::process_rsp_clean(api_signal, api_sampling_rate)?;
                     Ok(output_ok)
                 })())
             }
         },
     )
 }
-fn wire__crate__api__simple__process_rsp_findpeaks_impl(
+fn wire__crate__api__rsp__process_rsp_cycles_impl(
+    port_: flutter_rust_bridge::for_generated::MessagePort,
+    ptr_: flutter_rust_bridge::for_generated::PlatformGeneralizedUint8ListPtr,
+    rust_vec_len_: i32,
+    data_len_: i32,
+) {
+    FLUTTER_RUST_BRIDGE_HANDLER.wrap_normal::<flutter_rust_bridge::for_generated::SseCodec, _, _>(
+        flutter_rust_bridge::for_generated::TaskInfo {
+            debug_name: "process_rsp_cycles",
+            port: Some(port_),
+            mode: flutter_rust_bridge::for_generated::FfiCallMode::Normal,
+        },
+        move || {
+            let message = unsafe {
+                flutter_rust_bridge::for_generated::Dart2RustMessageSse::from_wire(
+                    ptr_,
+                    rust_vec_len_,
+                    data_len_,
+                )
+            };
+            let mut deserializer =
+                flutter_rust_bridge::for_generated::SseDeserializer::new(message);
+            let api_cleaned_signal = <Vec<f64>>::sse_decode(&mut deserializer);
+            let api_sampling_rate = <f64>::sse_decode(&mut deserializer);
+            let api_config =
+                <Option<crate::api::rsp::RspProcessingConfig>>::sse_decode(&mut deserializer);
+            deserializer.end();
+            move |context| {
+                transform_result_sse::<_, crate::api::error::SignalError>((move || {
+                    let output_ok = crate::api::rsp::process_rsp_cycles(
+                        api_cleaned_signal,
+                        api_sampling_rate,
+                        api_config,
+                    )?;
+                    Ok(output_ok)
+                })())
+            }
+        },
+    )
+}
+fn wire__crate__api__rsp__process_rsp_findpeaks_impl(
     port_: flutter_rust_bridge::for_generated::MessagePort,
     ptr_: flutter_rust_bridge::for_generated::PlatformGeneralizedUint8ListPtr,
     rust_vec_len_: i32,
@@ -504,11 +1353,16 @@ fn wire__crate__api__simple__process_rsp_findpeaks_impl(
             let mut deserializer =
                 flutter_rust_bridge::for_generated::SseDeserializer::new(message);
             let api_cleaned_signal = <Vec<f64>>::sse_decode(&mut deserializer);
+            let api_sampling_rate = <f64>::sse_decode(&mut deserializer);
+            let api_config =
+                <Option<crate::api::rsp::RspProcessingConfig>>::sse_decode(&mut deserializer);
             deserializer.end();
             move |context| {
-                transform_result_sse::<_, ()>((move || {
-                    let output_ok = Result::<_, ()>::Ok(
-                        crate::api::simple::process_rsp_findpeaks(api_cleaned_signal),
+                transform_result_sse::<_, crate::api::error::SignalError>((move || {
+                    let output_ok = crate::api::rsp::process_rsp_findpeaks(
+                        api_cleaned_signal,
+                        api_sampling_rate,
+                        api_config,
                     )?;
                     Ok(output_ok)
                 })())
@@ -516,7 +1370,87 @@ fn wire__crate__api__simple__process_rsp_findpeaks_impl(
         },
     )
 }
-fn wire__crate__api__simple__process_sample_entropy_impl(
+fn wire__crate__api__rsp__process_rsp_findpeaks_mask_impl(
+    port_: flutter_rust_bridge::for_generated::MessagePort,
+    ptr_: flutter_rust_bridge::for_generated::PlatformGeneralizedUint8ListPtr,
+    rust_vec_len_: i32,
+    data_len_: i32,
+) {
+    FLUTTER_RUST_BRIDGE_HANDLER.wrap_normal::<flutter_rust_bridge::for_generated::SseCodec, _, _>(
+        flutter_rust_bridge::for_generated::TaskInfo {
+            debug_name: "process_rsp_findpeaks_mask",
+            port: Some(port_),
+            mode: flutter_rust_bridge::for_generated::FfiCallMode::Normal,
+        },
+        move || {
+            let message = unsafe {
+                flutter_rust_bridge::for_generated::Dart2RustMessageSse::from_wire(
+                    ptr_,
+                    rust_vec_len_,
+                    data_len_,
+                )
+            };
+            let mut deserializer =
+                flutter_rust_bridge::for_generated::SseDeserializer::new(message);
+            let api_cleaned_signal = <Vec<f64>>::sse_decode(&mut deserializer);
+            let api_sampling_rate = <f64>::sse_decode(&mut deserializer);
+            let api_config =
+                <Option<crate::api::rsp::RspProcessingConfig>>::sse_decode(&mut deserializer);
+            deserializer.end();
+            move |context| {
+                transform_result_sse::<_, crate::api::error::SignalError>((move || {
+                    let output_ok = crate::api::rsp::process_rsp_findpeaks_mask(
+                        api_cleaned_signal,
+                        api_sampling_rate,
+                        api_config,
+                    )?;
+                    Ok(output_ok)
+                })())
+            }
+        },
+    )
+}
+fn wire__crate__api__rsp__process_rsp_rate_impl(
+    port_: flutter_rust_bridge::for_generated::MessagePort,
+    ptr_: flutter_rust_bridge::for_generated::PlatformGeneralizedUint8ListPtr,
+    rust_vec_len_: i32,
+    data_len_: i32,
+) {
+    FLUTTER_RUST_BRIDGE_HANDLER.wrap_normal::<flutter_rust_bridge::for_generated::SseCodec, _, _>(
+        flutter_rust_bridge::for_generated::TaskInfo {
+            debug_name: "process_rsp_rate",
+            port: Some(port_),
+            mode: flutter_rust_bridge::for_generated::FfiCallMode::Normal,
+        },
+        move || {
+            let message = unsafe {
+                flutter_rust_bridge::for_generated::Dart2RustMessageSse::from_wire(
+                    ptr_,
+                    rust_vec_len_,
+                    data_len_,
+                )
+            };
+            let mut deserializer =
+                flutter_rust_bridge::for_generated::SseDeserializer::new(message);
+            let api_cleaned_signal = <Vec<f64>>::sse_decode(&mut deserializer);
+            let api_sampling_rate = <f64>::sse_decode(&mut deserializer);
+            let api_config =
+                <Option<crate::api::rsp::RspProcessingConfig>>::sse_decode(&mut deserializer);
+            deserializer.end();
+            move |context| {
+                transform_result_sse::<_, crate::api::error::SignalError>((move || {
+                    let output_ok = crate::api::rsp::process_rsp_rate(
+                        api_cleaned_signal,
+                        api_sampling_rate,
+                        api_config,
+                    )?;
+                    Ok(output_ok)
+                })())
+            }
+        },
+    )
+}
+fn wire__crate__api__complexity__process_sample_entropy_impl(
     port_: flutter_rust_bridge::for_generated::MessagePort,
     ptr_: flutter_rust_bridge::for_generated::PlatformGeneralizedUint8ListPtr,
     rust_vec_len_: i32,
@@ -543,17 +1477,16 @@ fn wire__crate__api__simple__process_sample_entropy_impl(
             let api_r = <f64>::sse_decode(&mut deserializer);
             deserializer.end();
             move |context| {
-                transform_result_sse::<_, ()>((move || {
-                    let output_ok = Result::<_, ()>::Ok(
-                        crate::api::simple::process_sample_entropy(api_signal, api_m, api_r),
-                    )?;
+                transform_result_sse::<_, crate::api::error::SignalError>((move || {
+                    let output_ok =
+                        crate::api::complexity::process_sample_entropy(api_signal, api_m, api_r)?;
                     Ok(output_ok)
                 })())
             }
         },
     )
 }
-fn wire__crate__api__simple__process_signal_filter_impl(
+fn wire__crate__api__signal__process_signal_filter_impl(
     port_: flutter_rust_bridge::for_generated::MessagePort,
     ptr_: flutter_rust_bridge::for_generated::PlatformGeneralizedUint8ListPtr,
     rust_vec_len_: i32,
@@ -582,22 +1515,21 @@ fn wire__crate__api__simple__process_signal_filter_impl(
             let api_order = <usize>::sse_decode(&mut deserializer);
             deserializer.end();
             move |context| {
-                transform_result_sse::<_, ()>((move || {
-                    let output_ok =
-                        Result::<_, ()>::Ok(crate::api::simple::process_signal_filter(
-                            api_signal,
-                            api_sampling_rate,
-                            api_lowcut,
-                            api_highcut,
-                            api_order,
-                        ))?;
+                transform_result_sse::<_, crate::api::error::SignalError>((move || {
+                    let output_ok = crate::api::signal::process_signal_filter(
+                        api_signal,
+                        api_sampling_rate,
+                        api_lowcut,
+                        api_highcut,
+                        api_order,
+                    )?;
                     Ok(output_ok)
                 })())
             }
         },
     )
 }
-fn wire__crate__api__simple__process_signal_findpeaks_impl(
+fn wire__crate__api__signal__process_signal_findpeaks_impl(
     port_: flutter_rust_bridge::for_generated::MessagePort,
     ptr_: flutter_rust_bridge::for_generated::PlatformGeneralizedUint8ListPtr,
     rust_vec_len_: i32,
@@ -622,9 +1554,44 @@ fn wire__crate__api__simple__process_signal_findpeaks_impl(
             let api_signal = <Vec<f64>>::sse_decode(&mut deserializer);
             deserializer.end();
             move |context| {
-                transform_result_sse::<_, ()>((move || {
-                    let output_ok = Result::<_, ()>::Ok(
-                        crate::api::simple::process_signal_findpeaks(api_signal),
+                transform_result_sse::<_, crate::api::error::SignalError>((move || {
+                    let output_ok = crate::api::signal::process_signal_findpeaks(api_signal)?;
+                    Ok(output_ok)
+                })())
+            }
+        },
+    )
+}
+fn wire__crate__api__signal__process_signal_findpeaks_config_impl(
+    port_: flutter_rust_bridge::for_generated::MessagePort,
+    ptr_: flutter_rust_bridge::for_generated::PlatformGeneralizedUint8ListPtr,
+    rust_vec_len_: i32,
+    data_len_: i32,
+) {
+    FLUTTER_RUST_BRIDGE_HANDLER.wrap_normal::<flutter_rust_bridge::for_generated::SseCodec, _, _>(
+        flutter_rust_bridge::for_generated::TaskInfo {
+            debug_name: "process_signal_findpeaks_config",
+            port: Some(port_),
+            mode: flutter_rust_bridge::for_generated::FfiCallMode::Normal,
+        },
+        move || {
+            let message = unsafe {
+                flutter_rust_bridge::for_generated::Dart2RustMessageSse::from_wire(
+                    ptr_,
+                    rust_vec_len_,
+                    data_len_,
+                )
+            };
+            let mut deserializer =
+                flutter_rust_bridge::for_generated::SseDeserializer::new(message);
+            let api_signal = <Vec<f64>>::sse_decode(&mut deserializer);
+            let api_config =
+                <crate::api::signal::PeakDetectionConfig>::sse_decode(&mut deserializer);
+            deserializer.end();
+            move |context| {
+                transform_result_sse::<_, crate::api::error::SignalError>((move || {
+                    let output_ok = crate::api::signal::process_signal_findpeaks_config(
+                        api_signal, api_config,
                     )?;
                     Ok(output_ok)
                 })())
@@ -632,7 +1599,7 @@ fn wire__crate__api__simple__process_signal_findpeaks_impl(
         },
     )
 }
-fn wire__crate__api__simple__process_signal_smooth_moving_average_impl(
+fn wire__crate__api__signal__process_signal_smooth_moving_average_impl(
     port_: flutter_rust_bridge::for_generated::MessagePort,
     ptr_: flutter_rust_bridge::for_generated::PlatformGeneralizedUint8ListPtr,
     rust_vec_len_: i32,
@@ -658,12 +1625,10 @@ fn wire__crate__api__simple__process_signal_smooth_moving_average_impl(
             let api_window_size = <usize>::sse_decode(&mut deserializer);
             deserializer.end();
             move |context| {
-                transform_result_sse::<_, ()>((move || {
-                    let output_ok = Result::<_, ()>::Ok(
-                        crate::api::simple::process_signal_smooth_moving_average(
-                            api_signal,
-                            api_window_size,
-                        ),
+                transform_result_sse::<_, crate::api::error::SignalError>((move || {
+                    let output_ok = crate::api::signal::process_signal_smooth_moving_average(
+                        api_signal,
+                        api_window_size,
                     )?;
                     Ok(output_ok)
                 })())
@@ -671,14 +1636,197 @@ fn wire__crate__api__simple__process_signal_smooth_moving_average_impl(
         },
     )
 }
+fn wire__crate__api__multimodal__pulse_timing_config_default_impl(
+    port_: flutter_rust_bridge::for_generated::MessagePort,
+    ptr_: flutter_rust_bridge::for_generated::PlatformGeneralizedUint8ListPtr,
+    rust_vec_len_: i32,
+    data_len_: i32,
+) {
+    FLUTTER_RUST_BRIDGE_HANDLER.wrap_normal::<flutter_rust_bridge::for_generated::SseCodec, _, _>(
+        flutter_rust_bridge::for_generated::TaskInfo {
+            debug_name: "pulse_timing_config_default",
+            port: Some(port_),
+            mode: flutter_rust_bridge::for_generated::FfiCallMode::Normal,
+        },
+        move || {
+            let message = unsafe {
+                flutter_rust_bridge::for_generated::Dart2RustMessageSse::from_wire(
+                    ptr_,
+                    rust_vec_len_,
+                    data_len_,
+                )
+            };
+            let mut deserializer =
+                flutter_rust_bridge::for_generated::SseDeserializer::new(message);
+            deserializer.end();
+            move |context| {
+                transform_result_sse::<_, ()>((move || {
+                    let output_ok =
+                        Result::<_, ()>::Ok(crate::api::multimodal::PulseTimingConfig::default())?;
+                    Ok(output_ok)
+                })())
+            }
+        },
+    )
+}
+fn wire__crate__api__rppg__rppg_algorithm_id_default_impl(
+    port_: flutter_rust_bridge::for_generated::MessagePort,
+    ptr_: flutter_rust_bridge::for_generated::PlatformGeneralizedUint8ListPtr,
+    rust_vec_len_: i32,
+    data_len_: i32,
+) {
+    FLUTTER_RUST_BRIDGE_HANDLER.wrap_normal::<flutter_rust_bridge::for_generated::SseCodec, _, _>(
+        flutter_rust_bridge::for_generated::TaskInfo {
+            debug_name: "rppg_algorithm_id_default",
+            port: Some(port_),
+            mode: flutter_rust_bridge::for_generated::FfiCallMode::Normal,
+        },
+        move || {
+            let message = unsafe {
+                flutter_rust_bridge::for_generated::Dart2RustMessageSse::from_wire(
+                    ptr_,
+                    rust_vec_len_,
+                    data_len_,
+                )
+            };
+            let mut deserializer =
+                flutter_rust_bridge::for_generated::SseDeserializer::new(message);
+            deserializer.end();
+            move |context| {
+                transform_result_sse::<_, ()>((move || {
+                    let output_ok =
+                        Result::<_, ()>::Ok(crate::api::rppg::RppgAlgorithmId::default())?;
+                    Ok(output_ok)
+                })())
+            }
+        },
+    )
+}
+fn wire__crate__api__rppg__rppg_config_default_impl(
+    port_: flutter_rust_bridge::for_generated::MessagePort,
+    ptr_: flutter_rust_bridge::for_generated::PlatformGeneralizedUint8ListPtr,
+    rust_vec_len_: i32,
+    data_len_: i32,
+) {
+    FLUTTER_RUST_BRIDGE_HANDLER.wrap_normal::<flutter_rust_bridge::for_generated::SseCodec, _, _>(
+        flutter_rust_bridge::for_generated::TaskInfo {
+            debug_name: "rppg_config_default",
+            port: Some(port_),
+            mode: flutter_rust_bridge::for_generated::FfiCallMode::Normal,
+        },
+        move || {
+            let message = unsafe {
+                flutter_rust_bridge::for_generated::Dart2RustMessageSse::from_wire(
+                    ptr_,
+                    rust_vec_len_,
+                    data_len_,
+                )
+            };
+            let mut deserializer =
+                flutter_rust_bridge::for_generated::SseDeserializer::new(message);
+            deserializer.end();
+            move |context| {
+                transform_result_sse::<_, ()>((move || {
+                    let output_ok = Result::<_, ()>::Ok(crate::api::rppg::RppgConfig::default())?;
+                    Ok(output_ok)
+                })())
+            }
+        },
+    )
+}
+fn wire__crate__api__rsp__rsp_processing_config_default_impl(
+    port_: flutter_rust_bridge::for_generated::MessagePort,
+    ptr_: flutter_rust_bridge::for_generated::PlatformGeneralizedUint8ListPtr,
+    rust_vec_len_: i32,
+    data_len_: i32,
+) {
+    FLUTTER_RUST_BRIDGE_HANDLER.wrap_normal::<flutter_rust_bridge::for_generated::SseCodec, _, _>(
+        flutter_rust_bridge::for_generated::TaskInfo {
+            debug_name: "rsp_processing_config_default",
+            port: Some(port_),
+            mode: flutter_rust_bridge::for_generated::FfiCallMode::Normal,
+        },
+        move || {
+            let message = unsafe {
+                flutter_rust_bridge::for_generated::Dart2RustMessageSse::from_wire(
+                    ptr_,
+                    rust_vec_len_,
+                    data_len_,
+                )
+            };
+            let mut deserializer =
+                flutter_rust_bridge::for_generated::SseDeserializer::new(message);
+            deserializer.end();
+            move |context| {
+                transform_result_sse::<_, ()>((move || {
+                    let output_ok =
+                        Result::<_, ()>::Ok(crate::api::rsp::RspProcessingConfig::default())?;
+                    Ok(output_ok)
+                })())
+            }
+        },
+    )
+}
+
+// Section: related_funcs
+
+flutter_rust_bridge::frb_generated_moi_arc_impl_value!(
+    flutter_rust_bridge::for_generated::RustAutoOpaqueInner<AutonomicEstimator>
+);
 
 // Section: dart2rust
+
+impl SseDecode for AutonomicEstimator {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
+        let mut inner = <RustOpaqueMoi<
+            flutter_rust_bridge::for_generated::RustAutoOpaqueInner<AutonomicEstimator>,
+        >>::sse_decode(deserializer);
+        return flutter_rust_bridge::for_generated::rust_auto_opaque_decode_owned(inner);
+    }
+}
+
+impl SseDecode
+    for RustOpaqueMoi<flutter_rust_bridge::for_generated::RustAutoOpaqueInner<AutonomicEstimator>>
+{
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
+        let mut inner = <usize>::sse_decode(deserializer);
+        return decode_rust_opaque_moi(inner);
+    }
+}
 
 impl SseDecode for String {
     // Codec=Sse (Serialization based), see doc to use other codecs
     fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
         let mut inner = <Vec<u8>>::sse_decode(deserializer);
         return String::from_utf8(inner).unwrap();
+    }
+}
+
+impl SseDecode for crate::api::autonomic::AutonomicState {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
+        let mut var_timestamp = <f64>::sse_decode(deserializer);
+        let mut var_durationSec = <f64>::sse_decode(deserializer);
+        let mut var_cardiac = <crate::api::autonomic::CardiacState>::sse_decode(deserializer);
+        let mut var_electrodermal =
+            <crate::api::autonomic::ElectrodermalState>::sse_decode(deserializer);
+        let mut var_respiratory =
+            <crate::api::autonomic::RespiratoryState>::sse_decode(deserializer);
+        let mut var_coupling = <crate::api::autonomic::CouplingState>::sse_decode(deserializer);
+        let mut var_activationScore = <Option<f64>>::sse_decode(deserializer);
+        let mut var_regulationScore = <Option<f64>>::sse_decode(deserializer);
+        return crate::api::autonomic::AutonomicState {
+            timestamp: var_timestamp,
+            duration_sec: var_durationSec,
+            cardiac: var_cardiac,
+            electrodermal: var_electrodermal,
+            respiratory: var_respiratory,
+            coupling: var_coupling,
+            activation_score: var_activationScore,
+            regulation_score: var_regulationScore,
+        };
     }
 }
 
@@ -689,6 +1837,186 @@ impl SseDecode for bool {
     }
 }
 
+impl SseDecode for crate::api::features::CardiacFeatures {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
+        let mut var_meanHrBpm = <Option<f64>>::sse_decode(deserializer);
+        let mut var_medianHrBpm = <Option<f64>>::sse_decode(deserializer);
+        let mut var_sdnnMs = <Option<f64>>::sse_decode(deserializer);
+        let mut var_rmssdMs = <Option<f64>>::sse_decode(deserializer);
+        let mut var_pnn50 = <Option<f64>>::sse_decode(deserializer);
+        let mut var_rrMeanMs = <Option<f64>>::sse_decode(deserializer);
+        let mut var_rrStdMs = <Option<f64>>::sse_decode(deserializer);
+        let mut var_beatCount = <usize>::sse_decode(deserializer);
+        return crate::api::features::CardiacFeatures {
+            mean_hr_bpm: var_meanHrBpm,
+            median_hr_bpm: var_medianHrBpm,
+            sdnn_ms: var_sdnnMs,
+            rmssd_ms: var_rmssdMs,
+            pnn50: var_pnn50,
+            rr_mean_ms: var_rrMeanMs,
+            rr_std_ms: var_rrStdMs,
+            beat_count: var_beatCount,
+        };
+    }
+}
+
+impl SseDecode for crate::api::autonomic::CardiacState {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
+        let mut var_variabilityIndex = <Option<f64>>::sse_decode(deserializer);
+        let mut var_heartRateIndex = <Option<f64>>::sse_decode(deserializer);
+        let mut var_recoveryEvidence = <Option<f64>>::sse_decode(deserializer);
+        let mut var_beatCount = <usize>::sse_decode(deserializer);
+        return crate::api::autonomic::CardiacState {
+            variability_index: var_variabilityIndex,
+            heart_rate_index: var_heartRateIndex,
+            recovery_evidence: var_recoveryEvidence,
+            beat_count: var_beatCount,
+        };
+    }
+}
+
+impl SseDecode for crate::api::autonomic::CouplingState {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
+        let mut var_resphrCouplingIndex = <Option<f64>>::sse_decode(deserializer);
+        let mut var_phaseCouplingIndex = <Option<f64>>::sse_decode(deserializer);
+        let mut var_pulseDelayIndex = <Option<f64>>::sse_decode(deserializer);
+        let mut var_associationCount = <usize>::sse_decode(deserializer);
+        return crate::api::autonomic::CouplingState {
+            resphr_coupling_index: var_resphrCouplingIndex,
+            phase_coupling_index: var_phaseCouplingIndex,
+            pulse_delay_index: var_pulseDelayIndex,
+            association_count: var_associationCount,
+        };
+    }
+}
+
+impl SseDecode for crate::api::ecg::EcgPeakDetectionConfig {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
+        let mut var_lowcut = <Option<f64>>::sse_decode(deserializer);
+        let mut var_highcut = <Option<f64>>::sse_decode(deserializer);
+        let mut var_filterOrder = <Option<usize>>::sse_decode(deserializer);
+        let mut var_integrationWindowSec = <Option<f64>>::sse_decode(deserializer);
+        let mut var_refractoryPeriodSec = <Option<f64>>::sse_decode(deserializer);
+        let mut var_searchback = <Option<bool>>::sse_decode(deserializer);
+        let mut var_thresholdMultiplier = <Option<f64>>::sse_decode(deserializer);
+        return crate::api::ecg::EcgPeakDetectionConfig {
+            lowcut: var_lowcut,
+            highcut: var_highcut,
+            filter_order: var_filterOrder,
+            integration_window_sec: var_integrationWindowSec,
+            refractory_period_sec: var_refractoryPeriodSec,
+            searchback: var_searchback,
+            threshold_multiplier: var_thresholdMultiplier,
+        };
+    }
+}
+
+impl SseDecode for crate::api::eda::EdaComponentSignals {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
+        let mut var_tonic = <Vec<f64>>::sse_decode(deserializer);
+        let mut var_phasic = <Vec<f64>>::sse_decode(deserializer);
+        return crate::api::eda::EdaComponentSignals {
+            tonic: var_tonic,
+            phasic: var_phasic,
+        };
+    }
+}
+
+impl SseDecode for crate::api::eda::EdaDecompositionConfig {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
+        let mut var_tonicCutoffHz = <Option<f64>>::sse_decode(deserializer);
+        let mut var_filterOrder = <Option<usize>>::sse_decode(deserializer);
+        return crate::api::eda::EdaDecompositionConfig {
+            tonic_cutoff_hz: var_tonicCutoffHz,
+            filter_order: var_filterOrder,
+        };
+    }
+}
+
+impl SseDecode for crate::api::features::EdaFeatures {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
+        let mut var_meanTonicUs = <Option<f64>>::sse_decode(deserializer);
+        let mut var_medianTonicUs = <Option<f64>>::sse_decode(deserializer);
+        let mut var_tonicStdUs = <Option<f64>>::sse_decode(deserializer);
+        let mut var_meanPhasicUs = <Option<f64>>::sse_decode(deserializer);
+        let mut var_phasicStdUs = <Option<f64>>::sse_decode(deserializer);
+        let mut var_scrCount = <usize>::sse_decode(deserializer);
+        let mut var_scrRatePerMin = <Option<f64>>::sse_decode(deserializer);
+        let mut var_meanScrAmplitudeUs = <Option<f64>>::sse_decode(deserializer);
+        let mut var_medianScrAmplitudeUs = <Option<f64>>::sse_decode(deserializer);
+        let mut var_meanScrRiseTimeSec = <Option<f64>>::sse_decode(deserializer);
+        return crate::api::features::EdaFeatures {
+            mean_tonic_us: var_meanTonicUs,
+            median_tonic_us: var_medianTonicUs,
+            tonic_std_us: var_tonicStdUs,
+            mean_phasic_us: var_meanPhasicUs,
+            phasic_std_us: var_phasicStdUs,
+            scr_count: var_scrCount,
+            scr_rate_per_min: var_scrRatePerMin,
+            mean_scr_amplitude_us: var_meanScrAmplitudeUs,
+            median_scr_amplitude_us: var_medianScrAmplitudeUs,
+            mean_scr_rise_time_sec: var_meanScrRiseTimeSec,
+        };
+    }
+}
+
+impl SseDecode for crate::api::eda::EdaPeakDetectionConfig {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
+        let mut var_minAmplitude = <Option<f64>>::sse_decode(deserializer);
+        let mut var_minProminence = <Option<f64>>::sse_decode(deserializer);
+        let mut var_minDistanceSec = <Option<f64>>::sse_decode(deserializer);
+        let mut var_minRiseTimeSec = <Option<f64>>::sse_decode(deserializer);
+        let mut var_maxRiseTimeSec = <Option<f64>>::sse_decode(deserializer);
+        return crate::api::eda::EdaPeakDetectionConfig {
+            min_amplitude: var_minAmplitude,
+            min_prominence: var_minProminence,
+            min_distance_sec: var_minDistanceSec,
+            min_rise_time_sec: var_minRiseTimeSec,
+            max_rise_time_sec: var_maxRiseTimeSec,
+        };
+    }
+}
+
+impl SseDecode for crate::api::eda::EdaPeakEvent {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
+        let mut var_onsetIndex = <usize>::sse_decode(deserializer);
+        let mut var_peakIndex = <usize>::sse_decode(deserializer);
+        let mut var_amplitude = <f64>::sse_decode(deserializer);
+        let mut var_riseTimeSec = <f64>::sse_decode(deserializer);
+        return crate::api::eda::EdaPeakEvent {
+            onset_index: var_onsetIndex,
+            peak_index: var_peakIndex,
+            amplitude: var_amplitude,
+            rise_time_sec: var_riseTimeSec,
+        };
+    }
+}
+
+impl SseDecode for crate::api::autonomic::ElectrodermalState {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
+        let mut var_tonicLevelIndex = <Option<f64>>::sse_decode(deserializer);
+        let mut var_phasicActivationIndex = <Option<f64>>::sse_decode(deserializer);
+        let mut var_scrRateIndex = <Option<f64>>::sse_decode(deserializer);
+        let mut var_scrCount = <usize>::sse_decode(deserializer);
+        return crate::api::autonomic::ElectrodermalState {
+            tonic_level_index: var_tonicLevelIndex,
+            phasic_activation_index: var_phasicActivationIndex,
+            scr_rate_index: var_scrRateIndex,
+            scr_count: var_scrCount,
+        };
+    }
+}
+
 impl SseDecode for f64 {
     // Codec=Sse (Serialization based), see doc to use other codecs
     fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
@@ -696,13 +2024,44 @@ impl SseDecode for f64 {
     }
 }
 
-impl SseDecode for Vec<bool> {
+impl SseDecode for crate::api::features::FeatureWindow {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
+        let mut var_startTimeSec = <f64>::sse_decode(deserializer);
+        let mut var_endTimeSec = <f64>::sse_decode(deserializer);
+        return crate::api::features::FeatureWindow {
+            start_time_sec: var_startTimeSec,
+            end_time_sec: var_endTimeSec,
+        };
+    }
+}
+
+impl SseDecode for i32 {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
+        deserializer.cursor.read_i32::<NativeEndian>().unwrap()
+    }
+}
+
+impl SseDecode for Vec<usize> {
     // Codec=Sse (Serialization based), see doc to use other codecs
     fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
         let mut len_ = <i32>::sse_decode(deserializer);
         let mut ans_ = Vec::with_capacity(len_ as usize);
         for idx_ in 0..len_ {
-            ans_.push(<bool>::sse_decode(deserializer));
+            ans_.push(<usize>::sse_decode(deserializer));
+        }
+        return ans_;
+    }
+}
+
+impl SseDecode for Vec<crate::api::eda::EdaPeakEvent> {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
+        let mut len_ = <i32>::sse_decode(deserializer);
+        let mut ans_ = Vec::with_capacity(len_ as usize);
+        for idx_ in 0..len_ {
+            ans_.push(<crate::api::eda::EdaPeakEvent>::sse_decode(deserializer));
         }
         return ans_;
     }
@@ -732,6 +2091,95 @@ impl SseDecode for Vec<u8> {
     }
 }
 
+impl SseDecode for Vec<crate::api::multimodal::PulseTimingResult> {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
+        let mut len_ = <i32>::sse_decode(deserializer);
+        let mut ans_ = Vec::with_capacity(len_ as usize);
+        for idx_ in 0..len_ {
+            ans_.push(<crate::api::multimodal::PulseTimingResult>::sse_decode(
+                deserializer,
+            ));
+        }
+        return ans_;
+    }
+}
+
+impl SseDecode for Vec<crate::api::rsp::RespirationCycle> {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
+        let mut len_ = <i32>::sse_decode(deserializer);
+        let mut ans_ = Vec::with_capacity(len_ as usize);
+        for idx_ in 0..len_ {
+            ans_.push(<crate::api::rsp::RespirationCycle>::sse_decode(
+                deserializer,
+            ));
+        }
+        return ans_;
+    }
+}
+
+impl SseDecode for Option<usize> {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
+        if (<bool>::sse_decode(deserializer)) {
+            return Some(<usize>::sse_decode(deserializer));
+        } else {
+            return None;
+        }
+    }
+}
+
+impl SseDecode for Option<bool> {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
+        if (<bool>::sse_decode(deserializer)) {
+            return Some(<bool>::sse_decode(deserializer));
+        } else {
+            return None;
+        }
+    }
+}
+
+impl SseDecode for Option<crate::api::ecg::EcgPeakDetectionConfig> {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
+        if (<bool>::sse_decode(deserializer)) {
+            return Some(<crate::api::ecg::EcgPeakDetectionConfig>::sse_decode(
+                deserializer,
+            ));
+        } else {
+            return None;
+        }
+    }
+}
+
+impl SseDecode for Option<crate::api::eda::EdaDecompositionConfig> {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
+        if (<bool>::sse_decode(deserializer)) {
+            return Some(<crate::api::eda::EdaDecompositionConfig>::sse_decode(
+                deserializer,
+            ));
+        } else {
+            return None;
+        }
+    }
+}
+
+impl SseDecode for Option<crate::api::eda::EdaPeakDetectionConfig> {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
+        if (<bool>::sse_decode(deserializer)) {
+            return Some(<crate::api::eda::EdaPeakDetectionConfig>::sse_decode(
+                deserializer,
+            ));
+        } else {
+            return None;
+        }
+    }
+}
+
 impl SseDecode for Option<f64> {
     // Codec=Sse (Serialization based), see doc to use other codecs
     fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
@@ -740,6 +2188,287 @@ impl SseDecode for Option<f64> {
         } else {
             return None;
         }
+    }
+}
+
+impl SseDecode for Option<crate::api::ppg::PpgPeakDetectionConfig> {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
+        if (<bool>::sse_decode(deserializer)) {
+            return Some(<crate::api::ppg::PpgPeakDetectionConfig>::sse_decode(
+                deserializer,
+            ));
+        } else {
+            return None;
+        }
+    }
+}
+
+impl SseDecode for Option<crate::api::multimodal::PulseTimingConfig> {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
+        if (<bool>::sse_decode(deserializer)) {
+            return Some(<crate::api::multimodal::PulseTimingConfig>::sse_decode(
+                deserializer,
+            ));
+        } else {
+            return None;
+        }
+    }
+}
+
+impl SseDecode for Option<crate::api::rppg::RppgConfig> {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
+        if (<bool>::sse_decode(deserializer)) {
+            return Some(<crate::api::rppg::RppgConfig>::sse_decode(deserializer));
+        } else {
+            return None;
+        }
+    }
+}
+
+impl SseDecode for Option<crate::api::rsp::RspProcessingConfig> {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
+        if (<bool>::sse_decode(deserializer)) {
+            return Some(<crate::api::rsp::RspProcessingConfig>::sse_decode(
+                deserializer,
+            ));
+        } else {
+            return None;
+        }
+    }
+}
+
+impl SseDecode for crate::api::signal::PeakDetectionConfig {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
+        let mut var_minHeight = <Option<f64>>::sse_decode(deserializer);
+        let mut var_minDistance = <Option<usize>>::sse_decode(deserializer);
+        let mut var_minProminence = <Option<f64>>::sse_decode(deserializer);
+        let mut var_minWidth = <Option<usize>>::sse_decode(deserializer);
+        let mut var_threshold = <Option<f64>>::sse_decode(deserializer);
+        return crate::api::signal::PeakDetectionConfig {
+            min_height: var_minHeight,
+            min_distance: var_minDistance,
+            min_prominence: var_minProminence,
+            min_width: var_minWidth,
+            threshold: var_threshold,
+        };
+    }
+}
+
+impl SseDecode for crate::api::multimodal::PhaseCouplingResult {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
+        let mut var_meanPhaseRad = <f64>::sse_decode(deserializer);
+        let mut var_vectorLength = <f64>::sse_decode(deserializer);
+        let mut var_sampleCount = <usize>::sse_decode(deserializer);
+        return crate::api::multimodal::PhaseCouplingResult {
+            mean_phase_rad: var_meanPhaseRad,
+            vector_length: var_vectorLength,
+            sample_count: var_sampleCount,
+        };
+    }
+}
+
+impl SseDecode for crate::api::ppg::PpgPeakDetectionConfig {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
+        let mut var_lowcut = <Option<f64>>::sse_decode(deserializer);
+        let mut var_highcut = <Option<f64>>::sse_decode(deserializer);
+        let mut var_filterOrder = <Option<usize>>::sse_decode(deserializer);
+        let mut var_wPeakSec = <Option<f64>>::sse_decode(deserializer);
+        let mut var_wBeatSec = <Option<f64>>::sse_decode(deserializer);
+        let mut var_alpha = <Option<f64>>::sse_decode(deserializer);
+        let mut var_refractoryPeriodSec = <Option<f64>>::sse_decode(deserializer);
+        return crate::api::ppg::PpgPeakDetectionConfig {
+            lowcut: var_lowcut,
+            highcut: var_highcut,
+            filter_order: var_filterOrder,
+            w_peak_sec: var_wPeakSec,
+            w_beat_sec: var_wBeatSec,
+            alpha: var_alpha,
+            refractory_period_sec: var_refractoryPeriodSec,
+        };
+    }
+}
+
+impl SseDecode for crate::api::multimodal::PulseTimingConfig {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
+        let mut var_minDelaySec = <Option<f64>>::sse_decode(deserializer);
+        let mut var_maxDelaySec = <Option<f64>>::sse_decode(deserializer);
+        return crate::api::multimodal::PulseTimingConfig {
+            min_delay_sec: var_minDelaySec,
+            max_delay_sec: var_maxDelaySec,
+        };
+    }
+}
+
+impl SseDecode for crate::api::multimodal::PulseTimingResult {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
+        let mut var_ecgPeakIndex = <usize>::sse_decode(deserializer);
+        let mut var_ppgPeakIndex = <usize>::sse_decode(deserializer);
+        let mut var_ecgTimestampSec = <f64>::sse_decode(deserializer);
+        let mut var_ppgTimestampSec = <f64>::sse_decode(deserializer);
+        let mut var_pulseDelaySec = <f64>::sse_decode(deserializer);
+        return crate::api::multimodal::PulseTimingResult {
+            ecg_peak_index: var_ecgPeakIndex,
+            ppg_peak_index: var_ppgPeakIndex,
+            ecg_timestamp_sec: var_ecgTimestampSec,
+            ppg_timestamp_sec: var_ppgTimestampSec,
+            pulse_delay_sec: var_pulseDelaySec,
+        };
+    }
+}
+
+impl SseDecode for crate::api::rsp::RespirationCycle {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
+        let mut var_inspirationIndex = <usize>::sse_decode(deserializer);
+        let mut var_expirationIndex = <usize>::sse_decode(deserializer);
+        let mut var_nextInspirationIndex = <usize>::sse_decode(deserializer);
+        let mut var_durationSec = <f64>::sse_decode(deserializer);
+        let mut var_respiratoryRateBpm = <f64>::sse_decode(deserializer);
+        let mut var_amplitude = <f64>::sse_decode(deserializer);
+        return crate::api::rsp::RespirationCycle {
+            inspiration_index: var_inspirationIndex,
+            expiration_index: var_expirationIndex,
+            next_inspiration_index: var_nextInspirationIndex,
+            duration_sec: var_durationSec,
+            respiratory_rate_bpm: var_respiratoryRateBpm,
+            amplitude: var_amplitude,
+        };
+    }
+}
+
+impl SseDecode for crate::api::features::RespirationFeatures {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
+        let mut var_meanRateBpm = <Option<f64>>::sse_decode(deserializer);
+        let mut var_medianRateBpm = <Option<f64>>::sse_decode(deserializer);
+        let mut var_rateStdBpm = <Option<f64>>::sse_decode(deserializer);
+        let mut var_meanCycleDurationSec = <Option<f64>>::sse_decode(deserializer);
+        let mut var_cycleCount = <usize>::sse_decode(deserializer);
+        let mut var_meanAmplitude = <Option<f64>>::sse_decode(deserializer);
+        let mut var_amplitudeStd = <Option<f64>>::sse_decode(deserializer);
+        return crate::api::features::RespirationFeatures {
+            mean_rate_bpm: var_meanRateBpm,
+            median_rate_bpm: var_medianRateBpm,
+            rate_std_bpm: var_rateStdBpm,
+            mean_cycle_duration_sec: var_meanCycleDurationSec,
+            cycle_count: var_cycleCount,
+            mean_amplitude: var_meanAmplitude,
+            amplitude_std: var_amplitudeStd,
+        };
+    }
+}
+
+impl SseDecode for crate::api::autonomic::RespiratoryState {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
+        let mut var_rateIndex = <Option<f64>>::sse_decode(deserializer);
+        let mut var_amplitudeIndex = <Option<f64>>::sse_decode(deserializer);
+        let mut var_regularityIndex = <Option<f64>>::sse_decode(deserializer);
+        let mut var_cycleCount = <usize>::sse_decode(deserializer);
+        return crate::api::autonomic::RespiratoryState {
+            rate_index: var_rateIndex,
+            amplitude_index: var_amplitudeIndex,
+            regularity_index: var_regularityIndex,
+            cycle_count: var_cycleCount,
+        };
+    }
+}
+
+impl SseDecode for crate::api::rppg::RppgAlgorithmId {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
+        let mut inner = <i32>::sse_decode(deserializer);
+        return match inner {
+            0 => crate::api::rppg::RppgAlgorithmId::GreenChannel,
+            1 => crate::api::rppg::RppgAlgorithmId::Chrom,
+            2 => crate::api::rppg::RppgAlgorithmId::Pos,
+            _ => unreachable!("Invalid variant for RppgAlgorithmId: {}", inner),
+        };
+    }
+}
+
+impl SseDecode for crate::api::rppg::RppgConfig {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
+        let mut var_algorithm = <crate::api::rppg::RppgAlgorithmId>::sse_decode(deserializer);
+        let mut var_minQuality = <f64>::sse_decode(deserializer);
+        let mut var_minimumRoiPixels = <usize>::sse_decode(deserializer);
+        let mut var_maxGapSec = <f64>::sse_decode(deserializer);
+        return crate::api::rppg::RppgConfig {
+            algorithm: var_algorithm,
+            min_quality: var_minQuality,
+            minimum_roi_pixels: var_minimumRoiPixels,
+            max_gap_sec: var_maxGapSec,
+        };
+    }
+}
+
+impl SseDecode for crate::api::rppg::RppgSignalResult {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
+        let mut var_timestampsSec = <Vec<f64>>::sse_decode(deserializer);
+        let mut var_pulseSignal = <Vec<f64>>::sse_decode(deserializer);
+        let mut var_meanQuality = <f64>::sse_decode(deserializer);
+        return crate::api::rppg::RppgSignalResult {
+            timestamps_sec: var_timestampsSec,
+            pulse_signal: var_pulseSignal,
+            mean_quality: var_meanQuality,
+        };
+    }
+}
+
+impl SseDecode for crate::api::multimodal::RsaResult {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
+        let mut var_amplitudeBpm = <f64>::sse_decode(deserializer);
+        let mut var_amplitudeRrSec = <f64>::sse_decode(deserializer);
+        let mut var_validBeats = <usize>::sse_decode(deserializer);
+        let mut var_validCycles = <usize>::sse_decode(deserializer);
+        return crate::api::multimodal::RsaResult {
+            amplitude_bpm: var_amplitudeBpm,
+            amplitude_rr_sec: var_amplitudeRrSec,
+            valid_beats: var_validBeats,
+            valid_cycles: var_validCycles,
+        };
+    }
+}
+
+impl SseDecode for crate::api::rsp::RspProcessingConfig {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
+        let mut var_lowcut = <Option<f64>>::sse_decode(deserializer);
+        let mut var_highcut = <Option<f64>>::sse_decode(deserializer);
+        let mut var_filterOrder = <Option<usize>>::sse_decode(deserializer);
+        let mut var_minBreathIntervalSec = <Option<f64>>::sse_decode(deserializer);
+        let mut var_maxBreathIntervalSec = <Option<f64>>::sse_decode(deserializer);
+        let mut var_minAmplitude = <Option<f64>>::sse_decode(deserializer);
+        return crate::api::rsp::RspProcessingConfig {
+            lowcut: var_lowcut,
+            highcut: var_highcut,
+            filter_order: var_filterOrder,
+            min_breath_interval_sec: var_minBreathIntervalSec,
+            max_breath_interval_sec: var_maxBreathIntervalSec,
+            min_amplitude: var_minAmplitude,
+        };
+    }
+}
+
+impl SseDecode for crate::api::error::SignalError {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
+        let mut var_message = <String>::sse_decode(deserializer);
+        return crate::api::error::SignalError {
+            message: var_message,
+        };
     }
 }
 
@@ -762,13 +2491,6 @@ impl SseDecode for usize {
     }
 }
 
-impl SseDecode for i32 {
-    // Codec=Sse (Serialization based), see doc to use other codecs
-    fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
-        deserializer.cursor.read_i32::<NativeEndian>().unwrap()
-    }
-}
-
 fn pde_ffi_dispatcher_primary_impl(
     func_id: i32,
     port: flutter_rust_bridge::for_generated::MessagePort,
@@ -778,45 +2500,181 @@ fn pde_ffi_dispatcher_primary_impl(
 ) {
     // Codec=Pde (Serialization + dispatch), see doc to use other codecs
     match func_id {
-        1 => wire__crate__api__simple__init_app_impl(port, ptr, rust_vec_len, data_len),
-        2 => wire__crate__api__simple__process_ecg_clean_impl(port, ptr, rust_vec_len, data_len),
-        3 => {
-            wire__crate__api__simple__process_ecg_findpeaks_impl(port, ptr, rust_vec_len, data_len)
-        }
-        4 => wire__crate__api__simple__process_eda_clean_impl(port, ptr, rust_vec_len, data_len),
-        5 => {
-            wire__crate__api__simple__process_eda_findpeaks_impl(port, ptr, rust_vec_len, data_len)
-        }
-        6 => wire__crate__api__simple__process_eda_phasic_impl(port, ptr, rust_vec_len, data_len),
-        7 => wire__crate__api__simple__process_hrv_mean_nn_impl(port, ptr, rust_vec_len, data_len),
-        8 => wire__crate__api__simple__process_hrv_rmssd_impl(port, ptr, rust_vec_len, data_len),
-        9 => wire__crate__api__simple__process_peaks_to_intervals_impl(
+        1 => wire__crate__api__autonomic__AutonomicEstimator_default_impl(
             port,
             ptr,
             rust_vec_len,
             data_len,
         ),
-        10 => wire__crate__api__simple__process_ppg_clean_impl(port, ptr, rust_vec_len, data_len),
+        2 => wire__crate__api__autonomic__AutonomicEstimator_estimate_from_vector_impl(
+            port,
+            ptr,
+            rust_vec_len,
+            data_len,
+        ),
+        3 => wire__crate__api__autonomic__AutonomicEstimator_new_impl(
+            port,
+            ptr,
+            rust_vec_len,
+            data_len,
+        ),
+        4 => wire__crate__api__multimodal__compute_cardiorespiratory_phase_coupling_impl(
+            port,
+            ptr,
+            rust_vec_len,
+            data_len,
+        ),
+        5 => wire__crate__api__multimodal__compute_ecg_ppg_timing_impl(
+            port,
+            ptr,
+            rust_vec_len,
+            data_len,
+        ),
+        6 => wire__crate__api__multimodal__compute_rsa_impl(port, ptr, rust_vec_len, data_len),
+        7 => wire__crate__api__ecg__ecg_peak_detection_config_default_impl(
+            port,
+            ptr,
+            rust_vec_len,
+            data_len,
+        ),
+        8 => wire__crate__api__eda__eda_decomposition_config_default_impl(
+            port,
+            ptr,
+            rust_vec_len,
+            data_len,
+        ),
+        9 => wire__crate__api__eda__eda_peak_detection_config_default_impl(
+            port,
+            ptr,
+            rust_vec_len,
+            data_len,
+        ),
+        10 => wire__crate__api__features__extract_cardiac_features_impl(
+            port,
+            ptr,
+            rust_vec_len,
+            data_len,
+        ),
         11 => {
-            wire__crate__api__simple__process_ppg_findpeaks_impl(port, ptr, rust_vec_len, data_len)
+            wire__crate__api__features__extract_eda_features_impl(port, ptr, rust_vec_len, data_len)
         }
-        12 => wire__crate__api__simple__process_rsp_clean_impl(port, ptr, rust_vec_len, data_len),
-        13 => {
-            wire__crate__api__simple__process_rsp_findpeaks_impl(port, ptr, rust_vec_len, data_len)
-        }
-        14 => {
-            wire__crate__api__simple__process_sample_entropy_impl(port, ptr, rust_vec_len, data_len)
-        }
-        15 => {
-            wire__crate__api__simple__process_signal_filter_impl(port, ptr, rust_vec_len, data_len)
-        }
-        16 => wire__crate__api__simple__process_signal_findpeaks_impl(
+        12 => wire__crate__api__features__extract_respiration_features_impl(
             port,
             ptr,
             rust_vec_len,
             data_len,
         ),
-        17 => wire__crate__api__simple__process_signal_smooth_moving_average_impl(
+        13 => wire__crate__api__rppg__extract_rppg_from_optical_signal_impl(
+            port,
+            ptr,
+            rust_vec_len,
+            data_len,
+        ),
+        14 => wire__crate__api__signal__peak_detection_config_default_impl(
+            port,
+            ptr,
+            rust_vec_len,
+            data_len,
+        ),
+        15 => wire__crate__api__ppg__ppg_peak_detection_config_default_impl(
+            port,
+            ptr,
+            rust_vec_len,
+            data_len,
+        ),
+        16 => wire__crate__api__ecg__process_ecg_clean_impl(port, ptr, rust_vec_len, data_len),
+        17 => wire__crate__api__ecg__process_ecg_findpeaks_impl(port, ptr, rust_vec_len, data_len),
+        18 => wire__crate__api__ecg__process_ecg_findpeaks_mask_impl(
+            port,
+            ptr,
+            rust_vec_len,
+            data_len,
+        ),
+        19 => wire__crate__api__eda__process_eda_clean_impl(port, ptr, rust_vec_len, data_len),
+        20 => wire__crate__api__eda__process_eda_decompose_impl(port, ptr, rust_vec_len, data_len),
+        21 => wire__crate__api__eda__process_eda_findpeaks_impl(port, ptr, rust_vec_len, data_len),
+        22 => wire__crate__api__eda__process_eda_findpeaks_events_impl(
+            port,
+            ptr,
+            rust_vec_len,
+            data_len,
+        ),
+        23 => wire__crate__api__eda__process_eda_findpeaks_mask_impl(
+            port,
+            ptr,
+            rust_vec_len,
+            data_len,
+        ),
+        24 => wire__crate__api__eda__process_eda_phasic_impl(port, ptr, rust_vec_len, data_len),
+        25 => wire__crate__api__hrv__process_hrv_mean_nn_impl(port, ptr, rust_vec_len, data_len),
+        26 => wire__crate__api__hrv__process_hrv_pnn50_impl(port, ptr, rust_vec_len, data_len),
+        27 => wire__crate__api__hrv__process_hrv_rmssd_impl(port, ptr, rust_vec_len, data_len),
+        28 => wire__crate__api__hrv__process_hrv_sdnn_impl(port, ptr, rust_vec_len, data_len),
+        29 => wire__crate__api__hrv__process_peaks_to_intervals_impl(
+            port,
+            ptr,
+            rust_vec_len,
+            data_len,
+        ),
+        30 => wire__crate__api__ppg__process_ppg_clean_impl(port, ptr, rust_vec_len, data_len),
+        31 => wire__crate__api__ppg__process_ppg_findpeaks_impl(port, ptr, rust_vec_len, data_len),
+        32 => wire__crate__api__ppg__process_ppg_findpeaks_mask_impl(
+            port,
+            ptr,
+            rust_vec_len,
+            data_len,
+        ),
+        33 => wire__crate__api__rsp__process_rsp_clean_impl(port, ptr, rust_vec_len, data_len),
+        34 => wire__crate__api__rsp__process_rsp_cycles_impl(port, ptr, rust_vec_len, data_len),
+        35 => wire__crate__api__rsp__process_rsp_findpeaks_impl(port, ptr, rust_vec_len, data_len),
+        36 => wire__crate__api__rsp__process_rsp_findpeaks_mask_impl(
+            port,
+            ptr,
+            rust_vec_len,
+            data_len,
+        ),
+        37 => wire__crate__api__rsp__process_rsp_rate_impl(port, ptr, rust_vec_len, data_len),
+        38 => wire__crate__api__complexity__process_sample_entropy_impl(
+            port,
+            ptr,
+            rust_vec_len,
+            data_len,
+        ),
+        39 => {
+            wire__crate__api__signal__process_signal_filter_impl(port, ptr, rust_vec_len, data_len)
+        }
+        40 => wire__crate__api__signal__process_signal_findpeaks_impl(
+            port,
+            ptr,
+            rust_vec_len,
+            data_len,
+        ),
+        41 => wire__crate__api__signal__process_signal_findpeaks_config_impl(
+            port,
+            ptr,
+            rust_vec_len,
+            data_len,
+        ),
+        42 => wire__crate__api__signal__process_signal_smooth_moving_average_impl(
+            port,
+            ptr,
+            rust_vec_len,
+            data_len,
+        ),
+        43 => wire__crate__api__multimodal__pulse_timing_config_default_impl(
+            port,
+            ptr,
+            rust_vec_len,
+            data_len,
+        ),
+        44 => wire__crate__api__rppg__rppg_algorithm_id_default_impl(
+            port,
+            ptr,
+            rust_vec_len,
+            data_len,
+        ),
+        45 => wire__crate__api__rppg__rppg_config_default_impl(port, ptr, rust_vec_len, data_len),
+        46 => wire__crate__api__rsp__rsp_processing_config_default_impl(
             port,
             ptr,
             rust_vec_len,
@@ -840,10 +2698,666 @@ fn pde_ffi_dispatcher_sync_impl(
 
 // Section: rust2dart
 
+// Codec=Dco (DartCObject based), see doc to use other codecs
+impl flutter_rust_bridge::IntoDart for FrbWrapper<AutonomicEstimator> {
+    fn into_dart(self) -> flutter_rust_bridge::for_generated::DartAbi {
+        flutter_rust_bridge::for_generated::rust_auto_opaque_encode::<_, MoiArc<_>>(self.0)
+            .into_dart()
+    }
+}
+impl flutter_rust_bridge::for_generated::IntoDartExceptPrimitive
+    for FrbWrapper<AutonomicEstimator>
+{
+}
+
+impl flutter_rust_bridge::IntoIntoDart<FrbWrapper<AutonomicEstimator>> for AutonomicEstimator {
+    fn into_into_dart(self) -> FrbWrapper<AutonomicEstimator> {
+        self.into()
+    }
+}
+
+// Codec=Dco (DartCObject based), see doc to use other codecs
+impl flutter_rust_bridge::IntoDart for crate::api::autonomic::AutonomicState {
+    fn into_dart(self) -> flutter_rust_bridge::for_generated::DartAbi {
+        [
+            self.timestamp.into_into_dart().into_dart(),
+            self.duration_sec.into_into_dart().into_dart(),
+            self.cardiac.into_into_dart().into_dart(),
+            self.electrodermal.into_into_dart().into_dart(),
+            self.respiratory.into_into_dart().into_dart(),
+            self.coupling.into_into_dart().into_dart(),
+            self.activation_score.into_into_dart().into_dart(),
+            self.regulation_score.into_into_dart().into_dart(),
+        ]
+        .into_dart()
+    }
+}
+impl flutter_rust_bridge::for_generated::IntoDartExceptPrimitive
+    for crate::api::autonomic::AutonomicState
+{
+}
+impl flutter_rust_bridge::IntoIntoDart<crate::api::autonomic::AutonomicState>
+    for crate::api::autonomic::AutonomicState
+{
+    fn into_into_dart(self) -> crate::api::autonomic::AutonomicState {
+        self
+    }
+}
+// Codec=Dco (DartCObject based), see doc to use other codecs
+impl flutter_rust_bridge::IntoDart for crate::api::features::CardiacFeatures {
+    fn into_dart(self) -> flutter_rust_bridge::for_generated::DartAbi {
+        [
+            self.mean_hr_bpm.into_into_dart().into_dart(),
+            self.median_hr_bpm.into_into_dart().into_dart(),
+            self.sdnn_ms.into_into_dart().into_dart(),
+            self.rmssd_ms.into_into_dart().into_dart(),
+            self.pnn50.into_into_dart().into_dart(),
+            self.rr_mean_ms.into_into_dart().into_dart(),
+            self.rr_std_ms.into_into_dart().into_dart(),
+            self.beat_count.into_into_dart().into_dart(),
+        ]
+        .into_dart()
+    }
+}
+impl flutter_rust_bridge::for_generated::IntoDartExceptPrimitive
+    for crate::api::features::CardiacFeatures
+{
+}
+impl flutter_rust_bridge::IntoIntoDart<crate::api::features::CardiacFeatures>
+    for crate::api::features::CardiacFeatures
+{
+    fn into_into_dart(self) -> crate::api::features::CardiacFeatures {
+        self
+    }
+}
+// Codec=Dco (DartCObject based), see doc to use other codecs
+impl flutter_rust_bridge::IntoDart for crate::api::autonomic::CardiacState {
+    fn into_dart(self) -> flutter_rust_bridge::for_generated::DartAbi {
+        [
+            self.variability_index.into_into_dart().into_dart(),
+            self.heart_rate_index.into_into_dart().into_dart(),
+            self.recovery_evidence.into_into_dart().into_dart(),
+            self.beat_count.into_into_dart().into_dart(),
+        ]
+        .into_dart()
+    }
+}
+impl flutter_rust_bridge::for_generated::IntoDartExceptPrimitive
+    for crate::api::autonomic::CardiacState
+{
+}
+impl flutter_rust_bridge::IntoIntoDart<crate::api::autonomic::CardiacState>
+    for crate::api::autonomic::CardiacState
+{
+    fn into_into_dart(self) -> crate::api::autonomic::CardiacState {
+        self
+    }
+}
+// Codec=Dco (DartCObject based), see doc to use other codecs
+impl flutter_rust_bridge::IntoDart for crate::api::autonomic::CouplingState {
+    fn into_dart(self) -> flutter_rust_bridge::for_generated::DartAbi {
+        [
+            self.resphr_coupling_index.into_into_dart().into_dart(),
+            self.phase_coupling_index.into_into_dart().into_dart(),
+            self.pulse_delay_index.into_into_dart().into_dart(),
+            self.association_count.into_into_dart().into_dart(),
+        ]
+        .into_dart()
+    }
+}
+impl flutter_rust_bridge::for_generated::IntoDartExceptPrimitive
+    for crate::api::autonomic::CouplingState
+{
+}
+impl flutter_rust_bridge::IntoIntoDart<crate::api::autonomic::CouplingState>
+    for crate::api::autonomic::CouplingState
+{
+    fn into_into_dart(self) -> crate::api::autonomic::CouplingState {
+        self
+    }
+}
+// Codec=Dco (DartCObject based), see doc to use other codecs
+impl flutter_rust_bridge::IntoDart for crate::api::ecg::EcgPeakDetectionConfig {
+    fn into_dart(self) -> flutter_rust_bridge::for_generated::DartAbi {
+        [
+            self.lowcut.into_into_dart().into_dart(),
+            self.highcut.into_into_dart().into_dart(),
+            self.filter_order.into_into_dart().into_dart(),
+            self.integration_window_sec.into_into_dart().into_dart(),
+            self.refractory_period_sec.into_into_dart().into_dart(),
+            self.searchback.into_into_dart().into_dart(),
+            self.threshold_multiplier.into_into_dart().into_dart(),
+        ]
+        .into_dart()
+    }
+}
+impl flutter_rust_bridge::for_generated::IntoDartExceptPrimitive
+    for crate::api::ecg::EcgPeakDetectionConfig
+{
+}
+impl flutter_rust_bridge::IntoIntoDart<crate::api::ecg::EcgPeakDetectionConfig>
+    for crate::api::ecg::EcgPeakDetectionConfig
+{
+    fn into_into_dart(self) -> crate::api::ecg::EcgPeakDetectionConfig {
+        self
+    }
+}
+// Codec=Dco (DartCObject based), see doc to use other codecs
+impl flutter_rust_bridge::IntoDart for crate::api::eda::EdaComponentSignals {
+    fn into_dart(self) -> flutter_rust_bridge::for_generated::DartAbi {
+        [
+            self.tonic.into_into_dart().into_dart(),
+            self.phasic.into_into_dart().into_dart(),
+        ]
+        .into_dart()
+    }
+}
+impl flutter_rust_bridge::for_generated::IntoDartExceptPrimitive
+    for crate::api::eda::EdaComponentSignals
+{
+}
+impl flutter_rust_bridge::IntoIntoDart<crate::api::eda::EdaComponentSignals>
+    for crate::api::eda::EdaComponentSignals
+{
+    fn into_into_dart(self) -> crate::api::eda::EdaComponentSignals {
+        self
+    }
+}
+// Codec=Dco (DartCObject based), see doc to use other codecs
+impl flutter_rust_bridge::IntoDart for crate::api::eda::EdaDecompositionConfig {
+    fn into_dart(self) -> flutter_rust_bridge::for_generated::DartAbi {
+        [
+            self.tonic_cutoff_hz.into_into_dart().into_dart(),
+            self.filter_order.into_into_dart().into_dart(),
+        ]
+        .into_dart()
+    }
+}
+impl flutter_rust_bridge::for_generated::IntoDartExceptPrimitive
+    for crate::api::eda::EdaDecompositionConfig
+{
+}
+impl flutter_rust_bridge::IntoIntoDart<crate::api::eda::EdaDecompositionConfig>
+    for crate::api::eda::EdaDecompositionConfig
+{
+    fn into_into_dart(self) -> crate::api::eda::EdaDecompositionConfig {
+        self
+    }
+}
+// Codec=Dco (DartCObject based), see doc to use other codecs
+impl flutter_rust_bridge::IntoDart for crate::api::features::EdaFeatures {
+    fn into_dart(self) -> flutter_rust_bridge::for_generated::DartAbi {
+        [
+            self.mean_tonic_us.into_into_dart().into_dart(),
+            self.median_tonic_us.into_into_dart().into_dart(),
+            self.tonic_std_us.into_into_dart().into_dart(),
+            self.mean_phasic_us.into_into_dart().into_dart(),
+            self.phasic_std_us.into_into_dart().into_dart(),
+            self.scr_count.into_into_dart().into_dart(),
+            self.scr_rate_per_min.into_into_dart().into_dart(),
+            self.mean_scr_amplitude_us.into_into_dart().into_dart(),
+            self.median_scr_amplitude_us.into_into_dart().into_dart(),
+            self.mean_scr_rise_time_sec.into_into_dart().into_dart(),
+        ]
+        .into_dart()
+    }
+}
+impl flutter_rust_bridge::for_generated::IntoDartExceptPrimitive
+    for crate::api::features::EdaFeatures
+{
+}
+impl flutter_rust_bridge::IntoIntoDart<crate::api::features::EdaFeatures>
+    for crate::api::features::EdaFeatures
+{
+    fn into_into_dart(self) -> crate::api::features::EdaFeatures {
+        self
+    }
+}
+// Codec=Dco (DartCObject based), see doc to use other codecs
+impl flutter_rust_bridge::IntoDart for crate::api::eda::EdaPeakDetectionConfig {
+    fn into_dart(self) -> flutter_rust_bridge::for_generated::DartAbi {
+        [
+            self.min_amplitude.into_into_dart().into_dart(),
+            self.min_prominence.into_into_dart().into_dart(),
+            self.min_distance_sec.into_into_dart().into_dart(),
+            self.min_rise_time_sec.into_into_dart().into_dart(),
+            self.max_rise_time_sec.into_into_dart().into_dart(),
+        ]
+        .into_dart()
+    }
+}
+impl flutter_rust_bridge::for_generated::IntoDartExceptPrimitive
+    for crate::api::eda::EdaPeakDetectionConfig
+{
+}
+impl flutter_rust_bridge::IntoIntoDart<crate::api::eda::EdaPeakDetectionConfig>
+    for crate::api::eda::EdaPeakDetectionConfig
+{
+    fn into_into_dart(self) -> crate::api::eda::EdaPeakDetectionConfig {
+        self
+    }
+}
+// Codec=Dco (DartCObject based), see doc to use other codecs
+impl flutter_rust_bridge::IntoDart for crate::api::eda::EdaPeakEvent {
+    fn into_dart(self) -> flutter_rust_bridge::for_generated::DartAbi {
+        [
+            self.onset_index.into_into_dart().into_dart(),
+            self.peak_index.into_into_dart().into_dart(),
+            self.amplitude.into_into_dart().into_dart(),
+            self.rise_time_sec.into_into_dart().into_dart(),
+        ]
+        .into_dart()
+    }
+}
+impl flutter_rust_bridge::for_generated::IntoDartExceptPrimitive for crate::api::eda::EdaPeakEvent {}
+impl flutter_rust_bridge::IntoIntoDart<crate::api::eda::EdaPeakEvent>
+    for crate::api::eda::EdaPeakEvent
+{
+    fn into_into_dart(self) -> crate::api::eda::EdaPeakEvent {
+        self
+    }
+}
+// Codec=Dco (DartCObject based), see doc to use other codecs
+impl flutter_rust_bridge::IntoDart for crate::api::autonomic::ElectrodermalState {
+    fn into_dart(self) -> flutter_rust_bridge::for_generated::DartAbi {
+        [
+            self.tonic_level_index.into_into_dart().into_dart(),
+            self.phasic_activation_index.into_into_dart().into_dart(),
+            self.scr_rate_index.into_into_dart().into_dart(),
+            self.scr_count.into_into_dart().into_dart(),
+        ]
+        .into_dart()
+    }
+}
+impl flutter_rust_bridge::for_generated::IntoDartExceptPrimitive
+    for crate::api::autonomic::ElectrodermalState
+{
+}
+impl flutter_rust_bridge::IntoIntoDart<crate::api::autonomic::ElectrodermalState>
+    for crate::api::autonomic::ElectrodermalState
+{
+    fn into_into_dart(self) -> crate::api::autonomic::ElectrodermalState {
+        self
+    }
+}
+// Codec=Dco (DartCObject based), see doc to use other codecs
+impl flutter_rust_bridge::IntoDart for crate::api::features::FeatureWindow {
+    fn into_dart(self) -> flutter_rust_bridge::for_generated::DartAbi {
+        [
+            self.start_time_sec.into_into_dart().into_dart(),
+            self.end_time_sec.into_into_dart().into_dart(),
+        ]
+        .into_dart()
+    }
+}
+impl flutter_rust_bridge::for_generated::IntoDartExceptPrimitive
+    for crate::api::features::FeatureWindow
+{
+}
+impl flutter_rust_bridge::IntoIntoDart<crate::api::features::FeatureWindow>
+    for crate::api::features::FeatureWindow
+{
+    fn into_into_dart(self) -> crate::api::features::FeatureWindow {
+        self
+    }
+}
+// Codec=Dco (DartCObject based), see doc to use other codecs
+impl flutter_rust_bridge::IntoDart for crate::api::signal::PeakDetectionConfig {
+    fn into_dart(self) -> flutter_rust_bridge::for_generated::DartAbi {
+        [
+            self.min_height.into_into_dart().into_dart(),
+            self.min_distance.into_into_dart().into_dart(),
+            self.min_prominence.into_into_dart().into_dart(),
+            self.min_width.into_into_dart().into_dart(),
+            self.threshold.into_into_dart().into_dart(),
+        ]
+        .into_dart()
+    }
+}
+impl flutter_rust_bridge::for_generated::IntoDartExceptPrimitive
+    for crate::api::signal::PeakDetectionConfig
+{
+}
+impl flutter_rust_bridge::IntoIntoDart<crate::api::signal::PeakDetectionConfig>
+    for crate::api::signal::PeakDetectionConfig
+{
+    fn into_into_dart(self) -> crate::api::signal::PeakDetectionConfig {
+        self
+    }
+}
+// Codec=Dco (DartCObject based), see doc to use other codecs
+impl flutter_rust_bridge::IntoDart for crate::api::multimodal::PhaseCouplingResult {
+    fn into_dart(self) -> flutter_rust_bridge::for_generated::DartAbi {
+        [
+            self.mean_phase_rad.into_into_dart().into_dart(),
+            self.vector_length.into_into_dart().into_dart(),
+            self.sample_count.into_into_dart().into_dart(),
+        ]
+        .into_dart()
+    }
+}
+impl flutter_rust_bridge::for_generated::IntoDartExceptPrimitive
+    for crate::api::multimodal::PhaseCouplingResult
+{
+}
+impl flutter_rust_bridge::IntoIntoDart<crate::api::multimodal::PhaseCouplingResult>
+    for crate::api::multimodal::PhaseCouplingResult
+{
+    fn into_into_dart(self) -> crate::api::multimodal::PhaseCouplingResult {
+        self
+    }
+}
+// Codec=Dco (DartCObject based), see doc to use other codecs
+impl flutter_rust_bridge::IntoDart for crate::api::ppg::PpgPeakDetectionConfig {
+    fn into_dart(self) -> flutter_rust_bridge::for_generated::DartAbi {
+        [
+            self.lowcut.into_into_dart().into_dart(),
+            self.highcut.into_into_dart().into_dart(),
+            self.filter_order.into_into_dart().into_dart(),
+            self.w_peak_sec.into_into_dart().into_dart(),
+            self.w_beat_sec.into_into_dart().into_dart(),
+            self.alpha.into_into_dart().into_dart(),
+            self.refractory_period_sec.into_into_dart().into_dart(),
+        ]
+        .into_dart()
+    }
+}
+impl flutter_rust_bridge::for_generated::IntoDartExceptPrimitive
+    for crate::api::ppg::PpgPeakDetectionConfig
+{
+}
+impl flutter_rust_bridge::IntoIntoDart<crate::api::ppg::PpgPeakDetectionConfig>
+    for crate::api::ppg::PpgPeakDetectionConfig
+{
+    fn into_into_dart(self) -> crate::api::ppg::PpgPeakDetectionConfig {
+        self
+    }
+}
+// Codec=Dco (DartCObject based), see doc to use other codecs
+impl flutter_rust_bridge::IntoDart for crate::api::multimodal::PulseTimingConfig {
+    fn into_dart(self) -> flutter_rust_bridge::for_generated::DartAbi {
+        [
+            self.min_delay_sec.into_into_dart().into_dart(),
+            self.max_delay_sec.into_into_dart().into_dart(),
+        ]
+        .into_dart()
+    }
+}
+impl flutter_rust_bridge::for_generated::IntoDartExceptPrimitive
+    for crate::api::multimodal::PulseTimingConfig
+{
+}
+impl flutter_rust_bridge::IntoIntoDart<crate::api::multimodal::PulseTimingConfig>
+    for crate::api::multimodal::PulseTimingConfig
+{
+    fn into_into_dart(self) -> crate::api::multimodal::PulseTimingConfig {
+        self
+    }
+}
+// Codec=Dco (DartCObject based), see doc to use other codecs
+impl flutter_rust_bridge::IntoDart for crate::api::multimodal::PulseTimingResult {
+    fn into_dart(self) -> flutter_rust_bridge::for_generated::DartAbi {
+        [
+            self.ecg_peak_index.into_into_dart().into_dart(),
+            self.ppg_peak_index.into_into_dart().into_dart(),
+            self.ecg_timestamp_sec.into_into_dart().into_dart(),
+            self.ppg_timestamp_sec.into_into_dart().into_dart(),
+            self.pulse_delay_sec.into_into_dart().into_dart(),
+        ]
+        .into_dart()
+    }
+}
+impl flutter_rust_bridge::for_generated::IntoDartExceptPrimitive
+    for crate::api::multimodal::PulseTimingResult
+{
+}
+impl flutter_rust_bridge::IntoIntoDart<crate::api::multimodal::PulseTimingResult>
+    for crate::api::multimodal::PulseTimingResult
+{
+    fn into_into_dart(self) -> crate::api::multimodal::PulseTimingResult {
+        self
+    }
+}
+// Codec=Dco (DartCObject based), see doc to use other codecs
+impl flutter_rust_bridge::IntoDart for crate::api::rsp::RespirationCycle {
+    fn into_dart(self) -> flutter_rust_bridge::for_generated::DartAbi {
+        [
+            self.inspiration_index.into_into_dart().into_dart(),
+            self.expiration_index.into_into_dart().into_dart(),
+            self.next_inspiration_index.into_into_dart().into_dart(),
+            self.duration_sec.into_into_dart().into_dart(),
+            self.respiratory_rate_bpm.into_into_dart().into_dart(),
+            self.amplitude.into_into_dart().into_dart(),
+        ]
+        .into_dart()
+    }
+}
+impl flutter_rust_bridge::for_generated::IntoDartExceptPrimitive
+    for crate::api::rsp::RespirationCycle
+{
+}
+impl flutter_rust_bridge::IntoIntoDart<crate::api::rsp::RespirationCycle>
+    for crate::api::rsp::RespirationCycle
+{
+    fn into_into_dart(self) -> crate::api::rsp::RespirationCycle {
+        self
+    }
+}
+// Codec=Dco (DartCObject based), see doc to use other codecs
+impl flutter_rust_bridge::IntoDart for crate::api::features::RespirationFeatures {
+    fn into_dart(self) -> flutter_rust_bridge::for_generated::DartAbi {
+        [
+            self.mean_rate_bpm.into_into_dart().into_dart(),
+            self.median_rate_bpm.into_into_dart().into_dart(),
+            self.rate_std_bpm.into_into_dart().into_dart(),
+            self.mean_cycle_duration_sec.into_into_dart().into_dart(),
+            self.cycle_count.into_into_dart().into_dart(),
+            self.mean_amplitude.into_into_dart().into_dart(),
+            self.amplitude_std.into_into_dart().into_dart(),
+        ]
+        .into_dart()
+    }
+}
+impl flutter_rust_bridge::for_generated::IntoDartExceptPrimitive
+    for crate::api::features::RespirationFeatures
+{
+}
+impl flutter_rust_bridge::IntoIntoDart<crate::api::features::RespirationFeatures>
+    for crate::api::features::RespirationFeatures
+{
+    fn into_into_dart(self) -> crate::api::features::RespirationFeatures {
+        self
+    }
+}
+// Codec=Dco (DartCObject based), see doc to use other codecs
+impl flutter_rust_bridge::IntoDart for crate::api::autonomic::RespiratoryState {
+    fn into_dart(self) -> flutter_rust_bridge::for_generated::DartAbi {
+        [
+            self.rate_index.into_into_dart().into_dart(),
+            self.amplitude_index.into_into_dart().into_dart(),
+            self.regularity_index.into_into_dart().into_dart(),
+            self.cycle_count.into_into_dart().into_dart(),
+        ]
+        .into_dart()
+    }
+}
+impl flutter_rust_bridge::for_generated::IntoDartExceptPrimitive
+    for crate::api::autonomic::RespiratoryState
+{
+}
+impl flutter_rust_bridge::IntoIntoDart<crate::api::autonomic::RespiratoryState>
+    for crate::api::autonomic::RespiratoryState
+{
+    fn into_into_dart(self) -> crate::api::autonomic::RespiratoryState {
+        self
+    }
+}
+// Codec=Dco (DartCObject based), see doc to use other codecs
+impl flutter_rust_bridge::IntoDart for crate::api::rppg::RppgAlgorithmId {
+    fn into_dart(self) -> flutter_rust_bridge::for_generated::DartAbi {
+        match self {
+            Self::GreenChannel => 0.into_dart(),
+            Self::Chrom => 1.into_dart(),
+            Self::Pos => 2.into_dart(),
+            _ => unreachable!(),
+        }
+    }
+}
+impl flutter_rust_bridge::for_generated::IntoDartExceptPrimitive
+    for crate::api::rppg::RppgAlgorithmId
+{
+}
+impl flutter_rust_bridge::IntoIntoDart<crate::api::rppg::RppgAlgorithmId>
+    for crate::api::rppg::RppgAlgorithmId
+{
+    fn into_into_dart(self) -> crate::api::rppg::RppgAlgorithmId {
+        self
+    }
+}
+// Codec=Dco (DartCObject based), see doc to use other codecs
+impl flutter_rust_bridge::IntoDart for crate::api::rppg::RppgConfig {
+    fn into_dart(self) -> flutter_rust_bridge::for_generated::DartAbi {
+        [
+            self.algorithm.into_into_dart().into_dart(),
+            self.min_quality.into_into_dart().into_dart(),
+            self.minimum_roi_pixels.into_into_dart().into_dart(),
+            self.max_gap_sec.into_into_dart().into_dart(),
+        ]
+        .into_dart()
+    }
+}
+impl flutter_rust_bridge::for_generated::IntoDartExceptPrimitive for crate::api::rppg::RppgConfig {}
+impl flutter_rust_bridge::IntoIntoDart<crate::api::rppg::RppgConfig>
+    for crate::api::rppg::RppgConfig
+{
+    fn into_into_dart(self) -> crate::api::rppg::RppgConfig {
+        self
+    }
+}
+// Codec=Dco (DartCObject based), see doc to use other codecs
+impl flutter_rust_bridge::IntoDart for crate::api::rppg::RppgSignalResult {
+    fn into_dart(self) -> flutter_rust_bridge::for_generated::DartAbi {
+        [
+            self.timestamps_sec.into_into_dart().into_dart(),
+            self.pulse_signal.into_into_dart().into_dart(),
+            self.mean_quality.into_into_dart().into_dart(),
+        ]
+        .into_dart()
+    }
+}
+impl flutter_rust_bridge::for_generated::IntoDartExceptPrimitive
+    for crate::api::rppg::RppgSignalResult
+{
+}
+impl flutter_rust_bridge::IntoIntoDart<crate::api::rppg::RppgSignalResult>
+    for crate::api::rppg::RppgSignalResult
+{
+    fn into_into_dart(self) -> crate::api::rppg::RppgSignalResult {
+        self
+    }
+}
+// Codec=Dco (DartCObject based), see doc to use other codecs
+impl flutter_rust_bridge::IntoDart for crate::api::multimodal::RsaResult {
+    fn into_dart(self) -> flutter_rust_bridge::for_generated::DartAbi {
+        [
+            self.amplitude_bpm.into_into_dart().into_dart(),
+            self.amplitude_rr_sec.into_into_dart().into_dart(),
+            self.valid_beats.into_into_dart().into_dart(),
+            self.valid_cycles.into_into_dart().into_dart(),
+        ]
+        .into_dart()
+    }
+}
+impl flutter_rust_bridge::for_generated::IntoDartExceptPrimitive
+    for crate::api::multimodal::RsaResult
+{
+}
+impl flutter_rust_bridge::IntoIntoDart<crate::api::multimodal::RsaResult>
+    for crate::api::multimodal::RsaResult
+{
+    fn into_into_dart(self) -> crate::api::multimodal::RsaResult {
+        self
+    }
+}
+// Codec=Dco (DartCObject based), see doc to use other codecs
+impl flutter_rust_bridge::IntoDart for crate::api::rsp::RspProcessingConfig {
+    fn into_dart(self) -> flutter_rust_bridge::for_generated::DartAbi {
+        [
+            self.lowcut.into_into_dart().into_dart(),
+            self.highcut.into_into_dart().into_dart(),
+            self.filter_order.into_into_dart().into_dart(),
+            self.min_breath_interval_sec.into_into_dart().into_dart(),
+            self.max_breath_interval_sec.into_into_dart().into_dart(),
+            self.min_amplitude.into_into_dart().into_dart(),
+        ]
+        .into_dart()
+    }
+}
+impl flutter_rust_bridge::for_generated::IntoDartExceptPrimitive
+    for crate::api::rsp::RspProcessingConfig
+{
+}
+impl flutter_rust_bridge::IntoIntoDart<crate::api::rsp::RspProcessingConfig>
+    for crate::api::rsp::RspProcessingConfig
+{
+    fn into_into_dart(self) -> crate::api::rsp::RspProcessingConfig {
+        self
+    }
+}
+// Codec=Dco (DartCObject based), see doc to use other codecs
+impl flutter_rust_bridge::IntoDart for crate::api::error::SignalError {
+    fn into_dart(self) -> flutter_rust_bridge::for_generated::DartAbi {
+        [self.message.into_into_dart().into_dart()].into_dart()
+    }
+}
+impl flutter_rust_bridge::for_generated::IntoDartExceptPrimitive
+    for crate::api::error::SignalError
+{
+}
+impl flutter_rust_bridge::IntoIntoDart<crate::api::error::SignalError>
+    for crate::api::error::SignalError
+{
+    fn into_into_dart(self) -> crate::api::error::SignalError {
+        self
+    }
+}
+
+impl SseEncode for AutonomicEstimator {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {
+        <RustOpaqueMoi<flutter_rust_bridge::for_generated::RustAutoOpaqueInner<AutonomicEstimator>>>::sse_encode(flutter_rust_bridge::for_generated::rust_auto_opaque_encode::<_, MoiArc<_>>(self), serializer);
+    }
+}
+
+impl SseEncode
+    for RustOpaqueMoi<flutter_rust_bridge::for_generated::RustAutoOpaqueInner<AutonomicEstimator>>
+{
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {
+        let (ptr, size) = self.sse_encode_raw();
+        <usize>::sse_encode(ptr, serializer);
+        <i32>::sse_encode(size, serializer);
+    }
+}
+
 impl SseEncode for String {
     // Codec=Sse (Serialization based), see doc to use other codecs
     fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {
         <Vec<u8>>::sse_encode(self.into_bytes(), serializer);
+    }
+}
+
+impl SseEncode for crate::api::autonomic::AutonomicState {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {
+        <f64>::sse_encode(self.timestamp, serializer);
+        <f64>::sse_encode(self.duration_sec, serializer);
+        <crate::api::autonomic::CardiacState>::sse_encode(self.cardiac, serializer);
+        <crate::api::autonomic::ElectrodermalState>::sse_encode(self.electrodermal, serializer);
+        <crate::api::autonomic::RespiratoryState>::sse_encode(self.respiratory, serializer);
+        <crate::api::autonomic::CouplingState>::sse_encode(self.coupling, serializer);
+        <Option<f64>>::sse_encode(self.activation_score, serializer);
+        <Option<f64>>::sse_encode(self.regulation_score, serializer);
     }
 }
 
@@ -854,6 +3368,116 @@ impl SseEncode for bool {
     }
 }
 
+impl SseEncode for crate::api::features::CardiacFeatures {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {
+        <Option<f64>>::sse_encode(self.mean_hr_bpm, serializer);
+        <Option<f64>>::sse_encode(self.median_hr_bpm, serializer);
+        <Option<f64>>::sse_encode(self.sdnn_ms, serializer);
+        <Option<f64>>::sse_encode(self.rmssd_ms, serializer);
+        <Option<f64>>::sse_encode(self.pnn50, serializer);
+        <Option<f64>>::sse_encode(self.rr_mean_ms, serializer);
+        <Option<f64>>::sse_encode(self.rr_std_ms, serializer);
+        <usize>::sse_encode(self.beat_count, serializer);
+    }
+}
+
+impl SseEncode for crate::api::autonomic::CardiacState {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {
+        <Option<f64>>::sse_encode(self.variability_index, serializer);
+        <Option<f64>>::sse_encode(self.heart_rate_index, serializer);
+        <Option<f64>>::sse_encode(self.recovery_evidence, serializer);
+        <usize>::sse_encode(self.beat_count, serializer);
+    }
+}
+
+impl SseEncode for crate::api::autonomic::CouplingState {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {
+        <Option<f64>>::sse_encode(self.resphr_coupling_index, serializer);
+        <Option<f64>>::sse_encode(self.phase_coupling_index, serializer);
+        <Option<f64>>::sse_encode(self.pulse_delay_index, serializer);
+        <usize>::sse_encode(self.association_count, serializer);
+    }
+}
+
+impl SseEncode for crate::api::ecg::EcgPeakDetectionConfig {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {
+        <Option<f64>>::sse_encode(self.lowcut, serializer);
+        <Option<f64>>::sse_encode(self.highcut, serializer);
+        <Option<usize>>::sse_encode(self.filter_order, serializer);
+        <Option<f64>>::sse_encode(self.integration_window_sec, serializer);
+        <Option<f64>>::sse_encode(self.refractory_period_sec, serializer);
+        <Option<bool>>::sse_encode(self.searchback, serializer);
+        <Option<f64>>::sse_encode(self.threshold_multiplier, serializer);
+    }
+}
+
+impl SseEncode for crate::api::eda::EdaComponentSignals {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {
+        <Vec<f64>>::sse_encode(self.tonic, serializer);
+        <Vec<f64>>::sse_encode(self.phasic, serializer);
+    }
+}
+
+impl SseEncode for crate::api::eda::EdaDecompositionConfig {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {
+        <Option<f64>>::sse_encode(self.tonic_cutoff_hz, serializer);
+        <Option<usize>>::sse_encode(self.filter_order, serializer);
+    }
+}
+
+impl SseEncode for crate::api::features::EdaFeatures {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {
+        <Option<f64>>::sse_encode(self.mean_tonic_us, serializer);
+        <Option<f64>>::sse_encode(self.median_tonic_us, serializer);
+        <Option<f64>>::sse_encode(self.tonic_std_us, serializer);
+        <Option<f64>>::sse_encode(self.mean_phasic_us, serializer);
+        <Option<f64>>::sse_encode(self.phasic_std_us, serializer);
+        <usize>::sse_encode(self.scr_count, serializer);
+        <Option<f64>>::sse_encode(self.scr_rate_per_min, serializer);
+        <Option<f64>>::sse_encode(self.mean_scr_amplitude_us, serializer);
+        <Option<f64>>::sse_encode(self.median_scr_amplitude_us, serializer);
+        <Option<f64>>::sse_encode(self.mean_scr_rise_time_sec, serializer);
+    }
+}
+
+impl SseEncode for crate::api::eda::EdaPeakDetectionConfig {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {
+        <Option<f64>>::sse_encode(self.min_amplitude, serializer);
+        <Option<f64>>::sse_encode(self.min_prominence, serializer);
+        <Option<f64>>::sse_encode(self.min_distance_sec, serializer);
+        <Option<f64>>::sse_encode(self.min_rise_time_sec, serializer);
+        <Option<f64>>::sse_encode(self.max_rise_time_sec, serializer);
+    }
+}
+
+impl SseEncode for crate::api::eda::EdaPeakEvent {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {
+        <usize>::sse_encode(self.onset_index, serializer);
+        <usize>::sse_encode(self.peak_index, serializer);
+        <f64>::sse_encode(self.amplitude, serializer);
+        <f64>::sse_encode(self.rise_time_sec, serializer);
+    }
+}
+
+impl SseEncode for crate::api::autonomic::ElectrodermalState {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {
+        <Option<f64>>::sse_encode(self.tonic_level_index, serializer);
+        <Option<f64>>::sse_encode(self.phasic_activation_index, serializer);
+        <Option<f64>>::sse_encode(self.scr_rate_index, serializer);
+        <usize>::sse_encode(self.scr_count, serializer);
+    }
+}
+
 impl SseEncode for f64 {
     // Codec=Sse (Serialization based), see doc to use other codecs
     fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {
@@ -861,12 +3485,37 @@ impl SseEncode for f64 {
     }
 }
 
-impl SseEncode for Vec<bool> {
+impl SseEncode for crate::api::features::FeatureWindow {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {
+        <f64>::sse_encode(self.start_time_sec, serializer);
+        <f64>::sse_encode(self.end_time_sec, serializer);
+    }
+}
+
+impl SseEncode for i32 {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {
+        serializer.cursor.write_i32::<NativeEndian>(self).unwrap();
+    }
+}
+
+impl SseEncode for Vec<usize> {
     // Codec=Sse (Serialization based), see doc to use other codecs
     fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {
         <i32>::sse_encode(self.len() as _, serializer);
         for item in self {
-            <bool>::sse_encode(item, serializer);
+            <usize>::sse_encode(item, serializer);
+        }
+    }
+}
+
+impl SseEncode for Vec<crate::api::eda::EdaPeakEvent> {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {
+        <i32>::sse_encode(self.len() as _, serializer);
+        for item in self {
+            <crate::api::eda::EdaPeakEvent>::sse_encode(item, serializer);
         }
     }
 }
@@ -891,6 +3540,76 @@ impl SseEncode for Vec<u8> {
     }
 }
 
+impl SseEncode for Vec<crate::api::multimodal::PulseTimingResult> {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {
+        <i32>::sse_encode(self.len() as _, serializer);
+        for item in self {
+            <crate::api::multimodal::PulseTimingResult>::sse_encode(item, serializer);
+        }
+    }
+}
+
+impl SseEncode for Vec<crate::api::rsp::RespirationCycle> {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {
+        <i32>::sse_encode(self.len() as _, serializer);
+        for item in self {
+            <crate::api::rsp::RespirationCycle>::sse_encode(item, serializer);
+        }
+    }
+}
+
+impl SseEncode for Option<usize> {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {
+        <bool>::sse_encode(self.is_some(), serializer);
+        if let Some(value) = self {
+            <usize>::sse_encode(value, serializer);
+        }
+    }
+}
+
+impl SseEncode for Option<bool> {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {
+        <bool>::sse_encode(self.is_some(), serializer);
+        if let Some(value) = self {
+            <bool>::sse_encode(value, serializer);
+        }
+    }
+}
+
+impl SseEncode for Option<crate::api::ecg::EcgPeakDetectionConfig> {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {
+        <bool>::sse_encode(self.is_some(), serializer);
+        if let Some(value) = self {
+            <crate::api::ecg::EcgPeakDetectionConfig>::sse_encode(value, serializer);
+        }
+    }
+}
+
+impl SseEncode for Option<crate::api::eda::EdaDecompositionConfig> {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {
+        <bool>::sse_encode(self.is_some(), serializer);
+        if let Some(value) = self {
+            <crate::api::eda::EdaDecompositionConfig>::sse_encode(value, serializer);
+        }
+    }
+}
+
+impl SseEncode for Option<crate::api::eda::EdaPeakDetectionConfig> {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {
+        <bool>::sse_encode(self.is_some(), serializer);
+        if let Some(value) = self {
+            <crate::api::eda::EdaPeakDetectionConfig>::sse_encode(value, serializer);
+        }
+    }
+}
+
 impl SseEncode for Option<f64> {
     // Codec=Sse (Serialization based), see doc to use other codecs
     fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {
@@ -898,6 +3617,198 @@ impl SseEncode for Option<f64> {
         if let Some(value) = self {
             <f64>::sse_encode(value, serializer);
         }
+    }
+}
+
+impl SseEncode for Option<crate::api::ppg::PpgPeakDetectionConfig> {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {
+        <bool>::sse_encode(self.is_some(), serializer);
+        if let Some(value) = self {
+            <crate::api::ppg::PpgPeakDetectionConfig>::sse_encode(value, serializer);
+        }
+    }
+}
+
+impl SseEncode for Option<crate::api::multimodal::PulseTimingConfig> {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {
+        <bool>::sse_encode(self.is_some(), serializer);
+        if let Some(value) = self {
+            <crate::api::multimodal::PulseTimingConfig>::sse_encode(value, serializer);
+        }
+    }
+}
+
+impl SseEncode for Option<crate::api::rppg::RppgConfig> {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {
+        <bool>::sse_encode(self.is_some(), serializer);
+        if let Some(value) = self {
+            <crate::api::rppg::RppgConfig>::sse_encode(value, serializer);
+        }
+    }
+}
+
+impl SseEncode for Option<crate::api::rsp::RspProcessingConfig> {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {
+        <bool>::sse_encode(self.is_some(), serializer);
+        if let Some(value) = self {
+            <crate::api::rsp::RspProcessingConfig>::sse_encode(value, serializer);
+        }
+    }
+}
+
+impl SseEncode for crate::api::signal::PeakDetectionConfig {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {
+        <Option<f64>>::sse_encode(self.min_height, serializer);
+        <Option<usize>>::sse_encode(self.min_distance, serializer);
+        <Option<f64>>::sse_encode(self.min_prominence, serializer);
+        <Option<usize>>::sse_encode(self.min_width, serializer);
+        <Option<f64>>::sse_encode(self.threshold, serializer);
+    }
+}
+
+impl SseEncode for crate::api::multimodal::PhaseCouplingResult {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {
+        <f64>::sse_encode(self.mean_phase_rad, serializer);
+        <f64>::sse_encode(self.vector_length, serializer);
+        <usize>::sse_encode(self.sample_count, serializer);
+    }
+}
+
+impl SseEncode for crate::api::ppg::PpgPeakDetectionConfig {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {
+        <Option<f64>>::sse_encode(self.lowcut, serializer);
+        <Option<f64>>::sse_encode(self.highcut, serializer);
+        <Option<usize>>::sse_encode(self.filter_order, serializer);
+        <Option<f64>>::sse_encode(self.w_peak_sec, serializer);
+        <Option<f64>>::sse_encode(self.w_beat_sec, serializer);
+        <Option<f64>>::sse_encode(self.alpha, serializer);
+        <Option<f64>>::sse_encode(self.refractory_period_sec, serializer);
+    }
+}
+
+impl SseEncode for crate::api::multimodal::PulseTimingConfig {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {
+        <Option<f64>>::sse_encode(self.min_delay_sec, serializer);
+        <Option<f64>>::sse_encode(self.max_delay_sec, serializer);
+    }
+}
+
+impl SseEncode for crate::api::multimodal::PulseTimingResult {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {
+        <usize>::sse_encode(self.ecg_peak_index, serializer);
+        <usize>::sse_encode(self.ppg_peak_index, serializer);
+        <f64>::sse_encode(self.ecg_timestamp_sec, serializer);
+        <f64>::sse_encode(self.ppg_timestamp_sec, serializer);
+        <f64>::sse_encode(self.pulse_delay_sec, serializer);
+    }
+}
+
+impl SseEncode for crate::api::rsp::RespirationCycle {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {
+        <usize>::sse_encode(self.inspiration_index, serializer);
+        <usize>::sse_encode(self.expiration_index, serializer);
+        <usize>::sse_encode(self.next_inspiration_index, serializer);
+        <f64>::sse_encode(self.duration_sec, serializer);
+        <f64>::sse_encode(self.respiratory_rate_bpm, serializer);
+        <f64>::sse_encode(self.amplitude, serializer);
+    }
+}
+
+impl SseEncode for crate::api::features::RespirationFeatures {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {
+        <Option<f64>>::sse_encode(self.mean_rate_bpm, serializer);
+        <Option<f64>>::sse_encode(self.median_rate_bpm, serializer);
+        <Option<f64>>::sse_encode(self.rate_std_bpm, serializer);
+        <Option<f64>>::sse_encode(self.mean_cycle_duration_sec, serializer);
+        <usize>::sse_encode(self.cycle_count, serializer);
+        <Option<f64>>::sse_encode(self.mean_amplitude, serializer);
+        <Option<f64>>::sse_encode(self.amplitude_std, serializer);
+    }
+}
+
+impl SseEncode for crate::api::autonomic::RespiratoryState {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {
+        <Option<f64>>::sse_encode(self.rate_index, serializer);
+        <Option<f64>>::sse_encode(self.amplitude_index, serializer);
+        <Option<f64>>::sse_encode(self.regularity_index, serializer);
+        <usize>::sse_encode(self.cycle_count, serializer);
+    }
+}
+
+impl SseEncode for crate::api::rppg::RppgAlgorithmId {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {
+        <i32>::sse_encode(
+            match self {
+                crate::api::rppg::RppgAlgorithmId::GreenChannel => 0,
+                crate::api::rppg::RppgAlgorithmId::Chrom => 1,
+                crate::api::rppg::RppgAlgorithmId::Pos => 2,
+                _ => {
+                    unimplemented!("");
+                }
+            },
+            serializer,
+        );
+    }
+}
+
+impl SseEncode for crate::api::rppg::RppgConfig {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {
+        <crate::api::rppg::RppgAlgorithmId>::sse_encode(self.algorithm, serializer);
+        <f64>::sse_encode(self.min_quality, serializer);
+        <usize>::sse_encode(self.minimum_roi_pixels, serializer);
+        <f64>::sse_encode(self.max_gap_sec, serializer);
+    }
+}
+
+impl SseEncode for crate::api::rppg::RppgSignalResult {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {
+        <Vec<f64>>::sse_encode(self.timestamps_sec, serializer);
+        <Vec<f64>>::sse_encode(self.pulse_signal, serializer);
+        <f64>::sse_encode(self.mean_quality, serializer);
+    }
+}
+
+impl SseEncode for crate::api::multimodal::RsaResult {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {
+        <f64>::sse_encode(self.amplitude_bpm, serializer);
+        <f64>::sse_encode(self.amplitude_rr_sec, serializer);
+        <usize>::sse_encode(self.valid_beats, serializer);
+        <usize>::sse_encode(self.valid_cycles, serializer);
+    }
+}
+
+impl SseEncode for crate::api::rsp::RspProcessingConfig {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {
+        <Option<f64>>::sse_encode(self.lowcut, serializer);
+        <Option<f64>>::sse_encode(self.highcut, serializer);
+        <Option<usize>>::sse_encode(self.filter_order, serializer);
+        <Option<f64>>::sse_encode(self.min_breath_interval_sec, serializer);
+        <Option<f64>>::sse_encode(self.max_breath_interval_sec, serializer);
+        <Option<f64>>::sse_encode(self.min_amplitude, serializer);
+    }
+}
+
+impl SseEncode for crate::api::error::SignalError {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {
+        <String>::sse_encode(self.message, serializer);
     }
 }
 
@@ -923,13 +3834,6 @@ impl SseEncode for usize {
     }
 }
 
-impl SseEncode for i32 {
-    // Codec=Sse (Serialization based), see doc to use other codecs
-    fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {
-        serializer.cursor.write_i32::<NativeEndian>(self).unwrap();
-    }
-}
-
 #[cfg(not(target_family = "wasm"))]
 mod io {
     // This file is automatically generated, so please do not edit it.
@@ -938,6 +3842,7 @@ mod io {
     // Section: imports
 
     use super::*;
+    use crate::api::autonomic::*;
     use flutter_rust_bridge::for_generated::byteorder::{
         NativeEndian, ReadBytesExt, WriteBytesExt,
     };
@@ -947,6 +3852,20 @@ mod io {
     // Section: boilerplate
 
     flutter_rust_bridge::frb_generated_boilerplate_io!();
+
+    #[unsafe(no_mangle)]
+    pub extern "C" fn frbgen_lamina_dart_rust_arc_increment_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerAutonomicEstimator(
+        ptr: *const std::ffi::c_void,
+    ) {
+        MoiArc::<flutter_rust_bridge::for_generated::RustAutoOpaqueInner<AutonomicEstimator>>::increment_strong_count(ptr as _);
+    }
+
+    #[unsafe(no_mangle)]
+    pub extern "C" fn frbgen_lamina_dart_rust_arc_decrement_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerAutonomicEstimator(
+        ptr: *const std::ffi::c_void,
+    ) {
+        MoiArc::<flutter_rust_bridge::for_generated::RustAutoOpaqueInner<AutonomicEstimator>>::decrement_strong_count(ptr as _);
+    }
 }
 #[cfg(not(target_family = "wasm"))]
 pub use io::*;
@@ -960,6 +3879,7 @@ mod web {
     // Section: imports
 
     use super::*;
+    use crate::api::autonomic::*;
     use flutter_rust_bridge::for_generated::byteorder::{
         NativeEndian, ReadBytesExt, WriteBytesExt,
     };
@@ -971,6 +3891,20 @@ mod web {
     // Section: boilerplate
 
     flutter_rust_bridge::frb_generated_boilerplate_web!();
+
+    #[wasm_bindgen]
+    pub fn rust_arc_increment_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerAutonomicEstimator(
+        ptr: *const std::ffi::c_void,
+    ) {
+        MoiArc::<flutter_rust_bridge::for_generated::RustAutoOpaqueInner<AutonomicEstimator>>::increment_strong_count(ptr as _);
+    }
+
+    #[wasm_bindgen]
+    pub fn rust_arc_decrement_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerAutonomicEstimator(
+        ptr: *const std::ffi::c_void,
+    ) {
+        MoiArc::<flutter_rust_bridge::for_generated::RustAutoOpaqueInner<AutonomicEstimator>>::decrement_strong_count(ptr as _);
+    }
 }
 #[cfg(target_family = "wasm")]
 pub use web::*;
