@@ -1,14 +1,43 @@
+use crate::error::{Result, SignalError};
 use ndarray::Array1;
 
-/// Computes Sample Entropy (SampEn) for a 1D signal.
-/// 
-/// Embeds the signal into dimensions `m` and `m+1` to evaluate repeating template frequencies
-/// given a radius tolerance `r`.
-/// Returns `f64::NAN` if the signal is too short or `f64::INFINITY` if no matches are found.
-pub fn sample_entropy(signal: &Array1<f64>, m: usize, r: f64) -> f64 {
+/// Compute Sample Entropy (SampEn) for a 1D signal.
+///
+/// # Scientific Contract
+/// - **Inputs**:
+///   - `signal`: 1D array of real-valued floating-point samples (`f64`).
+///   - `m`: Embedding dimension ($m \ge 1$).
+///   - `r`: Tolerance threshold ($r > 0.0$), typically $0.2 \times \text{std}(x)$.
+/// - **Output**: Non-negative Sample Entropy value $h \ge 0.0$.
+/// - **Mathematical Definition**: $\text{SampEn}(m, r, N) = -\ln \frac{A}{B}$, where $B$ is the total count of template vectors of length $m$ matching within Chebyshev distance $r$, and $A$ is the count matching for length $m+1$.
+///
+/// # Errors
+/// Returns [`SignalError`] if:
+/// - `signal` is empty ([`SignalError::EmptySignal`]).
+/// - `signal` length is $\le m+1$ ([`SignalError::InsufficientSamples`]).
+/// - `signal` contains non-finite values ([`SignalError::NonFiniteInput`]).
+/// - `r` is non-positive or non-finite ([`SignalError::InvalidCutoffFrequency`]).
+pub fn sample_entropy(signal: &Array1<f64>, m: usize, r: f64) -> Result<f64> {
     let n = signal.len();
+    if n == 0 {
+        return Err(SignalError::EmptySignal);
+    }
     if n <= m + 1 {
-        return f64::NAN;
+        return Err(SignalError::InsufficientSamples {
+            required: m + 2,
+            provided: n,
+        });
+    }
+    if !r.is_finite() || r <= 0.0 {
+        return Err(SignalError::InvalidCutoffFrequency(format!(
+            "Tolerance threshold r ({}) must be > 0.0 and finite",
+            r
+        )));
+    }
+    for &val in signal.iter() {
+        if !val.is_finite() {
+            return Err(SignalError::NonFiniteInput);
+        }
     }
 
     let mut count_m = 0_usize;
@@ -28,18 +57,16 @@ pub fn sample_entropy(signal: &Array1<f64>, m: usize, r: f64) -> f64 {
             if match_m {
                 count_m += 1;
                 // Additionally check if the subsequent elements also match (dimension m + 1)
-                if i + m < n && j + m < n {
-                    if (signal[i + m] - signal[j + m]).abs() <= r {
-                        count_m1 += 1;
-                    }
+                if i + m < n && j + m < n && (signal[i + m] - signal[j + m]).abs() <= r {
+                    count_m1 += 1;
                 }
             }
         }
     }
 
     if count_m == 0 || count_m1 == 0 {
-        return f64::INFINITY;
+        return Ok(f64::INFINITY);
     }
 
-    -((count_m1 as f64) / (count_m as f64)).ln()
+    Ok(-((count_m1 as f64) / (count_m as f64)).ln())
 }

@@ -1,10 +1,33 @@
+use crate::error::{Result, SignalError};
 use ndarray::Array1;
 
-/// Computes RMSSD (Root Mean Square of Successive Differences) from NN/RR intervals (in ms).
-pub fn hrv_rmssd(intervals: &Array1<f64>) -> Option<f64> {
+/// Compute RMSSD (Root Mean Square of Successive Differences) from NN/RR intervals (in milliseconds).
+///
+/// # Scientific Contract
+/// - **Inputs**: 1D array of inter-beat intervals in milliseconds ($\text{ms}$).
+/// - **Output**: RMSSD metric in milliseconds ($\text{ms}$).
+/// - **Formula**: $\text{RMSSD} = \sqrt{\frac{1}{N-1} \sum_{i=1}^{N-1} (RR_{i+1} - RR_i)^2}$.
+///
+/// # Errors
+/// Returns [`SignalError`] if:
+/// - `intervals` is empty ([`SignalError::EmptySignal`]).
+/// - `intervals` has fewer than 2 elements ([`SignalError::InsufficientPeaks`]).
+/// - `intervals` contains non-finite samples ([`SignalError::NonFiniteInput`]).
+pub fn hrv_rmssd(intervals: &Array1<f64>) -> Result<f64> {
     let n = intervals.len();
+    if n == 0 {
+        return Err(SignalError::EmptySignal);
+    }
     if n < 2 {
-        return None;
+        return Err(SignalError::InsufficientPeaks {
+            required: 2,
+            provided: n,
+        });
+    }
+    for &val in intervals.iter() {
+        if !val.is_finite() {
+            return Err(SignalError::NonFiniteInput);
+        }
     }
 
     let mut sq_diff_sum = 0.0;
@@ -13,14 +36,29 @@ pub fn hrv_rmssd(intervals: &Array1<f64>) -> Option<f64> {
         sq_diff_sum += diff * diff;
     }
 
-    Some((sq_diff_sum / (n - 1) as f64).sqrt())
+    Ok((sq_diff_sum / (n - 1) as f64).sqrt())
 }
 
-/// Computes the Mean of NN intervals (in ms).
-pub fn hrv_mean_nn(intervals: &Array1<f64>) -> Option<f64> {
+/// Compute the Mean NN interval length (in milliseconds).
+///
+/// # Scientific Contract
+/// - **Inputs**: 1D array of inter-beat intervals in milliseconds ($\text{ms}$).
+/// - **Output**: Mean interval length in milliseconds ($\text{ms}$).
+///
+/// # Errors
+/// Returns [`SignalError`] if:
+/// - `intervals` is empty ([`SignalError::EmptySignal`]).
+/// - `intervals` contains non-finite samples ([`SignalError::NonFiniteInput`]).
+pub fn hrv_mean_nn(intervals: &Array1<f64>) -> Result<f64> {
     let n = intervals.len();
     if n == 0 {
-        return None;
+        return Err(SignalError::EmptySignal);
     }
-    intervals.mean()
+    for &val in intervals.iter() {
+        if !val.is_finite() {
+            return Err(SignalError::NonFiniteInput);
+        }
+    }
+
+    intervals.mean().ok_or(SignalError::EmptySignal)
 }

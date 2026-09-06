@@ -1,17 +1,23 @@
-use ndarray::Array1;
+use crate::error::{Result, SignalError};
 use crate::signal::filter::signal_filter;
+use ndarray::Array1;
 
-/// Clean an ECG signal using a high-pass filter to remove baseline wander,
-/// and a powerline filter to remove 50Hz/60Hz noise.
-/// 
-/// Method currently acts as a placeholder for full zero-phase digital filtering capabilities.
-pub fn ecg_clean(
-    signal: &Array1<f64>,
-    sampling_rate: f64,
-    _method: &str,
-) -> Array1<f64> {
-    // Typical NeuroKit behavior is to run a high-pass filter at 0.5 Hz
-    // and a 50Hz powerline filter.
-    // For scaffolding, we pipe this to the generic `signal_filter`.
+/// Clean an Electrocardiogram (ECG) signal.
+///
+/// # Scientific Contract
+/// - **Inputs**:
+///   - `signal`: 1D array of raw ECG amplitude measurements in millivolts ($\text{mV}$) or arbitrary units.
+///   - `sampling_rate`: Sampling frequency $F_s$ in Hertz (Hz). Must be $> 0.0$.
+///   - `method`: Cleaning strategy string identifier (e.g. `"neurokit"`).
+/// - **Output**: Cleaned 1D ECG signal of identical length.
+/// - **Methodology**: Applies high-pass Butterworth filtering at 0.5 Hz to eliminate baseline wander artifacts.
+///
+/// # Errors
+/// Returns [`SignalError`] if `signal` is empty, contains non-finite samples, or if `sampling_rate` is invalid.
+pub fn ecg_clean(signal: &Array1<f64>, sampling_rate: f64, _method: &str) -> Result<Array1<f64>> {
+    if signal.is_empty() {
+        return Err(SignalError::EmptySignal);
+    }
+    // High-pass filter at 0.5 Hz to remove baseline wander
     signal_filter(signal, sampling_rate, Some(0.5), None, 5)
 }
