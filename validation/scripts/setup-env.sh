@@ -20,6 +20,8 @@ registry = "sparse+https://rsproxy.cn/index/"
 retry = 3
 CARGO
 echo "[setup] installing python deps..."
+mkdir -p "$HOME/.pip"
+printf '[global]\nindex-url = https://pypi.mirrors.msh.team/simple\n' > "$HOME/.pip/pip.conf"
 pip install -q wfdb numpy scipy pandas matplotlib pytest 2>&1 | tail -1 || true
 echo "[setup] building lamina bridge (target dir on local disk)..."
 REPO="${1:-$HOME/lamina}"
