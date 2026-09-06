@@ -1,6 +1,6 @@
 use crate::error::{Result, SignalError};
-use crate::rppg::config::RppgAlgorithmId;
-use crate::rppg::quality::RppgQualitySummary;
+use crate::rppg::config::{RppgAlgorithmId, RppgPreprocessingConfig};
+use crate::rppg::quality::{RppgQualitySummary, RppgSegmentQuality};
 use ndarray::Array1;
 
 /// Spatial mean RGB channel intensity sample for a single video frame.
@@ -115,6 +115,17 @@ impl OpticalSignal {
         Ok(fs)
     }
 
+    /// Return index bounds `(start_idx, end_idx)` for half-open physical timestamp range $[t_{\text{start}}, t_{\text{end}})$.
+    pub fn timestamp_range(&self, t_start: f64, t_end: f64) -> Result<(usize, usize)> {
+        self.validate()?;
+        if !t_start.is_finite() || !t_end.is_finite() || t_start >= t_end {
+            return Err(SignalError::NonFiniteInput);
+        }
+        let start_idx = self.timestamps_sec.partition_point(|&t| t < t_start);
+        let end_idx = self.timestamps_sec.partition_point(|&t| t < t_end);
+        Ok((start_idx, end_idx))
+    }
+
     /// Extract a sub-slice window of the optical signal.
     pub fn slice(&self, start_idx: usize, len: usize) -> Result<Self> {
         if start_idx + len > self.timestamps_sec.len() || len == 0 {
@@ -133,6 +144,90 @@ impl OpticalSignal {
         };
         sliced.validate()?;
         Ok(sliced)
+    }
+
+    /// Perform window-local optical signal preprocessing (linear detrending and channel mean normalization).
+    pub fn preprocess(&self, config: &RppgPreprocessingConfig) -> Result<Self> {
+        self.validate()?;
+        let n = self.timestamps_sec.len();
+        if n < 2 {
+            return Ok(self.clone());
+        }
+
+        let mut r = self.red.clone();
+        let mut g = self.green.clone();
+        let mut b = self.blue.clone();
+
+        if config.detrend {
+            let t_mean = self.timestamps_sec.iter().sum::<f64>() / n as f64;
+            let denom: f64 = self
+                .timestamps_sec
+                .iter()
+                .map(|&t| (t - t_mean).powi(2))
+                .sum();
+
+            if denom > 1e-12 {
+                for ch in [&mut r, &mut g, &mut b] {
+                    let y_mean = ch.iter().sum::<f64>() / n as f64;
+                    let num: f64 = self
+                        .timestamps_sec
+                        .iter()
+                        .zip(ch.iter())
+                        .map(|(&t, &y)| (t - t_mean) * (y - y_mean))
+                        .sum();
+                    let slope = num / denom;
+                    for (i, val) in ch.iter_mut().enumerate() {
+                        *val -= slope * (self.timestamps_sec[i] - t_mean);
+                    }
+                }
+            }
+        }
+
+        if config.normalize_channels {
+            for ch in [&mut r, &mut g, &mut b] {
+                let mean = ch.iter().sum::<f64>() / n as f64;
+                if mean <= 1e-6 || !mean.is_finite() {
+                    return Err(SignalError::NonFiniteInput);
+                }
+                for val in ch.iter_mut() {
+                    *val /= mean;
+                }
+            }
+        }
+
+        let processed = Self {
+            timestamps_sec: self.timestamps_sec.clone(),
+            red: r,
+            green: g,
+            blue: b,
+            valid_pixel_counts: self.valid_pixel_counts.clone(),
+        };
+        processed.validate()?;
+        Ok(processed)
+    }
+}
+
+/// Contiguous valid rPPG optical pulse segment meeting quality and gap-continuity criteria.
+#[derive(Debug, Clone, PartialEq)]
+pub struct RppgSegment {
+    /// Physical start timestamp in seconds
+    pub start_sec: f64,
+    /// Physical end timestamp in seconds
+    pub end_sec: f64,
+    /// Physical timestamps in seconds
+    pub timestamps_sec: Vec<f64>,
+    /// Extracted pulse waveform samples
+    pub waveform: Vec<f64>,
+    /// Sampling rate in Hz
+    pub sampling_rate_hz: f64,
+    /// Segment quality metadata
+    pub quality: RppgSegmentQuality,
+}
+
+impl RppgSegment {
+    /// Convert segment waveform into a 1D `Array1<f64>` for downstream Lamina PPG processing.
+    pub fn to_ndarray(&self) -> Array1<f64> {
+        Array1::from_vec(self.waveform.clone())
     }
 }
 
@@ -155,6 +250,102 @@ impl RppgSignal {
     /// Convert waveform into an 1D `Array1<f64>` for downstream Lamina PPG processing.
     pub fn to_ndarray(&self) -> Array1<f64> {
         Array1::from_vec(self.waveform.clone())
+    }
+
+    /// Extract contiguous valid signal segments where waveform samples are finite and physical gaps do not exceed `max_gap_sec`.
+    pub fn valid_segments(&self, max_gap_sec: f64) -> Vec<RppgSegment> {
+        if self.waveform.is_empty() || self.timestamps_sec.len() != self.waveform.len() {
+            return Vec::new();
+        }
+
+        let mut segments = Vec::new();
+        let mut cur_t = Vec::new();
+        let mut cur_w = Vec::new();
+
+        for i in 0..self.waveform.len() {
+            let t = self.timestamps_sec[i];
+            let w = self.waveform[i];
+
+            let gap_exceeded = if let Some(&prev_t) = cur_t.last() {
+                (t - prev_t) > max_gap_sec
+            } else {
+                false
+            };
+
+            if w.is_nan() || gap_exceeded {
+                if cur_w.len() >= 4 {
+                    let start_sec = cur_t[0];
+                    let end_sec = *cur_t.last().unwrap();
+                    let seg_q = self
+                        .quality
+                        .segments
+                        .iter()
+                        .find(|s| s.start_sec <= start_sec && s.end_sec >= end_sec)
+                        .cloned()
+                        .unwrap_or(RppgSegmentQuality {
+                            start_sec,
+                            end_sec,
+                            overall: self.quality.overall,
+                            roi_quality: 1.0,
+                            motion_quality: 1.0,
+                            illumination_quality: 1.0,
+                            signal_quality: 1.0,
+                            valid_fraction: 1.0,
+                        });
+
+                    segments.push(RppgSegment {
+                        start_sec,
+                        end_sec,
+                        timestamps_sec: cur_t,
+                        waveform: cur_w,
+                        sampling_rate_hz: self.sampling_rate_hz,
+                        quality: seg_q,
+                    });
+                }
+                cur_t = Vec::new();
+                cur_w = Vec::new();
+
+                if !w.is_nan() {
+                    cur_t.push(t);
+                    cur_w.push(w);
+                }
+            } else {
+                cur_t.push(t);
+                cur_w.push(w);
+            }
+        }
+
+        if cur_w.len() >= 4 {
+            let start_sec = cur_t[0];
+            let end_sec = *cur_t.last().unwrap();
+            let seg_q = self
+                .quality
+                .segments
+                .iter()
+                .find(|s| s.start_sec <= start_sec && s.end_sec >= end_sec)
+                .cloned()
+                .unwrap_or(RppgSegmentQuality {
+                    start_sec,
+                    end_sec,
+                    overall: self.quality.overall,
+                    roi_quality: 1.0,
+                    motion_quality: 1.0,
+                    illumination_quality: 1.0,
+                    signal_quality: 1.0,
+                    valid_fraction: 1.0,
+                });
+
+            segments.push(RppgSegment {
+                start_sec,
+                end_sec,
+                timestamps_sec: cur_t,
+                waveform: cur_w,
+                sampling_rate_hz: self.sampling_rate_hz,
+                quality: seg_q,
+            });
+        }
+
+        segments
     }
 
     /// Explicitly resample the optical pulse signal onto a uniform temporal grid at `target_fs` Hz.

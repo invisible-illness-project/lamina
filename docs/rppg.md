@@ -83,7 +83,9 @@ ROI Sample Extraction (Spatial Mean RGB + Valid Pixel Counts)
         ↓
 OpticalSignal (Temporal RGB Signals)
         ↓
-Windowed Temporal Slicing (RppgWindowConfig)
+Physical-Time Window Slicing [t_start, t_end) via Zero-Copy timestamp_range()
+        ↓
+Window-Local Preprocessing (Linear Detrending & Channel Mean Normalization)
         ↓
 Interchangeable Algorithm (Green / CHROM / POS)
         ↓
@@ -91,7 +93,9 @@ Segment Quality Evaluation (ROI, Motion, Illumination, Signal)
         ↓
 Quality-Weighted Overlap-Add Stitching & Gating (min_quality)
         ↓
-RppgSignal & RppgQualitySummary
+RppgSignal & RppgQualitySummary (valid_fraction = valid_duration / total_duration)
+        ↓
+Gap-Aware Segment Extraction (RppgSignal::valid_segments(max_gap_sec))
         ↓
 Downstream Integration (lamina::ppg::ppg_clean & ppg_findpeaks)
 ```
@@ -117,6 +121,9 @@ $$P_{\text{POS}}(t) = S_1(t) + \alpha S_2(t)$$
 ### 5.3 Segment Quality Composite ($Q$)
 $$Q = \frac{w_{\text{roi}} q_{\text{roi}} + w_{\text{motion}} q_{\text{motion}} + w_{\text{illum}} q_{\text{illum}} + w_{\text{signal}} q_{\text{signal}}}{w_{\text{roi}} + w_{\text{motion}} + w_{\text{illum}} + w_{\text{signal}}} \quad \in [0.0, 1.0]$$
 
+### 5.4 Recording Valid Duration Fraction
+$$\text{valid\_fraction} = \frac{\sum_{j \in \text{Valid}} \text{duration}_j}{\text{total\_duration}} \quad \in [0.0, 1.0]$$
+
 ---
 
 ## 6. Algorithmic Complexity
@@ -124,8 +131,10 @@ $$Q = \frac{w_{\text{roi}} q_{\text{roi}} + w_{\text{motion}} q_{\text{motion}} 
 | Stage | Complexity | Description |
 | :--- | :---: | :--- |
 | Frame ROI extraction | $O(N_{\text{frames}} \times \text{ROI}_{\text{pixels}})$ | Spatial RGB summation per frame |
-| Window slicing | $O(W)$ | Sliding window boundary determination |
+| Physical timestamp range | $O(\log N_{\text{frames}})$ | Zero-copy binary search range determination |
+| Window-local preprocessing | $O(L)$ | Linear detrending & channel normalization per window |
 | CHROM / POS extraction | $O(W \times L)$ | Matrix projections over window length $L$ |
 | Quality evaluation | $O(W \times L)$ | Autocorrelation and derivative metrics |
 | Overlap-add stitching | $O(N_{\text{frames}})$ | Weighted accumulation across timeline |
+| Valid segment extraction | $O(M)$ | Gap-aware non-NaN segment splitting |
 | Uniform resampling | $O(M)$ | Linear interpolation onto target sampling grid |

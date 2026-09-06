@@ -16,7 +16,7 @@ pub use quality::{
     assess_roi_quality, assess_signal_quality, evaluate_segment_quality,
 };
 pub use roi::{Roi, RoiProvider, StaticRoi, TrackedRoiSeries, extract_roi_sample};
-pub use signal::{OpticalSignal, RoiSample, RppgSignal};
+pub use signal::{OpticalSignal, RoiSample, RppgSegment, RppgSignal};
 pub use video::{VideoFrame, VideoMetadata, VideoStream};
 
 use crate::error::{Result, SignalError};
@@ -27,11 +27,12 @@ use crate::error::{Result, SignalError};
 /// 1. Validates video stream frame timing, dimensions, and rPPG configuration parameters.
 /// 2. Extracts spatial mean RGB intensity samples (`RoiSample`) from frame ROIs supplied by `roi_provider`.
 /// 3. Assembles a temporal `OpticalSignal` series.
-/// 4. Slices the optical signal into sliding temporal windows (`RppgWindowConfig`).
-/// 5. Applies the selected classical algorithm (`GreenChannel`, `Chrom`, `Pos`) to extract windowed pulse traces.
-/// 6. Evaluates multi-tiered segment-level quality (`RppgSegmentQuality`) for ROI, motion, illumination, and periodicity.
-/// 7. Combines windowed pulse traces using quality-weighted overlap-add stitching.
-/// 8. Returns a standardized `RppgSignal` paired with an `RppgQualitySummary`.
+/// 4. Slices the optical signal into physical-time sliding windows (`RppgWindowConfig`) via zero-copy index lookup (`timestamp_range`).
+/// 5. Applies window-local preprocessing (linear detrending and channel mean normalization).
+/// 6. Applies the selected classical algorithm (`GreenChannel`, `Chrom`, `Pos`) to extract windowed pulse traces.
+/// 7. Evaluates multi-tiered segment-level quality (`RppgSegmentQuality`) for ROI, motion, illumination, and periodicity.
+/// 8. Combines windowed pulse traces using quality-weighted overlap-add stitching.
+/// 9. Returns a standardized `RppgSignal` paired with an `RppgQualitySummary`.
 pub fn extract_rppg(
     video: &VideoStream,
     roi_provider: &dyn RoiProvider,
@@ -61,13 +62,6 @@ pub fn extract_rppg(
     let total_samples = optical.timestamps_sec.len();
     let fs = optical.mean_sampling_rate()?;
 
-    // 2. Determine windowing sample bounds
-    let win_samples = (config.window.window_sec * fs).round() as usize;
-    let step_samples = (config.window.step_sec * fs).round() as usize;
-
-    let win_samples = win_samples.max(4).min(total_samples);
-    let step_samples = step_samples.max(1).min(win_samples);
-
     // Instantiate selected rPPG extraction algorithm
     let algo: Box<dyn RppgAlgorithm> = match config.algorithm {
         RppgAlgorithmId::GreenChannel => Box::new(GreenAlgorithm),
@@ -75,48 +69,96 @@ pub fn extract_rppg(
         RppgAlgorithmId::Pos => Box::new(PosAlgorithm),
     };
 
-    // 3. Sliding window extraction and quality evaluation
+    // 2. Physical-time sliding window extraction
     let mut stitched_waveform = vec![0.0f64; total_samples];
     let mut weight_accumulator = vec![0.0f64; total_samples];
     let mut segment_qualities = Vec::new();
 
-    let mut start_idx = 0usize;
-    while start_idx < total_samples {
-        let end_idx = (start_idx + win_samples).min(total_samples);
-        let current_len = end_idx - start_idx;
+    let t_first = optical.timestamps_sec[0];
+    let t_last = *optical.timestamps_sec.last().unwrap();
+    let total_duration = (t_last - t_first).max(0.0);
+
+    let mut win_start_t = t_first;
+    while win_start_t < t_last {
+        let win_end_t = (win_start_t + config.window.window_sec).min(t_last + 1e-6);
+        let (start_idx, end_idx) = optical.timestamp_range(win_start_t, win_end_t)?;
+        let current_len = end_idx.saturating_sub(start_idx);
+
         if current_len < 4 {
-            break;
+            if end_idx >= total_samples {
+                break;
+            }
+            win_start_t += config.window.step_sec;
+            continue;
         }
 
-        let win_optical = optical.slice(start_idx, current_len)?;
+        // Coverage duration check
+        let observed_span = optical.timestamps_sec[end_idx - 1] - optical.timestamps_sec[start_idx];
+        let dt_sample = if current_len > 1 {
+            observed_span / (current_len - 1) as f64
+        } else {
+            0.0
+        };
+        let coverage_sec = observed_span + dt_sample;
+        let coverage_ratio = coverage_sec / config.window.window_sec;
+
+        let win_optical_raw = optical.slice(start_idx, current_len)?;
         let win_displacements = &displacements[start_idx..end_idx];
 
-        // Extract window pulse waveform
-        let win_pulse_res = algo.extract_window(&win_optical, config);
-
-        let (win_pulse, seg_q) = match win_pulse_res {
-            Ok(p) => {
-                let q = evaluate_segment_quality(
-                    &win_optical,
-                    &p,
-                    win_displacements,
-                    config.minimum_roi_pixels,
-                    config.signal_band_hz,
-                );
-                (p, q)
-            }
-            Err(_) => {
-                let q = RppgSegmentQuality {
-                    start_sec: win_optical.timestamps_sec[0],
-                    end_sec: *win_optical.timestamps_sec.last().unwrap(),
-                    overall: 0.0,
-                    roi_quality: 0.0,
-                    motion_quality: 0.0,
-                    illumination_quality: 0.0,
-                    signal_quality: 0.0,
-                    valid_fraction: 0.0,
-                };
-                (vec![0.0; current_len], q)
+        let (win_pulse, seg_q) = if coverage_ratio < config.window.min_window_fraction {
+            // Window duration insufficient to meet min_window_fraction coverage criteria
+            let q = RppgSegmentQuality {
+                start_sec: win_optical_raw.timestamps_sec[0],
+                end_sec: *win_optical_raw.timestamps_sec.last().unwrap(),
+                overall: 0.0,
+                roi_quality: 0.0,
+                motion_quality: 0.0,
+                illumination_quality: 0.0,
+                signal_quality: 0.0,
+                valid_fraction: 0.0,
+            };
+            (vec![0.0; current_len], q)
+        } else {
+            // Apply window-local preprocessing
+            match win_optical_raw.preprocess(&config.preprocessing) {
+                Ok(win_optical) => match algo.extract_window(&win_optical, config) {
+                    Ok(p) => {
+                        let q = evaluate_segment_quality(
+                            &win_optical,
+                            &p,
+                            win_displacements,
+                            config.minimum_roi_pixels,
+                            config.signal_band_hz,
+                        );
+                        (p, q)
+                    }
+                    Err(_) => {
+                        let q = RppgSegmentQuality {
+                            start_sec: win_optical_raw.timestamps_sec[0],
+                            end_sec: *win_optical_raw.timestamps_sec.last().unwrap(),
+                            overall: 0.0,
+                            roi_quality: 0.0,
+                            motion_quality: 0.0,
+                            illumination_quality: 0.0,
+                            signal_quality: 0.0,
+                            valid_fraction: 0.0,
+                        };
+                        (vec![0.0; current_len], q)
+                    }
+                },
+                Err(_) => {
+                    let q = RppgSegmentQuality {
+                        start_sec: win_optical_raw.timestamps_sec[0],
+                        end_sec: *win_optical_raw.timestamps_sec.last().unwrap(),
+                        overall: 0.0,
+                        roi_quality: 0.0,
+                        motion_quality: 0.0,
+                        illumination_quality: 0.0,
+                        signal_quality: 0.0,
+                        valid_fraction: 0.0,
+                    };
+                    (vec![0.0; current_len], q)
+                }
             }
         };
 
@@ -132,10 +174,10 @@ pub fn extract_rppg(
             }
         }
 
-        if end_idx == total_samples {
+        if end_idx >= total_samples {
             break;
         }
-        start_idx += step_samples;
+        win_start_t += config.window.step_sec;
     }
 
     // Normalize overlap-add waveform or mark gap with NaN
@@ -147,19 +189,21 @@ pub fn extract_rppg(
         }
     }
 
-    // 4. Build recording-wide quality summary
+    // 3. Build recording-wide quality summary
     let overall_quality = if !segment_qualities.is_empty() {
         segment_qualities.iter().map(|q| q.overall).sum::<f64>() / segment_qualities.len() as f64
     } else {
         0.0
     };
 
-    let valid_count = segment_qualities
+    let valid_duration: f64 = segment_qualities
         .iter()
         .filter(|q| q.overall >= config.min_quality)
-        .count();
-    let valid_fraction = if !segment_qualities.is_empty() {
-        valid_count as f64 / segment_qualities.len() as f64
+        .map(|q| (q.end_sec - q.start_sec).max(0.0))
+        .sum();
+
+    let valid_fraction = if total_duration > 0.0 {
+        (valid_duration / total_duration).clamp(0.0, 1.0)
     } else {
         0.0
     };

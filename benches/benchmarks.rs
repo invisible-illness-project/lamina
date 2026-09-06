@@ -305,39 +305,63 @@ fn bench_rppg_pipeline(c: &mut Criterion) {
 
     let mut group = c.benchmark_group("rppg_processing_pipeline");
 
-    for &duration_sec in &[10.0, 30.0] {
-        let fps = 30.0;
-        let width = 40;
-        let height = 40;
-        let num_frames = (duration_sec * fps) as usize;
+    for &duration_sec in &[10.0, 30.0, 60.0] {
+        for &fps in &[24.0, 30.0, 60.0] {
+            let width = 40;
+            let height = 40;
+            let num_frames = (duration_sec * fps) as usize;
 
-        let mut frames = Vec::with_capacity(num_frames);
-        for i in 0..num_frames {
-            let t = i as f64 / fps;
-            let data = vec![128u8; width * height * 3];
-            frames.push(VideoFrame::new(t, width, height, data).unwrap());
-        }
+            let mut frames = Vec::with_capacity(num_frames);
+            for i in 0..num_frames {
+                let t = i as f64 / fps;
+                let data = vec![128u8; width * height * 3];
+                frames.push(VideoFrame::new(t, width, height, data).unwrap());
+            }
 
-        let stream = VideoStream::new(frames, Some(fps)).unwrap();
-        let roi = StaticRoi::new(Roi::new(10, 10, 20, 20).unwrap());
+            let stream = VideoStream::new(frames, Some(fps)).unwrap();
+            let roi = StaticRoi::new(Roi::new(10, 10, 20, 20).unwrap());
 
-        for &algo in &[
-            RppgAlgorithmId::GreenChannel,
-            RppgAlgorithmId::Chrom,
-            RppgAlgorithmId::Pos,
-        ] {
-            let config = RppgConfig {
-                algorithm: algo,
-                min_quality: 0.0,
-                ..RppgConfig::default()
-            };
+            for &algo in &[
+                RppgAlgorithmId::GreenChannel,
+                RppgAlgorithmId::Chrom,
+                RppgAlgorithmId::Pos,
+            ] {
+                let config = RppgConfig {
+                    algorithm: algo,
+                    min_quality: 0.0,
+                    ..RppgConfig::default()
+                };
 
-            let label = format!("{:?}_{:.0}s_30fps", algo, duration_sec);
-            group.bench_function(&label, |b| {
-                b.iter(|| extract_rppg(&stream, &roi, &config).unwrap());
-            });
+                let label = format!("{:?}_{:.0}s_{:.0}fps", algo, duration_sec, fps);
+                group.bench_function(&label, |b| {
+                    b.iter(|| extract_rppg(&stream, &roi, &config).unwrap());
+                });
+            }
         }
     }
+
+    // Irregular timestamp benchmark
+    let width = 40;
+    let height = 40;
+    let num_frames = 300;
+    let mut frames = Vec::with_capacity(num_frames);
+    let mut t = 0.0;
+    for i in 0..num_frames {
+        let dt = 0.03 + (i % 5) as f64 * 0.002;
+        t += dt;
+        let data = vec![128u8; width * height * 3];
+        frames.push(VideoFrame::new(t, width, height, data).unwrap());
+    }
+    let stream_irreg = VideoStream::new(frames, None).unwrap();
+    let roi_irreg = StaticRoi::new(Roi::new(10, 10, 20, 20).unwrap());
+    let config_pos = RppgConfig {
+        algorithm: RppgAlgorithmId::Pos,
+        min_quality: 0.0,
+        ..RppgConfig::default()
+    };
+    group.bench_function("Pos_irregular_timestamps", |b| {
+        b.iter(|| extract_rppg(&stream_irreg, &roi_irreg, &config_pos).unwrap());
+    });
 
     group.finish();
 }

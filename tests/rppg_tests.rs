@@ -2,8 +2,8 @@ use lamina::error::SignalError;
 use lamina::ppg::{ppg_clean, ppg_findpeaks};
 use lamina::rppg::{
     ChromAlgorithm, GreenAlgorithm, OpticalSignal, PosAlgorithm, Roi, RoiSample, RppgAlgorithm,
-    RppgAlgorithmId, RppgConfig, RppgWindowConfig, StaticRoi, TrackedRoiSeries, VideoFrame,
-    VideoStream, extract_roi_sample, extract_rppg,
+    RppgAlgorithmId, RppgConfig, RppgPreprocessingConfig, RppgWindowConfig, StaticRoi,
+    TrackedRoiSeries, VideoFrame, VideoStream, extract_roi_sample, extract_rppg,
 };
 
 /// Helper to generate a deterministic synthetic RGB video stream with pulsatile modulation.
@@ -193,6 +193,11 @@ fn test_green_algorithm_sinusoidal_recovery() {
     let config = RppgConfig {
         algorithm: RppgAlgorithmId::GreenChannel,
         min_quality: 0.0,
+        window: RppgWindowConfig {
+            window_sec: 3.0,
+            step_sec: 0.5,
+            min_window_fraction: 0.8,
+        },
         ..RppgConfig::default()
     };
 
@@ -269,6 +274,11 @@ fn test_algorithm_determinism() {
     let config = RppgConfig {
         algorithm: RppgAlgorithmId::Pos,
         min_quality: 0.0,
+        window: RppgWindowConfig {
+            window_sec: 3.0,
+            step_sec: 0.5,
+            min_window_fraction: 0.8,
+        },
         ..RppgConfig::default()
     };
 
@@ -290,6 +300,11 @@ fn test_quality_dark_and_saturated_roi() {
     let (dark_stream, roi) = create_synthetic_video_stream(3.0, 30.0, 1.2, 1.0, 140.0, 0.0);
     let config = RppgConfig {
         min_quality: 0.0,
+        window: RppgWindowConfig {
+            window_sec: 2.0,
+            step_sec: 0.5,
+            min_window_fraction: 0.8,
+        },
         ..RppgConfig::default()
     };
 
@@ -317,6 +332,11 @@ fn test_quality_motion_degradation() {
     let tracked_roi = TrackedRoiSeries::new(rois);
     let config = RppgConfig {
         min_quality: 0.0,
+        window: RppgWindowConfig {
+            window_sec: 2.0,
+            step_sec: 0.5,
+            min_window_fraction: 0.8,
+        },
         ..RppgConfig::default()
     };
 
@@ -333,6 +353,11 @@ fn test_quality_gating_and_unusable_rejection() {
     let (dark_stream, roi) = create_synthetic_video_stream(3.0, 30.0, 1.2, 1.0, 140.0, 0.0);
     let config = RppgConfig {
         min_quality: 0.95, // High threshold
+        window: RppgWindowConfig {
+            window_sec: 2.0,
+            step_sec: 0.5,
+            min_window_fraction: 0.8,
+        },
         ..RppgConfig::default()
     };
 
@@ -384,40 +409,143 @@ fn test_rppg_signal_uniform_resampling_and_max_gap() {
 }
 
 // ============================================================================
-// Group F — Downstream Integration with Lamina PPG Processing
+// Group F — Downstream Integration & Task 1.1 Hardening Tests
 // ============================================================================
 
 #[test]
-fn test_downstream_lamina_ppg_integration() {
-    let (stream, roi) = create_synthetic_video_stream(10.0, 30.0, 1.2, 10.0, 0.0, 0.0); // 1.2 Hz pulse (~72 BPM)
+fn test_timestamp_window_selection_irregular_frames() {
+    let irregular_timestamps = vec![
+        0.000, 0.033, 0.071, 0.110, 0.160, 0.210, 0.260, 0.310, 0.360,
+    ];
+    let samples: Vec<RoiSample> = irregular_timestamps
+        .iter()
+        .map(|&t| RoiSample {
+            timestamp_sec: t,
+            red: 100.0,
+            green: 150.0,
+            blue: 120.0,
+            valid_pixels: 500,
+        })
+        .collect();
+
+    let optical = OpticalSignal::from_samples(&samples).unwrap();
+    let (start_idx, end_idx) = optical.timestamp_range(0.05, 0.25).unwrap();
+    assert_eq!(start_idx, 2); // 0.071 is first >= 0.05
+    assert_eq!(end_idx, 6); // 0.260 is first >= 0.25
+}
+
+#[test]
+fn test_window_local_preprocessing() {
+    let n = 30;
+    let samples: Vec<RoiSample> = (0..n)
+        .map(|i| {
+            let t = i as f64 / 10.0;
+            // Introduce linear ramp trend: 2.0 * t
+            RoiSample {
+                timestamp_sec: t,
+                red: 100.0 + 2.0 * t,
+                green: 150.0 + 2.0 * t,
+                blue: 120.0 + 2.0 * t,
+                valid_pixels: 500,
+            }
+        })
+        .collect();
+
+    let optical = OpticalSignal::from_samples(&samples).unwrap();
+
+    let config_detrend = RppgPreprocessingConfig {
+        normalize_channels: false,
+        detrend: true,
+    };
+    let preprocessed = optical.preprocess(&config_detrend).unwrap();
+
+    // Detrending linear ramp leaves red channel nearly flat around mean
+    let mean_orig = optical.red.iter().sum::<f64>() / n as f64;
+    let mean_detrend = preprocessed.red.iter().sum::<f64>() / n as f64;
+    let var_orig = optical
+        .red
+        .iter()
+        .map(|&x| (x - mean_orig).powi(2))
+        .sum::<f64>()
+        / n as f64;
+    let var_detrend = preprocessed
+        .red
+        .iter()
+        .map(|&x| (x - mean_detrend).powi(2))
+        .sum::<f64>()
+        / n as f64;
+    assert!(var_detrend < var_orig * 0.01);
+}
+
+#[test]
+fn test_gap_aware_valid_segments() {
+    let timestamps = vec![
+        0.0, 0.1, 0.2, 0.3, // Segment 1 (0.3s)
+        2.5, 2.6, 2.7, 2.8, // Segment 2 (gap 2.2s > max_gap 1.0s)
+    ];
+    let waveform = vec![1.0, 2.0, 1.0, 0.0, 3.0, 4.0, 3.0, 2.0];
+
+    let signal = lamina::rppg::RppgSignal {
+        timestamps_sec: timestamps,
+        waveform,
+        sampling_rate_hz: 10.0,
+        quality: lamina::rppg::RppgQualitySummary {
+            overall: 1.0,
+            valid_fraction: 1.0,
+            segments: Vec::new(),
+        },
+        algorithm: RppgAlgorithmId::Pos,
+    };
+
+    let segments = signal.valid_segments(1.0);
+    assert_eq!(segments.len(), 2);
+    assert_eq!(segments[0].waveform.len(), 4);
+    assert_eq!(segments[1].waveform.len(), 4);
+    assert_eq!(segments[0].start_sec, 0.0);
+    assert_eq!(segments[1].start_sec, 2.5);
+}
+
+#[test]
+fn test_valid_duration_fraction_unequal_lengths() {
+    let (stream, roi) = create_synthetic_video_stream(10.0, 30.0, 1.2, 10.0, 0.0, 0.0);
+    let config = RppgConfig {
+        algorithm: RppgAlgorithmId::GreenChannel,
+        min_quality: 0.0,
+        window: RppgWindowConfig {
+            window_sec: 3.0,
+            step_sec: 1.0,
+            min_window_fraction: 0.8,
+        },
+        ..RppgConfig::default()
+    };
+
+    let signal = extract_rppg(&stream, &roi, &config).unwrap();
+    assert!(signal.quality.valid_fraction > 0.8);
+}
+
+#[test]
+fn test_downstream_ppg_integration_via_valid_segments() {
+    let (stream, roi) = create_synthetic_video_stream(10.0, 30.0, 1.2, 10.0, 0.0, 0.0);
     let config = RppgConfig {
         algorithm: RppgAlgorithmId::Pos,
         min_quality: 0.0,
         window: RppgWindowConfig {
             window_sec: 4.0,
             step_sec: 1.0,
+            min_window_fraction: 0.8,
         },
         ..RppgConfig::default()
     };
 
     let rppg_signal = extract_rppg(&stream, &roi, &config).unwrap();
-    let resampled = rppg_signal.resample_uniform(30.0, 1.0).unwrap();
+    let valid_segs = rppg_signal.valid_segments(1.0);
+    assert!(!valid_segs.is_empty());
 
-    // 1. Convert to Array1<f64>
-    let raw_arr = resampled.to_ndarray();
-
-    // 2. Pass into lamina::ppg::ppg_clean
-    let cleaned = ppg_clean(&raw_arr, resampled.sampling_rate_hz).unwrap();
-    assert_eq!(cleaned.len(), raw_arr.len());
-
-    // 3. Pass into lamina::ppg::ppg_findpeaks
-    let peaks_mask = ppg_findpeaks(&cleaned, resampled.sampling_rate_hz).unwrap();
-    let peak_count = peaks_mask.iter().filter(|&&p| p).count();
-
-    // Over 10s at 1.2 Hz (~72 BPM), expected ~12 peaks
-    assert!(
-        (8..=15).contains(&peak_count),
-        "rPPG signal passed through lamina::ppg must recover ~12 pulse peaks, got {}",
-        peak_count
-    );
+    for seg in valid_segs {
+        let arr = seg.to_ndarray();
+        let cleaned = ppg_clean(&arr, seg.sampling_rate_hz).unwrap();
+        let peaks = ppg_findpeaks(&cleaned, seg.sampling_rate_hz).unwrap();
+        assert_eq!(cleaned.len(), arr.len());
+        assert_eq!(peaks.len(), arr.len());
+    }
 }

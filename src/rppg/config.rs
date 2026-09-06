@@ -19,6 +19,8 @@ pub struct RppgWindowConfig {
     pub window_sec: f64,
     /// Processing window step / hop size in seconds (default 0.5 s)
     pub step_sec: f64,
+    /// Minimum required window duration coverage fraction in $(0.0, 1.0]$ (default 0.8 = 80%)
+    pub min_window_fraction: f64,
 }
 
 impl Default for RppgWindowConfig {
@@ -26,6 +28,7 @@ impl Default for RppgWindowConfig {
         Self {
             window_sec: 3.0,
             step_sec: 0.5,
+            min_window_fraction: 0.8,
         }
     }
 }
@@ -41,6 +44,12 @@ impl RppgWindowConfig {
         }
         if self.step_sec > self.window_sec {
             return Err(SignalError::InvalidWindowSize(0));
+        }
+        if !self.min_window_fraction.is_finite()
+            || self.min_window_fraction <= 0.0
+            || self.min_window_fraction > 1.0
+        {
+            return Err(SignalError::NonFiniteInput);
         }
         Ok(())
     }
