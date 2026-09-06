@@ -6,8 +6,9 @@ pub mod state;
 
 pub use confidence::StateConfidence;
 pub use config::{
-    ActivationWeights, AutonomicEstimatorConfig, FeatureDirection, NormalizationConfig,
-    NormalizationMethod, QualityConfig, RegulationWeights, SmoothingConfig,
+    ActivationWeights, AutonomicEstimatorConfig, ConfidenceWeights, FeatureDirection,
+    NormalizationConfig, NormalizationMethod, QualityConfig, RecoveryConfig, RegulationWeights,
+    SmoothingConfig,
 };
 pub use estimator::AutonomicEstimator;
 pub use normalization::{AutonomicBaseline, BaselineFeatureStats};

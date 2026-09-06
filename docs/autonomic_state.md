@@ -76,13 +76,22 @@ Evidence Confidence & Temporal Trajectory [AutonomicStateSeries]
 
 ## 5. Mathematical Formulations
 
+## 5. Mathematical Formulations
+
 ### 5.1 Baseline Normalization
-For feature value $x$, standard z-score normalization is defined as:
-$$z = \frac{x - \mu}{\sigma + \epsilon}$$
+For feature sample set $\{x_1, \dots, x_N\}$, standard z-score normalization computes **population standard deviation**:
+$$\mu = \frac{1}{N}\sum_{i=1}^N x_i, \quad \sigma = \sqrt{\frac{1}{N}\sum_{i=1}^N (x_i - \mu)^2}$$
+$$z = \frac{x - \mu}{\sigma}$$
 
 Robust Median / MAD normalization is defined as:
-$$z = \frac{x - \text{median}}{c \cdot \text{MAD} + \epsilon}$$
-where $c = 1.4826$ provides normal-equivalent scaling and $\epsilon = 10^{-6}$ regularizes zero-variance baselines.
+$$z = \frac{x - \text{median}}{c \cdot \text{MAD}}$$
+where $c = 1.4826$ provides normal-equivalent scaling.
+
+#### Zero-Scale Policy (`min_scale`)
+`min_scale` (default $10^{-6}$, validated $> 0$ and finite) serves as a numerical/configuration floor threshold for declaring baseline scale unusable:
+- If scale ($\sigma$ or $c \cdot \text{MAD}$) $\le \text{min\_scale}$:
+  - If $|x - \text{location}| \le \text{min\_scale}$, return $0.0$ (exact baseline location match).
+  - If $|x - \text{location}| > \text{min\_scale}$, return `None` (z-score unavailable).
 
 ### 5.2 Directional Orientation & Bounded Transform
 Directional orientation applies feature direction ($d \in \{+1, -1\}$):
@@ -92,24 +101,31 @@ Hyperbolic tangent scaling bounds normalized values strictly into $[-1.0, 1.0]$:
 $$\text{score} = \tanh\left(\frac{z_{\text{directed}}}{s}\right)$$
 where $s > 0$ (`bounded_scale`, default $2.0$).
 
-### 5.3 Multimodal Composite Weighted Score
+### 5.3 Cardiac Recovery Evidence Index (`RecoveryConfig`)
+Cardiac recovery evidence is calculated via explicit sign subtraction using `RecoveryConfig` weights ($w_{\text{var}} \ge 0$, $w_{\text{hr}} \ge 0$, $w_{\text{var}} + w_{\text{hr}} > 0$):
+$$\text{recovery\_evidence} = \frac{w_{\text{var}} \cdot \text{variability\_index} - w_{\text{hr}} \cdot \text{heart\_rate\_index}}{w_{\text{var}} + w_{\text{hr}}}$$
+- `variability_index`: positive = higher-than-baseline cardiac variability (SDNN preferred, RMSSD fallback).
+- `heart_rate_index`: positive = higher-than-baseline HR.
+- `recovery_evidence`: positive = higher variability combined with lower HR.
+
+### 5.4 Multimodal Composite Weighted Score
 For $M$ valid, quality-gated contributing features with normalized values $x_i$ and weights $w_i > 0$:
 $$\text{Composite Score} = \frac{\sum_{i=1}^M w_i x_i}{\sum_{i=1}^M w_i} \quad \in [-1.0, 1.0]$$
 If $\sum w_i = 0$, the composite score yields `None`.
 
-### 5.4 First-Order Exponential Moving Average (EMA) State Smoothing
+### 5.5 Exponential Moving Average (EMA) Trajectory Smoothing
 For sequential state series trajectory with smoothing factor $\alpha \in (0.0, 1.0]$:
 $$s_t = \alpha x_t + (1 - \alpha) s_{t-1}$$
-Raw, unsmoothed window evaluations remain accessible in un-smoothed estimators.
+Raw, unsmoothed window evaluations remain preserved in `AutonomicStateSeries.states`, while EMA smoothed states populate `smoothed_states: Option<Vec<AutonomicState>>`.
 
 ---
 
 ## 6. Derived State Indices & Representations
 
 ### 6.1 `CardiacState`
-- `variability_index`: Normalized SDNN/RMSSD evidence in $[-1.0, 1.0]$.
+- `variability_index`: Normalized cardiac variability evidence in $[-1.0, 1.0]$ (SDNN preferred when valid, RMSSD fallback per Carter et al. 2026).
 - `heart_rate_index`: Normalized mean HR evidence in $[-1.0, 1.0]$.
-- `recovery_evidence`: Bounded composite cardiac recovery evidence index in $[-1.0, 1.0]$.
+- `recovery_evidence`: Engineered composite cardiac recovery evidence index in $[-1.0, 1.0]$ ($\frac{w_{\text{var}} v - w_{\text{hr}} h}{w_{\text{var}} + w_{\text{hr}}}$).
 - `beat_count`: Observed ECG R-peaks in window.
 
 ### 6.2 `ElectrodermalState`
@@ -120,12 +136,12 @@ Raw, unsmoothed window evaluations remain accessible in un-smoothed estimators.
 
 ### 6.3 `RespiratoryState`
 - `rate_index`: Bounded Respiratory Rate evidence index in $[-1.0, 1.0]$.
-- `amplitude_index`: Bounded breath cycle amplitude index in $[-1.0, 1.0]$.
-- `regularity_index`: Bounded cycle regularity index in $[-1.0, 1.0]$.
+- `amplitude_index`: Bounded breath cycle amplitude index in $[-1.0, 1.0]$ derived from mean cycle height.
+- `regularity_index`: Baseline-relative evidence of respiratory-rate regularity derived from the inverse direction of `rate_std_bpm` in $[-1.0, 1.0]$.
 - `cycle_count`: Observed breath cycles in window.
 
 ### 6.4 `CouplingState`
-- `resphr_coupling_index`: Bounded RespHRV (RSA) coupling evidence index in $[-1.0, 1.0]$ (conditioned on valid respiration).
+- `resphr_coupling_index`: Bounded RespHRV (RSA) coupling evidence index in $[-1.0, 1.0]$ (strictly `None` if valid direct respiratory context is absent per Buron & Menuet 2026 / Gevonden et al. 2025).
 - `phase_coupling_index`: Bounded cardiorespiratory phase concentration index in $[-1.0, 1.0]$.
 - `pulse_delay_index`: Bounded ECG-PPG pulse delay index in $[-1.0, 1.0]$.
 - `association_count`: Observed SCR cardiorespiratory associations.
@@ -138,12 +154,12 @@ Raw, unsmoothed window evaluations remain accessible in un-smoothed estimators.
 
 ## 7. Multi-Tiered Evidence Confidence (`StateConfidence`)
 
-Modality confidences ($[0.0, 1.0]$) measure data completeness, temporal coverage, quality flags, and event counts:
-- `cardiac`: Evaluates temporal coverage, beat count ($\ge 10$), and `cardiac_valid` flag.
+Modality confidences ($[0.0, 1.0]$) measure data completeness, temporal coverage, quality flags, and event counts configured via `ConfidenceWeights`:
+- `cardiac`: Evaluates temporal coverage, beat count ($\ge \text{min\_beats}$, default 10), and `cardiac_valid` flag.
 - `electrodermal`: Evaluates temporal coverage and `eda_valid` flag.
-- `respiratory`: Evaluates temporal coverage, cycle count ($\ge 4$), and `respiration_valid` flag.
-- `coupling`: Evaluates coupling validity and respiratory context availability.
-- `overall`: Unweighted mean across present modality confidences.
+- `respiratory`: Evaluates temporal coverage, cycle count ($\ge \text{min\_cycles}$, default 4), and `respiration_valid` flag.
+- `coupling`: Evaluates coupling validity and respiratory context availability (RespHRV is excluded when respiration is absent, reducing coupling confidence).
+- `overall`: Weighted average across configured modalities (`cardiac_weight`, `eda_weight`, `rsp_weight`, `coupling_weight`).
 
 ---
 

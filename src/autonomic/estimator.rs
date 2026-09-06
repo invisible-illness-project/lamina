@@ -5,7 +5,7 @@ use crate::autonomic::state::{
     AutonomicState, AutonomicStateSeries, CardiacState, CouplingState, ElectrodermalState,
     RespiratoryState,
 };
-use crate::error::Result;
+use crate::error::{Result, SignalError};
 use crate::features::MultimodalFeatureVector;
 
 /// Deterministic multimodal physiological state estimator.
@@ -53,7 +53,7 @@ impl AutonomicEstimator {
         };
 
         let variability_index = if cardiac_valid {
-            // Prefer SDNN if valid, fallback to RMSSD
+            // SDNN preferred when valid, with RMSSD used as fallback
             let var_val = fv.cardiac.sdnn_ms.or(fv.cardiac.rmssd_ms);
             let var_stats = if fv.cardiac.sdnn_ms.is_some() {
                 &baseline.sdnn_ms_stats
@@ -70,9 +70,15 @@ impl AutonomicEstimator {
             None
         };
 
+        // Engineered cardiac recovery evidence index: (w_var * v - w_hr * h) / (w_var + w_hr)
         let recovery_evidence = match (variability_index, hr_index) {
-            (Some(v), Some(h)) => Some(((v - h) * 0.5).clamp(-1.0, 1.0)),
-            (Some(v), None) => Some(v),
+            (Some(v), Some(h)) => {
+                let w_v = self.config.recovery.variability_weight;
+                let w_h = self.config.recovery.heart_rate_weight;
+                let rec = (w_v * v - w_h * h) / (w_v + w_h);
+                Some(rec.clamp(-1.0, 1.0))
+            }
+            (Some(v), None) => Some(v.clamp(-1.0, 1.0)),
             (None, Some(h)) => Some((-h).clamp(-1.0, 1.0)),
             (None, None) => None,
         };
@@ -151,15 +157,37 @@ impl AutonomicEstimator {
             None
         };
 
+        let amplitude_index = if rsp_valid {
+            AutonomicBaseline::normalize_feature(
+                fv.respiration.mean_amplitude,
+                &baseline.rsp_amplitude_stats,
+                &self.config.normalization,
+                FeatureDirection::Positive,
+            )
+        } else {
+            None
+        };
+
+        let regularity_index = if rsp_valid {
+            AutonomicBaseline::normalize_feature(
+                fv.respiration.rate_std_bpm,
+                &baseline.rsp_std_stats,
+                &self.config.normalization,
+                FeatureDirection::Negative,
+            )
+        } else {
+            None
+        };
+
         let respiratory = RespiratoryState {
             rate_index,
-            amplitude_index: None,
-            regularity_index: None,
+            amplitude_index,
+            regularity_index,
             cycle_count: fv.respiration.cycle_count,
         };
 
         // 4. Coupling State Evidence
-        // Per Buron & Menuet (2026) and Gevonden et al. (2025): RespHRV requires valid respiration context.
+        // Per Buron & Menuet (2026) and Gevonden et al. (2025): RespHRV strictly requires valid direct respiration context.
         let resphr_valid = if self.config.quality.require_respiration_for_resphrv {
             rsp_valid && fv.respiration.mean_rate_bpm.is_some()
         } else {
@@ -249,7 +277,7 @@ impl AutonomicEstimator {
         };
 
         // 7. Multi-tiered State Confidence
-        let confidence = StateConfidence::compute(fv);
+        let confidence = StateConfidence::compute(fv, &self.config.quality);
 
         Ok(AutonomicState {
             timestamp: fv.window.start_time_sec,
@@ -264,7 +292,7 @@ impl AutonomicEstimator {
         })
     }
 
-    /// Estimate a state trajectory series across sequential feature windows, applying optional EMA smoothing.
+    /// Estimate a state trajectory series across sequential feature windows, performing temporal consistency validation and preserving raw states.
     pub fn estimate_series(
         &self,
         feature_series: &[MultimodalFeatureVector],
@@ -274,27 +302,63 @@ impl AutonomicEstimator {
         if feature_series.is_empty() {
             return Ok(AutonomicStateSeries {
                 states: Vec::new(),
+                smoothed_states: None,
                 window_duration_sec: 0.0,
                 step_sec: 0.0,
             });
         }
 
+        // Validate temporal metadata structure across entire series
         let window_duration_sec = feature_series[0].window.duration_sec;
-        let step_sec = if feature_series.len() > 1 {
-            feature_series[1].window.start_time_sec - feature_series[0].window.start_time_sec
+        if !window_duration_sec.is_finite() || window_duration_sec <= 0.0 {
+            return Err(SignalError::InvalidWindowSize(0));
+        }
+
+        let mut prev_t = feature_series[0].window.start_time_sec;
+        if !prev_t.is_finite() {
+            return Err(SignalError::NonFiniteInput);
+        }
+
+        let expected_step = if feature_series.len() > 1 {
+            let s = feature_series[1].window.start_time_sec - prev_t;
+            if !s.is_finite() || s <= 0.0 {
+                return Err(SignalError::InvalidWindowSize(0));
+            }
+            s
         } else {
             window_duration_sec
         };
 
+        for fv in feature_series.iter().skip(1) {
+            let t = fv.window.start_time_sec;
+            let d = fv.window.duration_sec;
+
+            if !t.is_finite() || !d.is_finite() || d <= 0.0 {
+                return Err(SignalError::NonFiniteInput);
+            }
+            if t <= prev_t {
+                return Err(SignalError::InvalidWindowSize(0));
+            }
+            let step = t - prev_t;
+            if (step - expected_step).abs() > 1e-4 {
+                return Err(SignalError::InvalidWindowSize(0));
+            }
+            if (d - window_duration_sec).abs() > 1e-4 {
+                return Err(SignalError::InvalidWindowSize(0));
+            }
+            prev_t = t;
+        }
+
+        // Estimate raw states across feature series
         let mut raw_states = Vec::with_capacity(feature_series.len());
         for fv in feature_series {
             raw_states.push(self.estimate(fv, baseline)?);
         }
 
-        // Apply optional EMA smoothing across state series trajectory
-        let states = if let Some(ref smooth_cfg) = self.config.smoothing {
+        // Compute smoothed states separately if EMA smoothing is configured
+        let smoothed_states = if let Some(ref smooth_cfg) = self.config.smoothing {
             let alpha = smooth_cfg.alpha;
-            let mut smoothed = raw_states;
+            let mut smoothed = raw_states.clone();
 
             let mut prev_act: Option<f64> = None;
             let mut prev_reg: Option<f64> = None;
@@ -318,15 +382,16 @@ impl AutonomicEstimator {
                     prev_reg = Some(s);
                 }
             }
-            smoothed
+            Some(smoothed)
         } else {
-            raw_states
+            None
         };
 
         Ok(AutonomicStateSeries {
-            states,
+            states: raw_states,
+            smoothed_states,
             window_duration_sec,
-            step_sec,
+            step_sec: expected_step,
         })
     }
 }

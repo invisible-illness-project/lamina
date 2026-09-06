@@ -29,6 +29,8 @@ pub struct NormalizationConfig {
     pub min_baseline_samples: usize,
     /// Hyperbolic tangent scaling parameter $s > 0$ for bounded transform $\tanh(z / s)$
     pub bounded_scale: f64,
+    /// Numerical scale floor threshold to detect unusable baseline scale ($\sigma \le \text{min\_scale}$)
+    pub min_scale: f64,
     /// Consistency constant multiplier for MAD (default $c = 1.4826$ for normal equivalence)
     pub mad_multiplier: f64,
     /// Variance regularization threshold $\epsilon > 0$ to prevent division by zero
@@ -41,6 +43,7 @@ impl Default for NormalizationConfig {
             method: NormalizationMethod::ZScore,
             min_baseline_samples: 3,
             bounded_scale: 2.0,
+            min_scale: 1e-6,
             mad_multiplier: 1.4826,
             epsilon: 1e-6,
         }
@@ -54,6 +57,9 @@ impl NormalizationConfig {
             return Err(SignalError::InvalidWindowSize(0));
         }
         if !self.bounded_scale.is_finite() || self.bounded_scale <= 0.0 {
+            return Err(SignalError::NonFiniteInput);
+        }
+        if !self.min_scale.is_finite() || self.min_scale <= 0.0 {
             return Err(SignalError::NonFiniteInput);
         }
         if !self.mad_multiplier.is_finite() || self.mad_multiplier <= 0.0 {
@@ -111,6 +117,73 @@ impl Default for RegulationWeights {
     }
 }
 
+/// Configuration parameters for engineered cardiac recovery evidence index.
+#[derive(Debug, Clone, PartialEq)]
+pub struct RecoveryConfig {
+    /// Weight for normalized cardiac variability index
+    pub variability_weight: f64,
+    /// Weight for normalized heart rate index
+    pub heart_rate_weight: f64,
+}
+
+impl Default for RecoveryConfig {
+    fn default() -> Self {
+        Self {
+            variability_weight: 1.0,
+            heart_rate_weight: 1.0,
+        }
+    }
+}
+
+impl RecoveryConfig {
+    /// Validate recovery evidence configuration parameters.
+    pub fn validate(&self) -> Result<()> {
+        if !self.variability_weight.is_finite() || self.variability_weight < 0.0 {
+            return Err(SignalError::NonFiniteInput);
+        }
+        if !self.heart_rate_weight.is_finite() || self.heart_rate_weight < 0.0 {
+            return Err(SignalError::NonFiniteInput);
+        }
+        if self.variability_weight + self.heart_rate_weight <= 0.0 {
+            return Err(SignalError::NonFiniteInput);
+        }
+        Ok(())
+    }
+}
+
+/// Configurable weight and threshold parameters for state evidence confidence.
+#[derive(Debug, Clone, PartialEq)]
+pub struct ConfidenceWeights {
+    /// Minimum required beat count for full cardiac confidence scaling
+    pub min_beats: usize,
+    /// Minimum required breath cycle count for full respiration confidence scaling
+    pub min_cycles: usize,
+    /// Penalty scaling factor for failed quality flags ($0.0 < \text{factor} \le 1.0$)
+    pub quality_factor: f64,
+    /// Weight for cardiac confidence in overall confidence mean
+    pub cardiac_weight: f64,
+    /// Weight for electrodermal confidence in overall confidence mean
+    pub eda_weight: f64,
+    /// Weight for respiration confidence in overall confidence mean
+    pub rsp_weight: f64,
+    /// Weight for coupling confidence in overall confidence mean
+    pub coupling_weight: f64,
+}
+
+impl Default for ConfidenceWeights {
+    fn default() -> Self {
+        Self {
+            min_beats: 10,
+            min_cycles: 4,
+            quality_factor: 0.5,
+            cardiac_weight: 1.0,
+            eda_weight: 1.0,
+            rsp_weight: 1.0,
+            coupling_weight: 1.0,
+        }
+    }
+}
+
 /// Quality gating configuration for feature inclusion.
 #[derive(Debug, Clone, PartialEq)]
 pub struct QualityConfig {
@@ -120,6 +193,8 @@ pub struct QualityConfig {
     pub require_cardiac_validity: bool,
     /// Require valid direct respiration signal for RespHRV inclusion
     pub require_respiration_for_resphrv: bool,
+    /// Configurable confidence weighting and threshold parameters
+    pub confidence: ConfidenceWeights,
 }
 
 impl Default for QualityConfig {
@@ -128,6 +203,7 @@ impl Default for QualityConfig {
             min_coverage: 0.70,
             require_cardiac_validity: true,
             require_respiration_for_resphrv: true,
+            confidence: ConfidenceWeights::default(),
         }
     }
 }
@@ -164,6 +240,8 @@ pub struct AutonomicEstimatorConfig {
     pub activation: ActivationWeights,
     /// Regulation index weights
     pub regulation: RegulationWeights,
+    /// Cardiac recovery evidence index weights
+    pub recovery: RecoveryConfig,
     /// Quality gating rules
     pub quality: QualityConfig,
     /// Optional temporal smoothing configuration
@@ -174,6 +252,7 @@ impl AutonomicEstimatorConfig {
     /// Validate all nested estimator configurations.
     pub fn validate(&self) -> Result<()> {
         self.normalization.validate()?;
+        self.recovery.validate()?;
         if let Some(ref s) = self.smoothing {
             s.validate()?;
         }

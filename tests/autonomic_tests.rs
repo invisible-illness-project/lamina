@@ -1,6 +1,6 @@
 use lamina::autonomic::{
-    AutonomicBaseline, AutonomicEstimator, AutonomicEstimatorConfig, FeatureDirection,
-    NormalizationConfig, SmoothingConfig,
+    AutonomicBaseline, AutonomicEstimator, AutonomicEstimatorConfig, BaselineFeatureStats,
+    FeatureDirection, NormalizationConfig, SmoothingConfig,
 };
 use lamina::error::SignalError;
 use lamina::features::{
@@ -380,8 +380,13 @@ fn test_trajectory_series_and_ema_smoothing() {
         .estimate_series(&step_series, &baseline)
         .unwrap();
 
+    // Raw states remain unmutated in trajectory_smooth.states
+    assert_eq!(trajectory_smooth.states, trajectory_raw.states);
+    assert!(trajectory_smooth.smoothed_states.is_some());
+
     // Smoothed transition at step 5 is gradual compared to raw
-    let smooth_act_5 = trajectory_smooth.states[5].activation_score.unwrap();
+    let smoothed_vec = trajectory_smooth.smoothed_states.as_ref().unwrap();
+    let smooth_act_5 = smoothed_vec[5].activation_score.unwrap();
     assert!(smooth_act_5 < raw_act_5);
     assert!(smooth_act_5 > raw_act_4);
 }
@@ -427,4 +432,383 @@ fn test_determinism_and_finite_output_invariants() {
         assert!(conf.is_finite());
         assert!((0.0..=1.0).contains(&conf));
     }
+}
+
+// ============================================================================
+// Group G — Task 8.1 Targeted Integrity Tests
+// ============================================================================
+
+#[test]
+fn test_zero_variance_exact_baseline_returns_zero() {
+    let config = NormalizationConfig {
+        min_scale: 1e-6,
+        ..NormalizationConfig::default()
+    };
+    let stats = BaselineFeatureStats {
+        mean: Some(70.0),
+        std: Some(0.0),
+        median: Some(70.0),
+        mad: Some(0.0),
+        sample_count: 10,
+        is_valid: true,
+    };
+    let result = AutonomicBaseline::normalize_feature(
+        Some(70.0),
+        &stats,
+        &config,
+        FeatureDirection::Positive,
+    );
+    assert_eq!(result, Some(0.0));
+}
+
+#[test]
+fn test_zero_variance_different_value_returns_none() {
+    let config = NormalizationConfig {
+        min_scale: 1e-6,
+        ..NormalizationConfig::default()
+    };
+    let stats = BaselineFeatureStats {
+        mean: Some(70.0),
+        std: Some(0.0),
+        median: Some(70.0),
+        mad: Some(0.0),
+        sample_count: 10,
+        is_valid: true,
+    };
+    let result = AutonomicBaseline::normalize_feature(
+        Some(75.0),
+        &stats,
+        &config,
+        FeatureDirection::Positive,
+    );
+    assert_eq!(result, None);
+}
+
+#[test]
+fn test_invalid_min_scale_rejected() {
+    let config_zero = NormalizationConfig {
+        min_scale: 0.0,
+        ..NormalizationConfig::default()
+    };
+    assert!(config_zero.validate().is_err());
+
+    let config_neg = NormalizationConfig {
+        min_scale: -1e-6,
+        ..NormalizationConfig::default()
+    };
+    assert!(config_neg.validate().is_err());
+
+    let config_nan = NormalizationConfig {
+        min_scale: f64::NAN,
+        ..NormalizationConfig::default()
+    };
+    assert!(config_nan.validate().is_err());
+}
+
+#[test]
+fn test_recovery_weighted_equation() {
+    let mut config = AutonomicEstimatorConfig::default();
+    config.recovery.variability_weight = 2.0;
+    config.recovery.heart_rate_weight = 1.0;
+    let estimator = AutonomicEstimator::new(config);
+
+    let series = create_mock_baseline_series(10);
+    let baseline = AutonomicBaseline::fit(&series, &estimator.config.normalization).unwrap();
+
+    let fv = create_mock_feature_vector(
+        0.0,
+        Some(70.0),
+        Some(40.0),
+        Some(2.0),
+        Some(0.5),
+        Some(4.0),
+        Some(15.0),
+        Some(5.0),
+    );
+
+    let state = estimator.estimate(&fv, &baseline).unwrap();
+    assert!(state.cardiac.recovery_evidence.is_some());
+}
+
+#[test]
+fn test_recovery_directionality() {
+    let series = create_mock_baseline_series(10);
+    let config = AutonomicEstimatorConfig::default();
+    let baseline = AutonomicBaseline::fit(&series, &config.normalization).unwrap();
+    let estimator = AutonomicEstimator::new(config);
+
+    let fv_recovered = create_mock_feature_vector(
+        0.0,
+        Some(60.0),
+        Some(80.0),
+        Some(2.0),
+        Some(0.5),
+        Some(4.0),
+        Some(15.0),
+        Some(5.0),
+    );
+    let state_rec = estimator.estimate(&fv_recovered, &baseline).unwrap();
+
+    let fv_stressed = create_mock_feature_vector(
+        0.0,
+        Some(100.0),
+        Some(20.0),
+        Some(2.0),
+        Some(0.5),
+        Some(4.0),
+        Some(15.0),
+        Some(5.0),
+    );
+    let state_str = estimator.estimate(&fv_stressed, &baseline).unwrap();
+
+    assert!(
+        state_rec.cardiac.recovery_evidence.unwrap() > state_str.cardiac.recovery_evidence.unwrap(),
+        "Higher variability combined with lower HR must produce higher recovery evidence"
+    );
+}
+
+#[test]
+fn test_resphrv_missing_respiration_is_unavailable() {
+    let series = create_mock_baseline_series(10);
+    let config = AutonomicEstimatorConfig::default();
+    let baseline = AutonomicBaseline::fit(&series, &config.normalization).unwrap();
+    let estimator = AutonomicEstimator::new(config);
+
+    let fv_no_rsp = create_mock_feature_vector(
+        0.0,
+        Some(70.0),
+        Some(40.0),
+        Some(2.0),
+        Some(0.5),
+        Some(4.0),
+        None,
+        Some(5.0),
+    );
+
+    let state = estimator.estimate(&fv_no_rsp, &baseline).unwrap();
+    assert_eq!(state.coupling.resphr_coupling_index, None);
+}
+
+#[test]
+fn test_confidence_excludes_unavailable_resphrv() {
+    let series = create_mock_baseline_series(10);
+    let config = AutonomicEstimatorConfig::default();
+    let baseline = AutonomicBaseline::fit(&series, &config.normalization).unwrap();
+    let estimator = AutonomicEstimator::new(config);
+
+    let fv_full = create_mock_feature_vector(
+        0.0,
+        Some(70.0),
+        Some(40.0),
+        Some(2.0),
+        Some(0.5),
+        Some(4.0),
+        Some(15.0),
+        Some(5.0),
+    );
+    let state_full = estimator.estimate(&fv_full, &baseline).unwrap();
+
+    let fv_no_rsp = create_mock_feature_vector(
+        0.0,
+        Some(70.0),
+        Some(40.0),
+        Some(2.0),
+        Some(0.5),
+        Some(4.0),
+        None,
+        Some(5.0),
+    );
+    let state_no_rsp = estimator.estimate(&fv_no_rsp, &baseline).unwrap();
+
+    assert!(
+        state_no_rsp.confidence.coupling.unwrap() < state_full.confidence.coupling.unwrap(),
+        "Coupling confidence must decrease when RespHRV evidence is excluded"
+    );
+}
+
+#[test]
+fn test_respiratory_regularity_directionality() {
+    let series = create_mock_baseline_series(10);
+    let config = AutonomicEstimatorConfig::default();
+    let baseline = AutonomicBaseline::fit(&series, &config.normalization).unwrap();
+    let estimator = AutonomicEstimator::new(config);
+
+    let mut fv_regular = create_mock_feature_vector(
+        0.0,
+        Some(70.0),
+        Some(40.0),
+        Some(2.0),
+        Some(0.5),
+        Some(4.0),
+        Some(15.0),
+        Some(5.0),
+    );
+    fv_regular.respiration.rate_std_bpm = Some(0.1);
+
+    let mut fv_irregular = fv_regular.clone();
+    fv_irregular.respiration.rate_std_bpm = Some(3.0);
+
+    let state_reg = estimator.estimate(&fv_regular, &baseline).unwrap();
+    let state_irreg = estimator.estimate(&fv_irregular, &baseline).unwrap();
+
+    assert!(
+        state_reg.respiratory.regularity_index.unwrap()
+            > state_irreg.respiratory.regularity_index.unwrap(),
+        "Lower rate_std_bpm must yield higher regularity_index"
+    );
+}
+
+#[test]
+fn test_population_standard_deviation_hand_calculated() {
+    let config = NormalizationConfig::default();
+    let samples = vec![10.0, 20.0, 30.0];
+    let stats = BaselineFeatureStats::from_samples(&samples, &config);
+
+    assert_eq!(stats.mean, Some(20.0));
+    let expected_pop_std = (200.0f64 / 3.0f64).sqrt();
+    let actual_std = stats.std.unwrap();
+    assert!(
+        (actual_std - expected_pop_std).abs() < 1e-10,
+        "Baseline stats must use population SD (N=3), got {}, expected {}",
+        actual_std,
+        expected_pop_std
+    );
+    assert_ne!(actual_std, 10.0, "Must NOT use sample SD (N-1=2)");
+}
+
+#[test]
+fn test_temporal_validation_test_suite() {
+    let series = create_mock_baseline_series(10);
+    let config = AutonomicEstimatorConfig::default();
+    let baseline = AutonomicBaseline::fit(&series, &config.normalization).unwrap();
+    let estimator = AutonomicEstimator::new(config);
+
+    let mut bad_series = vec![
+        create_mock_feature_vector(
+            0.0,
+            Some(70.0),
+            Some(40.0),
+            Some(2.0),
+            Some(0.5),
+            Some(4.0),
+            Some(15.0),
+            Some(5.0),
+        ),
+        create_mock_feature_vector(
+            60.0,
+            Some(70.0),
+            Some(40.0),
+            Some(2.0),
+            Some(0.5),
+            Some(4.0),
+            Some(15.0),
+            Some(5.0),
+        ),
+        create_mock_feature_vector(
+            30.0,
+            Some(70.0),
+            Some(40.0),
+            Some(2.0),
+            Some(0.5),
+            Some(4.0),
+            Some(15.0),
+            Some(5.0),
+        ),
+    ];
+    assert!(estimator.estimate_series(&bad_series, &baseline).is_err());
+
+    bad_series[2] = create_mock_feature_vector(
+        f64::NAN,
+        Some(70.0),
+        Some(40.0),
+        Some(2.0),
+        Some(0.5),
+        Some(4.0),
+        Some(15.0),
+        Some(5.0),
+    );
+    assert!(estimator.estimate_series(&bad_series, &baseline).is_err());
+
+    let inconsistent_series = vec![
+        create_mock_feature_vector(
+            0.0,
+            Some(70.0),
+            Some(40.0),
+            Some(2.0),
+            Some(0.5),
+            Some(4.0),
+            Some(15.0),
+            Some(5.0),
+        ),
+        create_mock_feature_vector(
+            30.0,
+            Some(70.0),
+            Some(40.0),
+            Some(2.0),
+            Some(0.5),
+            Some(4.0),
+            Some(15.0),
+            Some(5.0),
+        ),
+        create_mock_feature_vector(
+            90.0,
+            Some(70.0),
+            Some(40.0),
+            Some(2.0),
+            Some(0.5),
+            Some(4.0),
+            Some(15.0),
+            Some(5.0),
+        ),
+    ];
+    assert!(
+        estimator
+            .estimate_series(&inconsistent_series, &baseline)
+            .is_err()
+    );
+}
+
+#[test]
+fn test_separate_raw_vs_smoothed_trajectory_immutability() {
+    let baseline_series = create_mock_baseline_series(10);
+    let config = AutonomicEstimatorConfig {
+        smoothing: Some(SmoothingConfig { alpha: 0.3 }),
+        ..AutonomicEstimatorConfig::default()
+    };
+    let baseline = AutonomicBaseline::fit(&baseline_series, &config.normalization).unwrap();
+    let estimator = AutonomicEstimator::new(config);
+
+    let step_series = vec![
+        create_mock_feature_vector(
+            0.0,
+            Some(70.0),
+            Some(40.0),
+            Some(2.0),
+            Some(0.5),
+            Some(4.0),
+            Some(15.0),
+            Some(5.0),
+        ),
+        create_mock_feature_vector(
+            30.0,
+            Some(110.0),
+            Some(40.0),
+            Some(5.0),
+            Some(2.0),
+            Some(10.0),
+            Some(15.0),
+            Some(5.0),
+        ),
+    ];
+
+    let series_res = estimator.estimate_series(&step_series, &baseline).unwrap();
+
+    assert_eq!(series_res.states.len(), 2);
+    let smoothed = series_res.smoothed_states.unwrap();
+    assert_eq!(smoothed.len(), 2);
+
+    assert_ne!(
+        series_res.states[1].activation_score, smoothed[1].activation_score,
+        "Smoothed state must differ from raw state after step change"
+    );
 }

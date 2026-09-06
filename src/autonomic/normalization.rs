@@ -5,9 +5,9 @@ use crate::features::MultimodalFeatureVector;
 /// Statistical summary for a single physiological feature computed over baseline windows.
 #[derive(Debug, Clone, PartialEq, Default)]
 pub struct BaselineFeatureStats {
-    /// Sample mean ($\mu$)
+    /// Population mean ($\mu$)
     pub mean: Option<f64>,
-    /// Sample standard deviation ($\sigma$)
+    /// Population standard deviation ($\sigma = \sqrt{\frac{1}{N}\sum (x_i - \mu)^2}$)
     pub std: Option<f64>,
     /// Sample median
     pub median: Option<f64>,
@@ -21,6 +21,10 @@ pub struct BaselineFeatureStats {
 
 impl BaselineFeatureStats {
     /// Compute baseline feature statistics from a slice of observed feature values.
+    ///
+    /// # Population Standard Deviation Semantics
+    /// Calculates the **population standard deviation** ($\sigma = \sqrt{\frac{1}{N}\sum (x_i - \mu)^2}$),
+    /// treating baseline feature windows as the empirical reference population.
     pub fn from_samples(samples: &[f64], config: &NormalizationConfig) -> Self {
         let valid_samples: Vec<f64> = samples.iter().copied().filter(|v| v.is_finite()).collect();
         let n = valid_samples.len();
@@ -33,7 +37,7 @@ impl BaselineFeatureStats {
             };
         }
 
-        // Mean & Std
+        // Population Mean & Population Standard Deviation (\sigma)
         let mean = valid_samples.iter().sum::<f64>() / n as f64;
         let variance = valid_samples
             .iter()
@@ -71,6 +75,10 @@ impl BaselineFeatureStats {
 }
 
 /// Baseline physiological model fitted over reference feature vectors.
+///
+/// # Baseline Eligibility Assumption
+/// Baseline fitting assumes that the caller-supplied reference feature vectors represent the intended
+/// reference physiological context. Lamina does not independently classify or confirm whether a window is resting.
 #[derive(Debug, Clone, PartialEq, Default)]
 pub struct AutonomicBaseline {
     /// Baseline Heart Rate statistics (BPM)
@@ -87,6 +95,10 @@ pub struct AutonomicBaseline {
     pub scr_rate_stats: BaselineFeatureStats,
     /// Baseline Respiratory Rate statistics (BPM)
     pub rsp_rate_stats: BaselineFeatureStats,
+    /// Baseline Breath Cycle Height Amplitude statistics
+    pub rsp_amplitude_stats: BaselineFeatureStats,
+    /// Baseline Respiratory Rate Standard Deviation statistics (BPM)
+    pub rsp_std_stats: BaselineFeatureStats,
     /// Baseline RespHRV / RSA amplitude statistics (BPM)
     pub rsa_bpm_stats: BaselineFeatureStats,
     /// Baseline Cardiorespiratory Phase Concentration statistics ($R \in [0, 1]$)
@@ -142,6 +154,14 @@ impl AutonomicBaseline {
                 &extract_values(|fv| fv.respiration.mean_rate_bpm),
                 config,
             ),
+            rsp_amplitude_stats: BaselineFeatureStats::from_samples(
+                &extract_values(|fv| fv.respiration.mean_amplitude),
+                config,
+            ),
+            rsp_std_stats: BaselineFeatureStats::from_samples(
+                &extract_values(|fv| fv.respiration.rate_std_bpm),
+                config,
+            ),
             rsa_bpm_stats: BaselineFeatureStats::from_samples(
                 &extract_values(|fv| fv.coupling.rsa_amplitude_bpm),
                 config,
@@ -158,6 +178,11 @@ impl AutonomicBaseline {
     }
 
     /// Normalize an observed feature value against baseline statistics, applying directional orientation and hyperbolic tangent clipping into $[-1.0, 1.0]$.
+    ///
+    /// # Zero-Variance Policy
+    /// If baseline scale ($\sigma$ or $c \cdot \text{MAD}$) $\le \text{min\_scale}$:
+    /// - If $|x - \text{location}| \le \text{min\_scale}$, returns `Some(0.0)` (exact baseline location match).
+    /// - If $|x - \text{location}| > \text{min\_scale}$, returns `None` (z-score unavailable when scale lacks variation).
     pub fn normalize_feature(
         value: Option<f64>,
         stats: &BaselineFeatureStats,
@@ -169,19 +194,22 @@ impl AutonomicBaseline {
             return None;
         }
 
-        let z = match config.method {
-            NormalizationMethod::ZScore => {
-                let mean = stats.mean?;
-                let std = stats.std?;
-                (x - mean) / (std + config.epsilon)
-            }
+        let (location, scale) = match config.method {
+            NormalizationMethod::ZScore => (stats.mean?, stats.std?),
             NormalizationMethod::RobustMedianMad => {
-                let median = stats.median?;
-                let mad = stats.mad?;
-                let denom = config.mad_multiplier * mad + config.epsilon;
-                (x - median) / denom
+                (stats.median?, config.mad_multiplier * stats.mad?)
             }
         };
+
+        if scale <= config.min_scale {
+            if (x - location).abs() <= config.min_scale {
+                return Some(0.0);
+            } else {
+                return None;
+            }
+        }
+
+        let z = (x - location) / scale;
 
         let z_directed = match direction {
             FeatureDirection::Positive => z,
