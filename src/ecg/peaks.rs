@@ -347,11 +347,12 @@ pub fn ecg_findpeaks_config(
         let end = (int_idx + search_radius + 1).min(n);
 
         let mut max_idx = start;
-        let mut max_val = filtered_ecg[start];
+        let mut max_abs = filtered_ecg[start].abs();
 
         for i in start..end {
-            if filtered_ecg[i] > max_val {
-                max_val = filtered_ecg[i];
+            let abs_val = filtered_ecg[i].abs();
+            if abs_val > max_abs {
+                max_abs = abs_val;
                 max_idx = i;
             }
         }

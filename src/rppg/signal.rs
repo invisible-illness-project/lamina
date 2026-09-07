@@ -555,6 +555,12 @@ impl RppgSignal {
     }
 }
 
+/// Internal heuristic for [`SignalPolarity::AutoDetect`].
+///
+/// Evaluates sample skewness $\gamma_1 = E[((X - \mu)/\sigma)^3]$. If $\gamma_1 > 0.3$, returns `true` to invert.
+///
+/// Note: Skewness alone cannot unambiguously determine physical optical polarity for all BVP waveforms.
+/// Explicit [`SignalPolarity::Inverted`] should be preferred for production absorption-domain pipelines.
 fn compute_should_flip(wf: &[f64]) -> bool {
     let valid_samples: Vec<f64> = wf.iter().copied().filter(|v| v.is_finite()).collect();
     if valid_samples.len() > 3 {

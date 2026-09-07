@@ -424,7 +424,13 @@ fn test_ecg_6case_regression_matrix() {
     assert_eq!(fn4, 0, "Case 4: False negative count must be 0");
 
     // Case 5: Paced ECG with sharp pacing spikes
-    let sig5 = sig1.clone();
+    let mut sig5 = sig1.clone();
+    for &exp_p in &exp1 {
+        let spk_pos = exp_p.saturating_sub(10);
+        if spk_pos > 0 && spk_pos < n {
+            sig5[spk_pos] = 10.0;
+        }
+    }
     let peaks5 = ecg_findpeaks(&sig5, fs).expect("Case 5 failed");
     let (tp5, fp5, fn5) = check_alignment(&peaks5, &exp1);
     assert_eq!(tp5, 8, "Case 5: Paced ECG should detect all 8 beats");
@@ -452,4 +458,87 @@ fn test_ecg_6case_regression_matrix() {
         "Case 6: Bounded noise immunity (FP <= 1 during 50Hz EMG burst)"
     );
     assert_eq!(fn6, 0, "Case 6: Zero false negatives during noise burst");
+}
+
+#[test]
+fn test_inverted_ecg_fine_alignment() {
+    let fs = 250.0;
+    let duration = 10.0;
+    let n = (fs * duration) as usize;
+
+    let make_qrs = |amp: f64, width_sec: f64| -> Vec<f64> {
+        let len = (width_sec * fs) as usize;
+        let mut pulse = Vec::with_capacity(len);
+        for i in 0..len {
+            let t = (i as f64 - len as f64 / 2.0) / (len as f64 / 4.0);
+            pulse.push(amp * (-0.5 * t * t).exp());
+        }
+        pulse
+    };
+
+    let qrs_len = (0.08 * fs) as usize;
+
+    let mut exp_peaks = Vec::new();
+
+    // 1. Positive Polarity ECG Fixture
+    let mut sig_pos = Array1::<f64>::zeros(n);
+    for k in 1..9 {
+        let pos = (k as f64 * 1.0 * fs) as usize;
+        let peak_center = pos + qrs_len / 2;
+        exp_peaks.push(peak_center);
+
+        // Positive QRS (+1.5 peak at peak_center)
+        let qrs = make_qrs(1.5, 0.08);
+        for (i, &v) in qrs.iter().enumerate() {
+            if pos + i < n {
+                sig_pos[pos + i] += v;
+            }
+        }
+        // Small positive T-wave (+0.3 peak at pos + 40)
+        let tw_pos = pos + 40;
+        for i in 0..30 {
+            if tw_pos + i < n {
+                sig_pos[tw_pos + i] += 0.3 * ((PI * i as f64 / 30.0).sin());
+            }
+        }
+    }
+
+    let cfg = lamina::ecg::EcgPeakDetectionConfig::default();
+    let peaks_pos =
+        ecg_findpeaks_config(&sig_pos, fs, &cfg).expect("Positive ECG peak detection failed");
+    assert_eq!(
+        peaks_pos.len(),
+        exp_peaks.len(),
+        "Must detect all positive QRS beats"
+    );
+    for (&det, &exp) in peaks_pos.iter().zip(exp_peaks.iter()) {
+        let diff = (det as isize - exp as isize).abs();
+        assert!(
+            diff <= 5,
+            "Positive QRS fine-alignment index {} must be within 5 samples of expected {}",
+            det,
+            exp
+        );
+    }
+
+    // 2. Inverted Polarity ECG Fixture (Inverted normal sinus ECG: sig_neg = -sig_pos)
+    let sig_neg = sig_pos.mapv(|x| -x);
+
+    let peaks_neg =
+        ecg_findpeaks_config(&sig_neg, fs, &cfg).expect("Inverted ECG peak detection failed");
+    assert_eq!(
+        peaks_neg.len(),
+        exp_peaks.len(),
+        "Must detect all inverted QRS beats"
+    );
+    for (&det, &exp) in peaks_neg.iter().zip(exp_peaks.iter()) {
+        let diff = (det as isize - exp as isize).abs();
+        assert!(
+            diff <= 5,
+            "Inverted QRS fine-alignment index {} must align to QRS deflection. Expected close to {}, got diff {}",
+            det,
+            exp,
+            diff
+        );
+    }
 }

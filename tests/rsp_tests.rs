@@ -407,3 +407,54 @@ fn test_rsp_dc_offset_invariance() {
         );
     }
 }
+
+#[test]
+fn test_rsp_polarity_contract() {
+    let fs = 100.0;
+    let duration = 20.0;
+    let n = (fs * duration) as usize;
+    let t = Array1::linspace(0.0, duration, n);
+
+    // Standard positive-expansion signal (0.2 Hz sinusoidal)
+    let pos_expansion_raw = t.mapv(|tv| (2.0 * PI * 0.2 * tv).sin());
+    let cfg = RspProcessingConfig::default().with_precleaned(true);
+
+    // 1. Standard positive expansion produces expected cycles
+    let cycles_pos = rsp_cycles_config(&pos_expansion_raw, fs, &cfg)
+        .expect("Standard positive expansion extraction failed");
+    assert!(
+        !cycles_pos.is_empty(),
+        "Standard positive-expansion signal must yield valid cycles"
+    );
+
+    // 2. Inverted respiration (un-normalized) where peaks are downward deflections
+    let inverted_raw = -&pos_expansion_raw;
+    let cycles_inv_raw = rsp_cycles_config(&inverted_raw, fs, &cfg)
+        .expect("Inverted extraction call should complete");
+
+    // Because candidate peaks require x[i] > mean_val, un-normalized inverted signal peaks
+    // are phase-inverted relative to true inspiration
+    if !cycles_inv_raw.is_empty() {
+        assert_ne!(
+            cycles_pos[0].inspiration_index, cycles_inv_raw[0].inspiration_index,
+            "Un-normalized inverted signal must not match standard positive inspiratory peak index"
+        );
+    }
+
+    // 3. Explicit polarity normalization (negation) prior to cycle extraction restores expected detection
+    let normalized_sig = -&inverted_raw;
+    let cycles_normalized = rsp_cycles_config(&normalized_sig, fs, &cfg)
+        .expect("Normalized inverted signal extraction failed");
+
+    assert_eq!(
+        cycles_pos.len(),
+        cycles_normalized.len(),
+        "Polarity-normalized respiration signal must yield identical cycle count"
+    );
+    for (c_orig, c_norm) in cycles_pos.iter().zip(cycles_normalized.iter()) {
+        assert_eq!(
+            c_orig.inspiration_index, c_norm.inspiration_index,
+            "Inspiration peak index must match original under explicit polarity normalization"
+        );
+    }
+}

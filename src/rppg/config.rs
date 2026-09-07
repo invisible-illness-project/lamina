@@ -81,7 +81,15 @@ pub enum SignalPolarity {
     Normal,
     /// Inverted optical surrogate (negated waveform)
     Inverted,
-    /// Auto-detect polarity using skewness relative to Elgendi pulse expectations
+    /// Auto-detect polarity using skewness heuristic (`skew > 0.3`).
+    ///
+    /// # Operational Contract & Limitations
+    /// `AutoDetect` is an experimental heuristic fallback based on waveform skewness.
+    /// Skewness statistics alone cannot reliably distinguish raw optical absorption signals
+    /// from right-skewed positive-pulse BVP waveforms in all physical operating conditions.
+    /// For robust production processing under physical optical conventions (where systolic
+    /// blood volume expansion corresponds to light absorption increases / raw green channel drops),
+    /// explicit [`SignalPolarity::Inverted`] remains the recommended production default.
     AutoDetect,
 }
 

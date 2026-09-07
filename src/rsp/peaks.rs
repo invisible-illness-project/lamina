@@ -4,6 +4,14 @@ use crate::signal::peaks::{PeakDetectionConfig, signal_findpeaks_config};
 use ndarray::Array1;
 
 /// Configuration for Respiration (RSP) peak, cycle, and rate processing.
+///
+/// # Polarity & Signal Convention Contract
+/// - **Positive Expansion Convention**: Inspiratory expansion MUST be represented by positive
+///   excursions relative to the signal baseline ($x[i] > \bar{x}$).
+/// - **Inverted Signals**: Inverted sensor signals (e.g. chest contraction producing positive signals)
+///   MUST be polarity-normalized (negated) prior to cycle extraction.
+/// - **DC Offset Invariance**: Candidate peak height filtering uses `with_min_height(mean_val)`,
+///   evaluating excursions relative to the signal mean $\bar{x}$ rather than requiring zero-centered inputs.
 #[derive(Debug, Clone, PartialEq)]
 pub struct RspProcessingConfig {
     /// Bandpass lower cutoff frequency in Hz (default: 0.05 Hz).
@@ -146,6 +154,8 @@ pub struct RespirationCycle {
 ///   - `sampling_rate`: Sampling frequency $F_s$ in Hertz (Hz). Must be $> 0.0$.
 ///   - `config`: [`RspProcessingConfig`] parameters.
 /// - **Output**: `Vec<RespirationCycle>` containing validated breath cycles in chronological order.
+/// - **Polarity Contract**: Candidate inspiratory peaks are extracted above signal baseline ($x[i] > \bar{x}$).
+///   Inverted respiratory signals must be negated prior to invoking `rsp_cycles_config`.
 ///
 /// # Errors
 /// Returns [`SignalError`] if `signal` is empty, non-finite, if parameters are invalid, or if signal length is insufficient.

@@ -808,3 +808,77 @@ fn test_signal_polarity_and_bvp_waveform() {
     let arr = bvp_normal.to_ndarray();
     assert_eq!(arr.len(), 5);
 }
+
+#[test]
+fn test_rppg_polarity_contract_and_autodetect_boundaries() {
+    use lamina::rppg::{RppgAlgorithmId, RppgQualitySummary, RppgSignal, SignalPolarity};
+
+    let timestamps = vec![0.0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7];
+    let dummy_quality = RppgQualitySummary {
+        overall: 1.0,
+        valid_fraction: 1.0,
+        segments: Vec::new(),
+    };
+
+    // 1. Explicit Normal & Explicit Inverted (Deterministic Physical Contracts)
+    let raw_optical = vec![0.0, 0.1, -1.5, 0.2, 0.0, 0.1, -1.4, 0.2];
+    let rppg_abs = RppgSignal {
+        timestamps_sec: timestamps.clone(),
+        waveform: raw_optical.clone(),
+        sampling_rate_hz: 10.0,
+        quality: dummy_quality.clone(),
+        algorithm: RppgAlgorithmId::Chrom,
+    };
+
+    let bvp_norm = rppg_abs.to_bvp_waveform(SignalPolarity::Normal);
+    assert_eq!(
+        bvp_norm.waveform, raw_optical,
+        "Explicit Normal must preserve waveform exactly"
+    );
+
+    let bvp_inv = rppg_abs.to_bvp_waveform(SignalPolarity::Inverted);
+    let expected_inv: Vec<f64> = raw_optical.iter().map(|v| -v).collect();
+    assert_eq!(
+        bvp_inv.waveform, expected_inv,
+        "Explicit Inverted must negate waveform exactly"
+    );
+
+    // 2. Right-skewed positive pulse waveform
+    // Baseline = 0.0 with positive peaks = 5.0 (skew > 0.3)
+    let pos_pulse = vec![0.0, 0.0, 0.0, 5.0, 0.0, 0.0, 0.0, 5.0];
+    let rppg_pos = RppgSignal {
+        timestamps_sec: timestamps.clone(),
+        waveform: pos_pulse.clone(),
+        sampling_rate_hz: 10.0,
+        quality: dummy_quality.clone(),
+        algorithm: RppgAlgorithmId::Pos,
+    };
+
+    // Explicit Normal preserves positive pulse waveform
+    let bvp_pos_norm = rppg_pos.to_bvp_waveform(SignalPolarity::Normal);
+    assert_eq!(bvp_pos_norm.waveform, pos_pulse);
+
+    // AutoDetect evaluates skew > 0.3 and flips signal (documenting heuristic boundary)
+    let bvp_pos_auto = rppg_pos.to_bvp_waveform(SignalPolarity::AutoDetect);
+    let expected_pos_flipped: Vec<f64> = pos_pulse.iter().map(|v| -v).collect();
+    assert_eq!(
+        bvp_pos_auto.waveform, expected_pos_flipped,
+        "AutoDetect skewness heuristic flips positive pulse due to positive skewness"
+    );
+
+    // 3. Degenerate / near-zero variance input (std <= 1e-6)
+    let constant_wave = vec![1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0];
+    let rppg_const = RppgSignal {
+        timestamps_sec: timestamps.clone(),
+        waveform: constant_wave.clone(),
+        sampling_rate_hz: 10.0,
+        quality: dummy_quality,
+        algorithm: RppgAlgorithmId::GreenChannel,
+    };
+
+    let bvp_const_auto = rppg_const.to_bvp_waveform(SignalPolarity::AutoDetect);
+    assert_eq!(
+        bvp_const_auto.waveform, constant_wave,
+        "Degenerate constant input must not be flipped by AutoDetect"
+    );
+}
