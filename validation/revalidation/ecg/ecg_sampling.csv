@@ -1,0 +1,9 @@
+fs_hz,morphology,n_truth,n_detected,tp,fp,fn,precision,recall,f1,timing_mae_ms,notes
+128.0,monophasic_gaussian,59,59,59,0,0,1.0,1.0,1.0,39.062,"timing MAE ~= QRS half-width ground-truth convention offset (40ms), constant across rates"
+250.0,monophasic_gaussian,59,59,59,0,0,1.0,1.0,1.0,40.0,"timing MAE ~= QRS half-width ground-truth convention offset (40ms), constant across rates"
+360.0,monophasic_gaussian,59,59,59,0,0,1.0,1.0,1.0,38.889,"timing MAE ~= QRS half-width ground-truth convention offset (40ms), constant across rates"
+500.0,monophasic_gaussian,59,59,59,0,0,1.0,1.0,1.0,40.0,"timing MAE ~= QRS half-width ground-truth convention offset (40ms), constant across rates"
+128.0,narrow_biphasic,59,121,58,63,1,0.4793,0.9831,0.6444,108.971,RATE-DEPENDENT DOUBLE-DETECTION of biphasic complexes (det/truth=2.05x)
+250.0,narrow_biphasic,59,91,59,32,0,0.6484,1.0,0.7867,118.441,RATE-DEPENDENT DOUBLE-DETECTION of biphasic complexes (det/truth=1.54x)
+360.0,narrow_biphasic,59,59,59,0,0,1.0,1.0,1.0,22.222,
+500.0,narrow_biphasic,59,59,59,0,0,1.0,1.0,1.0,22.0,
