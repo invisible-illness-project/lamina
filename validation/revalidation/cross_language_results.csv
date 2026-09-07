@@ -1,0 +1,56 @@
+leg,message_type,field_or_enum,test,result,detail
+rust->python,BvpWaveform,whole_message,byte-identical encoding (125B),pass,"rust hex == py hex exactly (see report)"
+rust->python,BvpWaveform,start_sec,f64 bit-exact 1700000000.123456,pass,bits equal after python decode
+rust->python,BvpWaveform,sampling_rate_hz,f64 bit-exact 59.94 (non-integer rPPG rate),pass,bits equal
+rust->python,BvpWaveform,pulse_samples,f64 bit-exact incl f64::MIN_POSITIVE and 1e300,pass,all 6 samples to_bits equal
+rust->python,BvpWaveform,polarity,enum NORMAL(1) survives,pass,decoded polarity=1
+rust->python,SensorDataContainer,payload oneof,bvp_waveform (tag 22) + Timestamp nanos=123456789,pass,WhichOneof=bvp_waveform
+rust->python,RppgSignal,pulse_samples,NaN sample preserved,pass,index2 is NaN after decode
+rust->python,RppgSignal,valid_segments+quality,nested segments=2 overall bit-exact 0.83,pass,
+rust->python,RppgSignal,polarity,enum INVERTED(2) survives,pass,decoded polarity=2
+rust->python,ContinuousSignalBatch,start_offset_sec,f64 bit-exact 1e-9,pass,
+rust->python,ContinuousSignalBatch,modality+unit+missing_mask+filter_applied,ECG(1)/mV(1)/mask [f f t f f]/BANDPASS(3),pass,
+python->rust,BvpWaveform,whole_message,byte-identical encoding (125B),pass,py hex == rust hex
+python->rust,BvpWaveform,start_sec+sampling_rate_hz,f64 bit-exact,pass,
+python->rust,BvpWaveform,pulse_samples,f64 bit-exact all 6 samples,pass,
+python->rust,SensorDataContainer,payload oneof,byte-identical (196B) AUTO_DETECT(3) preserved,pass,
+python->rust,RppgSignal,whole_message,byte-identical (289B) NaN preserved segments=2,pass,
+python->rust,ContinuousSignalBatch,whole_message,byte-identical (182B) offset/mask/filter/ts_nanos exact,pass,
+dart->rust,BvpWaveform,whole_message,byte-identical encoding (125B),pass,dart writeToBuffer == rust prost bytes
+dart->rust,SensorDataContainer,whole_message,byte-identical (196B),pass,
+dart->rust,RppgSignal,whole_message,byte-identical (289B),pass,
+dart->rust,ContinuousSignalBatch,whole_message,byte-identical (182B),pass,
+rust->dart,BvpWaveform,start_sec+sampling_rate_hz+pulse_samples,f64 bit-exact (incl min-normal 1e300),pass,dart ByteData bit compare
+rust->dart,BvpWaveform,polarity,enum NORMAL(1) survives,pass,
+rust->dart,RppgSignal,whole_message,NaN preserved segments=2 quality bit-exact polarity=2,pass,
+rust->dart,ContinuousSignalBatch,whole_message,offset bit-exact modality/unit/mask/filter/ts_nanos exact,pass,
+rust->dart,SensorDataContainer,payload oneof,whichPayload=bvpWaveform ts_nanos exact,pass,
+dart->python,BvpWaveform,whole_message,byte-identical transitively (dart bytes == rust bytes which python decodes bit-exact),pass,also direct py->dart decode fs_bits=true polarity=1
+python->dart,BvpWaveform,sampling_rate_hz+polarity,decode of python bytes bit-exact,pass,
+wire-robustness,BvpWaveform,polarity=7 (unknown enum),rust decode behavior,pass,"prost keeps raw i32=7; SignalPolarity::try_from -> UnknownEnumValue(7); no data loss"
+wire-robustness,BvpWaveform,polarity=7 (unknown enum),python decode behavior,pass,"value 7 readable (proto3 open enum); re-serializes as 2007"
+wire-robustness,BvpWaveform,polarity=7 (unknown enum),dart decode behavior,fail,"unknown value routed to unknownFields; typed getter returns default 0 (indistinguishable from UNSPECIFIED); bytes preserved on re-encode (2007)"
+wire-robustness,BvpWaveform,polarity=-1 (negative enum),rust/python decode,pass,"both preserve -1 as raw i32/int"
+wire-robustness,BvpWaveform,polarity=-1 (negative enum),dart decode behavior,fail,getter returns default 0; original -1 varint in unknownFields
+proto3-semantics,BvpWaveform,polarity=0 vs unset,rust+python zero-value ambiguity,pass,"unset and UNSPECIFIED encode identical bytes (110000000000003e40); inherent proto3 implicit presence"
+proto3-semantics,BvpWaveform,polarity=0 vs unset,dart explicit-zero serialization,pass,"dart writes 2000 when zero explicitly assigned (presence-tracked setters); decode-equivalent in all languages"
+proto3-semantics,CardiacFeatures,mean_hr_bpm (optional double),explicit presence set-zero distinguishable,pass,"HasField false unset / true set-zero in python+dart; rust Option<f64>; bytes 0900000000000000004048"
+schema-consistency,all messages,field numbers/types,proto vs prost-rust vs dart binding tag comparison,pass,all 217 fields match tag numbers across 3 bindings (prost oneof modeled as Payload enum tags 10-22)
+schema-consistency,SensorDataContainer,oneof tags 10-22,incl bvp_waveform=22 present in rust+python+dart,pass,
+schema-consistency,all 7 enums,value sets,SensorModality/PhysicalUnit/FilterKind/SignalPolarity/IntervalQualityKind/CorrectionPolicyKind/FeatureQualityIssue,pass,identical names+numbers in proto/rust/dart
+schema-consistency,all messages,floating-point width,no f32 anywhere; all double->f64 in rust/python/dart,pass,"proto has zero 'float' fields; no f32 in generated rust; ARCHITECTURE_REPORT 'Python float' row is doc imprecision only (python float is 64-bit)"
+proto-vs-lamina,SignalPolarity,variant sets,"proto {UNSPECIFIED,NORMAL,INVERTED,AUTO_DETECT} vs lamina {Normal,Inverted,AutoDetect}",pass,"1:1 semantic match (proto sensor-messages.proto:68-73; lamina src/rppg/config.rs:78-88); UNSPECIFIED is proto3 zero-value placeholder"
+proto-vs-lamina,IntervalQuality,variant sets,"proto 5 kinds vs lamina {NormalNN,EctopicRR,ArtifactRR,Missing}",pass,"1:1 semantic match (proto:76-82; lamina src/hrv/quality.rs:20-28)"
+proto-vs-lamina,CorrectionPolicy,PercentThreshold payload,proto CORRECTION_POLICY_PERCENT_THRESHOLD is bare enum; lamina PercentThreshold(f64) carries threshold,fail,"f64 threshold parameter is lost on transport (proto:85-92; lamina src/hrv/quality.rs:44) - P1"
+proto-vs-lamina,IntervalQualityKind+CorrectionPolicyKind,message usage,enums defined in proto but referenced by NO message field,fail,"dead schema: cannot actually transport interval quality/correction policy data (proto:76-92; grep of message fields shows zero usages) - P2"
+proto-vs-lamina,BeatQuality,proto counterpart,"lamina BeatQuality {Normal,Ectopic,Artifact,Unknown} has NO proto enum/message",fail,"field loss (lamina src/hrv/quality.rs:6-16) - P2"
+proto-vs-lamina,RppgAlgorithmId,proto counterpart,"lamina RppgSignal.algorithm: RppgAlgorithmId {GreenChannel,Chrom,Pos} absent from proto RppgSignal",fail,"field+enum loss (lamina src/rppg/signal.rs:292, config.rs:5-13; proto RppgSignal:444-452 has no algorithm) - P1"
+proto-vs-lamina,BvpWaveform,timestamps_sec,lamina has per-sample Vec<f64> timestamps; proto has start_sec+sampling_rate_hz only,fail,"non-uniform/gappy rPPG timestamps cannot round-trip (lamina src/rppg/signal.rs:264-271 vs proto:455-461) - P1"
+proto-vs-lamina,RppgSegment,timestamps_sec+quality,lamina segment has timestamps_sec Vec and RppgSegmentQuality; proto segment lacks both,fail,"(lamina src/rppg/signal.rs:212-224 vs proto:436-441) - P1"
+proto-vs-lamina,RppgSignal.polarity,semantic mismatch,proto RppgSignal.polarity (tag 7) has no counterpart in lamina RppgSignal struct,pass,"polarity in lamina is a conversion parameter not signal state; extra proto field is forward-compatible - P3"
+proto-vs-lamina,SignalPolarity,default mismatch,lamina Default=Normal vs proto3 absent decodes to UNSPECIFIED(0),pass,"verified lamina::rppg::SignalPolarity::default()=Normal at runtime; absent-field semantic differs - P3"
+documentation,ARCHITECTURE_REPORT.md,SensorDataContainer snippet,doc oneof omits bvp_waveform (22) added later,fail,"ARCHITECTURE_REPORT.md:92-106 lists only up to rppg_signal=21; proto:468-494 - P3 doc drift"
+documentation,ARCHITECTURE_REPORT.md,compat matrix,lists Python sampling_rate_hz as 'float' implying f32,pass,"imprecise wording; actual python binding uses 64-bit floats; no f32 anywhere - P3"
+repo-tests,sensor_messages,rust suite,cargo test (prost 0.13),pass,"4 passed 0 failed (roundtrip batch/events/features/autonomic)"
+repo-tests,sensor_messages,python suite,unittest protobuf 6.32.1,pass,3 tests OK
+repo-tests,sensor_messages,dart suite,dart test (protobuf 6.0.0 sdk 3.13.3),pass,All tests passed (3 cases)
