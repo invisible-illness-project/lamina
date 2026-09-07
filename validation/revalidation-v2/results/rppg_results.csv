@@ -1,0 +1,10 @@
+algorithm,requested_polarity,resolved_polarity,waveform_flipped,output_length,detected_bvp_peaks,mean_bvp_val,std_bvp_val
+green,normal,normal,False,299,12,-0.000295,0.009108
+green,inverted,inverted,True,299,12,0.000295,0.009108
+green,auto,normal,False,299,12,-0.000295,0.009108
+pos,normal,normal,False,299,12,-0.000721,0.022315
+pos,inverted,inverted,True,299,12,0.000721,0.022315
+pos,auto,normal,False,299,12,-0.000721,0.022315
+chrom,normal,normal,False,299,12,0.000629,0.01935
+chrom,inverted,inverted,True,299,12,-0.000629,0.01935
+chrom,auto,normal,False,299,12,0.000629,0.01935

@@ -1,0 +1,123 @@
+{
+  "dataset": "bidmc",
+  "records_processed": 12,
+  "mean_per_record_f1": 0.943736,
+  "global_f1": 0.957554,
+  "precision": 0.925947,
+  "recall": 0.991395,
+  "TP": 1613,
+  "FP": 129,
+  "FN": 14,
+  "gate_passed": false,
+  "gate_target_f1": 0.944,
+  "recordings": [
+    {
+      "recording_id": "bidmc01",
+      "TP": 165,
+      "FP": 4,
+      "FN": 0,
+      "precision": 0.976331,
+      "recall": 1.0,
+      "F1": 0.988024
+    },
+    {
+      "recording_id": "bidmc02",
+      "TP": 117,
+      "FP": 7,
+      "FN": 1,
+      "precision": 0.943548,
+      "recall": 0.991525,
+      "F1": 0.966942
+    },
+    {
+      "recording_id": "bidmc03",
+      "TP": 135,
+      "FP": 6,
+      "FN": 1,
+      "precision": 0.957447,
+      "recall": 0.992647,
+      "F1": 0.974729
+    },
+    {
+      "recording_id": "bidmc04",
+      "TP": 125,
+      "FP": 19,
+      "FN": 1,
+      "precision": 0.868056,
+      "recall": 0.992063,
+      "F1": 0.925926
+    },
+    {
+      "recording_id": "bidmc05",
+      "TP": 48,
+      "FP": 50,
+      "FN": 0,
+      "precision": 0.489796,
+      "recall": 1.0,
+      "F1": 0.657534
+    },
+    {
+      "recording_id": "bidmc06",
+      "TP": 154,
+      "FP": 4,
+      "FN": 2,
+      "precision": 0.974684,
+      "recall": 0.987179,
+      "F1": 0.980892
+    },
+    {
+      "recording_id": "bidmc07",
+      "TP": 155,
+      "FP": 4,
+      "FN": 1,
+      "precision": 0.974843,
+      "recall": 0.99359,
+      "F1": 0.984127
+    },
+    {
+      "recording_id": "bidmc08",
+      "TP": 162,
+      "FP": 6,
+      "FN": 2,
+      "precision": 0.964286,
+      "recall": 0.987805,
+      "F1": 0.975904
+    },
+    {
+      "recording_id": "bidmc09",
+      "TP": 156,
+      "FP": 3,
+      "FN": 1,
+      "precision": 0.981132,
+      "recall": 0.993631,
+      "F1": 0.987342
+    },
+    {
+      "recording_id": "bidmc10",
+      "TP": 141,
+      "FP": 9,
+      "FN": 1,
+      "precision": 0.94,
+      "recall": 0.992958,
+      "F1": 0.965753
+    },
+    {
+      "recording_id": "bidmc11",
+      "TP": 111,
+      "FP": 11,
+      "FN": 2,
+      "precision": 0.909836,
+      "recall": 0.982301,
+      "F1": 0.944681
+    },
+    {
+      "recording_id": "bidmc12",
+      "TP": 144,
+      "FP": 6,
+      "FN": 2,
+      "precision": 0.96,
+      "recall": 0.986301,
+      "F1": 0.972973
+    }
+  ]
+}

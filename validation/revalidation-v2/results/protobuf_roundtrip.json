@@ -1,0 +1,205 @@
+{
+  "correction_policy_tests": [
+    {
+      "kind": "NONE",
+      "percent_threshold": 0.05,
+      "decoded_kind": "NONE",
+      "decoded_threshold": 0.05,
+      "passed": true
+    },
+    {
+      "kind": "NONE",
+      "percent_threshold": 0.1,
+      "decoded_kind": "NONE",
+      "decoded_threshold": 0.1,
+      "passed": true
+    },
+    {
+      "kind": "NONE",
+      "percent_threshold": 0.2,
+      "decoded_kind": "NONE",
+      "decoded_threshold": 0.2,
+      "passed": true
+    },
+    {
+      "kind": "NONE",
+      "percent_threshold": 1.0,
+      "decoded_kind": "NONE",
+      "decoded_threshold": 1.0,
+      "passed": true
+    },
+    {
+      "kind": "REJECT_INVALID",
+      "percent_threshold": 0.05,
+      "decoded_kind": "REJECT_INVALID",
+      "decoded_threshold": 0.05,
+      "passed": true
+    },
+    {
+      "kind": "REJECT_INVALID",
+      "percent_threshold": 0.1,
+      "decoded_kind": "REJECT_INVALID",
+      "decoded_threshold": 0.1,
+      "passed": true
+    },
+    {
+      "kind": "REJECT_INVALID",
+      "percent_threshold": 0.2,
+      "decoded_kind": "REJECT_INVALID",
+      "decoded_threshold": 0.2,
+      "passed": true
+    },
+    {
+      "kind": "REJECT_INVALID",
+      "percent_threshold": 1.0,
+      "decoded_kind": "REJECT_INVALID",
+      "decoded_threshold": 1.0,
+      "passed": true
+    },
+    {
+      "kind": "INTERPOLATE_LINEAR",
+      "percent_threshold": 0.05,
+      "decoded_kind": "INTERPOLATE_LINEAR",
+      "decoded_threshold": 0.05,
+      "passed": true
+    },
+    {
+      "kind": "INTERPOLATE_LINEAR",
+      "percent_threshold": 0.1,
+      "decoded_kind": "INTERPOLATE_LINEAR",
+      "decoded_threshold": 0.1,
+      "passed": true
+    },
+    {
+      "kind": "INTERPOLATE_LINEAR",
+      "percent_threshold": 0.2,
+      "decoded_kind": "INTERPOLATE_LINEAR",
+      "decoded_threshold": 0.2,
+      "passed": true
+    },
+    {
+      "kind": "INTERPOLATE_LINEAR",
+      "percent_threshold": 1.0,
+      "decoded_kind": "INTERPOLATE_LINEAR",
+      "decoded_threshold": 1.0,
+      "passed": true
+    },
+    {
+      "kind": "INTERPOLATE_CUBIC",
+      "percent_threshold": 0.05,
+      "decoded_kind": "INTERPOLATE_CUBIC",
+      "decoded_threshold": 0.05,
+      "passed": true
+    },
+    {
+      "kind": "INTERPOLATE_CUBIC",
+      "percent_threshold": 0.1,
+      "decoded_kind": "INTERPOLATE_CUBIC",
+      "decoded_threshold": 0.1,
+      "passed": true
+    },
+    {
+      "kind": "INTERPOLATE_CUBIC",
+      "percent_threshold": 0.2,
+      "decoded_kind": "INTERPOLATE_CUBIC",
+      "decoded_threshold": 0.2,
+      "passed": true
+    },
+    {
+      "kind": "INTERPOLATE_CUBIC",
+      "percent_threshold": 1.0,
+      "decoded_kind": "INTERPOLATE_CUBIC",
+      "decoded_threshold": 1.0,
+      "passed": true
+    },
+    {
+      "kind": "PERCENT_THRESHOLD",
+      "percent_threshold": 0.05,
+      "decoded_kind": "PERCENT_THRESHOLD",
+      "decoded_threshold": 0.05,
+      "passed": true
+    },
+    {
+      "kind": "PERCENT_THRESHOLD",
+      "percent_threshold": 0.1,
+      "decoded_kind": "PERCENT_THRESHOLD",
+      "decoded_threshold": 0.1,
+      "passed": true
+    },
+    {
+      "kind": "PERCENT_THRESHOLD",
+      "percent_threshold": 0.2,
+      "decoded_kind": "PERCENT_THRESHOLD",
+      "decoded_threshold": 0.2,
+      "passed": true
+    },
+    {
+      "kind": "PERCENT_THRESHOLD",
+      "percent_threshold": 1.0,
+      "decoded_kind": "PERCENT_THRESHOLD",
+      "decoded_threshold": 1.0,
+      "passed": true
+    }
+  ],
+  "rppg_metadata_tests": [
+    {
+      "algorithm": "POS",
+      "polarity": "NORMAL",
+      "timestamps_count": 5,
+      "passed": true
+    },
+    {
+      "algorithm": "POS",
+      "polarity": "INVERTED",
+      "timestamps_count": 5,
+      "passed": true
+    },
+    {
+      "algorithm": "POS",
+      "polarity": "AUTO",
+      "timestamps_count": 5,
+      "passed": true
+    },
+    {
+      "algorithm": "CHROM",
+      "polarity": "NORMAL",
+      "timestamps_count": 5,
+      "passed": true
+    },
+    {
+      "algorithm": "CHROM",
+      "polarity": "INVERTED",
+      "timestamps_count": 5,
+      "passed": true
+    },
+    {
+      "algorithm": "CHROM",
+      "polarity": "AUTO",
+      "timestamps_count": 5,
+      "passed": true
+    },
+    {
+      "algorithm": "GREEN",
+      "polarity": "NORMAL",
+      "timestamps_count": 5,
+      "passed": true
+    },
+    {
+      "algorithm": "GREEN",
+      "polarity": "INVERTED",
+      "timestamps_count": 5,
+      "passed": true
+    },
+    {
+      "algorithm": "GREEN",
+      "polarity": "AUTO",
+      "timestamps_count": 5,
+      "passed": true
+    }
+  ],
+  "cross_language_suite": {
+    "rust_tests_passed": true,
+    "python_tests_passed": true,
+    "dart_tests_passed": true
+  }
+}

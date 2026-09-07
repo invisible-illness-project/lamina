@@ -1,0 +1,78 @@
+{
+  "record": "s6_low_resistance_bike",
+  "total_reference_peaks": 536,
+  "detected_peaks": 586,
+  "TP": 520,
+  "FP": 66,
+  "FN": 16,
+  "precision": 0.887372,
+  "recall": 0.970149,
+  "F1": 0.926916,
+  "longest_detection_gap_sec": 1.800781,
+  "blackout_90s_resolved": true,
+  "bin_counts": [
+    {
+      "bin_index": 0,
+      "t_start_sec": 0.0,
+      "t_end_sec": 31.11,
+      "annotations": 52,
+      "detections": 56
+    },
+    {
+      "bin_index": 1,
+      "t_start_sec": 31.11,
+      "t_end_sec": 62.22,
+      "annotations": 57,
+      "detections": 59
+    },
+    {
+      "bin_index": 2,
+      "t_start_sec": 62.22,
+      "t_end_sec": 93.33,
+      "annotations": 58,
+      "detections": 59
+    },
+    {
+      "bin_index": 3,
+      "t_start_sec": 93.33,
+      "t_end_sec": 124.44,
+      "annotations": 59,
+      "detections": 68
+    },
+    {
+      "bin_index": 4,
+      "t_start_sec": 124.44,
+      "t_end_sec": 155.56,
+      "annotations": 61,
+      "detections": 73
+    },
+    {
+      "bin_index": 5,
+      "t_start_sec": 155.56,
+      "t_end_sec": 186.67,
+      "annotations": 62,
+      "detections": 64
+    },
+    {
+      "bin_index": 6,
+      "t_start_sec": 186.67,
+      "t_end_sec": 217.78,
+      "annotations": 61,
+      "detections": 69
+    },
+    {
+      "bin_index": 7,
+      "t_start_sec": 217.78,
+      "t_end_sec": 248.89,
+      "annotations": 62,
+      "detections": 72
+    },
+    {
+      "bin_index": 8,
+      "t_start_sec": 248.89,
+      "t_end_sec": 280.0,
+      "annotations": 64,
+      "detections": 66
+    }
+  ]
+}
