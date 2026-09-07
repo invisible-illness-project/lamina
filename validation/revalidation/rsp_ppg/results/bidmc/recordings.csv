@@ -1,0 +1,13 @@
+dataset,subject_id,recording_id,status,modalities,error
+bidmc,bidmc01,bidmc01,ok,ecg;ppg;rsp,
+bidmc,bidmc02,bidmc02,ok,ecg;ppg;rsp,
+bidmc,bidmc03,bidmc03,ok,ecg;ppg;rsp,
+bidmc,bidmc04,bidmc04,ok,ecg;ppg;rsp,
+bidmc,bidmc05,bidmc05,ok,ecg;ppg;rsp,
+bidmc,bidmc06,bidmc06,ok,ecg;ppg;rsp,
+bidmc,bidmc07,bidmc07,ok,ecg;ppg;rsp,
+bidmc,bidmc08,bidmc08,ok,ecg;ppg;rsp,
+bidmc,bidmc09,bidmc09,ok,ecg;ppg;rsp,
+bidmc,bidmc10,bidmc10,ok,ecg;ppg;rsp,
+bidmc,bidmc11,bidmc11,ok,ecg;ppg;rsp,
+bidmc,bidmc12,bidmc12,ok,ecg;ppg;rsp,

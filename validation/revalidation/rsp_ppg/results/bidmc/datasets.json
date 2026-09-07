@@ -1,0 +1,48 @@
+[
+  {
+    "dataset": "bidmc",
+    "version": "1.0.0",
+    "source": "https://physionet.org/content/bidmc/ (mirror: https://archive.physionet.org/physiobank/database/bidmc/)",
+    "access_status": "validated",
+    "reason": "",
+    "subjects_evaluated": 12,
+    "recordings_evaluated": 12,
+    "modalities": [
+      "ppg",
+      "rsp",
+      "ecg"
+    ],
+    "lamina_ops": [
+      "ppg-clean",
+      "ppg-peaks",
+      "rsp-clean",
+      "rsp-cycles",
+      "ecg-peaks",
+      "hrv"
+    ],
+    "lamina_version": "0.1.0",
+    "git_commit": "caa748416a2184cbd622445293ba63da29af8b3e",
+    "validation_date": "2026-09-07T00:17:08+00:00",
+    "metrics": {
+      "ecg_ecg_n_peaks": 729.1666666666666,
+      "ppg_ppg_n_peaks": 703.75,
+      "rsp_resp_f1": 0.9437355712009116,
+      "rsp_resp_fn": 1.1666666666666667,
+      "rsp_resp_fp": 10.75,
+      "rsp_resp_mean_abs_timing_error_sec": 0.07425673304274692,
+      "rsp_resp_median_timing_error_sec": -0.009,
+      "rsp_resp_n_cycles": 145.16666666666666,
+      "rsp_resp_n_detected": 145.16666666666666,
+      "rsp_resp_n_reference": 135.58333333333334,
+      "rsp_resp_precision": 0.9116631831173031,
+      "rsp_resp_recall": 0.9916667214983245,
+      "rsp_resp_tolerance_sec": 0.5,
+      "rsp_resp_tp": 134.41666666666666,
+      "structural_ecg_ecg_n_peaks": 729.1666666666666,
+      "structural_ppg_ppg_n_peaks": 703.75,
+      "structural_rsp_resp_mean_rate_bpm": 18.774146519266736
+    },
+    "limitations": [],
+    "failures": []
+  }
+]
