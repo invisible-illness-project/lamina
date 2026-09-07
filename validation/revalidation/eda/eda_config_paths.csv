@@ -1,0 +1,18 @@
+fs,nyquist,case,cfg,outcome,filter_applied,cutoff_hz,nyquist_hz,n_nan,rms_change
+4.0,2.0,default_key_absent,{},ok,False,5.0,2.0,0.0,8.233634315563857e-17
+4.0,2.0,cutoff_1.0hz,"{""lowpass_cutoff_hz"": 1.0}",ok,True,1.0,2.0,0.0,0.0040527041521590005
+4.0,2.0,near_nyquist_1.8hz,"{""lowpass_cutoff_hz"": 1.8}",ok,True,1.8,2.0,0.0,0.0020844527939870004
+4.0,2.0,above_nyquist_5hz,"{""lowpass_cutoff_hz"": 5.0}",ok,False,5.0,2.0,0.0,8.233634315563857e-17
+4.0,2.0,above_nyquist_5hz_passthrough,"{""lowpass_cutoff_hz"": 5.0, ""pass_through_if_nyquist_violated"": true}",ok,False,5.0,2.0,0.0,8.233634315563857e-17
+4.0,2.0,explicit_null_passthrough,"{""lowpass_cutoff_hz"": null}",ok,False,,2.0,0.0,8.233634315563857e-17
+64.0,32.0,default_key_absent,{},ok,True,5.0,32.0,0.0,0.004509904255517
+64.0,32.0,cutoff_1.0hz,"{""lowpass_cutoff_hz"": 1.0}",ok,True,1.0,32.0,0.0,0.005094959005468001
+64.0,32.0,near_nyquist_1.8hz,"{""lowpass_cutoff_hz"": 1.8}",ok,True,1.8,32.0,0.0,0.004848158964938
+64.0,32.0,above_nyquist_5hz,"{""lowpass_cutoff_hz"": 5.0}",ok,True,5.0,32.0,0.0,0.004509904255517
+64.0,32.0,above_nyquist_5hz_passthrough,"{""lowpass_cutoff_hz"": 5.0, ""pass_through_if_nyquist_violated"": true}",ok,True,5.0,32.0,0.0,0.004509904255517
+64.0,32.0,explicit_null_passthrough,"{""lowpass_cutoff_hz"": null}",ok,False,,32.0,0.0,9.432813123914324e-17
+4.0,2.0,above_nyquist_5hz_explicit_no_passthrough,"{""lowpass_cutoff_hz"":5.0,""pass_through_if_nyquist_violated"":false}",error: LaminaBridgeError [lamina_error]: Invalid cutoff frequency (5 Hz vs Nyquist 2 Hz),,,,,
+4.0,2.0,plain_eda-clean_default_BUG-003_repro,n/a (eda-clean op),"ok (pass-through, rms_change~1e-17)",,,,,
+8.0,4.0,plain_eda-clean_default_baseline_failed,n/a,ok (pass-through),,,,,
+10.0,5.0,plain_eda-clean_default_baseline_failed,n/a,ok (pass-through),,,,,
+16.0,8.0,plain_eda-clean_default_baseline_ok,n/a,"ok (5Hz lowpass applied, rms_change 3.1e-4)",,,,,

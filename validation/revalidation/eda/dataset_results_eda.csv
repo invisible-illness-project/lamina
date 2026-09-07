@@ -1,0 +1,359 @@
+dataset,recording,modality,metric,baseline,current,delta,status,notes
+wesad,S2_amusement,bvp,bvp_wrist_bvp_n_peaks,279.0,279.0,0.0,unchanged,
+wesad,S2_amusement,ecg,ecg_chest_ecg_n_peaks,268.0,268.0,0.0,unchanged,post-remediation ecg-peaks SPKI-clamp change -> more peaks (see waveC-notes NEW-C1)
+wesad,S2_amusement,hr,hr_bias,5.69446963265473,5.705347269742284,0.01087763708755407,changed,cross-device HR (ECG-vs-BVP); changed via ECG peak-count change
+wesad,S2_amusement,hr,hr_mae,12.418337227719103,12.367068537443132,-0.05126869027597181,changed,cross-device HR (ECG-vs-BVP); changed via ECG peak-count change
+wesad,S2_amusement,hr,hr_n,220.0,220.0,0.0,unchanged,
+wesad,S2_amusement,hr,hr_pearson_r,0.1228371070994987,0.1266029572548005,0.0037658501553018003,changed,cross-device HR; changed via ECG peak-count change
+wesad,S2_amusement,hr,hr_rmse,21.383555660103376,21.359395008595367,-0.024160651508008613,changed,cross-device HR; changed via ECG peak-count change
+wesad,S2_amusement,rsp,rsp_chest_rsp_n_cycles,83.0,83.0,0.0,unchanged,
+wesad,S2_amusement,bvp,structural_bvp_wrist_bvp_n_peaks,279.0,279.0,0.0,unchanged,
+wesad,S2_amusement,ecg,structural_ecg_chest_ecg_n_peaks,268.0,268.0,0.0,unchanged,post-remediation ecg-peaks SPKI-clamp change -> more peaks (see waveC-notes NEW-C1)
+wesad,S2_amusement,eda,structural_eda_chest_eda_n_scr,24.0,24.0,0.0,unchanged,
+wesad,S2_amusement,rsp,structural_rsp_chest_rsp_mean_rate_bpm,21.290465542045418,21.290465542045418,0.0,unchanged,
+wesad,S2_baseline,bvp,bvp_wrist_bvp_n_peaks,293.0,293.0,0.0,unchanged,
+wesad,S2_baseline,ecg,ecg_chest_ecg_n_peaks,287.0,298.0,11.0,changed,post-remediation ecg-peaks SPKI-clamp change -> more peaks (see waveC-notes NEW-C1)
+wesad,S2_baseline,hr,hr_bias,3.3135235619282377,1.877058904412952,-1.4364646575152857,changed,cross-device HR (ECG-vs-BVP); changed via ECG peak-count change
+wesad,S2_baseline,hr,hr_mae,10.295171589408255,11.414643313529302,1.1194717241210466,changed,cross-device HR (ECG-vs-BVP); changed via ECG peak-count change
+wesad,S2_baseline,hr,hr_n,220.0,220.0,0.0,unchanged,
+wesad,S2_baseline,hr,hr_pearson_r,0.2088051421509247,0.0859242928079916,-0.12288084934293309,changed,cross-device HR; changed via ECG peak-count change
+wesad,S2_baseline,hr,hr_rmse,18.97009704757783,19.95477777922296,0.9846807316451311,changed,cross-device HR; changed via ECG peak-count change
+wesad,S2_baseline,rsp,rsp_chest_rsp_n_cycles,86.0,86.0,0.0,unchanged,
+wesad,S2_baseline,bvp,structural_bvp_wrist_bvp_n_peaks,293.0,293.0,0.0,unchanged,
+wesad,S2_baseline,ecg,structural_ecg_chest_ecg_n_peaks,287.0,298.0,11.0,changed,post-remediation ecg-peaks SPKI-clamp change -> more peaks (see waveC-notes NEW-C1)
+wesad,S2_baseline,eda,structural_eda_chest_eda_n_scr,0.0,0.0,0.0,unchanged,
+wesad,S2_baseline,rsp,structural_rsp_chest_rsp_mean_rate_bpm,22.09940999430952,22.09940999430952,0.0,unchanged,
+wesad,S2_stress,bvp,bvp_wrist_bvp_n_peaks,263.0,263.0,0.0,unchanged,
+wesad,S2_stress,ecg,ecg_chest_ecg_n_peaks,307.0,309.0,2.0,changed,post-remediation ecg-peaks SPKI-clamp change -> more peaks (see waveC-notes NEW-C1)
+wesad,S2_stress,hr,hr_bias,-1.644639006070235,-2.1840923207728,-0.5394533147025651,changed,cross-device HR (ECG-vs-BVP); changed via ECG peak-count change
+wesad,S2_stress,hr,hr_mae,20.44491432495253,20.685912349435437,0.24099802448290575,changed,cross-device HR (ECG-vs-BVP); changed via ECG peak-count change
+wesad,S2_stress,hr,hr_n,220.0,220.0,0.0,unchanged,
+wesad,S2_stress,hr,hr_pearson_r,0.2076885614515135,0.2039233233190401,-0.0037652381324733974,changed,cross-device HR; changed via ECG peak-count change
+wesad,S2_stress,hr,hr_rmse,26.213967358331463,26.552369101887603,0.3384017435561404,changed,cross-device HR; changed via ECG peak-count change
+wesad,S2_stress,rsp,rsp_chest_rsp_n_cycles,78.0,78.0,0.0,unchanged,
+wesad,S2_stress,bvp,structural_bvp_wrist_bvp_n_peaks,263.0,263.0,0.0,unchanged,
+wesad,S2_stress,ecg,structural_ecg_chest_ecg_n_peaks,307.0,309.0,2.0,changed,post-remediation ecg-peaks SPKI-clamp change -> more peaks (see waveC-notes NEW-C1)
+wesad,S2_stress,eda,structural_eda_chest_eda_n_scr,4.0,4.0,0.0,unchanged,
+wesad,S2_stress,rsp,structural_rsp_chest_rsp_mean_rate_bpm,21.673471417601935,21.673471417601935,0.0,unchanged,
+wesad,S3_amusement,bvp,bvp_wrist_bvp_n_peaks,253.0,253.0,0.0,unchanged,
+wesad,S3_amusement,ecg,ecg_chest_ecg_n_peaks,217.0,430.0,213.0,changed,post-remediation ecg-peaks SPKI-clamp change -> more peaks (see waveC-notes NEW-C1)
+wesad,S3_amusement,hr,hr_bias,12.947751484957449,-17.235336765269622,-30.183088250227073,changed,cross-device HR (ECG-vs-BVP); changed via ECG peak-count change
+wesad,S3_amusement,hr,hr_mae,17.677109616392407,29.814987057670763,12.137877441278356,changed,cross-device HR (ECG-vs-BVP); changed via ECG peak-count change
+wesad,S3_amusement,hr,hr_n,220.0,220.0,0.0,unchanged,
+wesad,S3_amusement,hr,hr_pearson_r,-0.0177194991319877,0.0493755935592137,0.0670950926912014,changed,cross-device HR; changed via ECG peak-count change
+wesad,S3_amusement,hr,hr_rmse,27.536899702567307,39.09333466889424,11.556434966326929,changed,cross-device HR; changed via ECG peak-count change
+wesad,S3_amusement,rsp,rsp_chest_rsp_n_cycles,66.0,66.0,0.0,unchanged,
+wesad,S3_amusement,bvp,structural_bvp_wrist_bvp_n_peaks,253.0,253.0,0.0,unchanged,
+wesad,S3_amusement,ecg,structural_ecg_chest_ecg_n_peaks,217.0,430.0,213.0,changed,post-remediation ecg-peaks SPKI-clamp change -> more peaks (see waveC-notes NEW-C1)
+wesad,S3_amusement,eda,structural_eda_chest_eda_n_scr,128.0,128.0,0.0,unchanged,
+wesad,S3_amusement,rsp,structural_rsp_chest_rsp_mean_rate_bpm,17.480922862615184,17.480922862615184,0.0,unchanged,
+wesad,S3_baseline,bvp,bvp_wrist_bvp_n_peaks,222.0,222.0,0.0,unchanged,
+wesad,S3_baseline,ecg,ecg_chest_ecg_n_peaks,221.0,441.0,220.0,changed,post-remediation ecg-peaks SPKI-clamp change -> more peaks (see waveC-notes NEW-C1)
+wesad,S3_baseline,hr,hr_bias,9.442840804855182,-10.784505338959406,-20.227346143814586,changed,cross-device HR (ECG-vs-BVP); changed via ECG peak-count change
+wesad,S3_baseline,hr,hr_mae,15.865936904408116,22.27645786324792,6.410520958839804,changed,cross-device HR (ECG-vs-BVP); changed via ECG peak-count change
+wesad,S3_baseline,hr,hr_n,220.0,220.0,0.0,unchanged,
+wesad,S3_baseline,hr,hr_pearson_r,0.2021741092422857,0.2041702387030718,0.001996129460786089,changed,cross-device HR; changed via ECG peak-count change
+wesad,S3_baseline,hr,hr_rmse,25.30444878459552,27.103179218269307,1.7987304336737857,changed,cross-device HR; changed via ECG peak-count change
+wesad,S3_baseline,rsp,rsp_chest_rsp_n_cycles,57.0,57.0,0.0,unchanged,
+wesad,S3_baseline,bvp,structural_bvp_wrist_bvp_n_peaks,222.0,222.0,0.0,unchanged,
+wesad,S3_baseline,ecg,structural_ecg_chest_ecg_n_peaks,221.0,441.0,220.0,changed,post-remediation ecg-peaks SPKI-clamp change -> more peaks (see waveC-notes NEW-C1)
+wesad,S3_baseline,eda,structural_eda_chest_eda_n_scr,147.0,147.0,0.0,unchanged,
+wesad,S3_baseline,rsp,structural_rsp_chest_rsp_mean_rate_bpm,15.532569432634643,15.532569432634643,0.0,unchanged,
+wesad,S3_stress,bvp,bvp_wrist_bvp_n_peaks,293.0,293.0,0.0,unchanged,
+wesad,S3_stress,ecg,ecg_chest_ecg_n_peaks,332.0,332.0,0.0,unchanged,post-remediation ecg-peaks SPKI-clamp change -> more peaks (see waveC-notes NEW-C1)
+wesad,S3_stress,hr,hr_bias,-6.449020061760006,-6.449020061760006,0.0,unchanged,cross-device HR (ECG-vs-BVP); changed via ECG peak-count change
+wesad,S3_stress,hr,hr_mae,20.180352830352007,20.180352830352007,0.0,unchanged,cross-device HR (ECG-vs-BVP); changed via ECG peak-count change
+wesad,S3_stress,hr,hr_n,220.0,220.0,0.0,unchanged,
+wesad,S3_stress,hr,hr_pearson_r,0.1194408144804213,0.1194408144804213,0.0,unchanged,cross-device HR; changed via ECG peak-count change
+wesad,S3_stress,hr,hr_rmse,26.114091081245864,26.114091081245864,0.0,unchanged,cross-device HR; changed via ECG peak-count change
+wesad,S3_stress,rsp,rsp_chest_rsp_n_cycles,61.0,61.0,0.0,unchanged,
+wesad,S3_stress,bvp,structural_bvp_wrist_bvp_n_peaks,293.0,293.0,0.0,unchanged,
+wesad,S3_stress,ecg,structural_ecg_chest_ecg_n_peaks,332.0,332.0,0.0,unchanged,post-remediation ecg-peaks SPKI-clamp change -> more peaks (see waveC-notes NEW-C1)
+wesad,S3_stress,eda,structural_eda_chest_eda_n_scr,39.0,39.0,0.0,unchanged,
+wesad,S3_stress,rsp,structural_rsp_chest_rsp_mean_rate_bpm,17.61988121766171,17.61988121766171,0.0,unchanged,
+wesad,S4_amusement,bvp,bvp_wrist_bvp_n_peaks,260.0,260.0,0.0,unchanged,
+wesad,S4_amusement,ecg,ecg_chest_ecg_n_peaks,250.0,256.0,6.0,changed,post-remediation ecg-peaks SPKI-clamp change -> more peaks (see waveC-notes NEW-C1)
+wesad,S4_amusement,hr,hr_bias,2.030907042250984,0.3908800493181523,-1.6400269929328317,changed,cross-device HR (ECG-vs-BVP); changed via ECG peak-count change
+wesad,S4_amusement,hr,hr_mae,5.778194940612366,6.750911677814898,0.972716737202532,changed,cross-device HR (ECG-vs-BVP); changed via ECG peak-count change
+wesad,S4_amusement,hr,hr_n,220.0,220.0,0.0,unchanged,
+wesad,S4_amusement,hr,hr_pearson_r,0.4329913892505442,0.3477448917521339,-0.08524649749841029,changed,cross-device HR; changed via ECG peak-count change
+wesad,S4_amusement,hr,hr_rmse,9.000645944568355,12.493749069116936,3.493103124548581,changed,cross-device HR; changed via ECG peak-count change
+wesad,S4_amusement,rsp,rsp_chest_rsp_n_cycles,72.0,72.0,0.0,unchanged,
+wesad,S4_amusement,bvp,structural_bvp_wrist_bvp_n_peaks,260.0,260.0,0.0,unchanged,
+wesad,S4_amusement,ecg,structural_ecg_chest_ecg_n_peaks,250.0,256.0,6.0,changed,post-remediation ecg-peaks SPKI-clamp change -> more peaks (see waveC-notes NEW-C1)
+wesad,S4_amusement,eda,structural_eda_chest_eda_n_scr,5.0,5.0,0.0,unchanged,
+wesad,S4_amusement,rsp,structural_rsp_chest_rsp_mean_rate_bpm,19.223335827662503,19.223335827662503,0.0,unchanged,
+wesad,S4_baseline,bvp,bvp_wrist_bvp_n_peaks,249.0,249.0,0.0,unchanged,
+wesad,S4_baseline,ecg,ecg_chest_ecg_n_peaks,238.0,238.0,0.0,unchanged,post-remediation ecg-peaks SPKI-clamp change -> more peaks (see waveC-notes NEW-C1)
+wesad,S4_baseline,hr,hr_bias,2.547961314091739,2.547961314091739,0.0,unchanged,cross-device HR (ECG-vs-BVP); changed via ECG peak-count change
+wesad,S4_baseline,hr,hr_mae,7.657092956199201,7.657092956199201,0.0,unchanged,cross-device HR (ECG-vs-BVP); changed via ECG peak-count change
+wesad,S4_baseline,hr,hr_n,220.0,220.0,0.0,unchanged,
+wesad,S4_baseline,hr,hr_pearson_r,0.3232432749774479,0.3232432749774479,0.0,unchanged,cross-device HR; changed via ECG peak-count change
+wesad,S4_baseline,hr,hr_rmse,12.778279787719905,12.778279787719905,0.0,unchanged,cross-device HR; changed via ECG peak-count change
+wesad,S4_baseline,rsp,rsp_chest_rsp_n_cycles,66.0,66.0,0.0,unchanged,
+wesad,S4_baseline,bvp,structural_bvp_wrist_bvp_n_peaks,249.0,249.0,0.0,unchanged,
+wesad,S4_baseline,ecg,structural_ecg_chest_ecg_n_peaks,238.0,238.0,0.0,unchanged,post-remediation ecg-peaks SPKI-clamp change -> more peaks (see waveC-notes NEW-C1)
+wesad,S4_baseline,eda,structural_eda_chest_eda_n_scr,1.0,1.0,0.0,unchanged,
+wesad,S4_baseline,rsp,structural_rsp_chest_rsp_mean_rate_bpm,17.09641854439438,17.09641854439438,0.0,unchanged,
+wesad,S4_stress,bvp,bvp_wrist_bvp_n_peaks,299.0,299.0,0.0,unchanged,
+wesad,S4_stress,ecg,ecg_chest_ecg_n_peaks,316.0,316.0,0.0,unchanged,post-remediation ecg-peaks SPKI-clamp change -> more peaks (see waveC-notes NEW-C1)
+wesad,S4_stress,hr,hr_bias,-0.272484050589372,-0.272484050589372,0.0,unchanged,cross-device HR (ECG-vs-BVP); changed via ECG peak-count change
+wesad,S4_stress,hr,hr_mae,17.666520974080555,17.666520974080555,0.0,unchanged,cross-device HR (ECG-vs-BVP); changed via ECG peak-count change
+wesad,S4_stress,hr,hr_n,220.0,220.0,0.0,unchanged,
+wesad,S4_stress,hr,hr_pearson_r,0.208870375228795,0.208870375228795,0.0,unchanged,cross-device HR; changed via ECG peak-count change
+wesad,S4_stress,hr,hr_rmse,24.420028093066925,24.420028093066925,0.0,unchanged,cross-device HR; changed via ECG peak-count change
+wesad,S4_stress,rsp,rsp_chest_rsp_n_cycles,82.0,82.0,0.0,unchanged,
+wesad,S4_stress,bvp,structural_bvp_wrist_bvp_n_peaks,299.0,299.0,0.0,unchanged,
+wesad,S4_stress,ecg,structural_ecg_chest_ecg_n_peaks,316.0,316.0,0.0,unchanged,post-remediation ecg-peaks SPKI-clamp change -> more peaks (see waveC-notes NEW-C1)
+wesad,S4_stress,eda,structural_eda_chest_eda_n_scr,21.0,21.0,0.0,unchanged,
+wesad,S4_stress,rsp,structural_rsp_chest_rsp_mean_rate_bpm,23.071898964151472,23.071898964151472,0.0,unchanged,
+wesad,S5_amusement,bvp,bvp_wrist_bvp_n_peaks,282.0,282.0,0.0,unchanged,
+wesad,S5_amusement,ecg,ecg_chest_ecg_n_peaks,267.0,267.0,0.0,unchanged,post-remediation ecg-peaks SPKI-clamp change -> more peaks (see waveC-notes NEW-C1)
+wesad,S5_amusement,hr,hr_bias,5.971569302196686,5.971569302196686,0.0,unchanged,cross-device HR (ECG-vs-BVP); changed via ECG peak-count change
+wesad,S5_amusement,hr,hr_mae,11.366789867307569,11.366789867307569,0.0,unchanged,cross-device HR (ECG-vs-BVP); changed via ECG peak-count change
+wesad,S5_amusement,hr,hr_n,220.0,220.0,0.0,unchanged,
+wesad,S5_amusement,hr,hr_pearson_r,0.2043347803704073,0.2043347803704073,0.0,unchanged,cross-device HR; changed via ECG peak-count change
+wesad,S5_amusement,hr,hr_rmse,20.454203794605597,20.454203794605597,0.0,unchanged,cross-device HR; changed via ECG peak-count change
+wesad,S5_amusement,rsp,rsp_chest_rsp_n_cycles,68.0,68.0,0.0,unchanged,
+wesad,S5_amusement,bvp,structural_bvp_wrist_bvp_n_peaks,282.0,282.0,0.0,unchanged,
+wesad,S5_amusement,ecg,structural_ecg_chest_ecg_n_peaks,267.0,267.0,0.0,unchanged,post-remediation ecg-peaks SPKI-clamp change -> more peaks (see waveC-notes NEW-C1)
+wesad,S5_amusement,eda,structural_eda_chest_eda_n_scr,11.0,11.0,0.0,unchanged,
+wesad,S5_amusement,rsp,structural_rsp_chest_rsp_mean_rate_bpm,17.534882645644924,17.534882645644924,0.0,unchanged,
+wesad,S5_baseline,bvp,bvp_wrist_bvp_n_peaks,261.0,261.0,0.0,unchanged,
+wesad,S5_baseline,ecg,ecg_chest_ecg_n_peaks,249.0,249.0,0.0,unchanged,post-remediation ecg-peaks SPKI-clamp change -> more peaks (see waveC-notes NEW-C1)
+wesad,S5_baseline,hr,hr_bias,4.104074374281941,4.104074374281941,0.0,unchanged,cross-device HR (ECG-vs-BVP); changed via ECG peak-count change
+wesad,S5_baseline,hr,hr_mae,6.702832142393344,6.702832142393344,0.0,unchanged,cross-device HR (ECG-vs-BVP); changed via ECG peak-count change
+wesad,S5_baseline,hr,hr_n,220.0,220.0,0.0,unchanged,
+wesad,S5_baseline,hr,hr_pearson_r,0.3697971479764544,0.3697971479764544,0.0,unchanged,cross-device HR; changed via ECG peak-count change
+wesad,S5_baseline,hr,hr_rmse,13.824429581286084,13.824429581286084,0.0,unchanged,cross-device HR; changed via ECG peak-count change
+wesad,S5_baseline,rsp,rsp_chest_rsp_n_cycles,59.0,59.0,0.0,unchanged,
+wesad,S5_baseline,bvp,structural_bvp_wrist_bvp_n_peaks,261.0,261.0,0.0,unchanged,
+wesad,S5_baseline,ecg,structural_ecg_chest_ecg_n_peaks,249.0,249.0,0.0,unchanged,post-remediation ecg-peaks SPKI-clamp change -> more peaks (see waveC-notes NEW-C1)
+wesad,S5_baseline,eda,structural_eda_chest_eda_n_scr,2.0,2.0,0.0,unchanged,
+wesad,S5_baseline,rsp,structural_rsp_chest_rsp_mean_rate_bpm,15.381936780756591,15.381936780756591,0.0,unchanged,
+wesad,S5_stress,bvp,bvp_wrist_bvp_n_peaks,305.0,305.0,0.0,unchanged,
+wesad,S5_stress,ecg,ecg_chest_ecg_n_peaks,353.0,353.0,0.0,unchanged,post-remediation ecg-peaks SPKI-clamp change -> more peaks (see waveC-notes NEW-C1)
+wesad,S5_stress,hr,hr_bias,-6.226064326639936,-6.226064326639936,0.0,unchanged,cross-device HR (ECG-vs-BVP); changed via ECG peak-count change
+wesad,S5_stress,hr,hr_mae,22.391296010894475,22.391296010894475,0.0,unchanged,cross-device HR (ECG-vs-BVP); changed via ECG peak-count change
+wesad,S5_stress,hr,hr_n,220.0,220.0,0.0,unchanged,
+wesad,S5_stress,hr,hr_pearson_r,-0.01767178014516,-0.01767178014516,0.0,unchanged,cross-device HR; changed via ECG peak-count change
+wesad,S5_stress,hr,hr_rmse,27.89487893215364,27.89487893215364,0.0,unchanged,cross-device HR; changed via ECG peak-count change
+wesad,S5_stress,rsp,rsp_chest_rsp_n_cycles,72.0,72.0,0.0,unchanged,
+wesad,S5_stress,bvp,structural_bvp_wrist_bvp_n_peaks,305.0,305.0,0.0,unchanged,
+wesad,S5_stress,ecg,structural_ecg_chest_ecg_n_peaks,353.0,353.0,0.0,unchanged,post-remediation ecg-peaks SPKI-clamp change -> more peaks (see waveC-notes NEW-C1)
+wesad,S5_stress,eda,structural_eda_chest_eda_n_scr,34.0,34.0,0.0,unchanged,
+wesad,S5_stress,rsp,structural_rsp_chest_rsp_mean_rate_bpm,21.14157191014975,21.14157191014975,0.0,unchanged,
+wesad,S6_amusement,bvp,bvp_wrist_bvp_n_peaks,171.0,171.0,0.0,unchanged,
+wesad,S6_amusement,ecg,ecg_chest_ecg_n_peaks,269.0,269.0,0.0,unchanged,post-remediation ecg-peaks SPKI-clamp change -> more peaks (see waveC-notes NEW-C1)
+wesad,S6_amusement,hr,hr_bias,-4.6244844826432105,-4.6244844826432105,0.0,unchanged,cross-device HR (ECG-vs-BVP); changed via ECG peak-count change
+wesad,S6_amusement,hr,hr_mae,15.57903417436504,15.57903417436504,0.0,unchanged,cross-device HR (ECG-vs-BVP); changed via ECG peak-count change
+wesad,S6_amusement,hr,hr_n,220.0,220.0,0.0,unchanged,
+wesad,S6_amusement,hr,hr_pearson_r,0.0285458738971655,0.0285458738971655,0.0,unchanged,cross-device HR; changed via ECG peak-count change
+wesad,S6_amusement,hr,hr_rmse,20.186507592726063,20.186507592726063,0.0,unchanged,cross-device HR; changed via ECG peak-count change
+wesad,S6_amusement,rsp,rsp_chest_rsp_n_cycles,81.0,81.0,0.0,unchanged,
+wesad,S6_amusement,bvp,structural_bvp_wrist_bvp_n_peaks,171.0,171.0,0.0,unchanged,
+wesad,S6_amusement,ecg,structural_ecg_chest_ecg_n_peaks,269.0,269.0,0.0,unchanged,post-remediation ecg-peaks SPKI-clamp change -> more peaks (see waveC-notes NEW-C1)
+wesad,S6_amusement,eda,structural_eda_chest_eda_n_scr,62.0,62.0,0.0,unchanged,
+wesad,S6_amusement,rsp,structural_rsp_chest_rsp_mean_rate_bpm,21.607092440278155,21.607092440278155,0.0,unchanged,
+wesad,S6_baseline,bvp,bvp_wrist_bvp_n_peaks,283.0,283.0,0.0,unchanged,
+wesad,S6_baseline,ecg,ecg_chest_ecg_n_peaks,268.0,268.0,0.0,unchanged,post-remediation ecg-peaks SPKI-clamp change -> more peaks (see waveC-notes NEW-C1)
+wesad,S6_baseline,hr,hr_bias,6.164427622500627,6.164427622500627,0.0,unchanged,cross-device HR (ECG-vs-BVP); changed via ECG peak-count change
+wesad,S6_baseline,hr,hr_mae,12.194053138384174,12.194053138384174,0.0,unchanged,cross-device HR (ECG-vs-BVP); changed via ECG peak-count change
+wesad,S6_baseline,hr,hr_n,220.0,220.0,0.0,unchanged,
+wesad,S6_baseline,hr,hr_pearson_r,0.1002902144010067,0.1002902144010067,0.0,unchanged,cross-device HR; changed via ECG peak-count change
+wesad,S6_baseline,hr,hr_rmse,20.86200013078811,20.86200013078811,0.0,unchanged,cross-device HR; changed via ECG peak-count change
+wesad,S6_baseline,rsp,rsp_chest_rsp_n_cycles,62.0,62.0,0.0,unchanged,
+wesad,S6_baseline,bvp,structural_bvp_wrist_bvp_n_peaks,283.0,283.0,0.0,unchanged,
+wesad,S6_baseline,ecg,structural_ecg_chest_ecg_n_peaks,268.0,268.0,0.0,unchanged,post-remediation ecg-peaks SPKI-clamp change -> more peaks (see waveC-notes NEW-C1)
+wesad,S6_baseline,eda,structural_eda_chest_eda_n_scr,42.0,42.0,0.0,unchanged,
+wesad,S6_baseline,rsp,structural_rsp_chest_rsp_mean_rate_bpm,16.50327824372478,16.50327824372478,0.0,unchanged,
+wesad,S6_stress,bvp,bvp_wrist_bvp_n_peaks,285.0,285.0,0.0,unchanged,
+wesad,S6_stress,ecg,ecg_chest_ecg_n_peaks,309.0,309.0,0.0,unchanged,post-remediation ecg-peaks SPKI-clamp change -> more peaks (see waveC-notes NEW-C1)
+wesad,S6_stress,hr,hr_bias,-1.6793241926046625,-1.6793241926046625,0.0,unchanged,cross-device HR (ECG-vs-BVP); changed via ECG peak-count change
+wesad,S6_stress,hr,hr_mae,18.567908478457284,18.567908478457284,0.0,unchanged,cross-device HR (ECG-vs-BVP); changed via ECG peak-count change
+wesad,S6_stress,hr,hr_n,220.0,220.0,0.0,unchanged,
+wesad,S6_stress,hr,hr_pearson_r,0.0942927257920157,0.0942927257920157,0.0,unchanged,cross-device HR; changed via ECG peak-count change
+wesad,S6_stress,hr,hr_rmse,24.580008398833844,24.580008398833844,0.0,unchanged,cross-device HR; changed via ECG peak-count change
+wesad,S6_stress,rsp,rsp_chest_rsp_n_cycles,67.0,67.0,0.0,unchanged,
+wesad,S6_stress,bvp,structural_bvp_wrist_bvp_n_peaks,285.0,285.0,0.0,unchanged,
+wesad,S6_stress,ecg,structural_ecg_chest_ecg_n_peaks,309.0,309.0,0.0,unchanged,post-remediation ecg-peaks SPKI-clamp change -> more peaks (see waveC-notes NEW-C1)
+wesad,S6_stress,eda,structural_eda_chest_eda_n_scr,47.0,47.0,0.0,unchanged,
+wesad,S6_stress,rsp,structural_rsp_chest_rsp_mean_rate_bpm,19.167496852126355,19.167496852126355,0.0,unchanged,
+wearable-exam-stress,S1_Final,bvp,bvp_wrist_bvp_n_peaks,13678.0,13678.0,0.0,unchanged,
+wearable-exam-stress,S1_Final,hr,hr_bias,-32.95199270881954,-32.95199270881954,0.0,unchanged,
+wearable-exam-stress,S1_Final,hr,hr_mae,40.37966903680098,40.37966903680098,0.0,unchanged,
+wearable-exam-stress,S1_Final,hr,hr_n,23381.0,23381.0,0.0,unchanged,
+wearable-exam-stress,S1_Final,hr,hr_pearson_r,-0.0881717706210337,-0.0881717706210337,0.0,unchanged,
+wearable-exam-stress,S1_Final,hr,hr_rmse,48.59902514963575,48.59902514963575,0.0,unchanged,
+wearable-exam-stress,S1_Final,bvp,structural_bvp_wrist_bvp_n_peaks,13678.0,13678.0,0.0,unchanged,
+wearable-exam-stress,S1_Final_eda,eda,structural_eda_wrist_eda_n_scr,,190.0,,new,NEW: previously failed (BUG-003 fs-floor); SCR rates 0.36-5.73/min plausible
+wearable-exam-stress,S1_midterm_1,bvp,bvp_wrist_bvp_n_peaks,6697.0,6697.0,0.0,unchanged,
+wearable-exam-stress,S1_midterm_1,hr,hr_bias,-35.904713575303305,-35.904713575303305,0.0,unchanged,
+wearable-exam-stress,S1_midterm_1,hr,hr_mae,42.55881916651684,42.55881916651684,0.0,unchanged,
+wearable-exam-stress,S1_midterm_1,hr,hr_n,11168.0,11168.0,0.0,unchanged,
+wearable-exam-stress,S1_midterm_1,hr,hr_pearson_r,-0.0820498247765986,-0.0820498247765986,0.0,unchanged,
+wearable-exam-stress,S1_midterm_1,hr,hr_rmse,52.61242825956384,52.61242825956384,0.0,unchanged,
+wearable-exam-stress,S1_midterm_1,bvp,structural_bvp_wrist_bvp_n_peaks,6697.0,6697.0,0.0,unchanged,
+wearable-exam-stress,S1_midterm_1_eda,eda,structural_eda_wrist_eda_n_scr,,534.0,,new,NEW: previously failed (BUG-003 fs-floor); SCR rates 0.36-5.73/min plausible
+wearable-exam-stress,S1_midterm_2,bvp,bvp_wrist_bvp_n_peaks,9445.0,9445.0,0.0,unchanged,
+wearable-exam-stress,S1_midterm_2,hr,hr_bias,-31.63730381577656,-31.63730381577656,0.0,unchanged,
+wearable-exam-stress,S1_midterm_2,hr,hr_mae,39.17166566565079,39.17166566565079,0.0,unchanged,
+wearable-exam-stress,S1_midterm_2,hr,hr_n,11127.0,11127.0,0.0,unchanged,
+wearable-exam-stress,S1_midterm_2,hr,hr_pearson_r,-0.0043141377861806,-0.0043141377861806,0.0,unchanged,
+wearable-exam-stress,S1_midterm_2,hr,hr_rmse,48.01847545354813,48.01847545354813,0.0,unchanged,
+wearable-exam-stress,S1_midterm_2,bvp,structural_bvp_wrist_bvp_n_peaks,9445.0,9445.0,0.0,unchanged,
+wearable-exam-stress,S1_midterm_2_eda,eda,structural_eda_wrist_eda_n_scr,,67.0,,new,NEW: previously failed (BUG-003 fs-floor); SCR rates 0.36-5.73/min plausible
+wearable-exam-stress,S2_Final,bvp,bvp_wrist_bvp_n_peaks,20213.0,20213.0,0.0,unchanged,
+wearable-exam-stress,S2_Final,hr,hr_bias,-27.9274180136562,-27.9274180136562,0.0,unchanged,
+wearable-exam-stress,S2_Final,hr,hr_mae,35.16433194544571,35.16433194544571,0.0,unchanged,
+wearable-exam-stress,S2_Final,hr,hr_n,25325.0,25325.0,0.0,unchanged,
+wearable-exam-stress,S2_Final,hr,hr_pearson_r,-0.0770138837368448,-0.0770138837368448,0.0,unchanged,
+wearable-exam-stress,S2_Final,hr,hr_rmse,46.044115591268735,46.044115591268735,0.0,unchanged,
+wearable-exam-stress,S2_Final,bvp,structural_bvp_wrist_bvp_n_peaks,20213.0,20213.0,0.0,unchanged,
+wearable-exam-stress,S2_Final_eda,eda,structural_eda_wrist_eda_n_scr,,173.0,,new,NEW: previously failed (BUG-003 fs-floor); SCR rates 0.36-5.73/min plausible
+wearable-exam-stress,S2_midterm_1,bvp,bvp_wrist_bvp_n_peaks,3573.0,3573.0,0.0,unchanged,
+wearable-exam-stress,S2_midterm_1,hr,hr_bias,-34.46213721400697,-34.46213721400697,0.0,unchanged,
+wearable-exam-stress,S2_midterm_1,hr,hr_mae,40.277035519097645,40.277035519097645,0.0,unchanged,
+wearable-exam-stress,S2_midterm_1,hr,hr_n,11975.0,11975.0,0.0,unchanged,
+wearable-exam-stress,S2_midterm_1,hr,hr_pearson_r,0.3899284678466393,0.3899284678466393,0.0,unchanged,
+wearable-exam-stress,S2_midterm_1,hr,hr_rmse,48.48976221523236,48.48976221523236,0.0,unchanged,
+wearable-exam-stress,S2_midterm_1,bvp,structural_bvp_wrist_bvp_n_peaks,3573.0,3573.0,0.0,unchanged,
+wearable-exam-stress,S2_midterm_1_eda,eda,structural_eda_wrist_eda_n_scr,,350.0,,new,NEW: previously failed (BUG-003 fs-floor); SCR rates 0.36-5.73/min plausible
+wearable-exam-stress,S2_midterm_2,bvp,bvp_wrist_bvp_n_peaks,10897.0,10897.0,0.0,unchanged,
+wearable-exam-stress,S2_midterm_2,hr,hr_bias,-20.085928508070783,-20.085928508070783,0.0,unchanged,
+wearable-exam-stress,S2_midterm_2,hr,hr_mae,29.62917140743548,29.62917140743548,0.0,unchanged,
+wearable-exam-stress,S2_midterm_2,hr,hr_n,13868.0,13868.0,0.0,unchanged,
+wearable-exam-stress,S2_midterm_2,hr,hr_pearson_r,0.1870149555317195,0.1870149555317195,0.0,unchanged,
+wearable-exam-stress,S2_midterm_2,hr,hr_rmse,38.446012147710775,38.446012147710775,0.0,unchanged,
+wearable-exam-stress,S2_midterm_2,bvp,structural_bvp_wrist_bvp_n_peaks,10897.0,10897.0,0.0,unchanged,
+wearable-exam-stress,S2_midterm_2_eda,eda,structural_eda_wrist_eda_n_scr,,278.0,,new,NEW: previously failed (BUG-003 fs-floor); SCR rates 0.36-5.73/min plausible
+wearable-exam-stress,S3_Final,bvp,bvp_wrist_bvp_n_peaks,16039.0,16039.0,0.0,unchanged,
+wearable-exam-stress,S3_Final,hr,hr_bias,-23.28415246338525,-23.28415246338525,0.0,unchanged,
+wearable-exam-stress,S3_Final,hr,hr_mae,33.11498153058633,33.11498153058633,0.0,unchanged,
+wearable-exam-stress,S3_Final,hr,hr_n,25801.0,25801.0,0.0,unchanged,
+wearable-exam-stress,S3_Final,hr,hr_pearson_r,0.0105010345380669,0.0105010345380669,0.0,unchanged,
+wearable-exam-stress,S3_Final,hr,hr_rmse,40.23884412904229,40.23884412904229,0.0,unchanged,
+wearable-exam-stress,S3_Final,bvp,structural_bvp_wrist_bvp_n_peaks,16039.0,16039.0,0.0,unchanged,
+wearable-exam-stress,S3_Final_eda,eda,structural_eda_wrist_eda_n_scr,,899.0,,new,NEW: previously failed (BUG-003 fs-floor); SCR rates 0.36-5.73/min plausible
+wearable-exam-stress,S3_midterm_1,bvp,bvp_wrist_bvp_n_peaks,4068.0,4068.0,0.0,unchanged,
+wearable-exam-stress,S3_midterm_1,hr,hr_bias,-31.024814922385037,-31.024814922385037,0.0,unchanged,
+wearable-exam-stress,S3_midterm_1,hr,hr_mae,38.82921345796577,38.82921345796577,0.0,unchanged,
+wearable-exam-stress,S3_midterm_1,hr,hr_n,12203.0,12203.0,0.0,unchanged,
+wearable-exam-stress,S3_midterm_1,hr,hr_pearson_r,0.1074135819284633,0.1074135819284633,0.0,unchanged,
+wearable-exam-stress,S3_midterm_1,hr,hr_rmse,47.500674875707,47.500674875707,0.0,unchanged,
+wearable-exam-stress,S3_midterm_1,bvp,structural_bvp_wrist_bvp_n_peaks,4068.0,4068.0,0.0,unchanged,
+wearable-exam-stress,S3_midterm_1_eda,eda,structural_eda_wrist_eda_n_scr,,537.0,,new,NEW: previously failed (BUG-003 fs-floor); SCR rates 0.36-5.73/min plausible
+wearable-exam-stress,S3_midterm_2,bvp,bvp_wrist_bvp_n_peaks,9588.0,9588.0,0.0,unchanged,
+wearable-exam-stress,S3_midterm_2,hr,hr_bias,-16.516399579261655,-16.516399579261655,0.0,unchanged,
+wearable-exam-stress,S3_midterm_2,hr,hr_mae,30.0894510899425,30.0894510899425,0.0,unchanged,
+wearable-exam-stress,S3_midterm_2,hr,hr_n,10232.0,10232.0,0.0,unchanged,
+wearable-exam-stress,S3_midterm_2,hr,hr_pearson_r,0.1079842961629856,0.1079842961629856,0.0,unchanged,
+wearable-exam-stress,S3_midterm_2,hr,hr_rmse,36.990124819630985,36.990124819630985,0.0,unchanged,
+wearable-exam-stress,S3_midterm_2,bvp,structural_bvp_wrist_bvp_n_peaks,9588.0,9588.0,0.0,unchanged,
+wearable-exam-stress,S3_midterm_2_eda,eda,structural_eda_wrist_eda_n_scr,,908.0,,new,NEW: previously failed (BUG-003 fs-floor); SCR rates 0.36-5.73/min plausible
+wearable-exam-stress,S4_Final,bvp,bvp_wrist_bvp_n_peaks,13117.0,13117.0,0.0,unchanged,
+wearable-exam-stress,S4_Final,hr,hr_bias,-10.70427592037544,-10.70427592037544,0.0,unchanged,
+wearable-exam-stress,S4_Final,hr,hr_mae,28.982548574728565,28.982548574728565,0.0,unchanged,
+wearable-exam-stress,S4_Final,hr,hr_n,15900.0,15900.0,0.0,unchanged,
+wearable-exam-stress,S4_Final,hr,hr_pearson_r,0.140251616213501,0.140251616213501,0.0,unchanged,
+wearable-exam-stress,S4_Final,hr,hr_rmse,38.0041643973363,38.0041643973363,0.0,unchanged,
+wearable-exam-stress,S4_Final,bvp,structural_bvp_wrist_bvp_n_peaks,13117.0,13117.0,0.0,unchanged,
+wearable-exam-stress,S4_Final_eda,eda,structural_eda_wrist_eda_n_scr,,1065.0,,new,NEW: previously failed (BUG-003 fs-floor); SCR rates 0.36-5.73/min plausible
+wearable-exam-stress,S4_midterm_1,bvp,bvp_wrist_bvp_n_peaks,9277.0,9277.0,0.0,unchanged,
+wearable-exam-stress,S4_midterm_1,hr,hr_bias,-40.47694609790425,-40.47694609790425,0.0,unchanged,
+wearable-exam-stress,S4_midterm_1,hr,hr_mae,46.958715841407,46.958715841407,0.0,unchanged,
+wearable-exam-stress,S4_midterm_1,hr,hr_n,11684.0,11684.0,0.0,unchanged,
+wearable-exam-stress,S4_midterm_1,hr,hr_pearson_r,-0.0303988716828444,-0.0303988716828444,0.0,unchanged,
+wearable-exam-stress,S4_midterm_1,hr,hr_rmse,57.267601263088,57.267601263088,0.0,unchanged,
+wearable-exam-stress,S4_midterm_1,bvp,structural_bvp_wrist_bvp_n_peaks,9277.0,9277.0,0.0,unchanged,
+wearable-exam-stress,S4_midterm_1_eda,eda,structural_eda_wrist_eda_n_scr,,441.0,,new,NEW: previously failed (BUG-003 fs-floor); SCR rates 0.36-5.73/min plausible
+wearable-exam-stress,S4_midterm_2,bvp,bvp_wrist_bvp_n_peaks,10377.0,10377.0,0.0,unchanged,
+wearable-exam-stress,S4_midterm_2,hr,hr_bias,-6.475447244436272,-6.475447244436272,0.0,unchanged,
+wearable-exam-stress,S4_midterm_2,hr,hr_mae,31.48323333878182,31.48323333878182,0.0,unchanged,
+wearable-exam-stress,S4_midterm_2,hr,hr_n,13351.0,13351.0,0.0,unchanged,
+wearable-exam-stress,S4_midterm_2,hr,hr_pearson_r,0.0291123782744204,0.0291123782744204,0.0,unchanged,
+wearable-exam-stress,S4_midterm_2,hr,hr_rmse,42.75966630926199,42.75966630926199,0.0,unchanged,
+wearable-exam-stress,S4_midterm_2,bvp,structural_bvp_wrist_bvp_n_peaks,10377.0,10377.0,0.0,unchanged,
+wearable-exam-stress,S4_midterm_2_eda,eda,structural_eda_wrist_eda_n_scr,,1278.0,,new,NEW: previously failed (BUG-003 fs-floor); SCR rates 0.36-5.73/min plausible
+wearable-exam-stress,S5_Final,bvp,bvp_wrist_bvp_n_peaks,15939.0,15939.0,0.0,unchanged,
+wearable-exam-stress,S5_Final,hr,hr_bias,-12.183312223452536,-12.183312223452536,0.0,unchanged,
+wearable-exam-stress,S5_Final,hr,hr_mae,26.38184638738039,26.38184638738039,0.0,unchanged,
+wearable-exam-stress,S5_Final,hr,hr_n,15240.0,15240.0,0.0,unchanged,
+wearable-exam-stress,S5_Final,hr,hr_pearson_r,0.007664545120296,0.007664545120296,0.0,unchanged,
+wearable-exam-stress,S5_Final,hr,hr_rmse,32.978134951820174,32.978134951820174,0.0,unchanged,
+wearable-exam-stress,S5_Final,bvp,structural_bvp_wrist_bvp_n_peaks,15939.0,15939.0,0.0,unchanged,
+wearable-exam-stress,S5_Final_eda,eda,structural_eda_wrist_eda_n_scr,,1247.0,,new,NEW: previously failed (BUG-003 fs-floor); SCR rates 0.36-5.73/min plausible
+wearable-exam-stress,S5_midterm_1,bvp,bvp_wrist_bvp_n_peaks,6935.0,6935.0,0.0,unchanged,
+wearable-exam-stress,S5_midterm_1,hr,hr_bias,-41.77914661774802,-41.77914661774802,0.0,unchanged,
+wearable-exam-stress,S5_midterm_1,hr,hr_mae,47.13131945441217,47.13131945441217,0.0,unchanged,
+wearable-exam-stress,S5_midterm_1,hr,hr_n,11992.0,11992.0,0.0,unchanged,
+wearable-exam-stress,S5_midterm_1,hr,hr_pearson_r,-0.045433308108043,-0.045433308108043,0.0,unchanged,
+wearable-exam-stress,S5_midterm_1,hr,hr_rmse,56.85367187574544,56.85367187574544,0.0,unchanged,
+wearable-exam-stress,S5_midterm_1,bvp,structural_bvp_wrist_bvp_n_peaks,6935.0,6935.0,0.0,unchanged,
+wearable-exam-stress,S5_midterm_1_eda,eda,structural_eda_wrist_eda_n_scr,,431.0,,new,NEW: previously failed (BUG-003 fs-floor); SCR rates 0.36-5.73/min plausible
+wearable-exam-stress,S5_midterm_2,bvp,bvp_wrist_bvp_n_peaks,13370.0,13370.0,0.0,unchanged,
+wearable-exam-stress,S5_midterm_2,hr,hr_bias,-26.02699557298088,-26.02699557298088,0.0,unchanged,
+wearable-exam-stress,S5_midterm_2,hr,hr_mae,32.81141752907093,32.81141752907093,0.0,unchanged,
+wearable-exam-stress,S5_midterm_2,hr,hr_n,11984.0,11984.0,0.0,unchanged,
+wearable-exam-stress,S5_midterm_2,hr,hr_pearson_r,-0.164064320254853,-0.164064320254853,0.0,unchanged,
+wearable-exam-stress,S5_midterm_2,hr,hr_rmse,43.46968715269701,43.46968715269701,0.0,unchanged,
+wearable-exam-stress,S5_midterm_2,bvp,structural_bvp_wrist_bvp_n_peaks,13370.0,13370.0,0.0,unchanged,
+wearable-exam-stress,S5_midterm_2_eda,eda,structural_eda_wrist_eda_n_scr,,696.0,,new,NEW: previously failed (BUG-003 fs-floor); SCR rates 0.36-5.73/min plausible
+big-ideas,003_eda,eda,structural_eda_wrist_eda_n_scr,,1306.0,,new,NEW: previously failed (BUG-003 fs-floor)
+big-ideas,015_eda,eda,structural_eda_wrist_eda_n_scr,,759.0,,new,NEW: previously failed (BUG-003 fs-floor)
+wesad,ALL,multi,known_groups_median_hr_baseline,62.25,67.0,4.75,changed,
+wesad,ALL,multi,known_groups_median_hr_stress,79.0,79.0,0.0,unchanged,
+wesad,ALL,multi,known_groups_delta_hr_stress_minus_baseline,16.75,12.0,-4.75,changed,attenuated by S3/S2 baseline ECG double-detection (NEW-C1); direction preserved
+wesad,ALL,multi,known_groups_median_scr_baseline,0.5,0.5,0.0,unchanged,
+wesad,ALL,multi,known_groups_median_scr_stress,8.5,8.5,0.0,unchanged,
+wesad,ALL,multi,known_groups_delta_scr_stress_minus_baseline,8.0,8.0,0.0,unchanged,direction preserved (stress>baseline)
+wesad,ALL,multi,known_groups_median_rr_baseline,16.503,16.503,0.0,unchanged,
+wesad,ALL,multi,known_groups_median_rr_stress,21.142,21.142,0.0,unchanged,
+wesad,ALL,multi,known_groups_delta_rr_stress_minus_baseline,4.638,4.638,0.0,unchanged,direction preserved (stress>baseline)
+wesad,S2_baseline,bvp;ecg;eda;rsp,recording_status,ok,ok,,unchanged,
+wesad,S2_stress,bvp;ecg;eda;rsp,recording_status,ok,ok,,unchanged,
+wesad,S2_amusement,bvp;ecg;eda;rsp,recording_status,ok,ok,,unchanged,
+wesad,S3_baseline,bvp;ecg;eda;rsp,recording_status,ok,ok,,unchanged,
+wesad,S3_stress,bvp;ecg;eda;rsp,recording_status,ok,ok,,unchanged,
+wesad,S3_amusement,bvp;ecg;eda;rsp,recording_status,ok,ok,,unchanged,
+wesad,S4_baseline,bvp;ecg;eda;rsp,recording_status,ok,ok,,unchanged,
+wesad,S4_stress,bvp;ecg;eda;rsp,recording_status,ok,ok,,unchanged,
+wesad,S4_amusement,bvp;ecg;eda;rsp,recording_status,ok,ok,,unchanged,
+wesad,S5_baseline,bvp;ecg;eda;rsp,recording_status,ok,ok,,unchanged,
+wesad,S5_stress,bvp;ecg;eda;rsp,recording_status,ok,ok,,unchanged,
+wesad,S5_amusement,bvp;ecg;eda;rsp,recording_status,ok,ok,,unchanged,
+wesad,S6_baseline,bvp;ecg;eda;rsp,recording_status,ok,ok,,unchanged,
+wesad,S6_stress,bvp;ecg;eda;rsp,recording_status,ok,ok,,unchanged,
+wesad,S6_amusement,bvp;ecg;eda;rsp,recording_status,ok,ok,,unchanged,
+wearable-exam-stress,S1_midterm_1,bvp,recording_status,ok,ok,,unchanged,
+wearable-exam-stress,S1_midterm_1_eda,eda,recording_status,failed,ok,,improvement,
+wearable-exam-stress,S1_midterm_2,bvp,recording_status,ok,ok,,unchanged,
+wearable-exam-stress,S1_midterm_2_eda,eda,recording_status,failed,ok,,improvement,
+wearable-exam-stress,S1_Final,bvp,recording_status,ok,ok,,unchanged,
+wearable-exam-stress,S1_Final_eda,eda,recording_status,failed,ok,,improvement,
+wearable-exam-stress,S2_midterm_1,bvp,recording_status,ok,ok,,unchanged,
+wearable-exam-stress,S2_midterm_1_eda,eda,recording_status,failed,ok,,improvement,
+wearable-exam-stress,S2_midterm_2,bvp,recording_status,ok,ok,,unchanged,
+wearable-exam-stress,S2_midterm_2_eda,eda,recording_status,failed,ok,,improvement,
+wearable-exam-stress,S2_Final,bvp,recording_status,ok,ok,,unchanged,
+wearable-exam-stress,S2_Final_eda,eda,recording_status,failed,ok,,improvement,
+wearable-exam-stress,S3_midterm_1,bvp,recording_status,ok,ok,,unchanged,
+wearable-exam-stress,S3_midterm_1_eda,eda,recording_status,failed,ok,,improvement,
+wearable-exam-stress,S3_midterm_2,bvp,recording_status,ok,ok,,unchanged,
+wearable-exam-stress,S3_midterm_2_eda,eda,recording_status,failed,ok,,improvement,
+wearable-exam-stress,S3_Final,bvp,recording_status,ok,ok,,unchanged,
+wearable-exam-stress,S3_Final_eda,eda,recording_status,failed,ok,,improvement,
+wearable-exam-stress,S4_midterm_1,bvp,recording_status,ok,ok,,unchanged,
+wearable-exam-stress,S4_midterm_1_eda,eda,recording_status,failed,ok,,improvement,
+wearable-exam-stress,S4_midterm_2,bvp,recording_status,ok,ok,,unchanged,
+wearable-exam-stress,S4_midterm_2_eda,eda,recording_status,failed,ok,,improvement,
+wearable-exam-stress,S4_Final,bvp,recording_status,ok,ok,,unchanged,
+wearable-exam-stress,S4_Final_eda,eda,recording_status,failed,ok,,improvement,
+wearable-exam-stress,S5_midterm_1,bvp,recording_status,ok,ok,,unchanged,
+wearable-exam-stress,S5_midterm_1_eda,eda,recording_status,failed,ok,,improvement,
+wearable-exam-stress,S5_midterm_2,bvp,recording_status,ok,ok,,unchanged,
+wearable-exam-stress,S5_midterm_2_eda,eda,recording_status,failed,ok,,improvement,
+wearable-exam-stress,S5_Final,bvp,recording_status,ok,ok,,unchanged,
+wearable-exam-stress,S5_Final_eda,eda,recording_status,failed,ok,,improvement,
+big-ideas,003_eda,eda,recording_status,failed,ok,,improvement,
+big-ideas,015_eda,eda,recording_status,failed,ok,,improvement,
