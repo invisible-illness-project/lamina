@@ -1,0 +1,1627 @@
+dataset,record,modality,metric,baseline,current,delta,status,notes
+mit-bih-arrhythmia,100,ecg,beat_f1,1,0.408802,-0.591198,regression,channel=MLII
+mit-bih-arrhythmia,100,ecg,beat_recall,1,0.551694,-0.448306,regression,channel=MLII
+mit-bih-arrhythmia,100,ecg,beat_precision,1,0.324702,-0.675298,regression,channel=MLII
+mit-bih-arrhythmia,100,ecg,fp_count,0,2608,2608,regression,channel=MLII
+mit-bih-arrhythmia,100,ecg,fn_count,0,1019,1019,regression,channel=MLII
+mit-bih-arrhythmia,100,ecg,hr_mae_bpm,0.00868346,56.7727,56.7641,regression,channel=MLII
+mit-bih-arrhythmia,101,ecg,beat_f1,0.998125,0.998125,0,unchanged,channel=MLII
+mit-bih-arrhythmia,101,ecg,beat_recall,0.998928,0.998928,0,unchanged,channel=MLII
+mit-bih-arrhythmia,101,ecg,beat_precision,0.997323,0.997323,0,unchanged,channel=MLII
+mit-bih-arrhythmia,101,ecg,fp_count,5,5,0,unchanged,channel=MLII
+mit-bih-arrhythmia,101,ecg,fn_count,2,2,0,unchanged,channel=MLII
+mit-bih-arrhythmia,101,ecg,hr_mae_bpm,0.0807668,0.0824526,0.00168584,unchanged,channel=MLII
+mit-bih-arrhythmia,102,ecg,beat_f1,1,0.997947,-0.00205339,unchanged,channel=V5
+mit-bih-arrhythmia,102,ecg,beat_recall,1,1,0,unchanged,channel=V5
+mit-bih-arrhythmia,102,ecg,beat_precision,1,0.995902,-0.00409836,unchanged,channel=V5
+mit-bih-arrhythmia,102,ecg,fp_count,0,9,9,unchanged,channel=V5
+mit-bih-arrhythmia,102,ecg,fn_count,0,0,0,unchanged,channel=V5
+mit-bih-arrhythmia,102,ecg,hr_mae_bpm,0.134873,0.534731,0.399859,unchanged,channel=V5
+mit-bih-arrhythmia,103,ecg,beat_f1,0.998799,0.963031,-0.0357675,regression,channel=MLII
+mit-bih-arrhythmia,103,ecg,beat_recall,0.997601,1,0.00239923,unchanged,channel=MLII
+mit-bih-arrhythmia,103,ecg,beat_precision,1,0.928699,-0.0713012,regression,channel=MLII
+mit-bih-arrhythmia,103,ecg,fp_count,0,160,160,regression,channel=MLII
+mit-bih-arrhythmia,103,ecg,fn_count,5,0,-5,unchanged,channel=MLII
+mit-bih-arrhythmia,103,ecg,hr_mae_bpm,0.0074989,2.54317,2.53568,regression,channel=MLII
+mit-bih-arrhythmia,104,ecg,beat_f1,0.683387,0.974438,0.291051,improvement,channel=V5
+mit-bih-arrhythmia,104,ecg,beat_recall,0.519515,0.991925,0.472409,improvement,channel=V5
+mit-bih-arrhythmia,104,ecg,beat_precision,0.998276,0.957557,-0.0407185,regression,channel=V5
+mit-bih-arrhythmia,104,ecg,fp_count,2,98,96,regression,channel=V5
+mit-bih-arrhythmia,104,ecg,fn_count,1071,18,-1053,improvement,channel=V5
+mit-bih-arrhythmia,104,ecg,hr_mae_bpm,2.28773,2.95679,0.66906,unchanged,channel=V5
+mit-bih-arrhythmia,105,ecg,beat_f1,0.986497,0.978373,-0.00812371,unchanged,channel=MLII
+mit-bih-arrhythmia,105,ecg,beat_recall,0.994168,0.993779,-0.000388802,unchanged,channel=MLII
+mit-bih-arrhythmia,105,ecg,beat_precision,0.978943,0.963438,-0.0155057,regression,channel=MLII
+mit-bih-arrhythmia,105,ecg,fp_count,55,97,42,unchanged,channel=MLII
+mit-bih-arrhythmia,105,ecg,fn_count,15,16,1,unchanged,channel=MLII
+mit-bih-arrhythmia,105,ecg,hr_mae_bpm,1.31609,2.41817,1.10207,regression,channel=MLII
+mit-bih-arrhythmia,106,ecg,beat_f1,0.99926,0.97615,-0.0231098,regression,channel=MLII
+mit-bih-arrhythmia,106,ecg,beat_recall,0.999507,0.999507,0,unchanged,channel=MLII
+mit-bih-arrhythmia,106,ecg,beat_precision,0.999014,0.953861,-0.0451532,regression,channel=MLII
+mit-bih-arrhythmia,106,ecg,fp_count,2,98,96,regression,channel=MLII
+mit-bih-arrhythmia,106,ecg,fn_count,1,1,0,unchanged,channel=MLII
+mit-bih-arrhythmia,106,ecg,hr_mae_bpm,0.242629,2.64439,2.40176,regression,channel=MLII
+mit-bih-arrhythmia,107,ecg,beat_f1,0.997655,0.997422,-0.000232708,unchanged,channel=MLII
+mit-bih-arrhythmia,107,ecg,beat_recall,0.995321,0.995788,0.000467946,unchanged,channel=MLII
+mit-bih-arrhythmia,107,ecg,beat_precision,1,0.999061,-0.000938967,unchanged,channel=MLII
+mit-bih-arrhythmia,107,ecg,fp_count,0,2,2,unchanged,channel=MLII
+mit-bih-arrhythmia,107,ecg,fn_count,10,9,-1,unchanged,channel=MLII
+mit-bih-arrhythmia,107,ecg,hr_mae_bpm,0.28852,0.2666,-0.0219203,unchanged,channel=MLII
+mit-bih-arrhythmia,108,ecg,beat_f1,0.885182,0.214578,-0.670604,regression,channel=MLII
+mit-bih-arrhythmia,108,ecg,beat_recall,0.903006,0.222915,-0.680091,regression,channel=MLII
+mit-bih-arrhythmia,108,ecg,beat_precision,0.868048,0.206842,-0.661206,regression,channel=MLII
+mit-bih-arrhythmia,108,ecg,fp_count,242,1507,1265,regression,channel=MLII
+mit-bih-arrhythmia,108,ecg,fn_count,171,1370,1199,regression,channel=MLII
+mit-bih-arrhythmia,108,ecg,hr_mae_bpm,1.34425,2.85005,1.5058,regression,channel=MLII
+mit-bih-arrhythmia,109,ecg,beat_f1,0.999407,0.999802,0.000395257,unchanged,channel=MLII
+mit-bih-arrhythmia,109,ecg,beat_recall,0.998815,0.999605,0.000789889,unchanged,channel=MLII
+mit-bih-arrhythmia,109,ecg,beat_precision,1,1,0,unchanged,channel=MLII
+mit-bih-arrhythmia,109,ecg,fp_count,0,0,0,unchanged,channel=MLII
+mit-bih-arrhythmia,109,ecg,fn_count,3,1,-2,unchanged,channel=MLII
+mit-bih-arrhythmia,109,ecg,hr_mae_bpm,0.0885578,0.0616485,-0.0269093,unchanged,channel=MLII
+mit-bih-arrhythmia,111,ecg,beat_f1,0.999294,0.704515,-0.294779,regression,channel=MLII
+mit-bih-arrhythmia,111,ecg,beat_recall,0.999529,0.999058,-0.00047081,unchanged,channel=MLII
+mit-bih-arrhythmia,111,ecg,beat_precision,0.999059,0.544103,-0.454956,regression,channel=MLII
+mit-bih-arrhythmia,111,ecg,fp_count,2,1778,1776,regression,channel=MLII
+mit-bih-arrhythmia,111,ecg,fn_count,1,2,1,unchanged,channel=MLII
+mit-bih-arrhythmia,111,ecg,hr_mae_bpm,0.150785,26.7678,26.617,regression,channel=MLII
+mit-bih-arrhythmia,112,ecg,beat_f1,1,1,0,unchanged,channel=MLII
+mit-bih-arrhythmia,112,ecg,beat_recall,1,1,0,unchanged,channel=MLII
+mit-bih-arrhythmia,112,ecg,beat_precision,1,1,0,unchanged,channel=MLII
+mit-bih-arrhythmia,112,ecg,fp_count,0,0,0,unchanged,channel=MLII
+mit-bih-arrhythmia,112,ecg,fn_count,0,0,0,unchanged,channel=MLII
+mit-bih-arrhythmia,112,ecg,hr_mae_bpm,0.0124581,0.0124581,0,unchanged,channel=MLII
+mit-bih-arrhythmia,113,ecg,beat_f1,0.999721,0.666418,-0.333303,regression,channel=MLII
+mit-bih-arrhythmia,113,ecg,beat_recall,0.999443,0.997214,-0.00222841,unchanged,channel=MLII
+mit-bih-arrhythmia,113,ecg,beat_precision,1,0.500419,-0.499581,regression,channel=MLII
+mit-bih-arrhythmia,113,ecg,fp_count,0,1787,1787,regression,channel=MLII
+mit-bih-arrhythmia,113,ecg,fn_count,1,5,4,unchanged,channel=MLII
+mit-bih-arrhythmia,113,ecg,hr_mae_bpm,0.00815592,73.6373,73.6292,regression,channel=MLII
+mit-bih-arrhythmia,114,ecg,beat_f1,0.999468,0.999734,0.000266312,unchanged,channel=MLII
+mit-bih-arrhythmia,114,ecg,beat_recall,0.998936,0.999468,0.000532198,unchanged,channel=MLII
+mit-bih-arrhythmia,114,ecg,beat_precision,1,1,0,unchanged,channel=MLII
+mit-bih-arrhythmia,114,ecg,fp_count,0,0,0,unchanged,channel=MLII
+mit-bih-arrhythmia,114,ecg,fn_count,2,1,-1,unchanged,channel=MLII
+mit-bih-arrhythmia,114,ecg,hr_mae_bpm,0.147022,0.165562,0.0185401,unchanged,channel=MLII
+mit-bih-arrhythmia,115,ecg,beat_f1,1,0.81816,-0.18184,regression,channel=MLII
+mit-bih-arrhythmia,115,ecg,beat_recall,1,0.871992,-0.128008,regression,channel=MLII
+mit-bih-arrhythmia,115,ecg,beat_precision,1,0.770588,-0.229412,regression,channel=MLII
+mit-bih-arrhythmia,115,ecg,fp_count,0,507,507,regression,channel=MLII
+mit-bih-arrhythmia,115,ecg,fn_count,0,250,250,regression,channel=MLII
+mit-bih-arrhythmia,115,ecg,hr_mae_bpm,0.0124702,9.37884,9.36637,regression,channel=MLII
+mit-bih-arrhythmia,116,ecg,beat_f1,0.994169,0.994379,0.000209417,unchanged,channel=MLII
+mit-bih-arrhythmia,116,ecg,beat_recall,0.989635,0.99005,0.000414594,unchanged,channel=MLII
+mit-bih-arrhythmia,116,ecg,beat_precision,0.998745,0.998745,5.24981e-07,unchanged,channel=MLII
+mit-bih-arrhythmia,116,ecg,fp_count,3,3,0,unchanged,channel=MLII
+mit-bih-arrhythmia,116,ecg,fn_count,25,24,-1,unchanged,channel=MLII
+mit-bih-arrhythmia,116,ecg,hr_mae_bpm,0.0957009,0.138227,0.0425256,unchanged,channel=MLII
+mit-bih-arrhythmia,117,ecg,beat_f1,1,0.380356,-0.619644,regression,channel=MLII
+mit-bih-arrhythmia,117,ecg,beat_recall,1,0.613029,-0.386971,regression,channel=MLII
+mit-bih-arrhythmia,117,ecg,beat_precision,1,0.275711,-0.724289,regression,channel=MLII
+mit-bih-arrhythmia,117,ecg,fp_count,0,2472,2472,regression,channel=MLII
+mit-bih-arrhythmia,117,ecg,fn_count,0,594,594,regression,channel=MLII
+mit-bih-arrhythmia,117,ecg,hr_mae_bpm,0.0246957,60.843,60.8183,regression,channel=MLII
+mit-bih-arrhythmia,118,ecg,beat_f1,1,1,0,unchanged,channel=MLII
+mit-bih-arrhythmia,118,ecg,beat_recall,1,1,0,unchanged,channel=MLII
+mit-bih-arrhythmia,118,ecg,beat_precision,1,1,0,unchanged,channel=MLII
+mit-bih-arrhythmia,118,ecg,fp_count,0,0,0,unchanged,channel=MLII
+mit-bih-arrhythmia,118,ecg,fn_count,0,0,0,unchanged,channel=MLII
+mit-bih-arrhythmia,118,ecg,hr_mae_bpm,0.0169094,0.0169094,0,unchanged,channel=MLII
+mit-bih-arrhythmia,119,ecg,beat_f1,0.999748,0.99774,-0.00200803,unchanged,channel=MLII
+mit-bih-arrhythmia,119,ecg,beat_recall,1,1,0,unchanged,channel=MLII
+mit-bih-arrhythmia,119,ecg,beat_precision,0.999497,0.995491,-0.004006,unchanged,channel=MLII
+mit-bih-arrhythmia,119,ecg,fp_count,1,9,8,unchanged,channel=MLII
+mit-bih-arrhythmia,119,ecg,fn_count,0,0,0,unchanged,channel=MLII
+mit-bih-arrhythmia,119,ecg,hr_mae_bpm,0.475857,0.824161,0.348304,unchanged,channel=MLII
+mit-bih-arrhythmia,121,ecg,beat_f1,0.999463,0.999732,0.000268601,unchanged,channel=MLII
+mit-bih-arrhythmia,121,ecg,beat_recall,0.998926,0.999463,0.000536769,unchanged,channel=MLII
+mit-bih-arrhythmia,121,ecg,beat_precision,1,1,0,unchanged,channel=MLII
+mit-bih-arrhythmia,121,ecg,fp_count,0,0,0,unchanged,channel=MLII
+mit-bih-arrhythmia,121,ecg,fn_count,2,1,-1,unchanged,channel=MLII
+mit-bih-arrhythmia,121,ecg,hr_mae_bpm,0.0101725,0.0217816,0.0116092,unchanged,channel=MLII
+mit-bih-arrhythmia,122,ecg,beat_f1,0.999596,0.999596,0,unchanged,channel=MLII
+mit-bih-arrhythmia,122,ecg,beat_recall,0.999596,0.999596,0,unchanged,channel=MLII
+mit-bih-arrhythmia,122,ecg,beat_precision,0.999596,0.999596,0,unchanged,channel=MLII
+mit-bih-arrhythmia,122,ecg,fp_count,1,1,0,unchanged,channel=MLII
+mit-bih-arrhythmia,122,ecg,fn_count,1,1,0,unchanged,channel=MLII
+mit-bih-arrhythmia,122,ecg,hr_mae_bpm,0.0187723,0.0187723,0,unchanged,channel=MLII
+mit-bih-arrhythmia,123,ecg,beat_f1,0.999011,0.131962,-0.867049,regression,channel=MLII
+mit-bih-arrhythmia,123,ecg,beat_recall,0.998024,0.202899,-0.795125,regression,channel=MLII
+mit-bih-arrhythmia,123,ecg,beat_precision,1,0.0977778,-0.902222,regression,channel=MLII
+mit-bih-arrhythmia,123,ecg,fp_count,0,2842,2842,regression,channel=MLII
+mit-bih-arrhythmia,123,ecg,fn_count,3,1210,1207,regression,channel=MLII
+mit-bih-arrhythmia,123,ecg,hr_mae_bpm,0.189006,51.2558,51.0668,regression,channel=MLII
+mit-bih-arrhythmia,124,ecg,beat_f1,0.993159,0.998453,0.00529424,unchanged,channel=MLII
+mit-bih-arrhythmia,124,ecg,beat_recall,0.986411,0.996912,0.0105003,improvement,channel=MLII
+mit-bih-arrhythmia,124,ecg,beat_precision,1,1,0,unchanged,channel=MLII
+mit-bih-arrhythmia,124,ecg,fp_count,0,0,0,unchanged,channel=MLII
+mit-bih-arrhythmia,124,ecg,fn_count,22,5,-17,unchanged,channel=MLII
+mit-bih-arrhythmia,124,ecg,hr_mae_bpm,0.0918542,0.087415,-0.00443927,unchanged,channel=MLII
+mit-bih-arrhythmia,200,ecg,beat_f1,0.999038,0.998847,-0.000191679,unchanged,channel=MLII
+mit-bih-arrhythmia,200,ecg,beat_recall,0.998462,0.998847,0.000384468,unchanged,channel=MLII
+mit-bih-arrhythmia,200,ecg,beat_precision,0.999615,0.998847,-0.000768491,unchanged,channel=MLII
+mit-bih-arrhythmia,200,ecg,fp_count,1,3,2,unchanged,channel=MLII
+mit-bih-arrhythmia,200,ecg,fn_count,4,3,-1,unchanged,channel=MLII
+mit-bih-arrhythmia,200,ecg,hr_mae_bpm,1.71437,1.69487,-0.0194961,unchanged,channel=MLII
+mit-bih-arrhythmia,201,ecg,beat_f1,0.9871,0.989192,0.00209187,unchanged,channel=MLII
+mit-bih-arrhythmia,201,ecg,beat_recall,0.974529,0.979114,0.00458482,unchanged,channel=MLII
+mit-bih-arrhythmia,201,ecg,beat_precision,1,0.99948,-0.000520021,unchanged,channel=MLII
+mit-bih-arrhythmia,201,ecg,fp_count,0,1,1,unchanged,channel=MLII
+mit-bih-arrhythmia,201,ecg,fn_count,50,41,-9,unchanged,channel=MLII
+mit-bih-arrhythmia,201,ecg,hr_mae_bpm,2.04657,1.7257,-0.320868,unchanged,channel=MLII
+mit-bih-arrhythmia,202,ecg,beat_f1,0.998359,0.998828,0.000469483,unchanged,channel=MLII
+mit-bih-arrhythmia,202,ecg,beat_recall,0.996723,0.997659,0.00093633,unchanged,channel=MLII
+mit-bih-arrhythmia,202,ecg,beat_precision,1,1,0,unchanged,channel=MLII
+mit-bih-arrhythmia,202,ecg,fp_count,0,0,0,unchanged,channel=MLII
+mit-bih-arrhythmia,202,ecg,fn_count,7,5,-2,unchanged,channel=MLII
+mit-bih-arrhythmia,202,ecg,hr_mae_bpm,0.221681,0.17234,-0.0493408,unchanged,channel=MLII
+mit-bih-arrhythmia,203,ecg,beat_f1,0.981106,0.990419,0.00931217,unchanged,channel=MLII
+mit-bih-arrhythmia,203,ecg,beat_recall,0.967114,0.988591,0.0214765,improvement,channel=MLII
+mit-bih-arrhythmia,203,ecg,beat_precision,0.995509,0.992253,-0.00325622,unchanged,channel=MLII
+mit-bih-arrhythmia,203,ecg,fp_count,13,23,10,unchanged,channel=MLII
+mit-bih-arrhythmia,203,ecg,fn_count,98,34,-64,improvement,channel=MLII
+mit-bih-arrhythmia,203,ecg,hr_mae_bpm,3.53661,2.40668,-1.12992,unchanged,channel=MLII
+mit-bih-arrhythmia,205,ecg,beat_f1,0.999435,0.999623,0.00018843,unchanged,channel=MLII
+mit-bih-arrhythmia,205,ecg,beat_recall,0.99887,0.999247,0.000376506,unchanged,channel=MLII
+mit-bih-arrhythmia,205,ecg,beat_precision,1,1,0,unchanged,channel=MLII
+mit-bih-arrhythmia,205,ecg,fp_count,0,0,0,unchanged,channel=MLII
+mit-bih-arrhythmia,205,ecg,fn_count,3,2,-1,unchanged,channel=MLII
+mit-bih-arrhythmia,205,ecg,hr_mae_bpm,0.335947,0.331665,-0.00428165,unchanged,channel=MLII
+mit-bih-arrhythmia,207,ecg,beat_f1,0.918731,0.894559,-0.024172,regression,channel=MLII
+mit-bih-arrhythmia,207,ecg,beat_recall,0.996774,0.998925,0.00215054,unchanged,channel=MLII
+mit-bih-arrhythmia,207,ecg,beat_precision,0.852022,0.809939,-0.0420831,regression,channel=MLII
+mit-bih-arrhythmia,207,ecg,fp_count,322,436,114,regression,channel=MLII
+mit-bih-arrhythmia,207,ecg,fn_count,6,2,-4,unchanged,channel=MLII
+mit-bih-arrhythmia,207,ecg,hr_mae_bpm,7.26566,8.26841,1.00274,regression,channel=MLII
+mit-bih-arrhythmia,208,ecg,beat_f1,0.995758,0.995429,-0.000328527,unchanged,channel=MLII
+mit-bih-arrhythmia,208,ecg,beat_recall,0.992893,0.994924,0.00203046,unchanged,channel=MLII
+mit-bih-arrhythmia,208,ecg,beat_precision,0.998639,0.995935,-0.00270357,unchanged,channel=MLII
+mit-bih-arrhythmia,208,ecg,fp_count,4,12,8,unchanged,channel=MLII
+mit-bih-arrhythmia,208,ecg,fn_count,21,15,-6,unchanged,channel=MLII
+mit-bih-arrhythmia,208,ecg,hr_mae_bpm,0.889597,0.918293,0.0286964,unchanged,channel=MLII
+mit-bih-arrhythmia,209,ecg,beat_f1,0.999501,0.999002,-0.000498753,unchanged,channel=MLII
+mit-bih-arrhythmia,209,ecg,beat_recall,1,0.999667,-0.000332779,unchanged,channel=MLII
+mit-bih-arrhythmia,209,ecg,beat_precision,0.999003,0.998338,-0.000664341,unchanged,channel=MLII
+mit-bih-arrhythmia,209,ecg,fp_count,3,5,2,unchanged,channel=MLII
+mit-bih-arrhythmia,209,ecg,fn_count,0,1,1,unchanged,channel=MLII
+mit-bih-arrhythmia,209,ecg,hr_mae_bpm,0.0838673,0.116737,0.0328695,unchanged,channel=MLII
+mit-bih-arrhythmia,210,ecg,beat_f1,0.992978,0.994891,0.00191341,unchanged,channel=MLII
+mit-bih-arrhythmia,210,ecg,beat_recall,0.98717,0.992075,0.00490566,unchanged,channel=MLII
+mit-bih-arrhythmia,210,ecg,beat_precision,0.998855,0.997723,-0.00113156,unchanged,channel=MLII
+mit-bih-arrhythmia,210,ecg,fp_count,3,6,3,unchanged,channel=MLII
+mit-bih-arrhythmia,210,ecg,fn_count,34,21,-13,unchanged,channel=MLII
+mit-bih-arrhythmia,210,ecg,hr_mae_bpm,1.85206,1.7431,-0.108958,unchanged,channel=MLII
+mit-bih-arrhythmia,212,ecg,beat_f1,1,0.999273,-0.000727273,unchanged,channel=MLII
+mit-bih-arrhythmia,212,ecg,beat_recall,1,1,0,unchanged,channel=MLII
+mit-bih-arrhythmia,212,ecg,beat_precision,1,0.998547,-0.00145349,unchanged,channel=MLII
+mit-bih-arrhythmia,212,ecg,fp_count,0,4,4,unchanged,channel=MLII
+mit-bih-arrhythmia,212,ecg,fn_count,0,0,0,unchanged,channel=MLII
+mit-bih-arrhythmia,212,ecg,hr_mae_bpm,0.0172227,0.125606,0.108383,unchanged,channel=MLII
+mit-bih-arrhythmia,213,ecg,beat_f1,0.999692,0.999846,0.00015387,unchanged,channel=MLII
+mit-bih-arrhythmia,213,ecg,beat_recall,0.999385,0.999692,0.000307598,unchanged,channel=MLII
+mit-bih-arrhythmia,213,ecg,beat_precision,1,1,0,unchanged,channel=MLII
+mit-bih-arrhythmia,213,ecg,fp_count,0,0,0,unchanged,channel=MLII
+mit-bih-arrhythmia,213,ecg,fn_count,2,1,-1,unchanged,channel=MLII
+mit-bih-arrhythmia,213,ecg,hr_mae_bpm,0.191853,0.171267,-0.0205861,unchanged,channel=MLII
+mit-bih-arrhythmia,214,ecg,beat_f1,0.999336,0.999336,0,unchanged,channel=MLII
+mit-bih-arrhythmia,214,ecg,beat_recall,0.998674,0.998674,0,unchanged,channel=MLII
+mit-bih-arrhythmia,214,ecg,beat_precision,1,1,0,unchanged,channel=MLII
+mit-bih-arrhythmia,214,ecg,fp_count,0,0,0,unchanged,channel=MLII
+mit-bih-arrhythmia,214,ecg,fn_count,3,3,0,unchanged,channel=MLII
+mit-bih-arrhythmia,214,ecg,hr_mae_bpm,0.187115,0.187115,0,unchanged,channel=MLII
+mit-bih-arrhythmia,215,ecg,beat_f1,0.999703,1,0.000297442,unchanged,channel=MLII
+mit-bih-arrhythmia,215,ecg,beat_recall,0.999405,1,0.000594707,unchanged,channel=MLII
+mit-bih-arrhythmia,215,ecg,beat_precision,1,1,0,unchanged,channel=MLII
+mit-bih-arrhythmia,215,ecg,fp_count,0,0,0,unchanged,channel=MLII
+mit-bih-arrhythmia,215,ecg,fn_count,2,0,-2,unchanged,channel=MLII
+mit-bih-arrhythmia,215,ecg,hr_mae_bpm,0.0828839,0.0406709,-0.042213,unchanged,channel=MLII
+mit-bih-arrhythmia,217,ecg,beat_f1,0.998641,0.998867,0.000226808,unchanged,channel=MLII
+mit-bih-arrhythmia,217,ecg,beat_recall,0.998188,0.998641,0.000452899,unchanged,channel=MLII
+mit-bih-arrhythmia,217,ecg,beat_precision,0.999093,0.999094,4.10792e-07,unchanged,channel=MLII
+mit-bih-arrhythmia,217,ecg,fp_count,2,2,0,unchanged,channel=MLII
+mit-bih-arrhythmia,217,ecg,fn_count,4,3,-1,unchanged,channel=MLII
+mit-bih-arrhythmia,217,ecg,hr_mae_bpm,0.155388,0.142392,-0.0129963,unchanged,channel=MLII
+mit-bih-arrhythmia,219,ecg,beat_f1,0.998605,0.97883,-0.0197753,regression,channel=MLII
+mit-bih-arrhythmia,219,ecg,beat_recall,0.997214,0.998143,0.000928505,unchanged,channel=MLII
+mit-bih-arrhythmia,219,ecg,beat_precision,1,0.96025,-0.0397499,regression,channel=MLII
+mit-bih-arrhythmia,219,ecg,fp_count,0,89,89,regression,channel=MLII
+mit-bih-arrhythmia,219,ecg,fn_count,6,4,-2,unchanged,channel=MLII
+mit-bih-arrhythmia,219,ecg,hr_mae_bpm,0.288321,3.91992,3.6316,regression,channel=MLII
+mit-bih-arrhythmia,220,ecg,beat_f1,1,0.956116,-0.0438842,regression,channel=MLII
+mit-bih-arrhythmia,220,ecg,beat_recall,1,1,0,unchanged,channel=MLII
+mit-bih-arrhythmia,220,ecg,beat_precision,1,0.915921,-0.0840787,regression,channel=MLII
+mit-bih-arrhythmia,220,ecg,fp_count,0,188,188,regression,channel=MLII
+mit-bih-arrhythmia,220,ecg,fn_count,0,0,0,unchanged,channel=MLII
+mit-bih-arrhythmia,220,ecg,hr_mae_bpm,0.0165826,6.74603,6.72945,regression,channel=MLII
+mit-bih-arrhythmia,221,ecg,beat_f1,0.999175,0.999382,0.000206313,unchanged,channel=MLII
+mit-bih-arrhythmia,221,ecg,beat_recall,0.998352,0.998764,0.000412031,unchanged,channel=MLII
+mit-bih-arrhythmia,221,ecg,beat_precision,1,1,0,unchanged,channel=MLII
+mit-bih-arrhythmia,221,ecg,fp_count,0,0,0,unchanged,channel=MLII
+mit-bih-arrhythmia,221,ecg,fn_count,4,3,-1,unchanged,channel=MLII
+mit-bih-arrhythmia,221,ecg,hr_mae_bpm,0.222521,0.175154,-0.0473667,unchanged,channel=MLII
+mit-bih-arrhythmia,222,ecg,beat_f1,0.991712,0.939488,-0.0522242,regression,channel=MLII
+mit-bih-arrhythmia,222,ecg,beat_recall,0.987918,0.975433,-0.0124849,regression,channel=MLII
+mit-bih-arrhythmia,222,ecg,beat_precision,0.995536,0.906098,-0.0894377,regression,channel=MLII
+mit-bih-arrhythmia,222,ecg,fp_count,11,251,240,regression,channel=MLII
+mit-bih-arrhythmia,222,ecg,fn_count,30,61,31,unchanged,channel=MLII
+mit-bih-arrhythmia,222,ecg,hr_mae_bpm,0.838699,5.6056,4.7669,regression,channel=MLII
+mit-bih-arrhythmia,223,ecg,beat_f1,0.998077,0.99827,0.00019264,unchanged,channel=MLII
+mit-bih-arrhythmia,223,ecg,beat_recall,0.996161,0.996545,0.000383877,unchanged,channel=MLII
+mit-bih-arrhythmia,223,ecg,beat_precision,1,1,0,unchanged,channel=MLII
+mit-bih-arrhythmia,223,ecg,fp_count,0,0,0,unchanged,channel=MLII
+mit-bih-arrhythmia,223,ecg,fn_count,10,9,-1,unchanged,channel=MLII
+mit-bih-arrhythmia,223,ecg,hr_mae_bpm,0.291345,0.261555,-0.02979,unchanged,channel=MLII
+mit-bih-arrhythmia,228,ecg,beat_f1,0.749166,0.991296,0.24213,improvement,channel=MLII
+mit-bih-arrhythmia,228,ecg,beat_recall,0.601559,0.998539,0.39698,improvement,channel=MLII
+mit-bih-arrhythmia,228,ecg,beat_precision,0.992765,0.984157,-0.00860781,unchanged,channel=MLII
+mit-bih-arrhythmia,228,ecg,fp_count,9,33,24,unchanged,channel=MLII
+mit-bih-arrhythmia,228,ecg,fn_count,818,3,-815,improvement,channel=MLII
+mit-bih-arrhythmia,228,ecg,hr_mae_bpm,14.8652,1.41116,-13.454,unchanged,channel=MLII
+mit-bih-arrhythmia,230,ecg,beat_f1,1,1,0,unchanged,channel=MLII
+mit-bih-arrhythmia,230,ecg,beat_recall,1,1,0,unchanged,channel=MLII
+mit-bih-arrhythmia,230,ecg,beat_precision,1,1,0,unchanged,channel=MLII
+mit-bih-arrhythmia,230,ecg,fp_count,0,0,0,unchanged,channel=MLII
+mit-bih-arrhythmia,230,ecg,fn_count,0,0,0,unchanged,channel=MLII
+mit-bih-arrhythmia,230,ecg,hr_mae_bpm,0.00840059,0.00840059,0,unchanged,channel=MLII
+mit-bih-arrhythmia,231,ecg,beat_f1,0.999363,0.705309,-0.294055,regression,channel=MLII
+mit-bih-arrhythmia,231,ecg,beat_recall,0.999363,0.828771,-0.170592,regression,channel=MLII
+mit-bih-arrhythmia,231,ecg,beat_precision,0.999363,0.613861,-0.385502,regression,channel=MLII
+mit-bih-arrhythmia,231,ecg,fp_count,1,819,818,regression,channel=MLII
+mit-bih-arrhythmia,231,ecg,fn_count,1,269,268,regression,channel=MLII
+mit-bih-arrhythmia,231,ecg,hr_mae_bpm,0.00837619,17.9824,17.9741,regression,channel=MLII
+mit-bih-arrhythmia,232,ecg,beat_f1,0.999158,0.649147,-0.350011,regression,channel=MLII
+mit-bih-arrhythmia,232,ecg,beat_recall,0.999438,0.929775,-0.0696629,regression,channel=MLII
+mit-bih-arrhythmia,232,ecg,beat_precision,0.998877,0.498644,-0.500233,regression,channel=MLII
+mit-bih-arrhythmia,232,ecg,fp_count,2,1664,1662,regression,channel=MLII
+mit-bih-arrhythmia,232,ecg,fn_count,1,125,124,regression,channel=MLII
+mit-bih-arrhythmia,232,ecg,hr_mae_bpm,0.0665684,62.7666,62.7001,regression,channel=MLII
+mit-bih-arrhythmia,233,ecg,beat_f1,0.999838,0.999838,0,unchanged,channel=MLII
+mit-bih-arrhythmia,233,ecg,beat_recall,0.999675,0.999675,0,unchanged,channel=MLII
+mit-bih-arrhythmia,233,ecg,beat_precision,1,1,0,unchanged,channel=MLII
+mit-bih-arrhythmia,233,ecg,fp_count,0,0,0,unchanged,channel=MLII
+mit-bih-arrhythmia,233,ecg,fn_count,1,1,0,unchanged,channel=MLII
+mit-bih-arrhythmia,233,ecg,hr_mae_bpm,2.21774,2.21774,0,unchanged,channel=MLII
+mit-bih-arrhythmia,234,ecg,beat_f1,0.999818,1,0.000181653,unchanged,channel=MLII
+mit-bih-arrhythmia,234,ecg,beat_recall,0.999637,1,0.00036324,unchanged,channel=MLII
+mit-bih-arrhythmia,234,ecg,beat_precision,1,1,0,unchanged,channel=MLII
+mit-bih-arrhythmia,234,ecg,fp_count,0,0,0,unchanged,channel=MLII
+mit-bih-arrhythmia,234,ecg,fn_count,1,0,-1,unchanged,channel=MLII
+mit-bih-arrhythmia,234,ecg,hr_mae_bpm,0.047045,0.0065595,-0.0404855,unchanged,channel=MLII
+mit-bih-arrhythmia,ALL,ecg,beat_f1,0.982005,0.901573,-0.0804319,regression,mean over 48 records
+mit-bih-arrhythmia,ALL,ecg,beat_recall,0.976351,0.93949,-0.0368613,regression,mean over 48 records
+mit-bih-arrhythmia,ALL,ecg,beat_precision,0.993079,0.878727,-0.114352,regression,mean over 48 records
+mit-bih-arrhythmia,ALL,ecg,fp_count,14.25,364.979,350.729,regression,mean over 48 records
+mit-bih-arrhythmia,ALL,ecg,fn_count,50.8542,106.979,56.125,regression,mean over 48 records
+mit-bih-arrhythmia,ALL,ecg,hr_mae_bpm,0.927189,8.61343,7.68624,regression,mean over 48 records
+mit-bih-arrhythmia,ALL_pooled,ecg,beat_f1,0.985614,0.902088,-0.083526,regression,pooled over 48 records
+mit-bih-arrhythmia,ALL_pooled,ecg,beat_recall,0.977707,0.953102,-0.0246041,regression,pooled over 48 records
+mit-bih-arrhythmia,ALL_pooled,ecg,beat_precision,0.993651,0.856258,-0.137393,regression,pooled over 48 records
+mit-bih-arrhythmia,ALL_pooled,ecg,fp_count,698.25,17884,17185.7,regression,pooled over 48 records
+mit-bih-arrhythmia,ALL_pooled,ecg,fn_count,2491.85,5241.98,2750.13,regression,pooled over 48 records
+mit-bih-arrhythmia,ALL_pooled,ecg,hr_mae_bpm,,,,new,pooled over 48 records
+mit-bih-noise-stress,118e00,ecg,beat_f1,0.831114,0.82006,-0.0110536,regression,snr_db=00
+mit-bih-noise-stress,118e00,ecg,beat_recall,0.945127,0.958297,0.0131694,improvement,snr_db=00
+mit-bih-noise-stress,118e00,ecg,beat_precision,0.741647,0.716678,-0.024969,regression,snr_db=00
+mit-bih-noise-stress,118e00,ecg,hr_mae_bpm,22.2751,25.4723,3.19714,regression,snr_db=00
+mit-bih-noise-stress,118e06,ecg,beat_f1,0.884386,0.842288,-0.0420985,regression,snr_db=06
+mit-bih-noise-stress,118e06,ecg,beat_recall,0.977173,0.960053,-0.0171203,regression,snr_db=06
+mit-bih-noise-stress,118e06,ecg,beat_precision,0.807692,0.750257,-0.057435,regression,snr_db=06
+mit-bih-noise-stress,118e06,ecg,hr_mae_bpm,17.0162,21.6667,4.6505,regression,snr_db=06
+mit-bih-noise-stress,118e12,ecg,beat_f1,0.958741,0.887819,-0.0709224,regression,snr_db=12
+mit-bih-noise-stress,118e12,ecg,beat_recall,0.989464,0.971027,-0.0184372,regression,snr_db=12
+mit-bih-noise-stress,118e12,ecg,beat_precision,0.929868,0.817745,-0.112123,regression,snr_db=12
+mit-bih-noise-stress,118e12,ecg,hr_mae_bpm,5.42919,14.4367,9.00747,regression,snr_db=12
+mit-bih-noise-stress,118e18,ecg,beat_f1,0.999342,0.978788,-0.0205541,regression,snr_db=18
+mit-bih-noise-stress,118e18,ecg,beat_recall,1,0.992537,-0.00746269,unchanged,snr_db=18
+mit-bih-noise-stress,118e18,ecg,beat_precision,0.998685,0.965414,-0.0332706,regression,snr_db=18
+mit-bih-noise-stress,118e18,ecg,hr_mae_bpm,0.0559157,2.69755,2.64163,regression,snr_db=18
+mit-bih-noise-stress,118e24,ecg,beat_f1,0.999781,0.999781,0,unchanged,snr_db=24
+mit-bih-noise-stress,118e24,ecg,beat_recall,1,1,0,unchanged,snr_db=24
+mit-bih-noise-stress,118e24,ecg,beat_precision,0.999561,0.999561,0,unchanged,snr_db=24
+mit-bih-noise-stress,118e24,ecg,hr_mae_bpm,0.0184947,0.0184947,0,unchanged,snr_db=24
+mit-bih-noise-stress,119e00,ecg,beat_f1,0.786607,0.771069,-0.0155379,regression,snr_db=00
+mit-bih-noise-stress,119e00,ecg,beat_recall,0.934071,0.941621,0.00754907,unchanged,snr_db=00
+mit-bih-noise-stress,119e00,ecg,beat_precision,0.679356,0.652826,-0.0265295,regression,snr_db=00
+mit-bih-noise-stress,119e00,ecg,hr_mae_bpm,24.7682,27.7569,2.98871,regression,snr_db=00
+mit-bih-noise-stress,119e24,ecg,beat_f1,1,0.995486,-0.00451354,unchanged,snr_db=24
+mit-bih-noise-stress,119e24,ecg,beat_recall,1,0.998993,-0.00100654,unchanged,snr_db=24
+mit-bih-noise-stress,119e24,ecg,beat_precision,1,0.992004,-0.007996,unchanged,snr_db=24
+mit-bih-noise-stress,119e24,ecg,hr_mae_bpm,0.433996,0.918607,0.484611,improvement,snr_db=24
+bidmc,ALL(mean),resp,rsp_resp_f1,0.9437355712009113,0.9437355712009113,0.0,unchanged,
+bidmc,bidmc01,resp,rsp_resp_precision,0.9763313609467456,0.9763313609467456,0.0,unchanged,
+bidmc,bidmc01,resp,rsp_resp_recall,1.0,1.0,0.0,unchanged,
+bidmc,bidmc01,resp,rsp_resp_f1,0.9880239520958084,0.9880239520958084,0.0,unchanged,
+bidmc,bidmc01,resp,rsp_resp_tp,165.0,165.0,0.0,unchanged,
+bidmc,bidmc01,resp,rsp_resp_fp,4.0,4.0,0.0,unchanged,
+bidmc,bidmc01,resp,rsp_resp_fn,0.0,0.0,0.0,unchanged,
+bidmc,bidmc01,resp,rsp_resp_n_detected,169.0,169.0,0.0,unchanged,
+bidmc,bidmc01,resp,rsp_resp_n_reference,165.0,165.0,0.0,unchanged,
+bidmc,bidmc01,resp,rsp_resp_mean_abs_timing_error_sec,0.0477090909090909,0.0477090909090909,0.0,unchanged,
+bidmc,bidmc01,resp,rsp_resp_median_timing_error_sec,0.0,0.0,0.0,unchanged,
+bidmc,bidmc01,ppg,ppg_ppg_n_peaks,718.0,718.0,0.0,unchanged,
+bidmc,bidmc01,ecg,ecg_ecg_n_peaks,730.0,782.0,52.0,changed,
+bidmc,bidmc02,resp,rsp_resp_precision,0.9435483870967742,0.9435483870967742,0.0,unchanged,
+bidmc,bidmc02,resp,rsp_resp_recall,0.9915254237288136,0.9915254237288136,0.0,unchanged,
+bidmc,bidmc02,resp,rsp_resp_f1,0.9669421487603306,0.9669421487603306,0.0,unchanged,
+bidmc,bidmc02,resp,rsp_resp_tp,117.0,117.0,0.0,unchanged,
+bidmc,bidmc02,resp,rsp_resp_fp,7.0,7.0,0.0,unchanged,
+bidmc,bidmc02,resp,rsp_resp_fn,1.0,1.0,0.0,unchanged,
+bidmc,bidmc02,resp,rsp_resp_n_detected,124.0,124.0,0.0,unchanged,
+bidmc,bidmc02,resp,rsp_resp_n_reference,118.0,118.0,0.0,unchanged,
+bidmc,bidmc02,resp,rsp_resp_mean_abs_timing_error_sec,0.0712478632478632,0.0712478632478632,0.0,unchanged,
+bidmc,bidmc02,resp,rsp_resp_median_timing_error_sec,-0.024,-0.024,0.0,unchanged,
+bidmc,bidmc02,ppg,ppg_ppg_n_peaks,727.0,727.0,0.0,unchanged,
+bidmc,bidmc02,ecg,ecg_ecg_n_peaks,728.0,728.0,0.0,unchanged,
+bidmc,bidmc03,resp,rsp_resp_precision,0.9574468085106383,0.9574468085106383,0.0,unchanged,
+bidmc,bidmc03,resp,rsp_resp_recall,0.9926470588235294,0.9926470588235294,0.0,unchanged,
+bidmc,bidmc03,resp,rsp_resp_f1,0.9747292418772564,0.9747292418772564,0.0,unchanged,
+bidmc,bidmc03,resp,rsp_resp_tp,135.0,135.0,0.0,unchanged,
+bidmc,bidmc03,resp,rsp_resp_fp,6.0,6.0,0.0,unchanged,
+bidmc,bidmc03,resp,rsp_resp_fn,1.0,1.0,0.0,unchanged,
+bidmc,bidmc03,resp,rsp_resp_n_detected,141.0,141.0,0.0,unchanged,
+bidmc,bidmc03,resp,rsp_resp_n_reference,136.0,136.0,0.0,unchanged,
+bidmc,bidmc03,resp,rsp_resp_mean_abs_timing_error_sec,0.0849777777777777,0.0849777777777777,0.0,unchanged,
+bidmc,bidmc03,resp,rsp_resp_median_timing_error_sec,-0.048,-0.048,0.0,unchanged,
+bidmc,bidmc03,ppg,ppg_ppg_n_peaks,610.0,610.0,0.0,unchanged,
+bidmc,bidmc03,ecg,ecg_ecg_n_peaks,153.0,628.0,475.0,changed,
+bidmc,bidmc04,resp,rsp_resp_precision,0.8680555555555556,0.8680555555555556,0.0,unchanged,
+bidmc,bidmc04,resp,rsp_resp_recall,0.992063492063492,0.992063492063492,0.0,unchanged,
+bidmc,bidmc04,resp,rsp_resp_f1,0.925925925925926,0.925925925925926,0.0,unchanged,
+bidmc,bidmc04,resp,rsp_resp_tp,125.0,125.0,0.0,unchanged,
+bidmc,bidmc04,resp,rsp_resp_fp,19.0,19.0,0.0,unchanged,
+bidmc,bidmc04,resp,rsp_resp_fn,1.0,1.0,0.0,unchanged,
+bidmc,bidmc04,resp,rsp_resp_n_detected,144.0,144.0,0.0,unchanged,
+bidmc,bidmc04,resp,rsp_resp_n_reference,126.0,126.0,0.0,unchanged,
+bidmc,bidmc04,resp,rsp_resp_mean_abs_timing_error_sec,0.0528,0.0528,0.0,unchanged,
+bidmc,bidmc04,resp,rsp_resp_median_timing_error_sec,0.016,0.016,0.0,unchanged,
+bidmc,bidmc04,ppg,ppg_ppg_n_peaks,706.0,706.0,0.0,unchanged,
+bidmc,bidmc04,ecg,ecg_ecg_n_peaks,738.0,739.0,1.0,changed,
+bidmc,bidmc05,resp,rsp_resp_precision,0.4897959183673469,0.4897959183673469,0.0,unchanged,
+bidmc,bidmc05,resp,rsp_resp_recall,1.0,1.0,0.0,unchanged,
+bidmc,bidmc05,resp,rsp_resp_f1,0.6575342465753424,0.6575342465753424,0.0,unchanged,
+bidmc,bidmc05,resp,rsp_resp_tp,48.0,48.0,0.0,unchanged,
+bidmc,bidmc05,resp,rsp_resp_fp,50.0,50.0,0.0,unchanged,
+bidmc,bidmc05,resp,rsp_resp_fn,0.0,0.0,0.0,unchanged,
+bidmc,bidmc05,resp,rsp_resp_n_detected,98.0,98.0,0.0,unchanged,
+bidmc,bidmc05,resp,rsp_resp_n_reference,48.0,48.0,0.0,unchanged,
+bidmc,bidmc05,resp,rsp_resp_mean_abs_timing_error_sec,0.1168333333333333,0.1168333333333333,0.0,unchanged,
+bidmc,bidmc05,resp,rsp_resp_median_timing_error_sec,-0.092,-0.092,0.0,unchanged,
+bidmc,bidmc05,ppg,ppg_ppg_n_peaks,765.0,765.0,0.0,unchanged,
+bidmc,bidmc05,ecg,ecg_ecg_n_peaks,785.0,785.0,0.0,unchanged,
+bidmc,bidmc06,resp,rsp_resp_precision,0.9746835443037974,0.9746835443037974,0.0,unchanged,
+bidmc,bidmc06,resp,rsp_resp_recall,0.9871794871794872,0.9871794871794872,0.0,unchanged,
+bidmc,bidmc06,resp,rsp_resp_f1,0.980891719745223,0.980891719745223,0.0,unchanged,
+bidmc,bidmc06,resp,rsp_resp_tp,154.0,154.0,0.0,unchanged,
+bidmc,bidmc06,resp,rsp_resp_fp,4.0,4.0,0.0,unchanged,
+bidmc,bidmc06,resp,rsp_resp_fn,2.0,2.0,0.0,unchanged,
+bidmc,bidmc06,resp,rsp_resp_n_detected,158.0,158.0,0.0,unchanged,
+bidmc,bidmc06,resp,rsp_resp_n_reference,156.0,156.0,0.0,unchanged,
+bidmc,bidmc06,resp,rsp_resp_mean_abs_timing_error_sec,0.0591168831168831,0.0591168831168831,0.0,unchanged,
+bidmc,bidmc06,resp,rsp_resp_median_timing_error_sec,-0.008,-0.008,0.0,unchanged,
+bidmc,bidmc06,ppg,ppg_ppg_n_peaks,654.0,654.0,0.0,unchanged,
+bidmc,bidmc06,ecg,ecg_ecg_n_peaks,656.0,812.0,156.0,changed,
+bidmc,bidmc07,resp,rsp_resp_precision,0.9748427672955976,0.9748427672955976,0.0,unchanged,
+bidmc,bidmc07,resp,rsp_resp_recall,0.9935897435897436,0.9935897435897436,0.0,unchanged,
+bidmc,bidmc07,resp,rsp_resp_f1,0.9841269841269842,0.9841269841269842,0.0,unchanged,
+bidmc,bidmc07,resp,rsp_resp_tp,155.0,155.0,0.0,unchanged,
+bidmc,bidmc07,resp,rsp_resp_fp,4.0,4.0,0.0,unchanged,
+bidmc,bidmc07,resp,rsp_resp_fn,1.0,1.0,0.0,unchanged,
+bidmc,bidmc07,resp,rsp_resp_n_detected,159.0,159.0,0.0,unchanged,
+bidmc,bidmc07,resp,rsp_resp_n_reference,156.0,156.0,0.0,unchanged,
+bidmc,bidmc07,resp,rsp_resp_mean_abs_timing_error_sec,0.0684903225806451,0.0684903225806451,0.0,unchanged,
+bidmc,bidmc07,resp,rsp_resp_median_timing_error_sec,0.008,0.008,0.0,unchanged,
+bidmc,bidmc07,ppg,ppg_ppg_n_peaks,722.0,722.0,0.0,unchanged,
+bidmc,bidmc07,ecg,ecg_ecg_n_peaks,721.0,721.0,0.0,unchanged,
+bidmc,bidmc08,resp,rsp_resp_precision,0.9642857142857144,0.9642857142857144,0.0,unchanged,
+bidmc,bidmc08,resp,rsp_resp_recall,0.9878048780487804,0.9878048780487804,0.0,unchanged,
+bidmc,bidmc08,resp,rsp_resp_f1,0.9759036144578312,0.9759036144578312,0.0,unchanged,
+bidmc,bidmc08,resp,rsp_resp_tp,162.0,162.0,0.0,unchanged,
+bidmc,bidmc08,resp,rsp_resp_fp,6.0,6.0,0.0,unchanged,
+bidmc,bidmc08,resp,rsp_resp_fn,2.0,2.0,0.0,unchanged,
+bidmc,bidmc08,resp,rsp_resp_n_detected,168.0,168.0,0.0,unchanged,
+bidmc,bidmc08,resp,rsp_resp_n_reference,164.0,164.0,0.0,unchanged,
+bidmc,bidmc08,resp,rsp_resp_mean_abs_timing_error_sec,0.0617283950617283,0.0617283950617283,0.0,unchanged,
+bidmc,bidmc08,resp,rsp_resp_median_timing_error_sec,-0.008,-0.008,0.0,unchanged,
+bidmc,bidmc08,ppg,ppg_ppg_n_peaks,798.0,798.0,0.0,unchanged,
+bidmc,bidmc08,ecg,ecg_ecg_n_peaks,798.0,798.0,0.0,unchanged,
+bidmc,bidmc09,resp,rsp_resp_precision,0.981132075471698,0.981132075471698,0.0,unchanged,
+bidmc,bidmc09,resp,rsp_resp_recall,0.9936305732484076,0.9936305732484076,0.0,unchanged,
+bidmc,bidmc09,resp,rsp_resp_f1,0.9873417721518988,0.9873417721518988,0.0,unchanged,
+bidmc,bidmc09,resp,rsp_resp_tp,156.0,156.0,0.0,unchanged,
+bidmc,bidmc09,resp,rsp_resp_fp,3.0,3.0,0.0,unchanged,
+bidmc,bidmc09,resp,rsp_resp_fn,1.0,1.0,0.0,unchanged,
+bidmc,bidmc09,resp,rsp_resp_n_detected,159.0,159.0,0.0,unchanged,
+bidmc,bidmc09,resp,rsp_resp_n_reference,157.0,157.0,0.0,unchanged,
+bidmc,bidmc09,resp,rsp_resp_mean_abs_timing_error_sec,0.0672307692307692,0.0672307692307692,0.0,unchanged,
+bidmc,bidmc09,resp,rsp_resp_median_timing_error_sec,-0.024,-0.024,0.0,unchanged,
+bidmc,bidmc09,ppg,ppg_ppg_n_peaks,614.0,614.0,0.0,unchanged,
+bidmc,bidmc09,ecg,ecg_ecg_n_peaks,614.0,614.0,0.0,unchanged,
+bidmc,bidmc10,resp,rsp_resp_precision,0.94,0.94,0.0,unchanged,
+bidmc,bidmc10,resp,rsp_resp_recall,0.9929577464788732,0.9929577464788732,0.0,unchanged,
+bidmc,bidmc10,resp,rsp_resp_f1,0.9657534246575342,0.9657534246575342,0.0,unchanged,
+bidmc,bidmc10,resp,rsp_resp_tp,141.0,141.0,0.0,unchanged,
+bidmc,bidmc10,resp,rsp_resp_fp,9.0,9.0,0.0,unchanged,
+bidmc,bidmc10,resp,rsp_resp_fn,1.0,1.0,0.0,unchanged,
+bidmc,bidmc10,resp,rsp_resp_n_detected,150.0,150.0,0.0,unchanged,
+bidmc,bidmc10,resp,rsp_resp_n_reference,142.0,142.0,0.0,unchanged,
+bidmc,bidmc10,resp,rsp_resp_mean_abs_timing_error_sec,0.0903262411347517,0.0903262411347517,0.0,unchanged,
+bidmc,bidmc10,resp,rsp_resp_median_timing_error_sec,0.024,0.024,0.0,unchanged,
+bidmc,bidmc10,ppg,ppg_ppg_n_peaks,649.0,649.0,0.0,unchanged,
+bidmc,bidmc10,ecg,ecg_ecg_n_peaks,658.0,658.0,0.0,unchanged,
+bidmc,bidmc11,resp,rsp_resp_precision,0.9098360655737704,0.9098360655737704,0.0,unchanged,
+bidmc,bidmc11,resp,rsp_resp_recall,0.9823008849557522,0.9823008849557522,0.0,unchanged,
+bidmc,bidmc11,resp,rsp_resp_f1,0.9446808510638296,0.9446808510638296,0.0,unchanged,
+bidmc,bidmc11,resp,rsp_resp_tp,111.0,111.0,0.0,unchanged,
+bidmc,bidmc11,resp,rsp_resp_fp,11.0,11.0,0.0,unchanged,
+bidmc,bidmc11,resp,rsp_resp_fn,2.0,2.0,0.0,unchanged,
+bidmc,bidmc11,resp,rsp_resp_n_detected,122.0,122.0,0.0,unchanged,
+bidmc,bidmc11,resp,rsp_resp_n_reference,113.0,113.0,0.0,unchanged,
+bidmc,bidmc11,resp,rsp_resp_mean_abs_timing_error_sec,0.097009009009009,0.097009009009009,0.0,unchanged,
+bidmc,bidmc11,resp,rsp_resp_median_timing_error_sec,0.032,0.032,0.0,unchanged,
+bidmc,bidmc11,ppg,ppg_ppg_n_peaks,742.0,742.0,0.0,unchanged,
+bidmc,bidmc11,ecg,ecg_ecg_n_peaks,742.0,742.0,0.0,unchanged,
+bidmc,bidmc12,resp,rsp_resp_precision,0.96,0.96,0.0,unchanged,
+bidmc,bidmc12,resp,rsp_resp_recall,0.9863013698630136,0.9863013698630136,0.0,unchanged,
+bidmc,bidmc12,resp,rsp_resp_f1,0.9729729729729728,0.9729729729729728,0.0,unchanged,
+bidmc,bidmc12,resp,rsp_resp_tp,144.0,144.0,0.0,unchanged,
+bidmc,bidmc12,resp,rsp_resp_fp,6.0,6.0,0.0,unchanged,
+bidmc,bidmc12,resp,rsp_resp_fn,2.0,2.0,0.0,unchanged,
+bidmc,bidmc12,resp,rsp_resp_n_detected,150.0,150.0,0.0,unchanged,
+bidmc,bidmc12,resp,rsp_resp_n_reference,146.0,146.0,0.0,unchanged,
+bidmc,bidmc12,resp,rsp_resp_mean_abs_timing_error_sec,0.0736111111111111,0.0736111111111111,0.0,unchanged,
+bidmc,bidmc12,resp,rsp_resp_median_timing_error_sec,0.016,0.016,0.0,unchanged,
+bidmc,bidmc12,ppg,ppg_ppg_n_peaks,740.0,740.0,0.0,unchanged,
+bidmc,bidmc12,ecg,ecg_ecg_n_peaks,743.0,743.0,0.0,unchanged,
+bidmc,bidmc01,multi,hr_consistency_ppg_vs_ecg_mae,0.5191227025717476,8.000244474021875,7.481121771450127,changed,
+bidmc,bidmc01,multi,hr_consistency_ppg_vs_ecg_bias,-0.5005759595435648,-7.981697730993691,-7.481121771450126,changed,
+bidmc,bidmc02,multi,hr_consistency_ppg_vs_ecg_mae,0.2360706885297077,0.2360706885297077,0.0,unchanged,
+bidmc,bidmc02,multi,hr_consistency_ppg_vs_ecg_bias,0.0240096810190815,0.0240096810190815,0.0,unchanged,
+bidmc,bidmc03,multi,hr_consistency_ppg_vs_ecg_mae,51.58227125443193,5.095081211003329,-46.4871900434286,changed,
+bidmc,bidmc03,multi,hr_consistency_ppg_vs_ecg_bias,46.60171391282415,-4.926304944957381,-51.52801885778153,changed,
+bidmc,bidmc04,multi,hr_consistency_ppg_vs_ecg_mae,1.6909269153927189,2.029576341007397,0.33864942561467815,changed,
+bidmc,bidmc04,multi,hr_consistency_ppg_vs_ecg_bias,-1.6908317647492603,-2.0294811903639385,-0.33864942561467815,changed,
+bidmc,bidmc05,multi,hr_consistency_ppg_vs_ecg_mae,0.8955761656646501,0.9122119976670954,0.016635832002445228,changed,
+bidmc,bidmc05,multi,hr_consistency_ppg_vs_ecg_bias,-0.8027089641033067,-0.821235684429169,-0.018526720325862334,changed,
+bidmc,bidmc06,multi,hr_consistency_ppg_vs_ecg_mae,0.5425781090386228,30.242805352906256,29.700227243867634,changed,
+bidmc,bidmc06,multi,hr_consistency_ppg_vs_ecg_bias,-0.5362062296237288,-30.242805352906256,-29.706599123282526,changed,
+bidmc,bidmc07,multi,hr_consistency_ppg_vs_ecg_mae,0.0231420697815631,0.0231420697815631,0.0,unchanged,
+bidmc,bidmc07,multi,hr_consistency_ppg_vs_ecg_bias,0.007476675600887,0.007476675600887,0.0,unchanged,
+bidmc,bidmc08,multi,hr_consistency_ppg_vs_ecg_mae,0.0348314455280368,0.0348314455280368,0.0,unchanged,
+bidmc,bidmc08,multi,hr_consistency_ppg_vs_ecg_bias,0.0227920873065784,0.0227920873065784,0.0,unchanged,
+bidmc,bidmc09,multi,hr_consistency_ppg_vs_ecg_mae,0.2494125308947966,0.2494125308947966,0.0,unchanged,
+bidmc,bidmc09,multi,hr_consistency_ppg_vs_ecg_bias,-0.2340907165502443,-0.2340907165502443,0.0,unchanged,
+bidmc,bidmc10,multi,hr_consistency_ppg_vs_ecg_mae,0.8558956939340637,0.8558956939340637,0.0,unchanged,
+bidmc,bidmc10,multi,hr_consistency_ppg_vs_ecg_bias,-0.6217968590532972,-0.6217968590532972,0.0,unchanged,
+bidmc,bidmc11,multi,hr_consistency_ppg_vs_ecg_mae,0.0497134757781926,0.0497134757781926,0.0,unchanged,
+bidmc,bidmc11,multi,hr_consistency_ppg_vs_ecg_bias,0.0072786751082882,0.0072786751082882,0.0,unchanged,
+bidmc,bidmc12,multi,hr_consistency_ppg_vs_ecg_mae,0.2530367314968563,0.2530367314968563,0.0,unchanged,
+bidmc,bidmc12,multi,hr_consistency_ppg_vs_ecg_bias,-0.1851202042222439,-0.1851202042222439,0.0,unchanged,
+wrist-ppg-exercise,ACTIVITY:bike-high,ppg,hr_mae,20.26613822984655,20.26613822984655,0.0,unchanged,activity=bike-high
+wrist-ppg-exercise,ACTIVITY:bike-low,ppg,hr_mae,14.731436417906272,14.731436417906272,0.0,unchanged,activity=bike-low
+wrist-ppg-exercise,ACTIVITY:run,ppg,hr_mae,32.90113067405135,32.90113067405135,0.0,unchanged,activity=run
+wrist-ppg-exercise,ACTIVITY:walk,ppg,hr_mae,15.876475686102552,15.876475686102552,0.0,unchanged,activity=walk
+wrist-ppg-exercise,SPLIT:motion,ppg,hr_mae,23.614955226079278,23.614955226079278,0.0,unchanged,split=motion
+wrist-ppg-exercise,SPLIT:stationary,ppg,hr_mae,16.806949597383877,16.806949597383877,0.0,unchanged,split=stationary
+wrist-ppg-exercise,ALL(mean),ppg,hr_mae,20.748426540312792,20.748426540312792,0.0,unchanged,
+wrist-ppg-exercise,s1_high_resistance_bike,ppg,ppg_ppg_n_peaks,925.0,925.0,0.0,unchanged,activity=bike-high; split=stationary
+wrist-ppg-exercise,s1_high_resistance_bike,ppg,hr_mae,8.764770626471032,8.764770626471032,0.0,unchanged,activity=bike-high; split=stationary
+wrist-ppg-exercise,s1_high_resistance_bike,ppg,hr_bias,-3.7301370125604776,-3.7301370125604776,0.0,unchanged,activity=bike-high; split=stationary
+wrist-ppg-exercise,s1_high_resistance_bike,ppg,hr_rmse,11.241966087085151,11.241966087085151,0.0,unchanged,activity=bike-high; split=stationary
+wrist-ppg-exercise,s1_high_resistance_bike,ppg,hr_pearson_r,0.6488947352232165,0.6488947352232165,0.0,unchanged,activity=bike-high; split=stationary
+wrist-ppg-exercise,s1_high_resistance_bike,ppg,hr_n,291.0,291.0,0.0,unchanged,activity=bike-high; split=stationary
+wrist-ppg-exercise,s1_low_resistance_bike,ppg,ppg_ppg_n_peaks,785.0,785.0,0.0,unchanged,activity=bike-low; split=stationary
+wrist-ppg-exercise,s1_low_resistance_bike,ppg,hr_mae,9.486986311778317,9.486986311778317,0.0,unchanged,activity=bike-low; split=stationary
+wrist-ppg-exercise,s1_low_resistance_bike,ppg,hr_bias,6.408680010601227,6.408680010601227,0.0,unchanged,activity=bike-low; split=stationary
+wrist-ppg-exercise,s1_low_resistance_bike,ppg,hr_rmse,11.92727081943164,11.92727081943164,0.0,unchanged,activity=bike-low; split=stationary
+wrist-ppg-exercise,s1_low_resistance_bike,ppg,hr_pearson_r,0.307192743301066,0.307192743301066,0.0,unchanged,activity=bike-low; split=stationary
+wrist-ppg-exercise,s1_low_resistance_bike,ppg,hr_n,286.0,286.0,0.0,unchanged,activity=bike-low; split=stationary
+wrist-ppg-exercise,s1_walk,ppg,ppg_ppg_n_peaks,828.0,828.0,0.0,unchanged,activity=walk; split=motion
+wrist-ppg-exercise,s1_walk,ppg,hr_mae,32.95565522209094,32.95565522209094,0.0,unchanged,activity=walk; split=motion
+wrist-ppg-exercise,s1_walk,ppg,hr_bias,32.95565522209094,32.95565522209094,0.0,unchanged,activity=walk; split=motion
+wrist-ppg-exercise,s1_walk,ppg,hr_rmse,34.68041845823383,34.68041845823383,0.0,unchanged,activity=walk; split=motion
+wrist-ppg-exercise,s1_walk,ppg,hr_pearson_r,0.0465452783598985,0.0465452783598985,0.0,unchanged,activity=walk; split=motion
+wrist-ppg-exercise,s1_walk,ppg,hr_n,291.0,291.0,0.0,unchanged,activity=walk; split=motion
+wrist-ppg-exercise,s2_high_resistance_bike,ppg,ppg_ppg_n_peaks,500.0,500.0,0.0,unchanged,activity=bike-high; split=stationary
+wrist-ppg-exercise,s2_high_resistance_bike,ppg,hr_mae,28.085421283868424,28.085421283868424,0.0,unchanged,activity=bike-high; split=stationary
+wrist-ppg-exercise,s2_high_resistance_bike,ppg,hr_bias,-27.878255556670474,-27.878255556670474,0.0,unchanged,activity=bike-high; split=stationary
+wrist-ppg-exercise,s2_high_resistance_bike,ppg,hr_rmse,30.268191705601307,30.268191705601307,0.0,unchanged,activity=bike-high; split=stationary
+wrist-ppg-exercise,s2_high_resistance_bike,ppg,hr_pearson_r,0.3820724539551683,0.3820724539551683,0.0,unchanged,activity=bike-high; split=stationary
+wrist-ppg-exercise,s2_high_resistance_bike,ppg,hr_n,204.0,204.0,0.0,unchanged,activity=bike-high; split=stationary
+wrist-ppg-exercise,s2_low_resistance_bike,ppg,ppg_ppg_n_peaks,441.0,441.0,0.0,unchanged,activity=bike-low; split=stationary
+wrist-ppg-exercise,s2_low_resistance_bike,ppg,hr_mae,18.24772254272941,18.24772254272941,0.0,unchanged,activity=bike-low; split=stationary
+wrist-ppg-exercise,s2_low_resistance_bike,ppg,hr_bias,-17.272158201797357,-17.272158201797357,0.0,unchanged,activity=bike-low; split=stationary
+wrist-ppg-exercise,s2_low_resistance_bike,ppg,hr_rmse,21.572117742273942,21.572117742273942,0.0,unchanged,activity=bike-low; split=stationary
+wrist-ppg-exercise,s2_low_resistance_bike,ppg,hr_pearson_r,-0.0784453107241166,-0.0784453107241166,0.0,unchanged,activity=bike-low; split=stationary
+wrist-ppg-exercise,s2_low_resistance_bike,ppg,hr_n,167.0,167.0,0.0,unchanged,activity=bike-low; split=stationary
+wrist-ppg-exercise,s2_walk,ppg,ppg_ppg_n_peaks,590.0,590.0,0.0,unchanged,activity=walk; split=motion
+wrist-ppg-exercise,s2_walk,ppg,hr_mae,14.311742674678683,14.311742674678683,0.0,unchanged,activity=walk; split=motion
+wrist-ppg-exercise,s2_walk,ppg,hr_bias,11.425321724479977,11.425321724479977,0.0,unchanged,activity=walk; split=motion
+wrist-ppg-exercise,s2_walk,ppg,hr_rmse,17.929647748276576,17.929647748276576,0.0,unchanged,activity=walk; split=motion
+wrist-ppg-exercise,s2_walk,ppg,hr_pearson_r,-0.1232672912130139,-0.1232672912130139,0.0,unchanged,activity=walk; split=motion
+wrist-ppg-exercise,s2_walk,ppg,hr_n,196.0,196.0,0.0,unchanged,activity=walk; split=motion
+wrist-ppg-exercise,s3_high_resistance_bike,ppg,ppg_ppg_n_peaks,427.0,427.0,0.0,unchanged,activity=bike-high; split=stationary
+wrist-ppg-exercise,s3_high_resistance_bike,ppg,hr_mae,23.9482227792002,23.9482227792002,0.0,unchanged,activity=bike-high; split=stationary
+wrist-ppg-exercise,s3_high_resistance_bike,ppg,hr_bias,-23.9482227792002,-23.9482227792002,0.0,unchanged,activity=bike-high; split=stationary
+wrist-ppg-exercise,s3_high_resistance_bike,ppg,hr_rmse,26.76534168290673,26.76534168290673,0.0,unchanged,activity=bike-high; split=stationary
+wrist-ppg-exercise,s3_high_resistance_bike,ppg,hr_pearson_r,0.116347404590221,0.116347404590221,0.0,unchanged,activity=bike-high; split=stationary
+wrist-ppg-exercise,s3_high_resistance_bike,ppg,hr_n,137.0,137.0,0.0,unchanged,activity=bike-high; split=stationary
+wrist-ppg-exercise,s3_low_resistance_bike,ppg,ppg_ppg_n_peaks,467.0,467.0,0.0,unchanged,activity=bike-low; split=stationary
+wrist-ppg-exercise,s3_low_resistance_bike,ppg,hr_mae,7.404538922662226,7.404538922662226,0.0,unchanged,activity=bike-low; split=stationary
+wrist-ppg-exercise,s3_low_resistance_bike,ppg,hr_bias,-4.811875704421452,-4.811875704421452,0.0,unchanged,activity=bike-low; split=stationary
+wrist-ppg-exercise,s3_low_resistance_bike,ppg,hr_rmse,10.464238868674627,10.464238868674627,0.0,unchanged,activity=bike-low; split=stationary
+wrist-ppg-exercise,s3_low_resistance_bike,ppg,hr_pearson_r,0.1730333474285388,0.1730333474285388,0.0,unchanged,activity=bike-low; split=stationary
+wrist-ppg-exercise,s3_low_resistance_bike,ppg,hr_n,144.0,144.0,0.0,unchanged,activity=bike-low; split=stationary
+wrist-ppg-exercise,s3_run,ppg,ppg_ppg_n_peaks,620.0,620.0,0.0,unchanged,activity=run; split=motion
+wrist-ppg-exercise,s3_run,ppg,hr_mae,16.002946554034214,16.002946554034214,0.0,unchanged,activity=run; split=motion
+wrist-ppg-exercise,s3_run,ppg,hr_bias,16.002946554034214,16.002946554034214,0.0,unchanged,activity=run; split=motion
+wrist-ppg-exercise,s3_run,ppg,hr_rmse,16.495634802612063,16.495634802612063,0.0,unchanged,activity=run; split=motion
+wrist-ppg-exercise,s3_run,ppg,hr_pearson_r,0.4140011467677537,0.4140011467677537,0.0,unchanged,activity=run; split=motion
+wrist-ppg-exercise,s3_run,ppg,hr_n,150.0,150.0,0.0,unchanged,activity=run; split=motion
+wrist-ppg-exercise,s3_walk,ppg,ppg_ppg_n_peaks,419.0,419.0,0.0,unchanged,activity=walk; split=motion
+wrist-ppg-exercise,s3_walk,ppg,hr_mae,9.262438333565138,9.262438333565138,0.0,unchanged,activity=walk; split=motion
+wrist-ppg-exercise,s3_walk,ppg,hr_bias,-8.175809038799352,-8.175809038799352,0.0,unchanged,activity=walk; split=motion
+wrist-ppg-exercise,s3_walk,ppg,hr_rmse,10.08780619916345,10.08780619916345,0.0,unchanged,activity=walk; split=motion
+wrist-ppg-exercise,s3_walk,ppg,hr_pearson_r,-0.100746593336195,-0.100746593336195,0.0,unchanged,activity=walk; split=motion
+wrist-ppg-exercise,s3_walk,ppg,hr_n,140.0,140.0,0.0,unchanged,activity=walk; split=motion
+wrist-ppg-exercise,s4_run,ppg,ppg_ppg_n_peaks,471.0,471.0,0.0,unchanged,activity=run; split=motion
+wrist-ppg-exercise,s4_run,ppg,hr_mae,70.53618090857806,70.53618090857806,0.0,unchanged,activity=run; split=motion
+wrist-ppg-exercise,s4_run,ppg,hr_bias,-70.53618090857806,-70.53618090857806,0.0,unchanged,activity=run; split=motion
+wrist-ppg-exercise,s4_run,ppg,hr_rmse,72.47485313571991,72.47485313571991,0.0,unchanged,activity=run; split=motion
+wrist-ppg-exercise,s4_run,ppg,hr_pearson_r,-0.488545351112793,-0.488545351112793,0.0,unchanged,activity=run; split=motion
+wrist-ppg-exercise,s4_run,ppg,hr_n,143.0,143.0,0.0,unchanged,activity=run; split=motion
+wrist-ppg-exercise,s5_low_resistance_bike,ppg,ppg_ppg_n_peaks,417.0,417.0,0.0,unchanged,activity=bike-low; split=stationary
+wrist-ppg-exercise,s5_low_resistance_bike,ppg,hr_mae,25.219203718692334,25.219203718692334,0.0,unchanged,activity=bike-low; split=stationary
+wrist-ppg-exercise,s5_low_resistance_bike,ppg,hr_bias,-25.219203718692334,-25.219203718692334,0.0,unchanged,activity=bike-low; split=stationary
+wrist-ppg-exercise,s5_low_resistance_bike,ppg,hr_rmse,27.78589565531012,27.78589565531012,0.0,unchanged,activity=bike-low; split=stationary
+wrist-ppg-exercise,s5_low_resistance_bike,ppg,hr_pearson_r,-0.1738119771709048,-0.1738119771709048,0.0,unchanged,activity=bike-low; split=stationary
+wrist-ppg-exercise,s5_low_resistance_bike,ppg,hr_n,137.0,137.0,0.0,unchanged,activity=bike-low; split=stationary
+wrist-ppg-exercise,s5_run,ppg,ppg_ppg_n_peaks,466.0,466.0,0.0,unchanged,activity=run; split=motion
+wrist-ppg-exercise,s5_run,ppg,hr_mae,22.467480725644634,22.467480725644634,0.0,unchanged,activity=run; split=motion
+wrist-ppg-exercise,s5_run,ppg,hr_bias,-22.38369108301976,-22.38369108301976,0.0,unchanged,activity=run; split=motion
+wrist-ppg-exercise,s5_run,ppg,hr_rmse,25.883126740279,25.883126740279,0.0,unchanged,activity=run; split=motion
+wrist-ppg-exercise,s5_run,ppg,hr_pearson_r,0.1813686660640073,0.1813686660640073,0.0,unchanged,activity=run; split=motion
+wrist-ppg-exercise,s5_run,ppg,hr_n,151.0,151.0,0.0,unchanged,activity=run; split=motion
+wrist-ppg-exercise,s6_low_resistance_bike,ppg,ppg_ppg_n_peaks,437.0,437.0,0.0,unchanged,activity=bike-low; split=stationary
+wrist-ppg-exercise,s6_low_resistance_bike,ppg,hr_mae,13.298730593669069,13.298730593669069,0.0,unchanged,activity=bike-low; split=stationary
+wrist-ppg-exercise,s6_low_resistance_bike,ppg,hr_bias,-11.99435265120844,-11.99435265120844,0.0,unchanged,activity=bike-low; split=stationary
+wrist-ppg-exercise,s6_low_resistance_bike,ppg,hr_rmse,16.632149963420762,16.632149963420762,0.0,unchanged,activity=bike-low; split=stationary
+wrist-ppg-exercise,s6_low_resistance_bike,ppg,hr_pearson_r,0.3878189200114797,0.3878189200114797,0.0,unchanged,activity=bike-low; split=stationary
+wrist-ppg-exercise,s6_low_resistance_bike,ppg,hr_n,137.0,137.0,0.0,unchanged,activity=bike-low; split=stationary
+wrist-ppg-exercise,s6_run,ppg,ppg_ppg_n_peaks,529.0,529.0,0.0,unchanged,activity=run; split=motion
+wrist-ppg-exercise,s6_run,ppg,hr_mae,15.927308465077845,15.927308465077845,0.0,unchanged,activity=run; split=motion
+wrist-ppg-exercise,s6_run,ppg,hr_bias,15.354814856752666,15.354814856752666,0.0,unchanged,activity=run; split=motion
+wrist-ppg-exercise,s6_run,ppg,hr_rmse,17.571280583522395,17.571280583522395,0.0,unchanged,activity=run; split=motion
+wrist-ppg-exercise,s6_run,ppg,hr_pearson_r,0.0215587743231351,0.0215587743231351,0.0,unchanged,activity=run; split=motion
+wrist-ppg-exercise,s6_run,ppg,hr_n,148.0,148.0,0.0,unchanged,activity=run; split=motion
+wrist-ppg-exercise,s6_walk,ppg,ppg_ppg_n_peaks,526.0,526.0,0.0,unchanged,activity=walk; split=motion
+wrist-ppg-exercise,s6_walk,ppg,hr_mae,11.787304777390483,11.787304777390483,0.0,unchanged,activity=walk; split=motion
+wrist-ppg-exercise,s6_walk,ppg,hr_bias,10.940905580066287,10.940905580066287,0.0,unchanged,activity=walk; split=motion
+wrist-ppg-exercise,s6_walk,ppg,hr_rmse,14.824346881108475,14.824346881108475,0.0,unchanged,activity=walk; split=motion
+wrist-ppg-exercise,s6_walk,ppg,hr_pearson_r,0.2762039863913231,0.2762039863913231,0.0,unchanged,activity=walk; split=motion
+wrist-ppg-exercise,s6_walk,ppg,hr_n,165.0,165.0,0.0,unchanged,activity=walk; split=motion
+wrist-ppg-exercise,s8_run,ppg,ppg_ppg_n_peaks,548.0,548.0,0.0,unchanged,activity=run; split=motion
+wrist-ppg-exercise,s8_run,ppg,hr_mae,39.57173671692201,39.57173671692201,0.0,unchanged,activity=run; split=motion
+wrist-ppg-exercise,s8_run,ppg,hr_bias,39.53732438136536,39.53732438136536,0.0,unchanged,activity=run; split=motion
+wrist-ppg-exercise,s8_run,ppg,hr_rmse,41.53012931341742,41.53012931341742,0.0,unchanged,activity=run; split=motion
+wrist-ppg-exercise,s8_run,ppg,hr_pearson_r,0.00884725436487,0.00884725436487,0.0,unchanged,activity=run; split=motion
+wrist-ppg-exercise,s8_run,ppg,hr_n,140.0,140.0,0.0,unchanged,activity=run; split=motion
+wrist-ppg-exercise,s8_walk,ppg,ppg_ppg_n_peaks,632.0,632.0,0.0,unchanged,activity=walk; split=motion
+wrist-ppg-exercise,s8_walk,ppg,hr_mae,23.33116607733865,23.33116607733865,0.0,unchanged,activity=walk; split=motion
+wrist-ppg-exercise,s8_walk,ppg,hr_bias,23.197080317599788,23.197080317599788,0.0,unchanged,activity=walk; split=motion
+wrist-ppg-exercise,s8_walk,ppg,hr_rmse,24.48836492624554,24.48836492624554,0.0,unchanged,activity=walk; split=motion
+wrist-ppg-exercise,s8_walk,ppg,hr_pearson_r,-0.2375631662673834,-0.2375631662673834,0.0,unchanged,activity=walk; split=motion
+wrist-ppg-exercise,s8_walk,ppg,hr_n,198.0,198.0,0.0,unchanged,activity=walk; split=motion
+wrist-ppg-exercise,s9_walk,ppg,ppg_ppg_n_peaks,358.0,358.0,0.0,unchanged,activity=walk; split=motion
+wrist-ppg-exercise,s9_walk,ppg,hr_mae,3.610547031551416,3.610547031551416,0.0,unchanged,activity=walk; split=motion
+wrist-ppg-exercise,s9_walk,ppg,hr_bias,0.4468639160994401,0.4468639160994401,0.0,unchanged,activity=walk; split=motion
+wrist-ppg-exercise,s9_walk,ppg,hr_rmse,4.5122866446453145,4.5122866446453145,0.0,unchanged,activity=walk; split=motion
+wrist-ppg-exercise,s9_walk,ppg,hr_pearson_r,-0.2320910892130224,-0.2320910892130224,0.0,unchanged,activity=walk; split=motion
+wrist-ppg-exercise,s9_walk,ppg,hr_n,107.0,107.0,0.0,unchanged,activity=walk; split=motion
+wrist-ppg-exercise,s1_high_resistance_bike,ecg,ecg_f1,0.998079,0.949977,-0.0481017,regression,"joined from rsp_ppg/results/wrist/metrics.csv vs reval-baseline/metrics.csv (not in wave D wrist_ppg_records.csv, which tracks PPG metrics only)"
+wrist-ppg-exercise,s1_low_resistance_bike,ecg,ecg_f1,0.998119,0.996869,-0.00124999,unchanged,"joined from rsp_ppg/results/wrist/metrics.csv vs reval-baseline/metrics.csv (not in wave D wrist_ppg_records.csv, which tracks PPG metrics only)"
+wrist-ppg-exercise,s1_walk,ecg,ecg_f1,0.666667,0.579098,-0.087569,regression,"joined from rsp_ppg/results/wrist/metrics.csv vs reval-baseline/metrics.csv (not in wave D wrist_ppg_records.csv, which tracks PPG metrics only)"
+wrist-ppg-exercise,s2_high_resistance_bike,ecg,ecg_f1,0.971951,0.943981,-0.0279703,regression,"joined from rsp_ppg/results/wrist/metrics.csv vs reval-baseline/metrics.csv (not in wave D wrist_ppg_records.csv, which tracks PPG metrics only)"
+wrist-ppg-exercise,s2_low_resistance_bike,ecg,ecg_f1,0.981467,0.905405,-0.0760612,regression,"joined from rsp_ppg/results/wrist/metrics.csv vs reval-baseline/metrics.csv (not in wave D wrist_ppg_records.csv, which tracks PPG metrics only)"
+wrist-ppg-exercise,s2_walk,ecg,ecg_f1,0.89478,0.687939,-0.206842,regression,"joined from rsp_ppg/results/wrist/metrics.csv vs reval-baseline/metrics.csv (not in wave D wrist_ppg_records.csv, which tracks PPG metrics only)"
+wrist-ppg-exercise,s3_high_resistance_bike,ecg,ecg_f1,0.906463,0.927465,0.0210028,improvement,"joined from rsp_ppg/results/wrist/metrics.csv vs reval-baseline/metrics.csv (not in wave D wrist_ppg_records.csv, which tracks PPG metrics only)"
+wrist-ppg-exercise,s3_low_resistance_bike,ecg,ecg_f1,0.931559,0.933945,0.00238602,unchanged,"joined from rsp_ppg/results/wrist/metrics.csv vs reval-baseline/metrics.csv (not in wave D wrist_ppg_records.csv, which tracks PPG metrics only)"
+wrist-ppg-exercise,s3_run,ecg,ecg_f1,0.999116,0.999116,0,unchanged,"joined from rsp_ppg/results/wrist/metrics.csv vs reval-baseline/metrics.csv (not in wave D wrist_ppg_records.csv, which tracks PPG metrics only)"
+wrist-ppg-exercise,s3_walk,ecg,ecg_f1,0.968085,0.956705,-0.0113797,regression,"joined from rsp_ppg/results/wrist/metrics.csv vs reval-baseline/metrics.csv (not in wave D wrist_ppg_records.csv, which tracks PPG metrics only)"
+wrist-ppg-exercise,s4_run,ecg,ecg_f1,0.94321,0.955677,0.0124671,improvement,"joined from rsp_ppg/results/wrist/metrics.csv vs reval-baseline/metrics.csv (not in wave D wrist_ppg_records.csv, which tracks PPG metrics only)"
+wrist-ppg-exercise,s5_low_resistance_bike,ecg,ecg_f1,0.715556,0.99654,0.280984,improvement,"joined from rsp_ppg/results/wrist/metrics.csv vs reval-baseline/metrics.csv (not in wave D wrist_ppg_records.csv, which tracks PPG metrics only)"
+wrist-ppg-exercise,s5_run,ecg,ecg_f1,0.99688,0.99688,0,unchanged,"joined from rsp_ppg/results/wrist/metrics.csv vs reval-baseline/metrics.csv (not in wave D wrist_ppg_records.csv, which tracks PPG metrics only)"
+wrist-ppg-exercise,s6_low_resistance_bike,ecg,ecg_f1,0.657343,0.736318,0.0789758,improvement,"joined from rsp_ppg/results/wrist/metrics.csv vs reval-baseline/metrics.csv (not in wave D wrist_ppg_records.csv, which tracks PPG metrics only)"
+wrist-ppg-exercise,s6_run,ecg,ecg_f1,0.670034,0.641385,-0.0286487,regression,"joined from rsp_ppg/results/wrist/metrics.csv vs reval-baseline/metrics.csv (not in wave D wrist_ppg_records.csv, which tracks PPG metrics only)"
+wrist-ppg-exercise,s6_walk,ecg,ecg_f1,0.880208,0.714286,-0.165923,regression,"joined from rsp_ppg/results/wrist/metrics.csv vs reval-baseline/metrics.csv (not in wave D wrist_ppg_records.csv, which tracks PPG metrics only)"
+wrist-ppg-exercise,s8_run,ecg,ecg_f1,0.695052,0.682791,-0.0122611,regression,"joined from rsp_ppg/results/wrist/metrics.csv vs reval-baseline/metrics.csv (not in wave D wrist_ppg_records.csv, which tracks PPG metrics only)"
+wrist-ppg-exercise,s8_walk,ecg,ecg_f1,0.792793,0.672818,-0.119975,regression,"joined from rsp_ppg/results/wrist/metrics.csv vs reval-baseline/metrics.csv (not in wave D wrist_ppg_records.csv, which tracks PPG metrics only)"
+wrist-ppg-exercise,s9_walk,ecg,ecg_f1,0.993324,0.993324,0,unchanged,"joined from rsp_ppg/results/wrist/metrics.csv vs reval-baseline/metrics.csv (not in wave D wrist_ppg_records.csv, which tracks PPG metrics only)"
+wrist-ppg-exercise,s1_high_resistance_bike,ecg,ecg_precision,0.997121,0.908692,-0.0884291,regression,"joined from rsp_ppg/results/wrist/metrics.csv vs reval-baseline/metrics.csv (not in wave D wrist_ppg_records.csv, which tracks PPG metrics only)"
+wrist-ppg-exercise,s1_low_resistance_bike,ecg,ecg_precision,0.996245,0.993758,-0.0024875,unchanged,"joined from rsp_ppg/results/wrist/metrics.csv vs reval-baseline/metrics.csv (not in wave D wrist_ppg_records.csv, which tracks PPG metrics only)"
+wrist-ppg-exercise,s1_walk,ecg,ecg_precision,0.526208,0.426768,-0.0994399,regression,"joined from rsp_ppg/results/wrist/metrics.csv vs reval-baseline/metrics.csv (not in wave D wrist_ppg_records.csv, which tracks PPG metrics only)"
+wrist-ppg-exercise,s2_high_resistance_bike,ecg,ecg_precision,0.954491,0.907216,-0.0472745,regression,"joined from rsp_ppg/results/wrist/metrics.csv vs reval-baseline/metrics.csv (not in wave D wrist_ppg_records.csv, which tracks PPG metrics only)"
+wrist-ppg-exercise,s2_low_resistance_bike,ecg,ecg_precision,0.966667,0.836338,-0.130328,regression,"joined from rsp_ppg/results/wrist/metrics.csv vs reval-baseline/metrics.csv (not in wave D wrist_ppg_records.csv, which tracks PPG metrics only)"
+wrist-ppg-exercise,s2_walk,ecg,ecg_precision,0.842434,0.538462,-0.303972,regression,"joined from rsp_ppg/results/wrist/metrics.csv vs reval-baseline/metrics.csv (not in wave D wrist_ppg_records.csv, which tracks PPG metrics only)"
+wrist-ppg-exercise,s3_high_resistance_bike,ecg,ecg_precision,0.914237,0.897476,-0.0167604,regression,"joined from rsp_ppg/results/wrist/metrics.csv vs reval-baseline/metrics.csv (not in wave D wrist_ppg_records.csv, which tracks PPG metrics only)"
+wrist-ppg-exercise,s3_low_resistance_bike,ecg,ecg_precision,0.926276,0.897707,-0.0285688,regression,"joined from rsp_ppg/results/wrist/metrics.csv vs reval-baseline/metrics.csv (not in wave D wrist_ppg_records.csv, which tracks PPG metrics only)"
+wrist-ppg-exercise,s3_run,ecg,ecg_precision,0.998233,0.998233,0,unchanged,"joined from rsp_ppg/results/wrist/metrics.csv vs reval-baseline/metrics.csv (not in wave D wrist_ppg_records.csv, which tracks PPG metrics only)"
+wrist-ppg-exercise,s3_walk,ecg,ecg_precision,0.943983,0.92638,-0.017603,regression,"joined from rsp_ppg/results/wrist/metrics.csv vs reval-baseline/metrics.csv (not in wave D wrist_ppg_records.csv, which tracks PPG metrics only)"
+wrist-ppg-exercise,s4_run,ecg,ecg_precision,0.978233,0.97401,-0.00422313,unchanged,"joined from rsp_ppg/results/wrist/metrics.csv vs reval-baseline/metrics.csv (not in wave D wrist_ppg_records.csv, which tracks PPG metrics only)"
+wrist-ppg-exercise,s5_low_resistance_bike,ecg,ecg_precision,0.993827,0.993103,-0.000723712,unchanged,"joined from rsp_ppg/results/wrist/metrics.csv vs reval-baseline/metrics.csv (not in wave D wrist_ppg_records.csv, which tracks PPG metrics only)"
+wrist-ppg-exercise,s5_run,ecg,ecg_precision,0.995327,0.995327,0,unchanged,"joined from rsp_ppg/results/wrist/metrics.csv vs reval-baseline/metrics.csv (not in wave D wrist_ppg_records.csv, which tracks PPG metrics only)"
+wrist-ppg-exercise,s6_low_resistance_bike,ecg,ecg_precision,0.707527,0.594719,-0.112808,regression,"joined from rsp_ppg/results/wrist/metrics.csv vs reval-baseline/metrics.csv (not in wave D wrist_ppg_records.csv, which tracks PPG metrics only)"
+wrist-ppg-exercise,s6_run,ecg,ecg_precision,0.560563,0.529252,-0.0313117,regression,"joined from rsp_ppg/results/wrist/metrics.csv vs reval-baseline/metrics.csv (not in wave D wrist_ppg_records.csv, which tracks PPG metrics only)"
+wrist-ppg-exercise,s6_walk,ecg,ecg_precision,0.793427,0.563698,-0.229729,regression,"joined from rsp_ppg/results/wrist/metrics.csv vs reval-baseline/metrics.csv (not in wave D wrist_ppg_records.csv, which tracks PPG metrics only)"
+wrist-ppg-exercise,s8_run,ecg,ecg_precision,0.668142,0.557751,-0.110391,regression,"joined from rsp_ppg/results/wrist/metrics.csv vs reval-baseline/metrics.csv (not in wave D wrist_ppg_records.csv, which tracks PPG metrics only)"
+wrist-ppg-exercise,s8_walk,ecg,ecg_precision,0.902564,0.520307,-0.382257,regression,"joined from rsp_ppg/results/wrist/metrics.csv vs reval-baseline/metrics.csv (not in wave D wrist_ppg_records.csv, which tracks PPG metrics only)"
+wrist-ppg-exercise,s9_walk,ecg,ecg_precision,0.986737,0.986737,0,unchanged,"joined from rsp_ppg/results/wrist/metrics.csv vs reval-baseline/metrics.csv (not in wave D wrist_ppg_records.csv, which tracks PPG metrics only)"
+wrist-ppg-exercise,s1_high_resistance_bike,ecg,ecg_recall,0.999038,0.995192,-0.00384615,unchanged,"joined from rsp_ppg/results/wrist/metrics.csv vs reval-baseline/metrics.csv (not in wave D wrist_ppg_records.csv, which tracks PPG metrics only)"
+wrist-ppg-exercise,s1_low_resistance_bike,ecg,ecg_recall,1,1,0,unchanged,"joined from rsp_ppg/results/wrist/metrics.csv vs reval-baseline/metrics.csv (not in wave D wrist_ppg_records.csv, which tracks PPG metrics only)"
+wrist-ppg-exercise,s1_walk,ecg,ecg_recall,0.909414,0.900533,-0.00888099,unchanged,"joined from rsp_ppg/results/wrist/metrics.csv vs reval-baseline/metrics.csv (not in wave D wrist_ppg_records.csv, which tracks PPG metrics only)"
+wrist-ppg-exercise,s2_high_resistance_bike,ecg,ecg_recall,0.990062,0.983851,-0.00621118,unchanged,"joined from rsp_ppg/results/wrist/metrics.csv vs reval-baseline/metrics.csv (not in wave D wrist_ppg_records.csv, which tracks PPG metrics only)"
+wrist-ppg-exercise,s2_low_resistance_bike,ecg,ecg_recall,0.996727,0.986907,-0.00981997,unchanged,"joined from rsp_ppg/results/wrist/metrics.csv vs reval-baseline/metrics.csv (not in wave D wrist_ppg_records.csv, which tracks PPG metrics only)"
+wrist-ppg-exercise,s2_walk,ecg,ecg_recall,0.954064,0.952297,-0.00176678,unchanged,"joined from rsp_ppg/results/wrist/metrics.csv vs reval-baseline/metrics.csv (not in wave D wrist_ppg_records.csv, which tracks PPG metrics only)"
+wrist-ppg-exercise,s3_high_resistance_bike,ecg,ecg_recall,0.89882,0.959528,0.0607083,improvement,"joined from rsp_ppg/results/wrist/metrics.csv vs reval-baseline/metrics.csv (not in wave D wrist_ppg_records.csv, which tracks PPG metrics only)"
+wrist-ppg-exercise,s3_low_resistance_bike,ecg,ecg_recall,0.936902,0.973231,0.0363289,improvement,"joined from rsp_ppg/results/wrist/metrics.csv vs reval-baseline/metrics.csv (not in wave D wrist_ppg_records.csv, which tracks PPG metrics only)"
+wrist-ppg-exercise,s3_run,ecg,ecg_recall,1,1,0,unchanged,"joined from rsp_ppg/results/wrist/metrics.csv vs reval-baseline/metrics.csv (not in wave D wrist_ppg_records.csv, which tracks PPG metrics only)"
+wrist-ppg-exercise,s3_walk,ecg,ecg_recall,0.99345,0.989083,-0.00436681,unchanged,"joined from rsp_ppg/results/wrist/metrics.csv vs reval-baseline/metrics.csv (not in wave D wrist_ppg_records.csv, which tracks PPG metrics only)"
+wrist-ppg-exercise,s4_run,ecg,ecg_recall,0.910608,0.938021,0.0274136,improvement,"joined from rsp_ppg/results/wrist/metrics.csv vs reval-baseline/metrics.csv (not in wave D wrist_ppg_records.csv, which tracks PPG metrics only)"
+wrist-ppg-exercise,s5_low_resistance_bike,ecg,ecg_recall,0.559028,1,0.440972,improvement,"joined from rsp_ppg/results/wrist/metrics.csv vs reval-baseline/metrics.csv (not in wave D wrist_ppg_records.csv, which tracks PPG metrics only)"
+wrist-ppg-exercise,s5_run,ecg,ecg_recall,0.998437,0.998437,0,unchanged,"joined from rsp_ppg/results/wrist/metrics.csv vs reval-baseline/metrics.csv (not in wave D wrist_ppg_records.csv, which tracks PPG metrics only)"
+wrist-ppg-exercise,s6_low_resistance_bike,ecg,ecg_recall,0.613806,0.966418,0.352612,improvement,"joined from rsp_ppg/results/wrist/metrics.csv vs reval-baseline/metrics.csv (not in wave D wrist_ppg_records.csv, which tracks PPG metrics only)"
+wrist-ppg-exercise,s6_run,ecg,ecg_recall,0.832636,0.813808,-0.0188285,regression,"joined from rsp_ppg/results/wrist/metrics.csv vs reval-baseline/metrics.csv (not in wave D wrist_ppg_records.csv, which tracks PPG metrics only)"
+wrist-ppg-exercise,s6_walk,ecg,ecg_recall,0.988304,0.974659,-0.0136452,regression,"joined from rsp_ppg/results/wrist/metrics.csv vs reval-baseline/metrics.csv (not in wave D wrist_ppg_records.csv, which tracks PPG metrics only)"
+wrist-ppg-exercise,s8_run,ecg,ecg_recall,0.724221,0.880096,0.155875,improvement,"joined from rsp_ppg/results/wrist/metrics.csv vs reval-baseline/metrics.csv (not in wave D wrist_ppg_records.csv, which tracks PPG metrics only)"
+wrist-ppg-exercise,s8_walk,ecg,ecg_recall,0.706827,0.951807,0.24498,improvement,"joined from rsp_ppg/results/wrist/metrics.csv vs reval-baseline/metrics.csv (not in wave D wrist_ppg_records.csv, which tracks PPG metrics only)"
+wrist-ppg-exercise,s9_walk,ecg,ecg_recall,1,1,0,unchanged,"joined from rsp_ppg/results/wrist/metrics.csv vs reval-baseline/metrics.csv (not in wave D wrist_ppg_records.csv, which tracks PPG metrics only)"
+wrist-ppg-exercise,s1_high_resistance_bike,ecg,ecg_fp,3,104,101,regression,"joined from rsp_ppg/results/wrist/metrics.csv vs reval-baseline/metrics.csv (not in wave D wrist_ppg_records.csv, which tracks PPG metrics only)"
+wrist-ppg-exercise,s1_low_resistance_bike,ecg,ecg_fp,3,5,2,unchanged,"joined from rsp_ppg/results/wrist/metrics.csv vs reval-baseline/metrics.csv (not in wave D wrist_ppg_records.csv, which tracks PPG metrics only)"
+wrist-ppg-exercise,s1_walk,ecg,ecg_fp,461,681,220,regression,"joined from rsp_ppg/results/wrist/metrics.csv vs reval-baseline/metrics.csv (not in wave D wrist_ppg_records.csv, which tracks PPG metrics only)"
+wrist-ppg-exercise,s2_high_resistance_bike,ecg,ecg_fp,38,81,43,unchanged,"joined from rsp_ppg/results/wrist/metrics.csv vs reval-baseline/metrics.csv (not in wave D wrist_ppg_records.csv, which tracks PPG metrics only)"
+wrist-ppg-exercise,s2_low_resistance_bike,ecg,ecg_fp,21,118,97,regression,"joined from rsp_ppg/results/wrist/metrics.csv vs reval-baseline/metrics.csv (not in wave D wrist_ppg_records.csv, which tracks PPG metrics only)"
+wrist-ppg-exercise,s2_walk,ecg,ecg_fp,101,462,361,regression,"joined from rsp_ppg/results/wrist/metrics.csv vs reval-baseline/metrics.csv (not in wave D wrist_ppg_records.csv, which tracks PPG metrics only)"
+wrist-ppg-exercise,s3_high_resistance_bike,ecg,ecg_fp,50,65,15,unchanged,"joined from rsp_ppg/results/wrist/metrics.csv vs reval-baseline/metrics.csv (not in wave D wrist_ppg_records.csv, which tracks PPG metrics only)"
+wrist-ppg-exercise,s3_low_resistance_bike,ecg,ecg_fp,39,58,19,unchanged,"joined from rsp_ppg/results/wrist/metrics.csv vs reval-baseline/metrics.csv (not in wave D wrist_ppg_records.csv, which tracks PPG metrics only)"
+wrist-ppg-exercise,s3_run,ecg,ecg_fp,1,1,0,unchanged,"joined from rsp_ppg/results/wrist/metrics.csv vs reval-baseline/metrics.csv (not in wave D wrist_ppg_records.csv, which tracks PPG metrics only)"
+wrist-ppg-exercise,s3_walk,ecg,ecg_fp,27,36,9,unchanged,"joined from rsp_ppg/results/wrist/metrics.csv vs reval-baseline/metrics.csv (not in wave D wrist_ppg_records.csv, which tracks PPG metrics only)"
+wrist-ppg-exercise,s4_run,ecg,ecg_fp,17,21,4,unchanged,"joined from rsp_ppg/results/wrist/metrics.csv vs reval-baseline/metrics.csv (not in wave D wrist_ppg_records.csv, which tracks PPG metrics only)"
+wrist-ppg-exercise,s5_low_resistance_bike,ecg,ecg_fp,2,4,2,unchanged,"joined from rsp_ppg/results/wrist/metrics.csv vs reval-baseline/metrics.csv (not in wave D wrist_ppg_records.csv, which tracks PPG metrics only)"
+wrist-ppg-exercise,s5_run,ecg,ecg_fp,3,3,0,unchanged,"joined from rsp_ppg/results/wrist/metrics.csv vs reval-baseline/metrics.csv (not in wave D wrist_ppg_records.csv, which tracks PPG metrics only)"
+wrist-ppg-exercise,s6_low_resistance_bike,ecg,ecg_fp,136,353,217,regression,"joined from rsp_ppg/results/wrist/metrics.csv vs reval-baseline/metrics.csv (not in wave D wrist_ppg_records.csv, which tracks PPG metrics only)"
+wrist-ppg-exercise,s6_run,ecg,ecg_fp,312,346,34,unchanged,"joined from rsp_ppg/results/wrist/metrics.csv vs reval-baseline/metrics.csv (not in wave D wrist_ppg_records.csv, which tracks PPG metrics only)"
+wrist-ppg-exercise,s6_walk,ecg,ecg_fp,132,387,255,regression,"joined from rsp_ppg/results/wrist/metrics.csv vs reval-baseline/metrics.csv (not in wave D wrist_ppg_records.csv, which tracks PPG metrics only)"
+wrist-ppg-exercise,s8_run,ecg,ecg_fp,150,291,141,regression,"joined from rsp_ppg/results/wrist/metrics.csv vs reval-baseline/metrics.csv (not in wave D wrist_ppg_records.csv, which tracks PPG metrics only)"
+wrist-ppg-exercise,s8_walk,ecg,ecg_fp,38,437,399,regression,"joined from rsp_ppg/results/wrist/metrics.csv vs reval-baseline/metrics.csv (not in wave D wrist_ppg_records.csv, which tracks PPG metrics only)"
+wrist-ppg-exercise,s9_walk,ecg,ecg_fp,5,5,0,unchanged,"joined from rsp_ppg/results/wrist/metrics.csv vs reval-baseline/metrics.csv (not in wave D wrist_ppg_records.csv, which tracks PPG metrics only)"
+wrist-ppg-exercise,s1_high_resistance_bike,ecg,ecg_fn,1,5,4,unchanged,"joined from rsp_ppg/results/wrist/metrics.csv vs reval-baseline/metrics.csv (not in wave D wrist_ppg_records.csv, which tracks PPG metrics only)"
+wrist-ppg-exercise,s1_low_resistance_bike,ecg,ecg_fn,0,0,0,unchanged,"joined from rsp_ppg/results/wrist/metrics.csv vs reval-baseline/metrics.csv (not in wave D wrist_ppg_records.csv, which tracks PPG metrics only)"
+wrist-ppg-exercise,s1_walk,ecg,ecg_fn,51,56,5,unchanged,"joined from rsp_ppg/results/wrist/metrics.csv vs reval-baseline/metrics.csv (not in wave D wrist_ppg_records.csv, which tracks PPG metrics only)"
+wrist-ppg-exercise,s2_high_resistance_bike,ecg,ecg_fn,8,13,5,unchanged,"joined from rsp_ppg/results/wrist/metrics.csv vs reval-baseline/metrics.csv (not in wave D wrist_ppg_records.csv, which tracks PPG metrics only)"
+wrist-ppg-exercise,s2_low_resistance_bike,ecg,ecg_fn,2,8,6,unchanged,"joined from rsp_ppg/results/wrist/metrics.csv vs reval-baseline/metrics.csv (not in wave D wrist_ppg_records.csv, which tracks PPG metrics only)"
+wrist-ppg-exercise,s2_walk,ecg,ecg_fn,26,27,1,unchanged,"joined from rsp_ppg/results/wrist/metrics.csv vs reval-baseline/metrics.csv (not in wave D wrist_ppg_records.csv, which tracks PPG metrics only)"
+wrist-ppg-exercise,s3_high_resistance_bike,ecg,ecg_fn,60,24,-36,unchanged,"joined from rsp_ppg/results/wrist/metrics.csv vs reval-baseline/metrics.csv (not in wave D wrist_ppg_records.csv, which tracks PPG metrics only)"
+wrist-ppg-exercise,s3_low_resistance_bike,ecg,ecg_fn,33,14,-19,unchanged,"joined from rsp_ppg/results/wrist/metrics.csv vs reval-baseline/metrics.csv (not in wave D wrist_ppg_records.csv, which tracks PPG metrics only)"
+wrist-ppg-exercise,s3_run,ecg,ecg_fn,0,0,0,unchanged,"joined from rsp_ppg/results/wrist/metrics.csv vs reval-baseline/metrics.csv (not in wave D wrist_ppg_records.csv, which tracks PPG metrics only)"
+wrist-ppg-exercise,s3_walk,ecg,ecg_fn,3,5,2,unchanged,"joined from rsp_ppg/results/wrist/metrics.csv vs reval-baseline/metrics.csv (not in wave D wrist_ppg_records.csv, which tracks PPG metrics only)"
+wrist-ppg-exercise,s4_run,ecg,ecg_fn,75,52,-23,unchanged,"joined from rsp_ppg/results/wrist/metrics.csv vs reval-baseline/metrics.csv (not in wave D wrist_ppg_records.csv, which tracks PPG metrics only)"
+wrist-ppg-exercise,s5_low_resistance_bike,ecg,ecg_fn,254,0,-254,improvement,"joined from rsp_ppg/results/wrist/metrics.csv vs reval-baseline/metrics.csv (not in wave D wrist_ppg_records.csv, which tracks PPG metrics only)"
+wrist-ppg-exercise,s5_run,ecg,ecg_fn,1,1,0,unchanged,"joined from rsp_ppg/results/wrist/metrics.csv vs reval-baseline/metrics.csv (not in wave D wrist_ppg_records.csv, which tracks PPG metrics only)"
+wrist-ppg-exercise,s6_low_resistance_bike,ecg,ecg_fn,207,18,-189,improvement,"joined from rsp_ppg/results/wrist/metrics.csv vs reval-baseline/metrics.csv (not in wave D wrist_ppg_records.csv, which tracks PPG metrics only)"
+wrist-ppg-exercise,s6_run,ecg,ecg_fn,80,89,9,unchanged,"joined from rsp_ppg/results/wrist/metrics.csv vs reval-baseline/metrics.csv (not in wave D wrist_ppg_records.csv, which tracks PPG metrics only)"
+wrist-ppg-exercise,s6_walk,ecg,ecg_fn,6,13,7,unchanged,"joined from rsp_ppg/results/wrist/metrics.csv vs reval-baseline/metrics.csv (not in wave D wrist_ppg_records.csv, which tracks PPG metrics only)"
+wrist-ppg-exercise,s8_run,ecg,ecg_fn,115,50,-65,improvement,"joined from rsp_ppg/results/wrist/metrics.csv vs reval-baseline/metrics.csv (not in wave D wrist_ppg_records.csv, which tracks PPG metrics only)"
+wrist-ppg-exercise,s8_walk,ecg,ecg_fn,146,24,-122,improvement,"joined from rsp_ppg/results/wrist/metrics.csv vs reval-baseline/metrics.csv (not in wave D wrist_ppg_records.csv, which tracks PPG metrics only)"
+wrist-ppg-exercise,s9_walk,ecg,ecg_fn,0,0,0,unchanged,"joined from rsp_ppg/results/wrist/metrics.csv vs reval-baseline/metrics.csv (not in wave D wrist_ppg_records.csv, which tracks PPG metrics only)"
+wesad,S2_amusement,bvp,bvp_wrist_bvp_n_peaks,279.0,279.0,0.0,unchanged,
+wesad,S2_amusement,ecg,ecg_chest_ecg_n_peaks,268.0,268.0,0.0,unchanged,post-remediation ecg-peaks SPKI-clamp change -> more peaks (see waveC-notes NEW-C1)
+wesad,S2_amusement,hr,hr_bias,5.69446963265473,5.705347269742284,0.01087763708755407,changed,cross-device HR (ECG-vs-BVP); changed via ECG peak-count change
+wesad,S2_amusement,hr,hr_mae,12.418337227719103,12.367068537443132,-0.05126869027597181,changed,cross-device HR (ECG-vs-BVP); changed via ECG peak-count change
+wesad,S2_amusement,hr,hr_n,220.0,220.0,0.0,unchanged,
+wesad,S2_amusement,hr,hr_pearson_r,0.1228371070994987,0.1266029572548005,0.0037658501553018003,changed,cross-device HR; changed via ECG peak-count change
+wesad,S2_amusement,hr,hr_rmse,21.383555660103376,21.359395008595367,-0.024160651508008613,changed,cross-device HR; changed via ECG peak-count change
+wesad,S2_amusement,rsp,rsp_chest_rsp_n_cycles,83.0,83.0,0.0,unchanged,
+wesad,S2_amusement,bvp,structural_bvp_wrist_bvp_n_peaks,279.0,279.0,0.0,unchanged,
+wesad,S2_amusement,ecg,structural_ecg_chest_ecg_n_peaks,268.0,268.0,0.0,unchanged,post-remediation ecg-peaks SPKI-clamp change -> more peaks (see waveC-notes NEW-C1)
+wesad,S2_amusement,eda,structural_eda_chest_eda_n_scr,24.0,24.0,0.0,unchanged,
+wesad,S2_amusement,rsp,structural_rsp_chest_rsp_mean_rate_bpm,21.290465542045418,21.290465542045418,0.0,unchanged,
+wesad,S2_baseline,bvp,bvp_wrist_bvp_n_peaks,293.0,293.0,0.0,unchanged,
+wesad,S2_baseline,ecg,ecg_chest_ecg_n_peaks,287.0,298.0,11.0,changed,post-remediation ecg-peaks SPKI-clamp change -> more peaks (see waveC-notes NEW-C1)
+wesad,S2_baseline,hr,hr_bias,3.3135235619282377,1.877058904412952,-1.4364646575152857,changed,cross-device HR (ECG-vs-BVP); changed via ECG peak-count change
+wesad,S2_baseline,hr,hr_mae,10.295171589408255,11.414643313529302,1.1194717241210466,changed,cross-device HR (ECG-vs-BVP); changed via ECG peak-count change
+wesad,S2_baseline,hr,hr_n,220.0,220.0,0.0,unchanged,
+wesad,S2_baseline,hr,hr_pearson_r,0.2088051421509247,0.0859242928079916,-0.12288084934293309,changed,cross-device HR; changed via ECG peak-count change
+wesad,S2_baseline,hr,hr_rmse,18.97009704757783,19.95477777922296,0.9846807316451311,changed,cross-device HR; changed via ECG peak-count change
+wesad,S2_baseline,rsp,rsp_chest_rsp_n_cycles,86.0,86.0,0.0,unchanged,
+wesad,S2_baseline,bvp,structural_bvp_wrist_bvp_n_peaks,293.0,293.0,0.0,unchanged,
+wesad,S2_baseline,ecg,structural_ecg_chest_ecg_n_peaks,287.0,298.0,11.0,changed,post-remediation ecg-peaks SPKI-clamp change -> more peaks (see waveC-notes NEW-C1)
+wesad,S2_baseline,eda,structural_eda_chest_eda_n_scr,0.0,0.0,0.0,unchanged,
+wesad,S2_baseline,rsp,structural_rsp_chest_rsp_mean_rate_bpm,22.09940999430952,22.09940999430952,0.0,unchanged,
+wesad,S2_stress,bvp,bvp_wrist_bvp_n_peaks,263.0,263.0,0.0,unchanged,
+wesad,S2_stress,ecg,ecg_chest_ecg_n_peaks,307.0,309.0,2.0,changed,post-remediation ecg-peaks SPKI-clamp change -> more peaks (see waveC-notes NEW-C1)
+wesad,S2_stress,hr,hr_bias,-1.644639006070235,-2.1840923207728,-0.5394533147025651,changed,cross-device HR (ECG-vs-BVP); changed via ECG peak-count change
+wesad,S2_stress,hr,hr_mae,20.44491432495253,20.685912349435437,0.24099802448290575,changed,cross-device HR (ECG-vs-BVP); changed via ECG peak-count change
+wesad,S2_stress,hr,hr_n,220.0,220.0,0.0,unchanged,
+wesad,S2_stress,hr,hr_pearson_r,0.2076885614515135,0.2039233233190401,-0.0037652381324733974,changed,cross-device HR; changed via ECG peak-count change
+wesad,S2_stress,hr,hr_rmse,26.213967358331463,26.552369101887603,0.3384017435561404,changed,cross-device HR; changed via ECG peak-count change
+wesad,S2_stress,rsp,rsp_chest_rsp_n_cycles,78.0,78.0,0.0,unchanged,
+wesad,S2_stress,bvp,structural_bvp_wrist_bvp_n_peaks,263.0,263.0,0.0,unchanged,
+wesad,S2_stress,ecg,structural_ecg_chest_ecg_n_peaks,307.0,309.0,2.0,changed,post-remediation ecg-peaks SPKI-clamp change -> more peaks (see waveC-notes NEW-C1)
+wesad,S2_stress,eda,structural_eda_chest_eda_n_scr,4.0,4.0,0.0,unchanged,
+wesad,S2_stress,rsp,structural_rsp_chest_rsp_mean_rate_bpm,21.673471417601935,21.673471417601935,0.0,unchanged,
+wesad,S3_amusement,bvp,bvp_wrist_bvp_n_peaks,253.0,253.0,0.0,unchanged,
+wesad,S3_amusement,ecg,ecg_chest_ecg_n_peaks,217.0,430.0,213.0,changed,post-remediation ecg-peaks SPKI-clamp change -> more peaks (see waveC-notes NEW-C1)
+wesad,S3_amusement,hr,hr_bias,12.947751484957449,-17.235336765269622,-30.183088250227073,changed,cross-device HR (ECG-vs-BVP); changed via ECG peak-count change
+wesad,S3_amusement,hr,hr_mae,17.677109616392407,29.814987057670763,12.137877441278356,changed,cross-device HR (ECG-vs-BVP); changed via ECG peak-count change
+wesad,S3_amusement,hr,hr_n,220.0,220.0,0.0,unchanged,
+wesad,S3_amusement,hr,hr_pearson_r,-0.0177194991319877,0.0493755935592137,0.0670950926912014,changed,cross-device HR; changed via ECG peak-count change
+wesad,S3_amusement,hr,hr_rmse,27.536899702567307,39.09333466889424,11.556434966326929,changed,cross-device HR; changed via ECG peak-count change
+wesad,S3_amusement,rsp,rsp_chest_rsp_n_cycles,66.0,66.0,0.0,unchanged,
+wesad,S3_amusement,bvp,structural_bvp_wrist_bvp_n_peaks,253.0,253.0,0.0,unchanged,
+wesad,S3_amusement,ecg,structural_ecg_chest_ecg_n_peaks,217.0,430.0,213.0,changed,post-remediation ecg-peaks SPKI-clamp change -> more peaks (see waveC-notes NEW-C1)
+wesad,S3_amusement,eda,structural_eda_chest_eda_n_scr,128.0,128.0,0.0,unchanged,
+wesad,S3_amusement,rsp,structural_rsp_chest_rsp_mean_rate_bpm,17.480922862615184,17.480922862615184,0.0,unchanged,
+wesad,S3_baseline,bvp,bvp_wrist_bvp_n_peaks,222.0,222.0,0.0,unchanged,
+wesad,S3_baseline,ecg,ecg_chest_ecg_n_peaks,221.0,441.0,220.0,changed,post-remediation ecg-peaks SPKI-clamp change -> more peaks (see waveC-notes NEW-C1)
+wesad,S3_baseline,hr,hr_bias,9.442840804855182,-10.784505338959406,-20.227346143814586,changed,cross-device HR (ECG-vs-BVP); changed via ECG peak-count change
+wesad,S3_baseline,hr,hr_mae,15.865936904408116,22.27645786324792,6.410520958839804,changed,cross-device HR (ECG-vs-BVP); changed via ECG peak-count change
+wesad,S3_baseline,hr,hr_n,220.0,220.0,0.0,unchanged,
+wesad,S3_baseline,hr,hr_pearson_r,0.2021741092422857,0.2041702387030718,0.001996129460786089,changed,cross-device HR; changed via ECG peak-count change
+wesad,S3_baseline,hr,hr_rmse,25.30444878459552,27.103179218269307,1.7987304336737857,changed,cross-device HR; changed via ECG peak-count change
+wesad,S3_baseline,rsp,rsp_chest_rsp_n_cycles,57.0,57.0,0.0,unchanged,
+wesad,S3_baseline,bvp,structural_bvp_wrist_bvp_n_peaks,222.0,222.0,0.0,unchanged,
+wesad,S3_baseline,ecg,structural_ecg_chest_ecg_n_peaks,221.0,441.0,220.0,changed,post-remediation ecg-peaks SPKI-clamp change -> more peaks (see waveC-notes NEW-C1)
+wesad,S3_baseline,eda,structural_eda_chest_eda_n_scr,147.0,147.0,0.0,unchanged,
+wesad,S3_baseline,rsp,structural_rsp_chest_rsp_mean_rate_bpm,15.532569432634643,15.532569432634643,0.0,unchanged,
+wesad,S3_stress,bvp,bvp_wrist_bvp_n_peaks,293.0,293.0,0.0,unchanged,
+wesad,S3_stress,ecg,ecg_chest_ecg_n_peaks,332.0,332.0,0.0,unchanged,post-remediation ecg-peaks SPKI-clamp change -> more peaks (see waveC-notes NEW-C1)
+wesad,S3_stress,hr,hr_bias,-6.449020061760006,-6.449020061760006,0.0,unchanged,cross-device HR (ECG-vs-BVP); changed via ECG peak-count change
+wesad,S3_stress,hr,hr_mae,20.180352830352007,20.180352830352007,0.0,unchanged,cross-device HR (ECG-vs-BVP); changed via ECG peak-count change
+wesad,S3_stress,hr,hr_n,220.0,220.0,0.0,unchanged,
+wesad,S3_stress,hr,hr_pearson_r,0.1194408144804213,0.1194408144804213,0.0,unchanged,cross-device HR; changed via ECG peak-count change
+wesad,S3_stress,hr,hr_rmse,26.114091081245864,26.114091081245864,0.0,unchanged,cross-device HR; changed via ECG peak-count change
+wesad,S3_stress,rsp,rsp_chest_rsp_n_cycles,61.0,61.0,0.0,unchanged,
+wesad,S3_stress,bvp,structural_bvp_wrist_bvp_n_peaks,293.0,293.0,0.0,unchanged,
+wesad,S3_stress,ecg,structural_ecg_chest_ecg_n_peaks,332.0,332.0,0.0,unchanged,post-remediation ecg-peaks SPKI-clamp change -> more peaks (see waveC-notes NEW-C1)
+wesad,S3_stress,eda,structural_eda_chest_eda_n_scr,39.0,39.0,0.0,unchanged,
+wesad,S3_stress,rsp,structural_rsp_chest_rsp_mean_rate_bpm,17.61988121766171,17.61988121766171,0.0,unchanged,
+wesad,S4_amusement,bvp,bvp_wrist_bvp_n_peaks,260.0,260.0,0.0,unchanged,
+wesad,S4_amusement,ecg,ecg_chest_ecg_n_peaks,250.0,256.0,6.0,changed,post-remediation ecg-peaks SPKI-clamp change -> more peaks (see waveC-notes NEW-C1)
+wesad,S4_amusement,hr,hr_bias,2.030907042250984,0.3908800493181523,-1.6400269929328317,changed,cross-device HR (ECG-vs-BVP); changed via ECG peak-count change
+wesad,S4_amusement,hr,hr_mae,5.778194940612366,6.750911677814898,0.972716737202532,changed,cross-device HR (ECG-vs-BVP); changed via ECG peak-count change
+wesad,S4_amusement,hr,hr_n,220.0,220.0,0.0,unchanged,
+wesad,S4_amusement,hr,hr_pearson_r,0.4329913892505442,0.3477448917521339,-0.08524649749841029,changed,cross-device HR; changed via ECG peak-count change
+wesad,S4_amusement,hr,hr_rmse,9.000645944568355,12.493749069116936,3.493103124548581,changed,cross-device HR; changed via ECG peak-count change
+wesad,S4_amusement,rsp,rsp_chest_rsp_n_cycles,72.0,72.0,0.0,unchanged,
+wesad,S4_amusement,bvp,structural_bvp_wrist_bvp_n_peaks,260.0,260.0,0.0,unchanged,
+wesad,S4_amusement,ecg,structural_ecg_chest_ecg_n_peaks,250.0,256.0,6.0,changed,post-remediation ecg-peaks SPKI-clamp change -> more peaks (see waveC-notes NEW-C1)
+wesad,S4_amusement,eda,structural_eda_chest_eda_n_scr,5.0,5.0,0.0,unchanged,
+wesad,S4_amusement,rsp,structural_rsp_chest_rsp_mean_rate_bpm,19.223335827662503,19.223335827662503,0.0,unchanged,
+wesad,S4_baseline,bvp,bvp_wrist_bvp_n_peaks,249.0,249.0,0.0,unchanged,
+wesad,S4_baseline,ecg,ecg_chest_ecg_n_peaks,238.0,238.0,0.0,unchanged,post-remediation ecg-peaks SPKI-clamp change -> more peaks (see waveC-notes NEW-C1)
+wesad,S4_baseline,hr,hr_bias,2.547961314091739,2.547961314091739,0.0,unchanged,cross-device HR (ECG-vs-BVP); changed via ECG peak-count change
+wesad,S4_baseline,hr,hr_mae,7.657092956199201,7.657092956199201,0.0,unchanged,cross-device HR (ECG-vs-BVP); changed via ECG peak-count change
+wesad,S4_baseline,hr,hr_n,220.0,220.0,0.0,unchanged,
+wesad,S4_baseline,hr,hr_pearson_r,0.3232432749774479,0.3232432749774479,0.0,unchanged,cross-device HR; changed via ECG peak-count change
+wesad,S4_baseline,hr,hr_rmse,12.778279787719905,12.778279787719905,0.0,unchanged,cross-device HR; changed via ECG peak-count change
+wesad,S4_baseline,rsp,rsp_chest_rsp_n_cycles,66.0,66.0,0.0,unchanged,
+wesad,S4_baseline,bvp,structural_bvp_wrist_bvp_n_peaks,249.0,249.0,0.0,unchanged,
+wesad,S4_baseline,ecg,structural_ecg_chest_ecg_n_peaks,238.0,238.0,0.0,unchanged,post-remediation ecg-peaks SPKI-clamp change -> more peaks (see waveC-notes NEW-C1)
+wesad,S4_baseline,eda,structural_eda_chest_eda_n_scr,1.0,1.0,0.0,unchanged,
+wesad,S4_baseline,rsp,structural_rsp_chest_rsp_mean_rate_bpm,17.09641854439438,17.09641854439438,0.0,unchanged,
+wesad,S4_stress,bvp,bvp_wrist_bvp_n_peaks,299.0,299.0,0.0,unchanged,
+wesad,S4_stress,ecg,ecg_chest_ecg_n_peaks,316.0,316.0,0.0,unchanged,post-remediation ecg-peaks SPKI-clamp change -> more peaks (see waveC-notes NEW-C1)
+wesad,S4_stress,hr,hr_bias,-0.272484050589372,-0.272484050589372,0.0,unchanged,cross-device HR (ECG-vs-BVP); changed via ECG peak-count change
+wesad,S4_stress,hr,hr_mae,17.666520974080555,17.666520974080555,0.0,unchanged,cross-device HR (ECG-vs-BVP); changed via ECG peak-count change
+wesad,S4_stress,hr,hr_n,220.0,220.0,0.0,unchanged,
+wesad,S4_stress,hr,hr_pearson_r,0.208870375228795,0.208870375228795,0.0,unchanged,cross-device HR; changed via ECG peak-count change
+wesad,S4_stress,hr,hr_rmse,24.420028093066925,24.420028093066925,0.0,unchanged,cross-device HR; changed via ECG peak-count change
+wesad,S4_stress,rsp,rsp_chest_rsp_n_cycles,82.0,82.0,0.0,unchanged,
+wesad,S4_stress,bvp,structural_bvp_wrist_bvp_n_peaks,299.0,299.0,0.0,unchanged,
+wesad,S4_stress,ecg,structural_ecg_chest_ecg_n_peaks,316.0,316.0,0.0,unchanged,post-remediation ecg-peaks SPKI-clamp change -> more peaks (see waveC-notes NEW-C1)
+wesad,S4_stress,eda,structural_eda_chest_eda_n_scr,21.0,21.0,0.0,unchanged,
+wesad,S4_stress,rsp,structural_rsp_chest_rsp_mean_rate_bpm,23.071898964151472,23.071898964151472,0.0,unchanged,
+wesad,S5_amusement,bvp,bvp_wrist_bvp_n_peaks,282.0,282.0,0.0,unchanged,
+wesad,S5_amusement,ecg,ecg_chest_ecg_n_peaks,267.0,267.0,0.0,unchanged,post-remediation ecg-peaks SPKI-clamp change -> more peaks (see waveC-notes NEW-C1)
+wesad,S5_amusement,hr,hr_bias,5.971569302196686,5.971569302196686,0.0,unchanged,cross-device HR (ECG-vs-BVP); changed via ECG peak-count change
+wesad,S5_amusement,hr,hr_mae,11.366789867307569,11.366789867307569,0.0,unchanged,cross-device HR (ECG-vs-BVP); changed via ECG peak-count change
+wesad,S5_amusement,hr,hr_n,220.0,220.0,0.0,unchanged,
+wesad,S5_amusement,hr,hr_pearson_r,0.2043347803704073,0.2043347803704073,0.0,unchanged,cross-device HR; changed via ECG peak-count change
+wesad,S5_amusement,hr,hr_rmse,20.454203794605597,20.454203794605597,0.0,unchanged,cross-device HR; changed via ECG peak-count change
+wesad,S5_amusement,rsp,rsp_chest_rsp_n_cycles,68.0,68.0,0.0,unchanged,
+wesad,S5_amusement,bvp,structural_bvp_wrist_bvp_n_peaks,282.0,282.0,0.0,unchanged,
+wesad,S5_amusement,ecg,structural_ecg_chest_ecg_n_peaks,267.0,267.0,0.0,unchanged,post-remediation ecg-peaks SPKI-clamp change -> more peaks (see waveC-notes NEW-C1)
+wesad,S5_amusement,eda,structural_eda_chest_eda_n_scr,11.0,11.0,0.0,unchanged,
+wesad,S5_amusement,rsp,structural_rsp_chest_rsp_mean_rate_bpm,17.534882645644924,17.534882645644924,0.0,unchanged,
+wesad,S5_baseline,bvp,bvp_wrist_bvp_n_peaks,261.0,261.0,0.0,unchanged,
+wesad,S5_baseline,ecg,ecg_chest_ecg_n_peaks,249.0,249.0,0.0,unchanged,post-remediation ecg-peaks SPKI-clamp change -> more peaks (see waveC-notes NEW-C1)
+wesad,S5_baseline,hr,hr_bias,4.104074374281941,4.104074374281941,0.0,unchanged,cross-device HR (ECG-vs-BVP); changed via ECG peak-count change
+wesad,S5_baseline,hr,hr_mae,6.702832142393344,6.702832142393344,0.0,unchanged,cross-device HR (ECG-vs-BVP); changed via ECG peak-count change
+wesad,S5_baseline,hr,hr_n,220.0,220.0,0.0,unchanged,
+wesad,S5_baseline,hr,hr_pearson_r,0.3697971479764544,0.3697971479764544,0.0,unchanged,cross-device HR; changed via ECG peak-count change
+wesad,S5_baseline,hr,hr_rmse,13.824429581286084,13.824429581286084,0.0,unchanged,cross-device HR; changed via ECG peak-count change
+wesad,S5_baseline,rsp,rsp_chest_rsp_n_cycles,59.0,59.0,0.0,unchanged,
+wesad,S5_baseline,bvp,structural_bvp_wrist_bvp_n_peaks,261.0,261.0,0.0,unchanged,
+wesad,S5_baseline,ecg,structural_ecg_chest_ecg_n_peaks,249.0,249.0,0.0,unchanged,post-remediation ecg-peaks SPKI-clamp change -> more peaks (see waveC-notes NEW-C1)
+wesad,S5_baseline,eda,structural_eda_chest_eda_n_scr,2.0,2.0,0.0,unchanged,
+wesad,S5_baseline,rsp,structural_rsp_chest_rsp_mean_rate_bpm,15.381936780756591,15.381936780756591,0.0,unchanged,
+wesad,S5_stress,bvp,bvp_wrist_bvp_n_peaks,305.0,305.0,0.0,unchanged,
+wesad,S5_stress,ecg,ecg_chest_ecg_n_peaks,353.0,353.0,0.0,unchanged,post-remediation ecg-peaks SPKI-clamp change -> more peaks (see waveC-notes NEW-C1)
+wesad,S5_stress,hr,hr_bias,-6.226064326639936,-6.226064326639936,0.0,unchanged,cross-device HR (ECG-vs-BVP); changed via ECG peak-count change
+wesad,S5_stress,hr,hr_mae,22.391296010894475,22.391296010894475,0.0,unchanged,cross-device HR (ECG-vs-BVP); changed via ECG peak-count change
+wesad,S5_stress,hr,hr_n,220.0,220.0,0.0,unchanged,
+wesad,S5_stress,hr,hr_pearson_r,-0.01767178014516,-0.01767178014516,0.0,unchanged,cross-device HR; changed via ECG peak-count change
+wesad,S5_stress,hr,hr_rmse,27.89487893215364,27.89487893215364,0.0,unchanged,cross-device HR; changed via ECG peak-count change
+wesad,S5_stress,rsp,rsp_chest_rsp_n_cycles,72.0,72.0,0.0,unchanged,
+wesad,S5_stress,bvp,structural_bvp_wrist_bvp_n_peaks,305.0,305.0,0.0,unchanged,
+wesad,S5_stress,ecg,structural_ecg_chest_ecg_n_peaks,353.0,353.0,0.0,unchanged,post-remediation ecg-peaks SPKI-clamp change -> more peaks (see waveC-notes NEW-C1)
+wesad,S5_stress,eda,structural_eda_chest_eda_n_scr,34.0,34.0,0.0,unchanged,
+wesad,S5_stress,rsp,structural_rsp_chest_rsp_mean_rate_bpm,21.14157191014975,21.14157191014975,0.0,unchanged,
+wesad,S6_amusement,bvp,bvp_wrist_bvp_n_peaks,171.0,171.0,0.0,unchanged,
+wesad,S6_amusement,ecg,ecg_chest_ecg_n_peaks,269.0,269.0,0.0,unchanged,post-remediation ecg-peaks SPKI-clamp change -> more peaks (see waveC-notes NEW-C1)
+wesad,S6_amusement,hr,hr_bias,-4.6244844826432105,-4.6244844826432105,0.0,unchanged,cross-device HR (ECG-vs-BVP); changed via ECG peak-count change
+wesad,S6_amusement,hr,hr_mae,15.57903417436504,15.57903417436504,0.0,unchanged,cross-device HR (ECG-vs-BVP); changed via ECG peak-count change
+wesad,S6_amusement,hr,hr_n,220.0,220.0,0.0,unchanged,
+wesad,S6_amusement,hr,hr_pearson_r,0.0285458738971655,0.0285458738971655,0.0,unchanged,cross-device HR; changed via ECG peak-count change
+wesad,S6_amusement,hr,hr_rmse,20.186507592726063,20.186507592726063,0.0,unchanged,cross-device HR; changed via ECG peak-count change
+wesad,S6_amusement,rsp,rsp_chest_rsp_n_cycles,81.0,81.0,0.0,unchanged,
+wesad,S6_amusement,bvp,structural_bvp_wrist_bvp_n_peaks,171.0,171.0,0.0,unchanged,
+wesad,S6_amusement,ecg,structural_ecg_chest_ecg_n_peaks,269.0,269.0,0.0,unchanged,post-remediation ecg-peaks SPKI-clamp change -> more peaks (see waveC-notes NEW-C1)
+wesad,S6_amusement,eda,structural_eda_chest_eda_n_scr,62.0,62.0,0.0,unchanged,
+wesad,S6_amusement,rsp,structural_rsp_chest_rsp_mean_rate_bpm,21.607092440278155,21.607092440278155,0.0,unchanged,
+wesad,S6_baseline,bvp,bvp_wrist_bvp_n_peaks,283.0,283.0,0.0,unchanged,
+wesad,S6_baseline,ecg,ecg_chest_ecg_n_peaks,268.0,268.0,0.0,unchanged,post-remediation ecg-peaks SPKI-clamp change -> more peaks (see waveC-notes NEW-C1)
+wesad,S6_baseline,hr,hr_bias,6.164427622500627,6.164427622500627,0.0,unchanged,cross-device HR (ECG-vs-BVP); changed via ECG peak-count change
+wesad,S6_baseline,hr,hr_mae,12.194053138384174,12.194053138384174,0.0,unchanged,cross-device HR (ECG-vs-BVP); changed via ECG peak-count change
+wesad,S6_baseline,hr,hr_n,220.0,220.0,0.0,unchanged,
+wesad,S6_baseline,hr,hr_pearson_r,0.1002902144010067,0.1002902144010067,0.0,unchanged,cross-device HR; changed via ECG peak-count change
+wesad,S6_baseline,hr,hr_rmse,20.86200013078811,20.86200013078811,0.0,unchanged,cross-device HR; changed via ECG peak-count change
+wesad,S6_baseline,rsp,rsp_chest_rsp_n_cycles,62.0,62.0,0.0,unchanged,
+wesad,S6_baseline,bvp,structural_bvp_wrist_bvp_n_peaks,283.0,283.0,0.0,unchanged,
+wesad,S6_baseline,ecg,structural_ecg_chest_ecg_n_peaks,268.0,268.0,0.0,unchanged,post-remediation ecg-peaks SPKI-clamp change -> more peaks (see waveC-notes NEW-C1)
+wesad,S6_baseline,eda,structural_eda_chest_eda_n_scr,42.0,42.0,0.0,unchanged,
+wesad,S6_baseline,rsp,structural_rsp_chest_rsp_mean_rate_bpm,16.50327824372478,16.50327824372478,0.0,unchanged,
+wesad,S6_stress,bvp,bvp_wrist_bvp_n_peaks,285.0,285.0,0.0,unchanged,
+wesad,S6_stress,ecg,ecg_chest_ecg_n_peaks,309.0,309.0,0.0,unchanged,post-remediation ecg-peaks SPKI-clamp change -> more peaks (see waveC-notes NEW-C1)
+wesad,S6_stress,hr,hr_bias,-1.6793241926046625,-1.6793241926046625,0.0,unchanged,cross-device HR (ECG-vs-BVP); changed via ECG peak-count change
+wesad,S6_stress,hr,hr_mae,18.567908478457284,18.567908478457284,0.0,unchanged,cross-device HR (ECG-vs-BVP); changed via ECG peak-count change
+wesad,S6_stress,hr,hr_n,220.0,220.0,0.0,unchanged,
+wesad,S6_stress,hr,hr_pearson_r,0.0942927257920157,0.0942927257920157,0.0,unchanged,cross-device HR; changed via ECG peak-count change
+wesad,S6_stress,hr,hr_rmse,24.580008398833844,24.580008398833844,0.0,unchanged,cross-device HR; changed via ECG peak-count change
+wesad,S6_stress,rsp,rsp_chest_rsp_n_cycles,67.0,67.0,0.0,unchanged,
+wesad,S6_stress,bvp,structural_bvp_wrist_bvp_n_peaks,285.0,285.0,0.0,unchanged,
+wesad,S6_stress,ecg,structural_ecg_chest_ecg_n_peaks,309.0,309.0,0.0,unchanged,post-remediation ecg-peaks SPKI-clamp change -> more peaks (see waveC-notes NEW-C1)
+wesad,S6_stress,eda,structural_eda_chest_eda_n_scr,47.0,47.0,0.0,unchanged,
+wesad,S6_stress,rsp,structural_rsp_chest_rsp_mean_rate_bpm,19.167496852126355,19.167496852126355,0.0,unchanged,
+wearable-exam-stress,S1_Final,bvp,bvp_wrist_bvp_n_peaks,13678.0,13678.0,0.0,unchanged,
+wearable-exam-stress,S1_Final,hr,hr_bias,-32.95199270881954,-32.95199270881954,0.0,unchanged,
+wearable-exam-stress,S1_Final,hr,hr_mae,40.37966903680098,40.37966903680098,0.0,unchanged,
+wearable-exam-stress,S1_Final,hr,hr_n,23381.0,23381.0,0.0,unchanged,
+wearable-exam-stress,S1_Final,hr,hr_pearson_r,-0.0881717706210337,-0.0881717706210337,0.0,unchanged,
+wearable-exam-stress,S1_Final,hr,hr_rmse,48.59902514963575,48.59902514963575,0.0,unchanged,
+wearable-exam-stress,S1_Final,bvp,structural_bvp_wrist_bvp_n_peaks,13678.0,13678.0,0.0,unchanged,
+wearable-exam-stress,S1_Final_eda,eda,structural_eda_wrist_eda_n_scr,,190.0,,new,NEW: previously failed (BUG-003 fs-floor); SCR rates 0.36-5.73/min plausible
+wearable-exam-stress,S1_midterm_1,bvp,bvp_wrist_bvp_n_peaks,6697.0,6697.0,0.0,unchanged,
+wearable-exam-stress,S1_midterm_1,hr,hr_bias,-35.904713575303305,-35.904713575303305,0.0,unchanged,
+wearable-exam-stress,S1_midterm_1,hr,hr_mae,42.55881916651684,42.55881916651684,0.0,unchanged,
+wearable-exam-stress,S1_midterm_1,hr,hr_n,11168.0,11168.0,0.0,unchanged,
+wearable-exam-stress,S1_midterm_1,hr,hr_pearson_r,-0.0820498247765986,-0.0820498247765986,0.0,unchanged,
+wearable-exam-stress,S1_midterm_1,hr,hr_rmse,52.61242825956384,52.61242825956384,0.0,unchanged,
+wearable-exam-stress,S1_midterm_1,bvp,structural_bvp_wrist_bvp_n_peaks,6697.0,6697.0,0.0,unchanged,
+wearable-exam-stress,S1_midterm_1_eda,eda,structural_eda_wrist_eda_n_scr,,534.0,,new,NEW: previously failed (BUG-003 fs-floor); SCR rates 0.36-5.73/min plausible
+wearable-exam-stress,S1_midterm_2,bvp,bvp_wrist_bvp_n_peaks,9445.0,9445.0,0.0,unchanged,
+wearable-exam-stress,S1_midterm_2,hr,hr_bias,-31.63730381577656,-31.63730381577656,0.0,unchanged,
+wearable-exam-stress,S1_midterm_2,hr,hr_mae,39.17166566565079,39.17166566565079,0.0,unchanged,
+wearable-exam-stress,S1_midterm_2,hr,hr_n,11127.0,11127.0,0.0,unchanged,
+wearable-exam-stress,S1_midterm_2,hr,hr_pearson_r,-0.0043141377861806,-0.0043141377861806,0.0,unchanged,
+wearable-exam-stress,S1_midterm_2,hr,hr_rmse,48.01847545354813,48.01847545354813,0.0,unchanged,
+wearable-exam-stress,S1_midterm_2,bvp,structural_bvp_wrist_bvp_n_peaks,9445.0,9445.0,0.0,unchanged,
+wearable-exam-stress,S1_midterm_2_eda,eda,structural_eda_wrist_eda_n_scr,,67.0,,new,NEW: previously failed (BUG-003 fs-floor); SCR rates 0.36-5.73/min plausible
+wearable-exam-stress,S2_Final,bvp,bvp_wrist_bvp_n_peaks,20213.0,20213.0,0.0,unchanged,
+wearable-exam-stress,S2_Final,hr,hr_bias,-27.9274180136562,-27.9274180136562,0.0,unchanged,
+wearable-exam-stress,S2_Final,hr,hr_mae,35.16433194544571,35.16433194544571,0.0,unchanged,
+wearable-exam-stress,S2_Final,hr,hr_n,25325.0,25325.0,0.0,unchanged,
+wearable-exam-stress,S2_Final,hr,hr_pearson_r,-0.0770138837368448,-0.0770138837368448,0.0,unchanged,
+wearable-exam-stress,S2_Final,hr,hr_rmse,46.044115591268735,46.044115591268735,0.0,unchanged,
+wearable-exam-stress,S2_Final,bvp,structural_bvp_wrist_bvp_n_peaks,20213.0,20213.0,0.0,unchanged,
+wearable-exam-stress,S2_Final_eda,eda,structural_eda_wrist_eda_n_scr,,173.0,,new,NEW: previously failed (BUG-003 fs-floor); SCR rates 0.36-5.73/min plausible
+wearable-exam-stress,S2_midterm_1,bvp,bvp_wrist_bvp_n_peaks,3573.0,3573.0,0.0,unchanged,
+wearable-exam-stress,S2_midterm_1,hr,hr_bias,-34.46213721400697,-34.46213721400697,0.0,unchanged,
+wearable-exam-stress,S2_midterm_1,hr,hr_mae,40.277035519097645,40.277035519097645,0.0,unchanged,
+wearable-exam-stress,S2_midterm_1,hr,hr_n,11975.0,11975.0,0.0,unchanged,
+wearable-exam-stress,S2_midterm_1,hr,hr_pearson_r,0.3899284678466393,0.3899284678466393,0.0,unchanged,
+wearable-exam-stress,S2_midterm_1,hr,hr_rmse,48.48976221523236,48.48976221523236,0.0,unchanged,
+wearable-exam-stress,S2_midterm_1,bvp,structural_bvp_wrist_bvp_n_peaks,3573.0,3573.0,0.0,unchanged,
+wearable-exam-stress,S2_midterm_1_eda,eda,structural_eda_wrist_eda_n_scr,,350.0,,new,NEW: previously failed (BUG-003 fs-floor); SCR rates 0.36-5.73/min plausible
+wearable-exam-stress,S2_midterm_2,bvp,bvp_wrist_bvp_n_peaks,10897.0,10897.0,0.0,unchanged,
+wearable-exam-stress,S2_midterm_2,hr,hr_bias,-20.085928508070783,-20.085928508070783,0.0,unchanged,
+wearable-exam-stress,S2_midterm_2,hr,hr_mae,29.62917140743548,29.62917140743548,0.0,unchanged,
+wearable-exam-stress,S2_midterm_2,hr,hr_n,13868.0,13868.0,0.0,unchanged,
+wearable-exam-stress,S2_midterm_2,hr,hr_pearson_r,0.1870149555317195,0.1870149555317195,0.0,unchanged,
+wearable-exam-stress,S2_midterm_2,hr,hr_rmse,38.446012147710775,38.446012147710775,0.0,unchanged,
+wearable-exam-stress,S2_midterm_2,bvp,structural_bvp_wrist_bvp_n_peaks,10897.0,10897.0,0.0,unchanged,
+wearable-exam-stress,S2_midterm_2_eda,eda,structural_eda_wrist_eda_n_scr,,278.0,,new,NEW: previously failed (BUG-003 fs-floor); SCR rates 0.36-5.73/min plausible
+wearable-exam-stress,S3_Final,bvp,bvp_wrist_bvp_n_peaks,16039.0,16039.0,0.0,unchanged,
+wearable-exam-stress,S3_Final,hr,hr_bias,-23.28415246338525,-23.28415246338525,0.0,unchanged,
+wearable-exam-stress,S3_Final,hr,hr_mae,33.11498153058633,33.11498153058633,0.0,unchanged,
+wearable-exam-stress,S3_Final,hr,hr_n,25801.0,25801.0,0.0,unchanged,
+wearable-exam-stress,S3_Final,hr,hr_pearson_r,0.0105010345380669,0.0105010345380669,0.0,unchanged,
+wearable-exam-stress,S3_Final,hr,hr_rmse,40.23884412904229,40.23884412904229,0.0,unchanged,
+wearable-exam-stress,S3_Final,bvp,structural_bvp_wrist_bvp_n_peaks,16039.0,16039.0,0.0,unchanged,
+wearable-exam-stress,S3_Final_eda,eda,structural_eda_wrist_eda_n_scr,,899.0,,new,NEW: previously failed (BUG-003 fs-floor); SCR rates 0.36-5.73/min plausible
+wearable-exam-stress,S3_midterm_1,bvp,bvp_wrist_bvp_n_peaks,4068.0,4068.0,0.0,unchanged,
+wearable-exam-stress,S3_midterm_1,hr,hr_bias,-31.024814922385037,-31.024814922385037,0.0,unchanged,
+wearable-exam-stress,S3_midterm_1,hr,hr_mae,38.82921345796577,38.82921345796577,0.0,unchanged,
+wearable-exam-stress,S3_midterm_1,hr,hr_n,12203.0,12203.0,0.0,unchanged,
+wearable-exam-stress,S3_midterm_1,hr,hr_pearson_r,0.1074135819284633,0.1074135819284633,0.0,unchanged,
+wearable-exam-stress,S3_midterm_1,hr,hr_rmse,47.500674875707,47.500674875707,0.0,unchanged,
+wearable-exam-stress,S3_midterm_1,bvp,structural_bvp_wrist_bvp_n_peaks,4068.0,4068.0,0.0,unchanged,
+wearable-exam-stress,S3_midterm_1_eda,eda,structural_eda_wrist_eda_n_scr,,537.0,,new,NEW: previously failed (BUG-003 fs-floor); SCR rates 0.36-5.73/min plausible
+wearable-exam-stress,S3_midterm_2,bvp,bvp_wrist_bvp_n_peaks,9588.0,9588.0,0.0,unchanged,
+wearable-exam-stress,S3_midterm_2,hr,hr_bias,-16.516399579261655,-16.516399579261655,0.0,unchanged,
+wearable-exam-stress,S3_midterm_2,hr,hr_mae,30.0894510899425,30.0894510899425,0.0,unchanged,
+wearable-exam-stress,S3_midterm_2,hr,hr_n,10232.0,10232.0,0.0,unchanged,
+wearable-exam-stress,S3_midterm_2,hr,hr_pearson_r,0.1079842961629856,0.1079842961629856,0.0,unchanged,
+wearable-exam-stress,S3_midterm_2,hr,hr_rmse,36.990124819630985,36.990124819630985,0.0,unchanged,
+wearable-exam-stress,S3_midterm_2,bvp,structural_bvp_wrist_bvp_n_peaks,9588.0,9588.0,0.0,unchanged,
+wearable-exam-stress,S3_midterm_2_eda,eda,structural_eda_wrist_eda_n_scr,,908.0,,new,NEW: previously failed (BUG-003 fs-floor); SCR rates 0.36-5.73/min plausible
+wearable-exam-stress,S4_Final,bvp,bvp_wrist_bvp_n_peaks,13117.0,13117.0,0.0,unchanged,
+wearable-exam-stress,S4_Final,hr,hr_bias,-10.70427592037544,-10.70427592037544,0.0,unchanged,
+wearable-exam-stress,S4_Final,hr,hr_mae,28.982548574728565,28.982548574728565,0.0,unchanged,
+wearable-exam-stress,S4_Final,hr,hr_n,15900.0,15900.0,0.0,unchanged,
+wearable-exam-stress,S4_Final,hr,hr_pearson_r,0.140251616213501,0.140251616213501,0.0,unchanged,
+wearable-exam-stress,S4_Final,hr,hr_rmse,38.0041643973363,38.0041643973363,0.0,unchanged,
+wearable-exam-stress,S4_Final,bvp,structural_bvp_wrist_bvp_n_peaks,13117.0,13117.0,0.0,unchanged,
+wearable-exam-stress,S4_Final_eda,eda,structural_eda_wrist_eda_n_scr,,1065.0,,new,NEW: previously failed (BUG-003 fs-floor); SCR rates 0.36-5.73/min plausible
+wearable-exam-stress,S4_midterm_1,bvp,bvp_wrist_bvp_n_peaks,9277.0,9277.0,0.0,unchanged,
+wearable-exam-stress,S4_midterm_1,hr,hr_bias,-40.47694609790425,-40.47694609790425,0.0,unchanged,
+wearable-exam-stress,S4_midterm_1,hr,hr_mae,46.958715841407,46.958715841407,0.0,unchanged,
+wearable-exam-stress,S4_midterm_1,hr,hr_n,11684.0,11684.0,0.0,unchanged,
+wearable-exam-stress,S4_midterm_1,hr,hr_pearson_r,-0.0303988716828444,-0.0303988716828444,0.0,unchanged,
+wearable-exam-stress,S4_midterm_1,hr,hr_rmse,57.267601263088,57.267601263088,0.0,unchanged,
+wearable-exam-stress,S4_midterm_1,bvp,structural_bvp_wrist_bvp_n_peaks,9277.0,9277.0,0.0,unchanged,
+wearable-exam-stress,S4_midterm_1_eda,eda,structural_eda_wrist_eda_n_scr,,441.0,,new,NEW: previously failed (BUG-003 fs-floor); SCR rates 0.36-5.73/min plausible
+wearable-exam-stress,S4_midterm_2,bvp,bvp_wrist_bvp_n_peaks,10377.0,10377.0,0.0,unchanged,
+wearable-exam-stress,S4_midterm_2,hr,hr_bias,-6.475447244436272,-6.475447244436272,0.0,unchanged,
+wearable-exam-stress,S4_midterm_2,hr,hr_mae,31.48323333878182,31.48323333878182,0.0,unchanged,
+wearable-exam-stress,S4_midterm_2,hr,hr_n,13351.0,13351.0,0.0,unchanged,
+wearable-exam-stress,S4_midterm_2,hr,hr_pearson_r,0.0291123782744204,0.0291123782744204,0.0,unchanged,
+wearable-exam-stress,S4_midterm_2,hr,hr_rmse,42.75966630926199,42.75966630926199,0.0,unchanged,
+wearable-exam-stress,S4_midterm_2,bvp,structural_bvp_wrist_bvp_n_peaks,10377.0,10377.0,0.0,unchanged,
+wearable-exam-stress,S4_midterm_2_eda,eda,structural_eda_wrist_eda_n_scr,,1278.0,,new,NEW: previously failed (BUG-003 fs-floor); SCR rates 0.36-5.73/min plausible
+wearable-exam-stress,S5_Final,bvp,bvp_wrist_bvp_n_peaks,15939.0,15939.0,0.0,unchanged,
+wearable-exam-stress,S5_Final,hr,hr_bias,-12.183312223452536,-12.183312223452536,0.0,unchanged,
+wearable-exam-stress,S5_Final,hr,hr_mae,26.38184638738039,26.38184638738039,0.0,unchanged,
+wearable-exam-stress,S5_Final,hr,hr_n,15240.0,15240.0,0.0,unchanged,
+wearable-exam-stress,S5_Final,hr,hr_pearson_r,0.007664545120296,0.007664545120296,0.0,unchanged,
+wearable-exam-stress,S5_Final,hr,hr_rmse,32.978134951820174,32.978134951820174,0.0,unchanged,
+wearable-exam-stress,S5_Final,bvp,structural_bvp_wrist_bvp_n_peaks,15939.0,15939.0,0.0,unchanged,
+wearable-exam-stress,S5_Final_eda,eda,structural_eda_wrist_eda_n_scr,,1247.0,,new,NEW: previously failed (BUG-003 fs-floor); SCR rates 0.36-5.73/min plausible
+wearable-exam-stress,S5_midterm_1,bvp,bvp_wrist_bvp_n_peaks,6935.0,6935.0,0.0,unchanged,
+wearable-exam-stress,S5_midterm_1,hr,hr_bias,-41.77914661774802,-41.77914661774802,0.0,unchanged,
+wearable-exam-stress,S5_midterm_1,hr,hr_mae,47.13131945441217,47.13131945441217,0.0,unchanged,
+wearable-exam-stress,S5_midterm_1,hr,hr_n,11992.0,11992.0,0.0,unchanged,
+wearable-exam-stress,S5_midterm_1,hr,hr_pearson_r,-0.045433308108043,-0.045433308108043,0.0,unchanged,
+wearable-exam-stress,S5_midterm_1,hr,hr_rmse,56.85367187574544,56.85367187574544,0.0,unchanged,
+wearable-exam-stress,S5_midterm_1,bvp,structural_bvp_wrist_bvp_n_peaks,6935.0,6935.0,0.0,unchanged,
+wearable-exam-stress,S5_midterm_1_eda,eda,structural_eda_wrist_eda_n_scr,,431.0,,new,NEW: previously failed (BUG-003 fs-floor); SCR rates 0.36-5.73/min plausible
+wearable-exam-stress,S5_midterm_2,bvp,bvp_wrist_bvp_n_peaks,13370.0,13370.0,0.0,unchanged,
+wearable-exam-stress,S5_midterm_2,hr,hr_bias,-26.02699557298088,-26.02699557298088,0.0,unchanged,
+wearable-exam-stress,S5_midterm_2,hr,hr_mae,32.81141752907093,32.81141752907093,0.0,unchanged,
+wearable-exam-stress,S5_midterm_2,hr,hr_n,11984.0,11984.0,0.0,unchanged,
+wearable-exam-stress,S5_midterm_2,hr,hr_pearson_r,-0.164064320254853,-0.164064320254853,0.0,unchanged,
+wearable-exam-stress,S5_midterm_2,hr,hr_rmse,43.46968715269701,43.46968715269701,0.0,unchanged,
+wearable-exam-stress,S5_midterm_2,bvp,structural_bvp_wrist_bvp_n_peaks,13370.0,13370.0,0.0,unchanged,
+wearable-exam-stress,S5_midterm_2_eda,eda,structural_eda_wrist_eda_n_scr,,696.0,,new,NEW: previously failed (BUG-003 fs-floor); SCR rates 0.36-5.73/min plausible
+big-ideas,003_eda,eda,structural_eda_wrist_eda_n_scr,,1306.0,,new,NEW: previously failed (BUG-003 fs-floor)
+big-ideas,015_eda,eda,structural_eda_wrist_eda_n_scr,,759.0,,new,NEW: previously failed (BUG-003 fs-floor)
+wesad,ALL,multi,known_groups_median_hr_baseline,62.25,67.0,4.75,changed,
+wesad,ALL,multi,known_groups_median_hr_stress,79.0,79.0,0.0,unchanged,
+wesad,ALL,multi,known_groups_delta_hr_stress_minus_baseline,16.75,12.0,-4.75,changed,attenuated by S3/S2 baseline ECG double-detection (NEW-C1); direction preserved
+wesad,ALL,multi,known_groups_median_scr_baseline,0.5,0.5,0.0,unchanged,
+wesad,ALL,multi,known_groups_median_scr_stress,8.5,8.5,0.0,unchanged,
+wesad,ALL,multi,known_groups_delta_scr_stress_minus_baseline,8.0,8.0,0.0,unchanged,direction preserved (stress>baseline)
+wesad,ALL,multi,known_groups_median_rr_baseline,16.503,16.503,0.0,unchanged,
+wesad,ALL,multi,known_groups_median_rr_stress,21.142,21.142,0.0,unchanged,
+wesad,ALL,multi,known_groups_delta_rr_stress_minus_baseline,4.638,4.638,0.0,unchanged,direction preserved (stress>baseline)
+wesad,S2_baseline,bvp;ecg;eda;rsp,recording_status,ok,ok,,unchanged,
+wesad,S2_stress,bvp;ecg;eda;rsp,recording_status,ok,ok,,unchanged,
+wesad,S2_amusement,bvp;ecg;eda;rsp,recording_status,ok,ok,,unchanged,
+wesad,S3_baseline,bvp;ecg;eda;rsp,recording_status,ok,ok,,unchanged,
+wesad,S3_stress,bvp;ecg;eda;rsp,recording_status,ok,ok,,unchanged,
+wesad,S3_amusement,bvp;ecg;eda;rsp,recording_status,ok,ok,,unchanged,
+wesad,S4_baseline,bvp;ecg;eda;rsp,recording_status,ok,ok,,unchanged,
+wesad,S4_stress,bvp;ecg;eda;rsp,recording_status,ok,ok,,unchanged,
+wesad,S4_amusement,bvp;ecg;eda;rsp,recording_status,ok,ok,,unchanged,
+wesad,S5_baseline,bvp;ecg;eda;rsp,recording_status,ok,ok,,unchanged,
+wesad,S5_stress,bvp;ecg;eda;rsp,recording_status,ok,ok,,unchanged,
+wesad,S5_amusement,bvp;ecg;eda;rsp,recording_status,ok,ok,,unchanged,
+wesad,S6_baseline,bvp;ecg;eda;rsp,recording_status,ok,ok,,unchanged,
+wesad,S6_stress,bvp;ecg;eda;rsp,recording_status,ok,ok,,unchanged,
+wesad,S6_amusement,bvp;ecg;eda;rsp,recording_status,ok,ok,,unchanged,
+wearable-exam-stress,S1_midterm_1,bvp,recording_status,ok,ok,,unchanged,
+wearable-exam-stress,S1_midterm_1_eda,eda,recording_status,failed,ok,,improvement,
+wearable-exam-stress,S1_midterm_2,bvp,recording_status,ok,ok,,unchanged,
+wearable-exam-stress,S1_midterm_2_eda,eda,recording_status,failed,ok,,improvement,
+wearable-exam-stress,S1_Final,bvp,recording_status,ok,ok,,unchanged,
+wearable-exam-stress,S1_Final_eda,eda,recording_status,failed,ok,,improvement,
+wearable-exam-stress,S2_midterm_1,bvp,recording_status,ok,ok,,unchanged,
+wearable-exam-stress,S2_midterm_1_eda,eda,recording_status,failed,ok,,improvement,
+wearable-exam-stress,S2_midterm_2,bvp,recording_status,ok,ok,,unchanged,
+wearable-exam-stress,S2_midterm_2_eda,eda,recording_status,failed,ok,,improvement,
+wearable-exam-stress,S2_Final,bvp,recording_status,ok,ok,,unchanged,
+wearable-exam-stress,S2_Final_eda,eda,recording_status,failed,ok,,improvement,
+wearable-exam-stress,S3_midterm_1,bvp,recording_status,ok,ok,,unchanged,
+wearable-exam-stress,S3_midterm_1_eda,eda,recording_status,failed,ok,,improvement,
+wearable-exam-stress,S3_midterm_2,bvp,recording_status,ok,ok,,unchanged,
+wearable-exam-stress,S3_midterm_2_eda,eda,recording_status,failed,ok,,improvement,
+wearable-exam-stress,S3_Final,bvp,recording_status,ok,ok,,unchanged,
+wearable-exam-stress,S3_Final_eda,eda,recording_status,failed,ok,,improvement,
+wearable-exam-stress,S4_midterm_1,bvp,recording_status,ok,ok,,unchanged,
+wearable-exam-stress,S4_midterm_1_eda,eda,recording_status,failed,ok,,improvement,
+wearable-exam-stress,S4_midterm_2,bvp,recording_status,ok,ok,,unchanged,
+wearable-exam-stress,S4_midterm_2_eda,eda,recording_status,failed,ok,,improvement,
+wearable-exam-stress,S4_Final,bvp,recording_status,ok,ok,,unchanged,
+wearable-exam-stress,S4_Final_eda,eda,recording_status,failed,ok,,improvement,
+wearable-exam-stress,S5_midterm_1,bvp,recording_status,ok,ok,,unchanged,
+wearable-exam-stress,S5_midterm_1_eda,eda,recording_status,failed,ok,,improvement,
+wearable-exam-stress,S5_midterm_2,bvp,recording_status,ok,ok,,unchanged,
+wearable-exam-stress,S5_midterm_2_eda,eda,recording_status,failed,ok,,improvement,
+wearable-exam-stress,S5_Final,bvp,recording_status,ok,ok,,unchanged,
+wearable-exam-stress,S5_Final_eda,eda,recording_status,failed,ok,,improvement,
+big-ideas,003_eda,eda,recording_status,failed,ok,,improvement,
+big-ideas,015_eda,eda,recording_status,failed,ok,,improvement,
+autonomic-aging,0048,hrv,rmssd_raw_ms,40.0193,40.0193,0,unchanged,stratum=young_18_39; n_peaks=718 n_rr=717 n_nn=717 ectopic=0 artifact=0 missing=0
+autonomic-aging,0048,hrv,rmssd_corrected_reject_invalid_ms,40.0193,40.0193,0,new-methodology,stratum=young_18_39; corrected path (hrv-correct reject_invalid) did not exist at baseline; delta is vs baseline raw; n_peaks=718 n_rr=717 n_nn=717 ectopic=0 artifact=0 missing=0
+autonomic-aging,0128,hrv,rmssd_raw_ms,72.4935,72.4935,0,unchanged,stratum=young_18_39; n_peaks=676 n_rr=675 n_nn=672 ectopic=3 artifact=0 missing=0
+autonomic-aging,0128,hrv,rmssd_corrected_reject_invalid_ms,72.4935,68.467,-4.02652,new-methodology,stratum=young_18_39; corrected path (hrv-correct reject_invalid) did not exist at baseline; delta is vs baseline raw; n_peaks=676 n_rr=675 n_nn=672 ectopic=3 artifact=0 missing=0
+autonomic-aging,0214,hrv,rmssd_raw_ms,13.949,13.949,0,unchanged,stratum=middle_40_69; n_peaks=704 n_rr=703 n_nn=703 ectopic=0 artifact=0 missing=0
+autonomic-aging,0214,hrv,rmssd_corrected_reject_invalid_ms,13.949,13.949,0,new-methodology,stratum=middle_40_69; corrected path (hrv-correct reject_invalid) did not exist at baseline; delta is vs baseline raw; n_peaks=704 n_rr=703 n_nn=703 ectopic=0 artifact=0 missing=0
+autonomic-aging,0237,hrv,rmssd_raw_ms,18.6111,18.6111,0,unchanged,stratum=old_70_plus; n_peaks=653 n_rr=652 n_nn=652 ectopic=0 artifact=0 missing=0
+autonomic-aging,0237,hrv,rmssd_corrected_reject_invalid_ms,18.6111,18.6111,0,new-methodology,stratum=old_70_plus; corrected path (hrv-correct reject_invalid) did not exist at baseline; delta is vs baseline raw; n_peaks=653 n_rr=652 n_nn=652 ectopic=0 artifact=0 missing=0
+autonomic-aging,0276,hrv,rmssd_raw_ms,131.794,124.724,-7.07007,changed,stratum=old_70_plus; n_peaks=581 n_rr=580 n_nn=554 ectopic=26 artifact=0 missing=0
+autonomic-aging,0276,hrv,rmssd_corrected_reject_invalid_ms,131.794,76.8312,-54.9628,new-methodology,stratum=old_70_plus; corrected path (hrv-correct reject_invalid) did not exist at baseline; delta is vs baseline raw; n_peaks=581 n_rr=580 n_nn=554 ectopic=26 artifact=0 missing=0
+autonomic-aging,0342,hrv,rmssd_raw_ms,64.4985,634.367,569.868,regression,stratum=young_18_39; n_peaks=955 n_rr=954 n_nn=952 ectopic=2 artifact=0 missing=0
+autonomic-aging,0342,hrv,rmssd_corrected_reject_invalid_ms,64.4985,633.55,569.052,new-methodology,stratum=young_18_39; corrected path (hrv-correct reject_invalid) did not exist at baseline; delta is vs baseline raw; n_peaks=955 n_rr=954 n_nn=952 ectopic=2 artifact=0 missing=0
+autonomic-aging,0353,hrv,rmssd_raw_ms,14.813,14.813,0,unchanged,stratum=middle_40_69; n_peaks=840 n_rr=839 n_nn=839 ectopic=0 artifact=0 missing=0
+autonomic-aging,0353,hrv,rmssd_corrected_reject_invalid_ms,14.813,14.813,0,new-methodology,stratum=middle_40_69; corrected path (hrv-correct reject_invalid) did not exist at baseline; delta is vs baseline raw; n_peaks=840 n_rr=839 n_nn=839 ectopic=0 artifact=0 missing=0
+autonomic-aging,0432,hrv,rmssd_raw_ms,30.4173,30.4173,0,unchanged,stratum=young_18_39; n_peaks=718 n_rr=717 n_nn=717 ectopic=0 artifact=0 missing=0
+autonomic-aging,0432,hrv,rmssd_corrected_reject_invalid_ms,30.4173,30.4173,0,new-methodology,stratum=young_18_39; corrected path (hrv-correct reject_invalid) did not exist at baseline; delta is vs baseline raw; n_peaks=718 n_rr=717 n_nn=717 ectopic=0 artifact=0 missing=0
+autonomic-aging,0554,hrv,rmssd_raw_ms,315.592,224.115,-91.4767,changed,stratum=old_70_plus; n_peaks=998 n_rr=997 n_nn=599 ectopic=342 artifact=56 missing=0
+autonomic-aging,0554,hrv,rmssd_corrected_reject_invalid_ms,315.592,102.181,-213.411,new-methodology,stratum=old_70_plus; corrected path (hrv-correct reject_invalid) did not exist at baseline; delta is vs baseline raw; n_peaks=998 n_rr=997 n_nn=599 ectopic=342 artifact=56 missing=0
+autonomic-aging,0637,hrv,rmssd_raw_ms,153.892,355.66,201.769,regression,stratum=old_70_plus; n_peaks=1081 n_rr=1080 n_nn=409 ectopic=292 artifact=379 missing=0
+autonomic-aging,0637,hrv,rmssd_corrected_reject_invalid_ms,153.892,185.708,31.8165,new-methodology,stratum=old_70_plus; corrected path (hrv-correct reject_invalid) did not exist at baseline; delta is vs baseline raw; n_peaks=1081 n_rr=1080 n_nn=409 ectopic=292 artifact=379 missing=0
+autonomic-aging,0846,hrv,rmssd_raw_ms,35.0314,35.0314,0,unchanged,stratum=middle_40_69; n_peaks=627 n_rr=626 n_nn=624 ectopic=2 artifact=0 missing=0
+autonomic-aging,0846,hrv,rmssd_corrected_reject_invalid_ms,35.0314,21.5668,-13.4646,new-methodology,stratum=middle_40_69; corrected path (hrv-correct reject_invalid) did not exist at baseline; delta is vs baseline raw; n_peaks=627 n_rr=626 n_nn=624 ectopic=2 artifact=0 missing=0
+autonomic-aging,0909,hrv,rmssd_raw_ms,57.4813,57.4813,0,unchanged,stratum=middle_40_69; n_peaks=591 n_rr=590 n_nn=585 ectopic=5 artifact=0 missing=0
+autonomic-aging,0909,hrv,rmssd_corrected_reject_invalid_ms,57.4813,32.7655,-24.7158,new-methodology,stratum=middle_40_69; corrected path (hrv-correct reject_invalid) did not exist at baseline; delta is vs baseline raw; n_peaks=591 n_rr=590 n_nn=585 ectopic=5 artifact=0 missing=0
+scamps,P000001-chrom,rppg,hr_bias,0.9117768573026208,0.9117768573026208,0.0,match,
+scamps,P000001-chrom,rppg,hr_mae,2.2605785668465592,2.2605785668465592,0.0,match,raw rppg-algorithm path unchanged post-remediation (additive-only); bitwise identical to baseline
+scamps,P000001-chrom,rppg,hr_n,14.0,14.0,0.0,match,
+scamps,P000001-chrom,rppg,hr_pearson_r,0.9252352393355644,0.9252352393355644,0.0,match,
+scamps,P000001-chrom,rppg,hr_rmse,2.713747582535776,2.713747582535776,0.0,match,
+scamps,P000001-chrom,rppg,ppg_rppg_waveform_f1,0.9367088607594936,0.9367088607594936,0.0,match,peak F1 @150 ms on raw (uncompensated) waveform; unchanged from baseline
+scamps,P000001-chrom,rppg,ppg_rppg_waveform_fn,3.0,3.0,0.0,match,
+scamps,P000001-chrom,rppg,ppg_rppg_waveform_fp,2.0,2.0,0.0,match,
+scamps,P000001-chrom,rppg,ppg_rppg_waveform_mean_abs_timing_error_sec,0.0108108108108108,0.0108108108108108,0.0,match,
+scamps,P000001-chrom,rppg,ppg_rppg_waveform_median_timing_error_sec,0.0,0.0,0.0,match,
+scamps,P000001-chrom,rppg,ppg_rppg_waveform_n_detected,39.0,39.0,0.0,match,
+scamps,P000001-chrom,rppg,ppg_rppg_waveform_n_peaks,39.0,39.0,0.0,match,
+scamps,P000001-chrom,rppg,ppg_rppg_waveform_n_reference,40.0,40.0,0.0,match,
+scamps,P000001-chrom,rppg,ppg_rppg_waveform_precision,0.9487179487179488,0.9487179487179488,0.0,match,
+scamps,P000001-chrom,rppg,ppg_rppg_waveform_recall,0.925,0.925,0.0,match,
+scamps,P000001-chrom,rppg,ppg_rppg_waveform_tolerance_sec,0.15,0.15,0.0,match,
+scamps,P000001-chrom,rppg,ppg_rppg_waveform_tp,37.0,37.0,0.0,match,
+scamps,P000001-green,rppg,hr_bias,3.127616280694705,3.127616280694705,0.0,match,
+scamps,P000001-green,rppg,hr_mae,11.681237002576989,11.681237002576989,0.0,match,raw rppg-algorithm path unchanged post-remediation (additive-only); bitwise identical to baseline
+scamps,P000001-green,rppg,hr_n,14.0,14.0,0.0,match,
+scamps,P000001-green,rppg,hr_pearson_r,-0.1639332626402205,-0.1639332626402205,0.0,match,
+scamps,P000001-green,rppg,hr_rmse,13.412529156933612,13.412529156933612,0.0,match,
+scamps,P000001-green,rppg,ppg_rppg_waveform_f1,0.3333333333333333,0.3333333333333333,0.0,match,peak F1 @150 ms on raw (uncompensated) waveform; unchanged from baseline
+scamps,P000001-green,rppg,ppg_rppg_waveform_fn,27.0,27.0,0.0,match,
+scamps,P000001-green,rppg,ppg_rppg_waveform_fp,25.0,25.0,0.0,match,
+scamps,P000001-green,rppg,ppg_rppg_waveform_mean_abs_timing_error_sec,0.123076923076923,0.123076923076923,0.0,match,
+scamps,P000001-green,rppg,ppg_rppg_waveform_median_timing_error_sec,0.1,0.1,0.0,match,
+scamps,P000001-green,rppg,ppg_rppg_waveform_n_detected,38.0,38.0,0.0,match,
+scamps,P000001-green,rppg,ppg_rppg_waveform_n_peaks,38.0,38.0,0.0,match,
+scamps,P000001-green,rppg,ppg_rppg_waveform_n_reference,40.0,40.0,0.0,match,
+scamps,P000001-green,rppg,ppg_rppg_waveform_precision,0.3421052631578947,0.3421052631578947,0.0,match,
+scamps,P000001-green,rppg,ppg_rppg_waveform_recall,0.325,0.325,0.0,match,
+scamps,P000001-green,rppg,ppg_rppg_waveform_tolerance_sec,0.15,0.15,0.0,match,
+scamps,P000001-green,rppg,ppg_rppg_waveform_tp,13.0,13.0,0.0,match,
+scamps,P000001-pos,rppg,hr_bias,-24.400287056154703,-24.400287056154703,0.0,match,
+scamps,P000001-pos,rppg,hr_mae,27.49529848763532,27.49529848763532,0.0,match,raw rppg-algorithm path unchanged post-remediation (additive-only); bitwise identical to baseline
+scamps,P000001-pos,rppg,hr_n,14.0,14.0,0.0,match,
+scamps,P000001-pos,rppg,hr_pearson_r,-0.3620755352259081,-0.3620755352259081,0.0,match,
+scamps,P000001-pos,rppg,hr_rmse,33.45650410437749,33.45650410437749,0.0,match,
+scamps,P000001-pos,rppg,ppg_rppg_waveform_f1,0.5428571428571427,0.5428571428571427,0.0,match,peak F1 @150 ms on raw (uncompensated) waveform; unchanged from baseline
+scamps,P000001-pos,rppg,ppg_rppg_waveform_fn,21.0,21.0,0.0,match,
+scamps,P000001-pos,rppg,ppg_rppg_waveform_fp,11.0,11.0,0.0,match,
+scamps,P000001-pos,rppg,ppg_rppg_waveform_mean_abs_timing_error_sec,0.1175438596491228,0.1175438596491228,0.0,match,
+scamps,P000001-pos,rppg,ppg_rppg_waveform_median_timing_error_sec,0.0666666666666666,0.0666666666666666,0.0,match,
+scamps,P000001-pos,rppg,ppg_rppg_waveform_n_detected,30.0,30.0,0.0,match,
+scamps,P000001-pos,rppg,ppg_rppg_waveform_n_peaks,30.0,30.0,0.0,match,
+scamps,P000001-pos,rppg,ppg_rppg_waveform_n_reference,40.0,40.0,0.0,match,
+scamps,P000001-pos,rppg,ppg_rppg_waveform_precision,0.6333333333333333,0.6333333333333333,0.0,match,
+scamps,P000001-pos,rppg,ppg_rppg_waveform_recall,0.475,0.475,0.0,match,
+scamps,P000001-pos,rppg,ppg_rppg_waveform_tolerance_sec,0.15,0.15,0.0,match,
+scamps,P000001-pos,rppg,ppg_rppg_waveform_tp,19.0,19.0,0.0,match,
+scamps,P000002-chrom,rppg,hr_bias,-19.774601669075984,-19.774601669075984,0.0,match,
+scamps,P000002-chrom,rppg,hr_mae,19.774601669075984,19.774601669075984,0.0,match,raw rppg-algorithm path unchanged post-remediation (additive-only); bitwise identical to baseline
+scamps,P000002-chrom,rppg,hr_n,14.0,14.0,0.0,match,
+scamps,P000002-chrom,rppg,hr_pearson_r,0.5686109659958124,0.5686109659958124,0.0,match,
+scamps,P000002-chrom,rppg,hr_rmse,20.425338170473648,20.425338170473648,0.0,match,
+scamps,P000002-chrom,rppg,ppg_rppg_waveform_f1,0.819672131147541,0.819672131147541,0.0,match,peak F1 @150 ms on raw (uncompensated) waveform; unchanged from baseline
+scamps,P000002-chrom,rppg,ppg_rppg_waveform_fn,9.0,9.0,0.0,match,
+scamps,P000002-chrom,rppg,ppg_rppg_waveform_fp,2.0,2.0,0.0,match,
+scamps,P000002-chrom,rppg,ppg_rppg_waveform_mean_abs_timing_error_sec,0.0426666666666666,0.0426666666666666,0.0,match,
+scamps,P000002-chrom,rppg,ppg_rppg_waveform_median_timing_error_sec,-0.0333333333333333,-0.0333333333333333,0.0,match,
+scamps,P000002-chrom,rppg,ppg_rppg_waveform_n_detected,27.0,27.0,0.0,match,
+scamps,P000002-chrom,rppg,ppg_rppg_waveform_n_peaks,27.0,27.0,0.0,match,
+scamps,P000002-chrom,rppg,ppg_rppg_waveform_n_reference,34.0,34.0,0.0,match,
+scamps,P000002-chrom,rppg,ppg_rppg_waveform_precision,0.925925925925926,0.925925925925926,0.0,match,
+scamps,P000002-chrom,rppg,ppg_rppg_waveform_recall,0.7352941176470589,0.7352941176470589,0.0,match,
+scamps,P000002-chrom,rppg,ppg_rppg_waveform_tolerance_sec,0.15,0.15,0.0,match,
+scamps,P000002-chrom,rppg,ppg_rppg_waveform_tp,25.0,25.0,0.0,match,
+scamps,P000002-green,rppg,hr_bias,9.93403020522508,9.93403020522508,0.0,match,
+scamps,P000002-green,rppg,hr_mae,13.663517101678329,13.663517101678329,0.0,match,raw rppg-algorithm path unchanged post-remediation (additive-only); bitwise identical to baseline
+scamps,P000002-green,rppg,hr_n,14.0,14.0,0.0,match,
+scamps,P000002-green,rppg,hr_pearson_r,-0.8788574318386243,-0.8788574318386243,0.0,match,
+scamps,P000002-green,rppg,hr_rmse,17.504292989107924,17.504292989107924,0.0,match,
+scamps,P000002-green,rppg,ppg_rppg_waveform_f1,0.3142857142857143,0.3142857142857143,0.0,match,peak F1 @150 ms on raw (uncompensated) waveform; unchanged from baseline
+scamps,P000002-green,rppg,ppg_rppg_waveform_fn,23.0,23.0,0.0,match,
+scamps,P000002-green,rppg,ppg_rppg_waveform_fp,25.0,25.0,0.0,match,
+scamps,P000002-green,rppg,ppg_rppg_waveform_mean_abs_timing_error_sec,0.0818181818181818,0.0818181818181818,0.0,match,
+scamps,P000002-green,rppg,ppg_rppg_waveform_median_timing_error_sec,-0.0333333333333333,-0.0333333333333333,0.0,match,
+scamps,P000002-green,rppg,ppg_rppg_waveform_n_detected,36.0,36.0,0.0,match,
+scamps,P000002-green,rppg,ppg_rppg_waveform_n_peaks,36.0,36.0,0.0,match,
+scamps,P000002-green,rppg,ppg_rppg_waveform_n_reference,34.0,34.0,0.0,match,
+scamps,P000002-green,rppg,ppg_rppg_waveform_precision,0.3055555555555556,0.3055555555555556,0.0,match,
+scamps,P000002-green,rppg,ppg_rppg_waveform_recall,0.3235294117647059,0.3235294117647059,0.0,match,
+scamps,P000002-green,rppg,ppg_rppg_waveform_tolerance_sec,0.15,0.15,0.0,match,
+scamps,P000002-green,rppg,ppg_rppg_waveform_tp,11.0,11.0,0.0,match,
+scamps,P000002-pos,rppg,hr_bias,22.22250965704194,22.22250965704194,0.0,match,
+scamps,P000002-pos,rppg,hr_mae,22.26995963118365,22.26995963118365,0.0,match,raw rppg-algorithm path unchanged post-remediation (additive-only); bitwise identical to baseline
+scamps,P000002-pos,rppg,hr_n,14.0,14.0,0.0,match,
+scamps,P000002-pos,rppg,hr_pearson_r,0.8497881000683881,0.8497881000683881,0.0,match,
+scamps,P000002-pos,rppg,hr_rmse,24.625756634519128,24.625756634519128,0.0,match,
+scamps,P000002-pos,rppg,ppg_rppg_waveform_f1,0.3835616438356165,0.3835616438356165,0.0,match,peak F1 @150 ms on raw (uncompensated) waveform; unchanged from baseline
+scamps,P000002-pos,rppg,ppg_rppg_waveform_fn,20.0,20.0,0.0,match,
+scamps,P000002-pos,rppg,ppg_rppg_waveform_fp,25.0,25.0,0.0,match,
+scamps,P000002-pos,rppg,ppg_rppg_waveform_mean_abs_timing_error_sec,0.1023809523809523,0.1023809523809523,0.0,match,
+scamps,P000002-pos,rppg,ppg_rppg_waveform_median_timing_error_sec,-0.1333333333333333,-0.1333333333333333,0.0,match,
+scamps,P000002-pos,rppg,ppg_rppg_waveform_n_detected,39.0,39.0,0.0,match,
+scamps,P000002-pos,rppg,ppg_rppg_waveform_n_peaks,39.0,39.0,0.0,match,
+scamps,P000002-pos,rppg,ppg_rppg_waveform_n_reference,34.0,34.0,0.0,match,
+scamps,P000002-pos,rppg,ppg_rppg_waveform_precision,0.358974358974359,0.358974358974359,0.0,match,
+scamps,P000002-pos,rppg,ppg_rppg_waveform_recall,0.4117647058823529,0.4117647058823529,0.0,match,
+scamps,P000002-pos,rppg,ppg_rppg_waveform_tolerance_sec,0.15,0.15,0.0,match,
+scamps,P000002-pos,rppg,ppg_rppg_waveform_tp,14.0,14.0,0.0,match,
+scamps,P000003-chrom,rppg,hr_bias,-2.7557142277026307,-2.7557142277026307,0.0,match,
+scamps,P000003-chrom,rppg,hr_mae,10.5831633785856,10.5831633785856,0.0,match,raw rppg-algorithm path unchanged post-remediation (additive-only); bitwise identical to baseline
+scamps,P000003-chrom,rppg,hr_n,14.0,14.0,0.0,match,
+scamps,P000003-chrom,rppg,hr_pearson_r,0.2213719298696293,0.2213719298696293,0.0,match,
+scamps,P000003-chrom,rppg,hr_rmse,12.21258978768128,12.21258978768128,0.0,match,
+scamps,P000003-chrom,rppg,ppg_rppg_waveform_f1,0.7012987012987014,0.7012987012987014,0.0,match,peak F1 @150 ms on raw (uncompensated) waveform; unchanged from baseline
+scamps,P000003-chrom,rppg,ppg_rppg_waveform_fn,13.0,13.0,0.0,match,
+scamps,P000003-chrom,rppg,ppg_rppg_waveform_fp,10.0,10.0,0.0,match,
+scamps,P000003-chrom,rppg,ppg_rppg_waveform_mean_abs_timing_error_sec,0.0123456790123456,0.0123456790123456,0.0,match,
+scamps,P000003-chrom,rppg,ppg_rppg_waveform_median_timing_error_sec,0.0,0.0,0.0,match,
+scamps,P000003-chrom,rppg,ppg_rppg_waveform_n_detected,37.0,37.0,0.0,match,
+scamps,P000003-chrom,rppg,ppg_rppg_waveform_n_peaks,37.0,37.0,0.0,match,
+scamps,P000003-chrom,rppg,ppg_rppg_waveform_n_reference,40.0,40.0,0.0,match,
+scamps,P000003-chrom,rppg,ppg_rppg_waveform_precision,0.7297297297297297,0.7297297297297297,0.0,match,
+scamps,P000003-chrom,rppg,ppg_rppg_waveform_recall,0.675,0.675,0.0,match,
+scamps,P000003-chrom,rppg,ppg_rppg_waveform_tolerance_sec,0.15,0.15,0.0,match,
+scamps,P000003-chrom,rppg,ppg_rppg_waveform_tp,27.0,27.0,0.0,match,
+scamps,P000003-green,rppg,hr_bias,-1.7976851717737643,-1.7976851717737643,0.0,match,
+scamps,P000003-green,rppg,hr_mae,5.791129786390899,5.791129786390899,0.0,match,raw rppg-algorithm path unchanged post-remediation (additive-only); bitwise identical to baseline
+scamps,P000003-green,rppg,hr_n,14.0,14.0,0.0,match,
+scamps,P000003-green,rppg,hr_pearson_r,0.264785202851548,0.264785202851548,0.0,match,
+scamps,P000003-green,rppg,hr_rmse,7.1266407290188045,7.1266407290188045,0.0,match,
+scamps,P000003-green,rppg,ppg_rppg_waveform_f1,0.2337662337662337,0.2337662337662337,0.0,match,peak F1 @150 ms on raw (uncompensated) waveform; unchanged from baseline
+scamps,P000003-green,rppg,ppg_rppg_waveform_fn,31.0,31.0,0.0,match,
+scamps,P000003-green,rppg,ppg_rppg_waveform_fp,28.0,28.0,0.0,match,
+scamps,P000003-green,rppg,ppg_rppg_waveform_mean_abs_timing_error_sec,0.1259259259259259,0.1259259259259259,0.0,match,
+scamps,P000003-green,rppg,ppg_rppg_waveform_median_timing_error_sec,-0.1,-0.1,0.0,match,
+scamps,P000003-green,rppg,ppg_rppg_waveform_n_detected,37.0,37.0,0.0,match,
+scamps,P000003-green,rppg,ppg_rppg_waveform_n_peaks,37.0,37.0,0.0,match,
+scamps,P000003-green,rppg,ppg_rppg_waveform_n_reference,40.0,40.0,0.0,match,
+scamps,P000003-green,rppg,ppg_rppg_waveform_precision,0.2432432432432432,0.2432432432432432,0.0,match,
+scamps,P000003-green,rppg,ppg_rppg_waveform_recall,0.225,0.225,0.0,match,
+scamps,P000003-green,rppg,ppg_rppg_waveform_tolerance_sec,0.15,0.15,0.0,match,
+scamps,P000003-green,rppg,ppg_rppg_waveform_tp,9.0,9.0,0.0,match,
+scamps,P000003-pos,rppg,hr_bias,-11.168850668692262,-11.168850668692262,0.0,match,
+scamps,P000003-pos,rppg,hr_mae,12.172097421939013,12.172097421939013,0.0,match,raw rppg-algorithm path unchanged post-remediation (additive-only); bitwise identical to baseline
+scamps,P000003-pos,rppg,hr_n,14.0,14.0,0.0,match,
+scamps,P000003-pos,rppg,hr_pearson_r,0.1314768679403355,0.1314768679403355,0.0,match,
+scamps,P000003-pos,rppg,hr_rmse,13.952215703227305,13.952215703227305,0.0,match,
+scamps,P000003-pos,rppg,ppg_rppg_waveform_f1,0.5753424657534246,0.5753424657534246,0.0,match,peak F1 @150 ms on raw (uncompensated) waveform; unchanged from baseline
+scamps,P000003-pos,rppg,ppg_rppg_waveform_fn,19.0,19.0,0.0,match,
+scamps,P000003-pos,rppg,ppg_rppg_waveform_fp,12.0,12.0,0.0,match,
+scamps,P000003-pos,rppg,ppg_rppg_waveform_mean_abs_timing_error_sec,0.1126984126984127,0.1126984126984127,0.0,match,
+scamps,P000003-pos,rppg,ppg_rppg_waveform_median_timing_error_sec,-0.1,-0.1,0.0,match,
+scamps,P000003-pos,rppg,ppg_rppg_waveform_n_detected,33.0,33.0,0.0,match,
+scamps,P000003-pos,rppg,ppg_rppg_waveform_n_peaks,33.0,33.0,0.0,match,
+scamps,P000003-pos,rppg,ppg_rppg_waveform_n_reference,40.0,40.0,0.0,match,
+scamps,P000003-pos,rppg,ppg_rppg_waveform_precision,0.6363636363636364,0.6363636363636364,0.0,match,
+scamps,P000003-pos,rppg,ppg_rppg_waveform_recall,0.525,0.525,0.0,match,
+scamps,P000003-pos,rppg,ppg_rppg_waveform_tolerance_sec,0.15,0.15,0.0,match,
+scamps,P000003-pos,rppg,ppg_rppg_waveform_tp,21.0,21.0,0.0,match,
+scamps,P000004-chrom,rppg,hr_bias,-10.177356021803025,-10.177356021803025,0.0,match,
+scamps,P000004-chrom,rppg,hr_mae,10.177356021803025,10.177356021803025,0.0,match,raw rppg-algorithm path unchanged post-remediation (additive-only); bitwise identical to baseline
+scamps,P000004-chrom,rppg,hr_n,14.0,14.0,0.0,match,
+scamps,P000004-chrom,rppg,hr_pearson_r,0.0702791964343864,0.0702791964343864,0.0,match,
+scamps,P000004-chrom,rppg,hr_rmse,11.58795655774115,11.58795655774115,0.0,match,
+scamps,P000004-chrom,rppg,ppg_rppg_waveform_f1,0.5432098765432098,0.5432098765432098,0.0,match,peak F1 @150 ms on raw (uncompensated) waveform; unchanged from baseline
+scamps,P000004-chrom,rppg,ppg_rppg_waveform_fn,21.0,21.0,0.0,match,
+scamps,P000004-chrom,rppg,ppg_rppg_waveform_fp,16.0,16.0,0.0,match,
+scamps,P000004-chrom,rppg,ppg_rppg_waveform_mean_abs_timing_error_sec,0.0318181818181818,0.0318181818181818,0.0,match,
+scamps,P000004-chrom,rppg,ppg_rppg_waveform_median_timing_error_sec,0.0,0.0,0.0,match,
+scamps,P000004-chrom,rppg,ppg_rppg_waveform_n_detected,38.0,38.0,0.0,match,
+scamps,P000004-chrom,rppg,ppg_rppg_waveform_n_peaks,38.0,38.0,0.0,match,
+scamps,P000004-chrom,rppg,ppg_rppg_waveform_n_reference,43.0,43.0,0.0,match,
+scamps,P000004-chrom,rppg,ppg_rppg_waveform_precision,0.5789473684210527,0.5789473684210527,0.0,match,
+scamps,P000004-chrom,rppg,ppg_rppg_waveform_recall,0.5116279069767442,0.5116279069767442,0.0,match,
+scamps,P000004-chrom,rppg,ppg_rppg_waveform_tolerance_sec,0.15,0.15,0.0,match,
+scamps,P000004-chrom,rppg,ppg_rppg_waveform_tp,22.0,22.0,0.0,match,
+scamps,P000004-green,rppg,hr_bias,4.3069299924492,4.3069299924492,0.0,match,
+scamps,P000004-green,rppg,hr_mae,4.3069299924492,4.3069299924492,0.0,match,raw rppg-algorithm path unchanged post-remediation (additive-only); bitwise identical to baseline
+scamps,P000004-green,rppg,hr_n,14.0,14.0,0.0,match,
+scamps,P000004-green,rppg,hr_pearson_r,0.822018703367167,0.822018703367167,0.0,match,
+scamps,P000004-green,rppg,hr_rmse,4.555406482639584,4.555406482639584,0.0,match,
+scamps,P000004-green,rppg,ppg_rppg_waveform_f1,0.2588235294117647,0.2588235294117647,0.0,match,peak F1 @150 ms on raw (uncompensated) waveform; unchanged from baseline
+scamps,P000004-green,rppg,ppg_rppg_waveform_fn,32.0,32.0,0.0,match,
+scamps,P000004-green,rppg,ppg_rppg_waveform_fp,31.0,31.0,0.0,match,
+scamps,P000004-green,rppg,ppg_rppg_waveform_mean_abs_timing_error_sec,0.1303030303030303,0.1303030303030303,0.0,match,
+scamps,P000004-green,rppg,ppg_rppg_waveform_median_timing_error_sec,0.1333333333333333,0.1333333333333333,0.0,match,
+scamps,P000004-green,rppg,ppg_rppg_waveform_n_detected,42.0,42.0,0.0,match,
+scamps,P000004-green,rppg,ppg_rppg_waveform_n_peaks,42.0,42.0,0.0,match,
+scamps,P000004-green,rppg,ppg_rppg_waveform_n_reference,43.0,43.0,0.0,match,
+scamps,P000004-green,rppg,ppg_rppg_waveform_precision,0.2619047619047619,0.2619047619047619,0.0,match,
+scamps,P000004-green,rppg,ppg_rppg_waveform_recall,0.2558139534883721,0.2558139534883721,0.0,match,
+scamps,P000004-green,rppg,ppg_rppg_waveform_tolerance_sec,0.15,0.15,0.0,match,
+scamps,P000004-green,rppg,ppg_rppg_waveform_tp,11.0,11.0,0.0,match,
+scamps,P000004-pos,rppg,hr_bias,-11.069293660285863,-11.069293660285863,0.0,match,
+scamps,P000004-pos,rppg,hr_mae,11.874396120850507,11.874396120850507,0.0,match,raw rppg-algorithm path unchanged post-remediation (additive-only); bitwise identical to baseline
+scamps,P000004-pos,rppg,hr_n,14.0,14.0,0.0,match,
+scamps,P000004-pos,rppg,hr_pearson_r,-0.3665796731077865,-0.3665796731077865,0.0,match,
+scamps,P000004-pos,rppg,hr_rmse,14.06399690986365,14.06399690986365,0.0,match,
+scamps,P000004-pos,rppg,ppg_rppg_waveform_f1,0.725,0.725,0.0,match,peak F1 @150 ms on raw (uncompensated) waveform; unchanged from baseline
+scamps,P000004-pos,rppg,ppg_rppg_waveform_fn,14.0,14.0,0.0,match,
+scamps,P000004-pos,rppg,ppg_rppg_waveform_fp,8.0,8.0,0.0,match,
+scamps,P000004-pos,rppg,ppg_rppg_waveform_mean_abs_timing_error_sec,0.1057471264367816,0.1057471264367816,0.0,match,
+scamps,P000004-pos,rppg,ppg_rppg_waveform_median_timing_error_sec,0.1,0.1,0.0,match,
+scamps,P000004-pos,rppg,ppg_rppg_waveform_n_detected,37.0,37.0,0.0,match,
+scamps,P000004-pos,rppg,ppg_rppg_waveform_n_peaks,37.0,37.0,0.0,match,
+scamps,P000004-pos,rppg,ppg_rppg_waveform_n_reference,43.0,43.0,0.0,match,
+scamps,P000004-pos,rppg,ppg_rppg_waveform_precision,0.7837837837837838,0.7837837837837838,0.0,match,
+scamps,P000004-pos,rppg,ppg_rppg_waveform_recall,0.6744186046511628,0.6744186046511628,0.0,match,
+scamps,P000004-pos,rppg,ppg_rppg_waveform_tolerance_sec,0.15,0.15,0.0,match,
+scamps,P000004-pos,rppg,ppg_rppg_waveform_tp,29.0,29.0,0.0,match,
+scamps,P000005-chrom,rppg,hr_bias,-26.63083958027583,-26.63083958027583,0.0,match,
+scamps,P000005-chrom,rppg,hr_mae,26.63083958027583,26.63083958027583,0.0,match,raw rppg-algorithm path unchanged post-remediation (additive-only); bitwise identical to baseline
+scamps,P000005-chrom,rppg,hr_n,14.0,14.0,0.0,match,
+scamps,P000005-chrom,rppg,hr_pearson_r,0.7365409379952327,0.7365409379952327,0.0,match,
+scamps,P000005-chrom,rppg,hr_rmse,29.354517400220782,29.354517400220782,0.0,match,
+scamps,P000005-chrom,rppg,ppg_rppg_waveform_f1,0.2985074626865672,0.2985074626865672,0.0,match,peak F1 @150 ms on raw (uncompensated) waveform; unchanged from baseline
+scamps,P000005-chrom,rppg,ppg_rppg_waveform_fn,28.0,28.0,0.0,match,
+scamps,P000005-chrom,rppg,ppg_rppg_waveform_fp,19.0,19.0,0.0,match,
+scamps,P000005-chrom,rppg,ppg_rppg_waveform_mean_abs_timing_error_sec,0.0433333333333333,0.0433333333333333,0.0,match,
+scamps,P000005-chrom,rppg,ppg_rppg_waveform_median_timing_error_sec,0.0,0.0,0.0,match,
+scamps,P000005-chrom,rppg,ppg_rppg_waveform_n_detected,29.0,29.0,0.0,match,
+scamps,P000005-chrom,rppg,ppg_rppg_waveform_n_peaks,29.0,29.0,0.0,match,
+scamps,P000005-chrom,rppg,ppg_rppg_waveform_n_reference,38.0,38.0,0.0,match,
+scamps,P000005-chrom,rppg,ppg_rppg_waveform_precision,0.3448275862068966,0.3448275862068966,0.0,match,
+scamps,P000005-chrom,rppg,ppg_rppg_waveform_recall,0.2631578947368421,0.2631578947368421,0.0,match,
+scamps,P000005-chrom,rppg,ppg_rppg_waveform_tolerance_sec,0.15,0.15,0.0,match,
+scamps,P000005-chrom,rppg,ppg_rppg_waveform_tp,10.0,10.0,0.0,match,
+scamps,P000005-green,rppg,hr_bias,21.152639900065083,21.152639900065083,0.0,match,
+scamps,P000005-green,rppg,hr_mae,21.152639900065083,21.152639900065083,0.0,match,raw rppg-algorithm path unchanged post-remediation (additive-only); bitwise identical to baseline
+scamps,P000005-green,rppg,hr_n,14.0,14.0,0.0,match,
+scamps,P000005-green,rppg,hr_pearson_r,-0.5676062394064216,-0.5676062394064216,0.0,match,
+scamps,P000005-green,rppg,hr_rmse,22.552332397329387,22.552332397329387,0.0,match,
+scamps,P000005-green,rppg,ppg_rppg_waveform_f1,0.0975609756097561,0.0975609756097561,0.0,match,peak F1 @150 ms on raw (uncompensated) waveform; unchanged from baseline
+scamps,P000005-green,rppg,ppg_rppg_waveform_fn,34.0,34.0,0.0,match,
+scamps,P000005-green,rppg,ppg_rppg_waveform_fp,40.0,40.0,0.0,match,
+scamps,P000005-green,rppg,ppg_rppg_waveform_mean_abs_timing_error_sec,0.1333333333333333,0.1333333333333333,0.0,match,
+scamps,P000005-green,rppg,ppg_rppg_waveform_median_timing_error_sec,-0.1333333333333333,-0.1333333333333333,0.0,match,
+scamps,P000005-green,rppg,ppg_rppg_waveform_n_detected,44.0,44.0,0.0,match,
+scamps,P000005-green,rppg,ppg_rppg_waveform_n_peaks,44.0,44.0,0.0,match,
+scamps,P000005-green,rppg,ppg_rppg_waveform_n_reference,38.0,38.0,0.0,match,
+scamps,P000005-green,rppg,ppg_rppg_waveform_precision,0.0909090909090909,0.0909090909090909,0.0,match,
+scamps,P000005-green,rppg,ppg_rppg_waveform_recall,0.1052631578947368,0.1052631578947368,0.0,match,
+scamps,P000005-green,rppg,ppg_rppg_waveform_tolerance_sec,0.15,0.15,0.0,match,
+scamps,P000005-green,rppg,ppg_rppg_waveform_tp,4.0,4.0,0.0,match,
+scamps,P000005-pos,rppg,hr_bias,2.391060741842602,2.391060741842602,0.0,match,
+scamps,P000005-pos,rppg,hr_mae,6.784276976987529,6.784276976987529,0.0,match,raw rppg-algorithm path unchanged post-remediation (additive-only); bitwise identical to baseline
+scamps,P000005-pos,rppg,hr_n,14.0,14.0,0.0,match,
+scamps,P000005-pos,rppg,hr_pearson_r,0.0813803143002525,0.0813803143002525,0.0,match,
+scamps,P000005-pos,rppg,hr_rmse,7.94042366397964,7.94042366397964,0.0,match,
+scamps,P000005-pos,rppg,ppg_rppg_waveform_f1,0.5135135135135136,0.5135135135135136,0.0,match,peak F1 @150 ms on raw (uncompensated) waveform; unchanged from baseline
+scamps,P000005-pos,rppg,ppg_rppg_waveform_fn,19.0,19.0,0.0,match,
+scamps,P000005-pos,rppg,ppg_rppg_waveform_fp,17.0,17.0,0.0,match,
+scamps,P000005-pos,rppg,ppg_rppg_waveform_mean_abs_timing_error_sec,0.0982456140350877,0.0982456140350877,0.0,match,
+scamps,P000005-pos,rppg,ppg_rppg_waveform_median_timing_error_sec,-0.0666666666666666,-0.0666666666666666,0.0,match,
+scamps,P000005-pos,rppg,ppg_rppg_waveform_n_detected,36.0,36.0,0.0,match,
+scamps,P000005-pos,rppg,ppg_rppg_waveform_n_peaks,36.0,36.0,0.0,match,
+scamps,P000005-pos,rppg,ppg_rppg_waveform_n_reference,38.0,38.0,0.0,match,
+scamps,P000005-pos,rppg,ppg_rppg_waveform_precision,0.5277777777777778,0.5277777777777778,0.0,match,
+scamps,P000005-pos,rppg,ppg_rppg_waveform_recall,0.5,0.5,0.0,match,
+scamps,P000005-pos,rppg,ppg_rppg_waveform_tolerance_sec,0.15,0.15,0.0,match,
+scamps,P000005-pos,rppg,ppg_rppg_waveform_tp,19.0,19.0,0.0,match,
+scamps,P000006-chrom,rppg,hr_bias,24.99842772768505,24.99842772768505,0.0,match,
+scamps,P000006-chrom,rppg,hr_mae,24.99842772768505,24.99842772768505,0.0,match,raw rppg-algorithm path unchanged post-remediation (additive-only); bitwise identical to baseline
+scamps,P000006-chrom,rppg,hr_n,14.0,14.0,0.0,match,
+scamps,P000006-chrom,rppg,hr_pearson_r,-0.504040817870635,-0.504040817870635,0.0,match,
+scamps,P000006-chrom,rppg,hr_rmse,26.763227019411936,26.763227019411936,0.0,match,
+scamps,P000006-chrom,rppg,ppg_rppg_waveform_f1,0.6666666666666666,0.6666666666666666,0.0,match,peak F1 @150 ms on raw (uncompensated) waveform; unchanged from baseline
+scamps,P000006-chrom,rppg,ppg_rppg_waveform_fn,10.0,10.0,0.0,match,
+scamps,P000006-chrom,rppg,ppg_rppg_waveform_fp,13.0,13.0,0.0,match,
+scamps,P000006-chrom,rppg,ppg_rppg_waveform_mean_abs_timing_error_sec,0.0550724637681159,0.0550724637681159,0.0,match,
+scamps,P000006-chrom,rppg,ppg_rppg_waveform_median_timing_error_sec,-0.0333333333333333,-0.0333333333333333,0.0,match,
+scamps,P000006-chrom,rppg,ppg_rppg_waveform_n_detected,36.0,36.0,0.0,match,
+scamps,P000006-chrom,rppg,ppg_rppg_waveform_n_peaks,36.0,36.0,0.0,match,
+scamps,P000006-chrom,rppg,ppg_rppg_waveform_n_reference,33.0,33.0,0.0,match,
+scamps,P000006-chrom,rppg,ppg_rppg_waveform_precision,0.6388888888888888,0.6388888888888888,0.0,match,
+scamps,P000006-chrom,rppg,ppg_rppg_waveform_recall,0.696969696969697,0.696969696969697,0.0,match,
+scamps,P000006-chrom,rppg,ppg_rppg_waveform_tolerance_sec,0.15,0.15,0.0,match,
+scamps,P000006-chrom,rppg,ppg_rppg_waveform_tp,23.0,23.0,0.0,match,
+scamps,P000006-green,rppg,hr_bias,23.73469392333283,23.73469392333283,0.0,match,
+scamps,P000006-green,rppg,hr_mae,24.33545001524329,24.33545001524329,0.0,match,raw rppg-algorithm path unchanged post-remediation (additive-only); bitwise identical to baseline
+scamps,P000006-green,rppg,hr_n,14.0,14.0,0.0,match,
+scamps,P000006-green,rppg,hr_pearson_r,0.1822245077199036,0.1822245077199036,0.0,match,
+scamps,P000006-green,rppg,hr_rmse,27.20739662813411,27.20739662813411,0.0,match,
+scamps,P000006-green,rppg,ppg_rppg_waveform_f1,0.2318840579710145,0.2318840579710145,0.0,match,peak F1 @150 ms on raw (uncompensated) waveform; unchanged from baseline
+scamps,P000006-green,rppg,ppg_rppg_waveform_fn,25.0,25.0,0.0,match,
+scamps,P000006-green,rppg,ppg_rppg_waveform_fp,28.0,28.0,0.0,match,
+scamps,P000006-green,rppg,ppg_rppg_waveform_mean_abs_timing_error_sec,0.0541666666666666,0.0541666666666666,0.0,match,
+scamps,P000006-green,rppg,ppg_rppg_waveform_median_timing_error_sec,0.0,0.0,0.0,match,
+scamps,P000006-green,rppg,ppg_rppg_waveform_n_detected,36.0,36.0,0.0,match,
+scamps,P000006-green,rppg,ppg_rppg_waveform_n_peaks,36.0,36.0,0.0,match,
+scamps,P000006-green,rppg,ppg_rppg_waveform_n_reference,33.0,33.0,0.0,match,
+scamps,P000006-green,rppg,ppg_rppg_waveform_precision,0.2222222222222222,0.2222222222222222,0.0,match,
+scamps,P000006-green,rppg,ppg_rppg_waveform_recall,0.2424242424242424,0.2424242424242424,0.0,match,
+scamps,P000006-green,rppg,ppg_rppg_waveform_tolerance_sec,0.15,0.15,0.0,match,
+scamps,P000006-green,rppg,ppg_rppg_waveform_tp,8.0,8.0,0.0,match,
+scamps,P000006-pos,rppg,hr_bias,18.29682729086828,18.29682729086828,0.0,match,
+scamps,P000006-pos,rppg,hr_mae,18.405045776278705,18.405045776278705,0.0,match,raw rppg-algorithm path unchanged post-remediation (additive-only); bitwise identical to baseline
+scamps,P000006-pos,rppg,hr_n,14.0,14.0,0.0,match,
+scamps,P000006-pos,rppg,hr_pearson_r,-0.065350763291589,-0.065350763291589,0.0,match,
+scamps,P000006-pos,rppg,hr_rmse,22.96126903740375,22.96126903740375,0.0,match,
+scamps,P000006-pos,rppg,ppg_rppg_waveform_f1,0.2388059701492537,0.2388059701492537,0.0,match,peak F1 @150 ms on raw (uncompensated) waveform; unchanged from baseline
+scamps,P000006-pos,rppg,ppg_rppg_waveform_fn,25.0,25.0,0.0,match,
+scamps,P000006-pos,rppg,ppg_rppg_waveform_fp,26.0,26.0,0.0,match,
+scamps,P000006-pos,rppg,ppg_rppg_waveform_mean_abs_timing_error_sec,0.0791666666666666,0.0791666666666666,0.0,match,
+scamps,P000006-pos,rppg,ppg_rppg_waveform_median_timing_error_sec,-0.0166666666666666,-0.0166666666666666,0.0,match,
+scamps,P000006-pos,rppg,ppg_rppg_waveform_n_detected,34.0,34.0,0.0,match,
+scamps,P000006-pos,rppg,ppg_rppg_waveform_n_peaks,34.0,34.0,0.0,match,
+scamps,P000006-pos,rppg,ppg_rppg_waveform_n_reference,33.0,33.0,0.0,match,
+scamps,P000006-pos,rppg,ppg_rppg_waveform_precision,0.2352941176470588,0.2352941176470588,0.0,match,
+scamps,P000006-pos,rppg,ppg_rppg_waveform_recall,0.2424242424242424,0.2424242424242424,0.0,match,
+scamps,P000006-pos,rppg,ppg_rppg_waveform_tolerance_sec,0.15,0.15,0.0,match,
+scamps,P000006-pos,rppg,ppg_rppg_waveform_tp,8.0,8.0,0.0,match,
+scamps,P000007-chrom,rppg,hr_bias,-2.1419090673344945,-2.1419090673344945,0.0,match,
+scamps,P000007-chrom,rppg,hr_mae,2.5653396399016466,2.5653396399016466,0.0,match,raw rppg-algorithm path unchanged post-remediation (additive-only); bitwise identical to baseline
+scamps,P000007-chrom,rppg,hr_n,14.0,14.0,0.0,match,
+scamps,P000007-chrom,rppg,hr_pearson_r,0.0105237426244215,0.0105237426244215,0.0,match,
+scamps,P000007-chrom,rppg,hr_rmse,3.673708070385477,3.673708070385477,0.0,match,
+scamps,P000007-chrom,rppg,ppg_rppg_waveform_f1,0.9411764705882352,0.9411764705882352,0.0,match,peak F1 @150 ms on raw (uncompensated) waveform; unchanged from baseline
+scamps,P000007-chrom,rppg,ppg_rppg_waveform_fn,3.0,3.0,0.0,match,
+scamps,P000007-chrom,rppg,ppg_rppg_waveform_fp,2.0,2.0,0.0,match,
+scamps,P000007-chrom,rppg,ppg_rppg_waveform_mean_abs_timing_error_sec,0.0066666666666666,0.0066666666666666,0.0,match,
+scamps,P000007-chrom,rppg,ppg_rppg_waveform_median_timing_error_sec,0.0,0.0,0.0,match,
+scamps,P000007-chrom,rppg,ppg_rppg_waveform_n_detected,42.0,42.0,0.0,match,
+scamps,P000007-chrom,rppg,ppg_rppg_waveform_n_peaks,42.0,42.0,0.0,match,
+scamps,P000007-chrom,rppg,ppg_rppg_waveform_n_reference,43.0,43.0,0.0,match,
+scamps,P000007-chrom,rppg,ppg_rppg_waveform_precision,0.9523809523809524,0.9523809523809524,0.0,match,
+scamps,P000007-chrom,rppg,ppg_rppg_waveform_recall,0.9302325581395348,0.9302325581395348,0.0,match,
+scamps,P000007-chrom,rppg,ppg_rppg_waveform_tolerance_sec,0.15,0.15,0.0,match,
+scamps,P000007-chrom,rppg,ppg_rppg_waveform_tp,40.0,40.0,0.0,match,
+scamps,P000007-green,rppg,hr_bias,3.6010018839601563,3.6010018839601563,0.0,match,
+scamps,P000007-green,rppg,hr_mae,6.054104373753899,6.054104373753899,0.0,match,raw rppg-algorithm path unchanged post-remediation (additive-only); bitwise identical to baseline
+scamps,P000007-green,rppg,hr_n,14.0,14.0,0.0,match,
+scamps,P000007-green,rppg,hr_pearson_r,0.4699991444184834,0.4699991444184834,0.0,match,
+scamps,P000007-green,rppg,hr_rmse,6.711742568309619,6.711742568309619,0.0,match,
+scamps,P000007-green,rppg,ppg_rppg_waveform_f1,0.4047619047619047,0.4047619047619047,0.0,match,peak F1 @150 ms on raw (uncompensated) waveform; unchanged from baseline
+scamps,P000007-green,rppg,ppg_rppg_waveform_fn,26.0,26.0,0.0,match,
+scamps,P000007-green,rppg,ppg_rppg_waveform_fp,24.0,24.0,0.0,match,
+scamps,P000007-green,rppg,ppg_rppg_waveform_mean_abs_timing_error_sec,0.1156862745098039,0.1156862745098039,0.0,match,
+scamps,P000007-green,rppg,ppg_rppg_waveform_median_timing_error_sec,-0.1,-0.1,0.0,match,
+scamps,P000007-green,rppg,ppg_rppg_waveform_n_detected,41.0,41.0,0.0,match,
+scamps,P000007-green,rppg,ppg_rppg_waveform_n_peaks,41.0,41.0,0.0,match,
+scamps,P000007-green,rppg,ppg_rppg_waveform_n_reference,43.0,43.0,0.0,match,
+scamps,P000007-green,rppg,ppg_rppg_waveform_precision,0.4146341463414634,0.4146341463414634,0.0,match,
+scamps,P000007-green,rppg,ppg_rppg_waveform_recall,0.3953488372093023,0.3953488372093023,0.0,match,
+scamps,P000007-green,rppg,ppg_rppg_waveform_tolerance_sec,0.15,0.15,0.0,match,
+scamps,P000007-green,rppg,ppg_rppg_waveform_tp,17.0,17.0,0.0,match,
+scamps,P000007-pos,rppg,hr_bias,-12.315857282480106,-12.315857282480106,0.0,match,
+scamps,P000007-pos,rppg,hr_mae,13.459878096830584,13.459878096830584,0.0,match,raw rppg-algorithm path unchanged post-remediation (additive-only); bitwise identical to baseline
+scamps,P000007-pos,rppg,hr_n,14.0,14.0,0.0,match,
+scamps,P000007-pos,rppg,hr_pearson_r,0.380177462053328,0.380177462053328,0.0,match,
+scamps,P000007-pos,rppg,hr_rmse,15.806451596221516,15.806451596221516,0.0,match,
+scamps,P000007-pos,rppg,ppg_rppg_waveform_f1,0.7179487179487181,0.7179487179487181,0.0,match,peak F1 @150 ms on raw (uncompensated) waveform; unchanged from baseline
+scamps,P000007-pos,rppg,ppg_rppg_waveform_fn,15.0,15.0,0.0,match,
+scamps,P000007-pos,rppg,ppg_rppg_waveform_fp,7.0,7.0,0.0,match,
+scamps,P000007-pos,rppg,ppg_rppg_waveform_mean_abs_timing_error_sec,0.1107142857142857,0.1107142857142857,0.0,match,
+scamps,P000007-pos,rppg,ppg_rppg_waveform_median_timing_error_sec,-0.1,-0.1,0.0,match,
+scamps,P000007-pos,rppg,ppg_rppg_waveform_n_detected,35.0,35.0,0.0,match,
+scamps,P000007-pos,rppg,ppg_rppg_waveform_n_peaks,35.0,35.0,0.0,match,
+scamps,P000007-pos,rppg,ppg_rppg_waveform_n_reference,43.0,43.0,0.0,match,
+scamps,P000007-pos,rppg,ppg_rppg_waveform_precision,0.8,0.8,0.0,match,
+scamps,P000007-pos,rppg,ppg_rppg_waveform_recall,0.6511627906976745,0.6511627906976745,0.0,match,
+scamps,P000007-pos,rppg,ppg_rppg_waveform_tolerance_sec,0.15,0.15,0.0,match,
+scamps,P000007-pos,rppg,ppg_rppg_waveform_tp,28.0,28.0,0.0,match,
+scamps,P000008-chrom,rppg,hr_bias,13.451729844455732,13.451729844455732,0.0,match,
+scamps,P000008-chrom,rppg,hr_mae,13.948962334823236,13.948962334823236,0.0,match,raw rppg-algorithm path unchanged post-remediation (additive-only); bitwise identical to baseline
+scamps,P000008-chrom,rppg,hr_n,14.0,14.0,0.0,match,
+scamps,P000008-chrom,rppg,hr_pearson_r,-0.2791952009959713,-0.2791952009959713,0.0,match,
+scamps,P000008-chrom,rppg,hr_rmse,17.30029757184053,17.30029757184053,0.0,match,
+scamps,P000008-chrom,rppg,ppg_rppg_waveform_f1,0.787878787878788,0.787878787878788,0.0,match,peak F1 @150 ms on raw (uncompensated) waveform; unchanged from baseline
+scamps,P000008-chrom,rppg,ppg_rppg_waveform_fn,6.0,6.0,0.0,match,
+scamps,P000008-chrom,rppg,ppg_rppg_waveform_fp,8.0,8.0,0.0,match,
+scamps,P000008-chrom,rppg,ppg_rppg_waveform_mean_abs_timing_error_sec,0.0115384615384615,0.0115384615384615,0.0,match,
+scamps,P000008-chrom,rppg,ppg_rppg_waveform_median_timing_error_sec,0.0,0.0,0.0,match,
+scamps,P000008-chrom,rppg,ppg_rppg_waveform_n_detected,34.0,34.0,0.0,match,
+scamps,P000008-chrom,rppg,ppg_rppg_waveform_n_peaks,34.0,34.0,0.0,match,
+scamps,P000008-chrom,rppg,ppg_rppg_waveform_n_reference,32.0,32.0,0.0,match,
+scamps,P000008-chrom,rppg,ppg_rppg_waveform_precision,0.7647058823529411,0.7647058823529411,0.0,match,
+scamps,P000008-chrom,rppg,ppg_rppg_waveform_recall,0.8125,0.8125,0.0,match,
+scamps,P000008-chrom,rppg,ppg_rppg_waveform_tolerance_sec,0.15,0.15,0.0,match,
+scamps,P000008-chrom,rppg,ppg_rppg_waveform_tp,26.0,26.0,0.0,match,
+scamps,P000008-green,rppg,hr_bias,4.078417605593876,4.078417605593876,0.0,match,
+scamps,P000008-green,rppg,hr_mae,4.650502946533909,4.650502946533909,0.0,match,raw rppg-algorithm path unchanged post-remediation (additive-only); bitwise identical to baseline
+scamps,P000008-green,rppg,hr_n,14.0,14.0,0.0,match,
+scamps,P000008-green,rppg,hr_pearson_r,0.5232032252480551,0.5232032252480551,0.0,match,
+scamps,P000008-green,rppg,hr_rmse,5.679696742390794,5.679696742390794,0.0,match,
+scamps,P000008-green,rppg,ppg_rppg_waveform_f1,0.1587301587301587,0.1587301587301587,0.0,match,peak F1 @150 ms on raw (uncompensated) waveform; unchanged from baseline
+scamps,P000008-green,rppg,ppg_rppg_waveform_fn,27.0,27.0,0.0,match,
+scamps,P000008-green,rppg,ppg_rppg_waveform_fp,26.0,26.0,0.0,match,
+scamps,P000008-green,rppg,ppg_rppg_waveform_mean_abs_timing_error_sec,0.1333333333333333,0.1333333333333333,0.0,match,
+scamps,P000008-green,rppg,ppg_rppg_waveform_median_timing_error_sec,-0.1333333333333333,-0.1333333333333333,0.0,match,
+scamps,P000008-green,rppg,ppg_rppg_waveform_n_detected,31.0,31.0,0.0,match,
+scamps,P000008-green,rppg,ppg_rppg_waveform_n_peaks,31.0,31.0,0.0,match,
+scamps,P000008-green,rppg,ppg_rppg_waveform_n_reference,32.0,32.0,0.0,match,
+scamps,P000008-green,rppg,ppg_rppg_waveform_precision,0.1612903225806451,0.1612903225806451,0.0,match,
+scamps,P000008-green,rppg,ppg_rppg_waveform_recall,0.15625,0.15625,0.0,match,
+scamps,P000008-green,rppg,ppg_rppg_waveform_tolerance_sec,0.15,0.15,0.0,match,
+scamps,P000008-green,rppg,ppg_rppg_waveform_tp,5.0,5.0,0.0,match,
+scamps,P000008-pos,rppg,hr_bias,18.42414525571504,18.42414525571504,0.0,match,
+scamps,P000008-pos,rppg,hr_mae,18.42414525571504,18.42414525571504,0.0,match,raw rppg-algorithm path unchanged post-remediation (additive-only); bitwise identical to baseline
+scamps,P000008-pos,rppg,hr_n,14.0,14.0,0.0,match,
+scamps,P000008-pos,rppg,hr_pearson_r,-0.324837509347572,-0.324837509347572,0.0,match,
+scamps,P000008-pos,rppg,hr_rmse,19.883795735196863,19.883795735196863,0.0,match,
+scamps,P000008-pos,rppg,ppg_rppg_waveform_f1,0.5970149253731343,0.5970149253731343,0.0,match,peak F1 @150 ms on raw (uncompensated) waveform; unchanged from baseline
+scamps,P000008-pos,rppg,ppg_rppg_waveform_fn,12.0,12.0,0.0,match,
+scamps,P000008-pos,rppg,ppg_rppg_waveform_fp,15.0,15.0,0.0,match,
+scamps,P000008-pos,rppg,ppg_rppg_waveform_mean_abs_timing_error_sec,0.1133333333333333,0.1133333333333333,0.0,match,
+scamps,P000008-pos,rppg,ppg_rppg_waveform_median_timing_error_sec,-0.1,-0.1,0.0,match,
+scamps,P000008-pos,rppg,ppg_rppg_waveform_n_detected,35.0,35.0,0.0,match,
+scamps,P000008-pos,rppg,ppg_rppg_waveform_n_peaks,35.0,35.0,0.0,match,
+scamps,P000008-pos,rppg,ppg_rppg_waveform_n_reference,32.0,32.0,0.0,match,
+scamps,P000008-pos,rppg,ppg_rppg_waveform_precision,0.5714285714285714,0.5714285714285714,0.0,match,
+scamps,P000008-pos,rppg,ppg_rppg_waveform_recall,0.625,0.625,0.0,match,
+scamps,P000008-pos,rppg,ppg_rppg_waveform_tolerance_sec,0.15,0.15,0.0,match,
+scamps,P000008-pos,rppg,ppg_rppg_waveform_tp,20.0,20.0,0.0,match,
+scamps,P000009-chrom,rppg,hr_bias,1.134154105429111,1.134154105429111,0.0,match,
+scamps,P000009-chrom,rppg,hr_mae,1.1903067439993424,1.1903067439993424,0.0,match,raw rppg-algorithm path unchanged post-remediation (additive-only); bitwise identical to baseline
+scamps,P000009-chrom,rppg,hr_n,14.0,14.0,0.0,match,
+scamps,P000009-chrom,rppg,hr_pearson_r,0.8578317196773403,0.8578317196773403,0.0,match,
+scamps,P000009-chrom,rppg,hr_rmse,1.359788428190318,1.359788428190318,0.0,match,
+scamps,P000009-chrom,rppg,ppg_rppg_waveform_f1,1.0,1.0,0.0,match,peak F1 @150 ms on raw (uncompensated) waveform; unchanged from baseline
+scamps,P000009-chrom,rppg,ppg_rppg_waveform_fn,0.0,0.0,0.0,match,
+scamps,P000009-chrom,rppg,ppg_rppg_waveform_fp,0.0,0.0,0.0,match,
+scamps,P000009-chrom,rppg,ppg_rppg_waveform_mean_abs_timing_error_sec,0.0111111111111111,0.0111111111111111,0.0,match,
+scamps,P000009-chrom,rppg,ppg_rppg_waveform_median_timing_error_sec,0.0,0.0,0.0,match,
+scamps,P000009-chrom,rppg,ppg_rppg_waveform_n_detected,42.0,42.0,0.0,match,
+scamps,P000009-chrom,rppg,ppg_rppg_waveform_n_peaks,42.0,42.0,0.0,match,
+scamps,P000009-chrom,rppg,ppg_rppg_waveform_n_reference,42.0,42.0,0.0,match,
+scamps,P000009-chrom,rppg,ppg_rppg_waveform_precision,1.0,1.0,0.0,match,
+scamps,P000009-chrom,rppg,ppg_rppg_waveform_recall,1.0,1.0,0.0,match,
+scamps,P000009-chrom,rppg,ppg_rppg_waveform_tolerance_sec,0.15,0.15,0.0,match,
+scamps,P000009-chrom,rppg,ppg_rppg_waveform_tp,42.0,42.0,0.0,match,
+scamps,P000009-green,rppg,hr_bias,-6.034389343500016,-6.034389343500016,0.0,match,
+scamps,P000009-green,rppg,hr_mae,6.508302745369085,6.508302745369085,0.0,match,raw rppg-algorithm path unchanged post-remediation (additive-only); bitwise identical to baseline
+scamps,P000009-green,rppg,hr_n,14.0,14.0,0.0,match,
+scamps,P000009-green,rppg,hr_pearson_r,0.475182377993947,0.475182377993947,0.0,match,
+scamps,P000009-green,rppg,hr_rmse,7.5320057185715426,7.5320057185715426,0.0,match,
+scamps,P000009-green,rppg,ppg_rppg_waveform_f1,0.3846153846153846,0.3846153846153846,0.0,match,peak F1 @150 ms on raw (uncompensated) waveform; unchanged from baseline
+scamps,P000009-green,rppg,ppg_rppg_waveform_fn,27.0,27.0,0.0,match,
+scamps,P000009-green,rppg,ppg_rppg_waveform_fp,21.0,21.0,0.0,match,
+scamps,P000009-green,rppg,ppg_rppg_waveform_mean_abs_timing_error_sec,0.1155555555555555,0.1155555555555555,0.0,match,
+scamps,P000009-green,rppg,ppg_rppg_waveform_median_timing_error_sec,0.1,0.1,0.0,match,
+scamps,P000009-green,rppg,ppg_rppg_waveform_n_detected,36.0,36.0,0.0,match,
+scamps,P000009-green,rppg,ppg_rppg_waveform_n_peaks,36.0,36.0,0.0,match,
+scamps,P000009-green,rppg,ppg_rppg_waveform_n_reference,42.0,42.0,0.0,match,
+scamps,P000009-green,rppg,ppg_rppg_waveform_precision,0.4166666666666667,0.4166666666666667,0.0,match,
+scamps,P000009-green,rppg,ppg_rppg_waveform_recall,0.3571428571428571,0.3571428571428571,0.0,match,
+scamps,P000009-green,rppg,ppg_rppg_waveform_tolerance_sec,0.15,0.15,0.0,match,
+scamps,P000009-green,rppg,ppg_rppg_waveform_tp,15.0,15.0,0.0,match,
+scamps,P000009-pos,rppg,hr_bias,-11.66642286476059,-11.66642286476059,0.0,match,
+scamps,P000009-pos,rppg,hr_mae,11.66642286476059,11.66642286476059,0.0,match,raw rppg-algorithm path unchanged post-remediation (additive-only); bitwise identical to baseline
+scamps,P000009-pos,rppg,hr_n,14.0,14.0,0.0,match,
+scamps,P000009-pos,rppg,hr_pearson_r,-0.0680672645565554,-0.0680672645565554,0.0,match,
+scamps,P000009-pos,rppg,hr_rmse,12.271809916862706,12.271809916862706,0.0,match,
+scamps,P000009-pos,rppg,ppg_rppg_waveform_f1,0.7532467532467533,0.7532467532467533,0.0,match,peak F1 @150 ms on raw (uncompensated) waveform; unchanged from baseline
+scamps,P000009-pos,rppg,ppg_rppg_waveform_fn,13.0,13.0,0.0,match,
+scamps,P000009-pos,rppg,ppg_rppg_waveform_fp,6.0,6.0,0.0,match,
+scamps,P000009-pos,rppg,ppg_rppg_waveform_mean_abs_timing_error_sec,0.1195402298850575,0.1195402298850575,0.0,match,
+scamps,P000009-pos,rppg,ppg_rppg_waveform_median_timing_error_sec,-0.1,-0.1,0.0,match,
+scamps,P000009-pos,rppg,ppg_rppg_waveform_n_detected,35.0,35.0,0.0,match,
+scamps,P000009-pos,rppg,ppg_rppg_waveform_n_peaks,35.0,35.0,0.0,match,
+scamps,P000009-pos,rppg,ppg_rppg_waveform_n_reference,42.0,42.0,0.0,match,
+scamps,P000009-pos,rppg,ppg_rppg_waveform_precision,0.8285714285714286,0.8285714285714286,0.0,match,
+scamps,P000009-pos,rppg,ppg_rppg_waveform_recall,0.6904761904761905,0.6904761904761905,0.0,match,
+scamps,P000009-pos,rppg,ppg_rppg_waveform_tolerance_sec,0.15,0.15,0.0,match,
+scamps,P000009-pos,rppg,ppg_rppg_waveform_tp,29.0,29.0,0.0,match,
+scamps,P000010-chrom,rppg,hr_bias,-5.947810631669746,-5.947810631669746,0.0,match,
+scamps,P000010-chrom,rppg,hr_mae,6.031698548264427,6.031698548264427,0.0,match,raw rppg-algorithm path unchanged post-remediation (additive-only); bitwise identical to baseline
+scamps,P000010-chrom,rppg,hr_n,14.0,14.0,0.0,match,
+scamps,P000010-chrom,rppg,hr_pearson_r,0.5163463579394287,0.5163463579394287,0.0,match,
+scamps,P000010-chrom,rppg,hr_rmse,9.029885293657488,9.029885293657488,0.0,match,
+scamps,P000010-chrom,rppg,ppg_rppg_waveform_f1,0.9818181818181818,0.9818181818181818,0.0,match,peak F1 @150 ms on raw (uncompensated) waveform; unchanged from baseline
+scamps,P000010-chrom,rppg,ppg_rppg_waveform_fn,1.0,1.0,0.0,match,
+scamps,P000010-chrom,rppg,ppg_rppg_waveform_fp,0.0,0.0,0.0,match,
+scamps,P000010-chrom,rppg,ppg_rppg_waveform_mean_abs_timing_error_sec,0.0049382716049382,0.0049382716049382,0.0,match,
+scamps,P000010-chrom,rppg,ppg_rppg_waveform_median_timing_error_sec,0.0,0.0,0.0,match,
+scamps,P000010-chrom,rppg,ppg_rppg_waveform_n_detected,27.0,27.0,0.0,match,
+scamps,P000010-chrom,rppg,ppg_rppg_waveform_n_peaks,27.0,27.0,0.0,match,
+scamps,P000010-chrom,rppg,ppg_rppg_waveform_n_reference,28.0,28.0,0.0,match,
+scamps,P000010-chrom,rppg,ppg_rppg_waveform_precision,1.0,1.0,0.0,match,
+scamps,P000010-chrom,rppg,ppg_rppg_waveform_recall,0.9642857142857144,0.9642857142857144,0.0,match,
+scamps,P000010-chrom,rppg,ppg_rppg_waveform_tolerance_sec,0.15,0.15,0.0,match,
+scamps,P000010-chrom,rppg,ppg_rppg_waveform_tp,27.0,27.0,0.0,match,
+scamps,P000010-green,rppg,hr_bias,13.58282487974768,13.58282487974768,0.0,match,
+scamps,P000010-green,rppg,hr_mae,15.732887402431984,15.732887402431984,0.0,match,raw rppg-algorithm path unchanged post-remediation (additive-only); bitwise identical to baseline
+scamps,P000010-green,rppg,hr_n,14.0,14.0,0.0,match,
+scamps,P000010-green,rppg,hr_pearson_r,-0.0382990553443059,-0.0382990553443059,0.0,match,
+scamps,P000010-green,rppg,hr_rmse,19.105412162901143,19.105412162901143,0.0,match,
+scamps,P000010-green,rppg,ppg_rppg_waveform_f1,0.0338983050847457,0.0338983050847457,0.0,match,peak F1 @150 ms on raw (uncompensated) waveform; unchanged from baseline
+scamps,P000010-green,rppg,ppg_rppg_waveform_fn,27.0,27.0,0.0,match,
+scamps,P000010-green,rppg,ppg_rppg_waveform_fp,30.0,30.0,0.0,match,
+scamps,P000010-green,rppg,ppg_rppg_waveform_mean_abs_timing_error_sec,0.0333333333333333,0.0333333333333333,0.0,match,
+scamps,P000010-green,rppg,ppg_rppg_waveform_median_timing_error_sec,-0.0333333333333333,-0.0333333333333333,0.0,match,
+scamps,P000010-green,rppg,ppg_rppg_waveform_n_detected,31.0,31.0,0.0,match,
+scamps,P000010-green,rppg,ppg_rppg_waveform_n_peaks,31.0,31.0,0.0,match,
+scamps,P000010-green,rppg,ppg_rppg_waveform_n_reference,28.0,28.0,0.0,match,
+scamps,P000010-green,rppg,ppg_rppg_waveform_precision,0.032258064516129,0.032258064516129,0.0,match,
+scamps,P000010-green,rppg,ppg_rppg_waveform_recall,0.0357142857142857,0.0357142857142857,0.0,match,
+scamps,P000010-green,rppg,ppg_rppg_waveform_tolerance_sec,0.15,0.15,0.0,match,
+scamps,P000010-green,rppg,ppg_rppg_waveform_tp,1.0,1.0,0.0,match,
+scamps,P000010-pos,rppg,hr_bias,18.88256588539525,18.88256588539525,0.0,match,
+scamps,P000010-pos,rppg,hr_mae,19.37118431096468,19.37118431096468,0.0,match,raw rppg-algorithm path unchanged post-remediation (additive-only); bitwise identical to baseline
+scamps,P000010-pos,rppg,hr_n,14.0,14.0,0.0,match,
+scamps,P000010-pos,rppg,hr_pearson_r,0.7892336218279072,0.7892336218279072,0.0,match,
+scamps,P000010-pos,rppg,hr_rmse,21.68403137544501,21.68403137544501,0.0,match,
+scamps,P000010-pos,rppg,ppg_rppg_waveform_f1,0.3508771929824561,0.3508771929824561,0.0,match,peak F1 @150 ms on raw (uncompensated) waveform; unchanged from baseline
+scamps,P000010-pos,rppg,ppg_rppg_waveform_fn,18.0,18.0,0.0,match,
+scamps,P000010-pos,rppg,ppg_rppg_waveform_fp,19.0,19.0,0.0,match,
+scamps,P000010-pos,rppg,ppg_rppg_waveform_mean_abs_timing_error_sec,0.1166666666666667,0.1166666666666667,0.0,match,
+scamps,P000010-pos,rppg,ppg_rppg_waveform_median_timing_error_sec,0.1166666666666667,0.1166666666666667,0.0,match,
+scamps,P000010-pos,rppg,ppg_rppg_waveform_n_detected,29.0,29.0,0.0,match,
+scamps,P000010-pos,rppg,ppg_rppg_waveform_n_peaks,29.0,29.0,0.0,match,
+scamps,P000010-pos,rppg,ppg_rppg_waveform_n_reference,28.0,28.0,0.0,match,
+scamps,P000010-pos,rppg,ppg_rppg_waveform_precision,0.3448275862068966,0.3448275862068966,0.0,match,
+scamps,P000010-pos,rppg,ppg_rppg_waveform_recall,0.3571428571428571,0.3571428571428571,0.0,match,
+scamps,P000010-pos,rppg,ppg_rppg_waveform_tolerance_sec,0.15,0.15,0.0,match,
+scamps,P000010-pos,rppg,ppg_rppg_waveform_tp,10.0,10.0,0.0,match,
+mit-bih-arrhythmia,228,ecg,recall_class_N,,0.9982227488151659,,new-methodology,class-conditional recall (new analysis per task §5); baseline was symbol-agnostic and never recorded class recalls
+mit-bih-arrhythmia,228,ecg,recall_class_V,,1.0,,new-methodology,class-conditional recall (new analysis per task §5); baseline was symbol-agnostic and never recorded class recalls
+mit-bih-arrhythmia,228,ecg,recall_class_other,,1.0,,new-methodology,class-conditional recall (new analysis per task §5); baseline was symbol-agnostic and never recorded class recalls
+mit-bih-arrhythmia,221,ecg,recall_class_N,,1.0,,new-methodology,class-conditional recall (new analysis per task §5); baseline was symbol-agnostic and never recorded class recalls
+mit-bih-arrhythmia,221,ecg,recall_class_V,,0.9924242424242424,,new-methodology,class-conditional recall (new analysis per task §5); baseline was symbol-agnostic and never recorded class recalls
+mit-bih-arrhythmia,221,ecg,recall_class_other,,,,new-methodology,class-conditional recall (new analysis per task §5); baseline was symbol-agnostic and never recorded class recalls
+mit-bih-arrhythmia,222,ecg,recall_class_N,,0.9718719689621726,,new-methodology,class-conditional recall (new analysis per task §5); baseline was symbol-agnostic and never recorded class recalls
+mit-bih-arrhythmia,222,ecg,recall_class_V,,,,new-methodology,class-conditional recall (new analysis per task §5); baseline was symbol-agnostic and never recorded class recalls
+mit-bih-arrhythmia,222,ecg,recall_class_other,,0.9928741092636579,,new-methodology,class-conditional recall (new analysis per task §5); baseline was symbol-agnostic and never recorded class recalls
+mit-bih-arrhythmia,223,ecg,recall_class_N,,1.0,,new-methodology,class-conditional recall (new analysis per task §5); baseline was symbol-agnostic and never recorded class recalls
+mit-bih-arrhythmia,223,ecg,recall_class_V,,0.9809725158562368,,new-methodology,class-conditional recall (new analysis per task §5); baseline was symbol-agnostic and never recorded class recalls
+mit-bih-arrhythmia,223,ecg,recall_class_other,,1.0,,new-methodology,class-conditional recall (new analysis per task §5); baseline was symbol-agnostic and never recorded class recalls
+mit-bih-arrhythmia,231,ecg,recall_class_N,,0.9490445859872612,,new-methodology,class-conditional recall (new analysis per task §5); baseline was symbol-agnostic and never recorded class recalls
+mit-bih-arrhythmia,231,ecg,recall_class_V,,0.5,,new-methodology,class-conditional recall (new analysis per task §5); baseline was symbol-agnostic and never recorded class recalls
+mit-bih-arrhythmia,231,ecg,recall_class_other,,0.799203187250996,,new-methodology,class-conditional recall (new analysis per task §5); baseline was symbol-agnostic and never recorded class recalls
+mit-bih-arrhythmia,232,ecg,recall_class_N,,,,new-methodology,class-conditional recall (new analysis per task §5); baseline was symbol-agnostic and never recorded class recalls
+mit-bih-arrhythmia,232,ecg,recall_class_V,,,,new-methodology,class-conditional recall (new analysis per task §5); baseline was symbol-agnostic and never recorded class recalls
+mit-bih-arrhythmia,232,ecg,recall_class_other,,0.9297752808988764,,new-methodology,class-conditional recall (new analysis per task §5); baseline was symbol-agnostic and never recorded class recalls
+mit-bih-arrhythmia,233,ecg,recall_class_N,,1.0,,new-methodology,class-conditional recall (new analysis per task §5); baseline was symbol-agnostic and never recorded class recalls
+mit-bih-arrhythmia,233,ecg,recall_class_V,,0.9987966305655837,,new-methodology,class-conditional recall (new analysis per task §5); baseline was symbol-agnostic and never recorded class recalls
+mit-bih-arrhythmia,233,ecg,recall_class_other,,1.0,,new-methodology,class-conditional recall (new analysis per task §5); baseline was symbol-agnostic and never recorded class recalls

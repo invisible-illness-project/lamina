@@ -1,0 +1,79 @@
+{
+  "commit": "fec2668409b871094eeee35538b72dec776224f8",
+  "bridge_commit": "caa7484 (lamina-reval repo; bridge bring-up against post-remediation Lamina)",
+  "validation_date": "2026-09-07",
+  "datasets_attempted": 9,
+  "datasets_accessible": 9,
+  "datasets_revalidated": [
+    "mit-bih-arrhythmia",
+    "mit-bih-noise-stress",
+    "bidmc",
+    "wrist-ppg-exercise",
+    "wesad",
+    "autonomic-aging",
+    "wearable-exam-stress",
+    "big-ideas",
+    "scamps"
+  ],
+  "datasets_skipped": 9,
+  "datasets_skipped_list": [
+    "pulsedb",
+    "mimic-iii-waveform",
+    "mimic-iii-ext-ppg",
+    "pure",
+    "ubfc-rppg",
+    "cohface",
+    "ubfc-phys",
+    "mmpd",
+    "ibvp"
+  ],
+  "bugs_revalidated": 20,
+  "bugs_resolved": 14,
+  "bugs_resolved_convention": "verdict==RESOLVED, including BUG-011 resolved-on-target (fleet side effect tracked separately as BUG-NEW-03) and BUG-013/014 resolved-as-symptom/not-a-Lamina-defect; BUG-020 (NOT REPRODUCED) and BUG-015 (unchanged, reference-side) are NOT counted as resolved",
+  "bugs_partially_resolved": 3,
+  "bugs_remaining": 6,
+  "bugs_remaining_list": [
+    "BUG-005 (P2)",
+    "BUG-012 (P1)",
+    "BUG-015 (P3, reference-side unchanged)",
+    "BUG-017 (P3)",
+    "BUG-018 (P2)",
+    "BUG-020 (P3, docs stale)"
+  ],
+  "regressions_found": 53,
+  "regressions_by_severity": {
+    "P0": 53
+  },
+  "regressions_note": "all 53 regressions.csv rows trace to the single BUG-NEW-03 SPKI-clamp over-detection mechanism (P0); confidence high=43, medium=10",
+  "automated_tests_pass": true,
+  "automated_tests_detail": "cargo test --all-features: 139 passed / 0 failed (root crate; 14 integration binaries)",
+  "clippy_pass": false,
+  "clippy_detail": "cargo clippy --all-targets --all-features -- -D warnings FAILS on pristine tree: 2 test-target lints (unused import tests/rppg_tests.rs:781; neg_multiply tests/ecg_tests.rs:376); library target clean",
+  "fmt_pass": true,
+  "bridge_hermetic_tests": "71/71 pass (validation/tests hermetic suite: 71 test functions across bridge/cli/manifest/metrics/registry/revalidation-ops/runner/schema; pass result per wave runs at bridge commit caa7484; consolidation container lacks cargo so not re-executed)",
+  "new_issues_found": 15,
+  "new_issues_by_severity": {
+    "P0": 1,
+    "P1": 2,
+    "P2": 6,
+    "P3": 6
+  },
+  "new_issues_list": [
+    "BUG-NEW-01 (P2) InterpolateCubic==linear",
+    "BUG-NEW-02 (P1) bigeminy evades classifier",
+    "BUG-NEW-03 (P0) SPKI-clamp fleet over-detection",
+    "BUG-NEW-04 (P2) wrong-variant errors x6 validators",
+    "BUG-NEW-05 (P2) InvalidWindowSize(0) mislabeling",
+    "BUG-NEW-06 (P2) sample_entropy m=0 accepted",
+    "BUG-NEW-07 (P3) silent edge-value acceptance",
+    "BUG-NEW-08 (P3) fs=1e9 degenerate filter output",
+    "BUG-NEW-09 (P3) NonFiniteInput unreachable via JSON bridge",
+    "BUG-NEW-10 (P2) rPPG AutoDetect backwards",
+    "BUG-NEW-11 (P3) eda-decompose boundary transient SCRs",
+    "BUG-NEW-12 (P3) clippy -D warnings fails",
+    "BUG-NEW-13 (P3) dead BeatQuality + unreachable Missing",
+    "BUG-NEW-14 (P1) proto transport gaps",
+    "BUG-NEW-15 (P2) proto dead enums + Dart unknown-enum asymmetry"
+  ],
+  "overall_verdict": "NOT fully validated - remediation partially successful with one severe (P0) fleet-wide ECG regression"
+}
