@@ -1,0 +1,44 @@
+[
+  {
+    "dataset": "scamps",
+    "version": "1.0",
+    "source": "https://github.com/danielmcduff/scamps",
+    "access_status": "validated",
+    "reason": "",
+    "subjects_evaluated": 10,
+    "recordings_evaluated": 30,
+    "modalities": [
+      "rgb_video",
+      "bvp"
+    ],
+    "lamina_ops": [
+      "rppg-algorithm",
+      "ppg-clean",
+      "ppg-peaks"
+    ],
+    "lamina_version": "0.1.0",
+    "git_commit": "fd6c96b7cac6f8054cafb470c461eceab8e9e163",
+    "validation_date": "2026-09-07T02:06:44+00:00",
+    "metrics": {
+      "hr_bias": 1.9450111597098407,
+      "hr_mae": 13.132022680696632,
+      "hr_n": 14.0,
+      "hr_pearson_r": 0.17524556213451803,
+      "hr_rmse": 15.081825537819066,
+      "ppg_rppg_waveform_f1": 0.5175588354205802,
+      "ppg_rppg_waveform_fn": 18.3,
+      "ppg_rppg_waveform_fp": 16.533333333333335,
+      "ppg_rppg_waveform_mean_abs_timing_error_sec": 0.07842904505510288,
+      "ppg_rppg_waveform_median_timing_error_sec": -0.020000000000000004,
+      "ppg_rppg_waveform_n_detected": 35.53333333333333,
+      "ppg_rppg_waveform_n_peaks": 35.53333333333333,
+      "ppg_rppg_waveform_n_reference": 37.3,
+      "ppg_rppg_waveform_precision": 0.5365089404602952,
+      "ppg_rppg_waveform_recall": 0.5029314675222858,
+      "ppg_rppg_waveform_tolerance_sec": 0.15,
+      "ppg_rppg_waveform_tp": 19.0
+    },
+    "limitations": [],
+    "failures": []
+  }
+]
