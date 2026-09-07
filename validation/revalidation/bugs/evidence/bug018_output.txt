@@ -1,0 +1,22 @@
+
+== hrv-correct policies ==
+policy=none: n_in=60 n_nn=60 rmssd=226.25918840785903 mean_nn=745.0
+   quality kinds: ['ectopic_rr', 'normal_nn'], n ectopic=2, n artifact=0
+policy=reject_invalid: n_in=60 n_nn=58 rmssd=206.70344890560895 mean_nn=755.5172413793103
+   quality kinds: ['ectopic_rr', 'normal_nn'], n ectopic=2, n artifact=0
+policy=interpolate_linear: n_in=60 n_nn=60 rmssd=203.1510250603005 mean_nn=757.75
+   quality kinds: ['ectopic_rr', 'normal_nn'], n ectopic=2, n artifact=0
+policy=interpolate_cubic: n_in=60 n_nn=60 rmssd=203.1510250603005 mean_nn=757.75
+   quality kinds: ['ectopic_rr', 'normal_nn'], n ectopic=2, n artifact=0
+
+== percent_threshold policy ==
+percent_threshold(0.2): n_nn=58 rmssd=206.70344890560895
+
+== cubic vs linear identical? (SPEC A.3 known gap) ==
+linear nn == cubic nn: True; rmssd lin=203.1510250603005 cub=203.1510250603005
+
+== empty interval input ==
+empty: n_in=0 n_nn=0 rmssd=None mean_nn=None
+
+== peaks envelope input ==
+peaks-input reject_invalid: n_in=59 n_nn=57 rmssd=208.5408490303176

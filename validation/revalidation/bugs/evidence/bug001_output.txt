@@ -1,0 +1,26 @@
+bridge version: {'bridge_version': '0.1.0', 'lamina_version': '0.1.0'}
+method='': OK, len=10800
+method='none': OK, len=10800
+method='neurokit': OK, len=10800
+method='pantompkins': OK, len=10800
+method='biosppy': OK, len=10800
+
+pairwise max-abs-diff:
+  '' vs 'none': 0.000e+00
+  '' vs 'neurokit': 0.000e+00
+  '' vs 'pantompkins': 0.000e+00
+  '' vs 'biosppy': 0.000e+00
+  'none' vs 'neurokit': 0.000e+00
+  'none' vs 'pantompkins': 0.000e+00
+  'none' vs 'biosppy': 0.000e+00
+  'neurokit' vs 'pantompkins': 0.000e+00
+  'neurokit' vs 'biosppy': 0.000e+00
+  'pantompkins' vs 'biosppy': 0.000e+00
+
+raw vs cleaned max-abs-diff: 0.303018
+method='bogus': REJECTED kind=lamina_error msg=bridge op 'ecg-clean' failed [lamina_error]: Invalid cutoff frequency: Unsupported ECG cleaning method: bogus
+method='NEUROKIT2': REJECTED kind=lamina_error msg=bridge op 'ecg-clean' failed [lamina_error]: Invalid cutoff frequency: Unsupported ECG cleaning method: NEUROKIT2
+method='pan-tompkins': REJECTED kind=lamina_error msg=bridge op 'ecg-clean' failed [lamina_error]: Invalid cutoff frequency: Unsupported ECG cleaning method: pan-tompkins
+method='hamilton': REJECTED kind=lamina_error msg=bridge op 'ecg-clean' failed [lamina_error]: Invalid cutoff frequency: Unsupported ECG cleaning method: hamilton
+method='  neurokit  ': ACCEPTED (maxdiff vs '' = 0.000e+00)
+method='BioSPPy': ACCEPTED (maxdiff vs '' = 0.000e+00)

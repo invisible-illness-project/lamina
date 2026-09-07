@@ -1,0 +1,8 @@
+===== bug004_rerun =====
+EDA  true_fs=250 Hz, 10 SCR pulses spaced 0.6 s
+  eda_findpeaks(fs=250)                    -> 5 peaks
+  eda_findpeaks_config(fs=250)            -> 5 peaks
+RSP  true_fs=25 Hz, 25 breaths spaced 2.0 s
+  rsp_findpeaks (hardcoded fs=100)        -> 25 peaks
+  rsp_findpeaks_config(fs=25)             -> 25 peaks
+

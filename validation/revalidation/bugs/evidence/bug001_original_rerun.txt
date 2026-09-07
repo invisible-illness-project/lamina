@@ -1,0 +1,25 @@
+lamina_version: {'bridge_version': '0.1.0', 'lamina_version': '0.1.0'}
+method='none'                    -> ok, len=10800
+method='neurokit'                -> ok, len=10800
+method='pantompkins'             -> ok, len=10800
+method='biosppy'                 -> ok, len=10800
+method='nonexistent-method-xyz'  -> ERROR: bridge op 'ecg-clean' failed [lamina_error]: Invalid cutoff frequency: Unsupported ECG cleaning method: nonexistent-method-xyz
+
+max abs diff vs default call (no method):
+  'none'                   : 0.000e+00
+  'neurokit'               : 0.000e+00
+  'pantompkins'            : 0.000e+00
+  'biosppy'                : 0.000e+00
+
+max abs diff between named methods:
+  'none' vs 'neurokit': 0.000e+00
+  'none' vs 'pantompkins': 0.000e+00
+  'none' vs 'biosppy': 0.000e+00
+  'neurokit' vs 'pantompkins': 0.000e+00
+  'neurokit' vs 'biosppy': 0.000e+00
+  'pantompkins' vs 'biosppy': 0.000e+00
+
+cleaning does modify the signal (max abs diff raw vs cleaned: 1.004e-01)
+
+RESULT: all method outputs byte-identical to default: True
+CONFIRMED: `method` argument is silently ignored (bogus string accepted, no error).

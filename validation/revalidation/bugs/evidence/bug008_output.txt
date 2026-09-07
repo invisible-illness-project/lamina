@@ -1,0 +1,9 @@
+===== bug008_features =====
+usable_feature_count = 28
+total_feature_count  = 28
+usable/total ratio   = 1.000000
+issues               = []
+PASS: ratio reaches 1.0 with all 28 features populated
+independent field count: 7 cardiac + 9 eda + 6 respiration + 6 coupling = 28
+with pnn50=None: usable=27 total=28 ratio=0.9643
+

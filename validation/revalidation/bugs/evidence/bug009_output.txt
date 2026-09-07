@@ -1,0 +1,25 @@
+   Compiling lamina v0.1.0 (/home/kimi/work)
+   Compiling criterion v0.5.1
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 46.85s
+     Running tests/filter_parity_tests.rs (/home/kimi/.tgt/debug/deps/filter_parity_tests-6f50d9f6c58c34ae)
+
+running 7 tests
+test test_boundary_and_constant_signals ... ok
+test test_group_a_mathematical_invariants ... ok
+test test_group_b_frequency_domain_responses ... ok
+test test_group_c_sos_coefficient_parity ... ok
+test test_group_d_end_to_end_filtering_parity ... ok
+test test_short_signal_insufficient_samples ... ok
+test test_worst_case_configuration_regression ... ok
+
+test result: ok. 7 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.35s
+
+     Running tests/peaks_parity_tests.rs (/home/kimi/.tgt/debug/deps/peaks_parity_tests-4e17585973dd8efb)
+
+running 3 tests
+test test_deterministic_peak_constraints ... ok
+test test_invalid_peak_configs ... ok
+test test_scipy_peak_detection_parity ... ok
+
+test result: ok. 3 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+

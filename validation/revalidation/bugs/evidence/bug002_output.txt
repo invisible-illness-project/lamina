@@ -1,0 +1,15 @@
+input finite: True, n=10800
+tm=0.0: ERROR kind=lamina_error
+    msg=bridge op 'ecg-peaks' failed [lamina_error]: Invalid cutoff frequency: Threshold multiplier must be strictly between 0.0 and 1.0
+tm=0.5: OK peaks=70
+tm=1.0: ERROR kind=lamina_error
+    msg=bridge op 'ecg-peaks' failed [lamina_error]: Invalid cutoff frequency: Threshold multiplier must be strictly between 0.0 and 1.0
+tm=1.5: ERROR kind=lamina_error
+    msg=bridge op 'ecg-peaks' failed [lamina_error]: Invalid cutoff frequency: Threshold multiplier must be strictly between 0.0 and 1.0
+tm=-0.5: ERROR kind=lamina_error
+    msg=bridge op 'ecg-peaks' failed [lamina_error]: Invalid cutoff frequency: Threshold multiplier must be strictly between 0.0 and 1.0
+tm=nan: ERROR kind=bad_request
+    msg=bridge op 'ecg-peaks' failed [bad_request]: invalid input JSON: expected value at line 1 column 237077
+tm=0.9999: OK peaks=29
+tm=1e-12: OK peaks=87
+tm=0.25: OK peaks=79

@@ -1,0 +1,14 @@
+===== bug019_nan =====
+amplitude=1e150: Ok, 29 peaks
+amplitude=1e155: Err(Input signal contains non-finite values (NaN or Infinity))
+amplitude=1e160: Err(Input signal contains non-finite values (NaN or Infinity))
+amplitude=1e170: Err(Input signal contains non-finite values (NaN or Infinity))
+amplitude=1e200: Err(Input signal contains non-finite values (NaN or Infinity))
+amplitude=1e300: Err(Input signal contains non-finite values (NaN or Infinity))
+alternating ±1e160 spikes: Err(Input signal contains non-finite values (NaN or Infinity))
+raw NaN sample: Err(Input signal contains non-finite values (NaN or Infinity))
+raw +inf sample: Err(Input signal contains non-finite values (NaN or Infinity))
+tm=NaN: Err(Invalid cutoff frequency: Threshold multiplier must be strictly between 0.0 and 1.0)
+tm=+inf: Err(Invalid cutoff frequency: Threshold multiplier must be strictly between 0.0 and 1.0)
+source check: candidate_heights.sort_by(|a, b| a.total_cmp(b)) at src/ecg/peaks.rs:225
+
