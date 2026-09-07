@@ -56,6 +56,12 @@ fn test_hrv_interval_quality_and_correction_policies() {
     assert_eq!(clean_interp.len(), raw_rr.len());
     assert!((clean_interp[2] - 801.666).abs() < 1e-2);
 
+    // Policy: InterpolateCubic
+    let clean_cubic = clean_rr_intervals(&raw_rr, &CorrectionPolicy::InterpolateCubic)
+        .expect("clean_rr_intervals cubic failed");
+    assert_eq!(clean_cubic.len(), raw_rr.len());
+    assert!(clean_cubic[2].is_finite() && clean_cubic[3].is_finite());
+
     // HRV calculations on clean N-N intervals
     let rmssd_raw = hrv_rmssd(&raw_rr).expect("raw rmssd");
     let rmssd_clean = hrv_rmssd(&clean_reject).expect("clean rmssd");
@@ -63,4 +69,56 @@ fn test_hrv_interval_quality_and_correction_policies() {
         rmssd_clean < rmssd_raw,
         "Cleaning ectopic/artifact intervals should lower RMSSD towards physiological baseline"
     );
+}
+
+#[test]
+fn test_hrv_7case_counterexample_matrix() {
+    use lamina::hrv::{IntervalQuality, classify_intervals};
+
+    // Case 1: Normal sinus rhythm
+    let c1 = array![800.0, 805.0, 798.0, 802.0, 800.0];
+    let q1 = classify_intervals(&c1, Some(0.20));
+    assert!(q1.iter().all(|&q| q == IntervalQuality::NormalNN));
+
+    // Case 2: Physiological Respiratory Sinus Arrhythmia (RSA)
+    let c2 = array![750.0, 780.0, 810.0, 840.0, 820.0, 790.0, 760.0];
+    let q2 = classify_intervals(&c2, Some(0.20));
+    assert!(
+        q2.iter().all(|&q| q == IntervalQuality::NormalNN),
+        "Physiological RSA gradual variation must not be falsely rejected as ectopic"
+    );
+
+    // Case 3: Isolated PVC (premature + compensatory)
+    let c3 = array![800.0, 800.0, 450.0, 1150.0, 800.0, 800.0];
+    let q3 = classify_intervals(&c3, Some(0.20));
+    assert_eq!(q3[2], IntervalQuality::EctopicRR);
+    assert_eq!(q3[3], IntervalQuality::EctopicRR);
+
+    // Case 4: Sustained Bigeminy
+    let c4 = array![600.0, 1000.0, 600.0, 1000.0, 600.0, 1000.0, 600.0];
+    let q4 = classify_intervals(&c4, Some(0.20));
+    assert!(
+        q4.iter()
+            .filter(|&&q| q == IntervalQuality::EctopicRR)
+            .count()
+            >= 4,
+        "Sustained bigeminy alternating sequence must be classified as EctopicRR"
+    );
+
+    // Case 5: Trigeminy
+    let c5 = array![800.0, 800.0, 500.0, 800.0, 800.0, 500.0, 800.0];
+    let q5 = classify_intervals(&c5, Some(0.20));
+    assert_eq!(q5[2], IntervalQuality::EctopicRR);
+    assert_eq!(q5[5], IntervalQuality::EctopicRR);
+
+    // Case 6: Out-of-bounds Motion Artifact (<300ms or >2000ms)
+    let c6 = array![800.0, 150.0, 800.0, 2500.0, 800.0];
+    let q6 = classify_intervals(&c6, Some(0.20));
+    assert_eq!(q6[1], IntervalQuality::ArtifactRR);
+    assert_eq!(q6[3], IntervalQuality::ArtifactRR);
+
+    // Case 7: Missing / Non-finite sample
+    let c7 = array![800.0, f64::NAN, 800.0];
+    let q7 = classify_intervals(&c7, Some(0.20));
+    assert_eq!(q7[1], IntervalQuality::Missing);
 }

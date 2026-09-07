@@ -778,7 +778,7 @@ fn test_piecewise_elementary_quality_aggregation_no_multiplicity_bias() {
 
 #[test]
 fn test_signal_polarity_and_bvp_waveform() {
-    use lamina::rppg::{BvpWaveform, SignalPolarity};
+    use lamina::rppg::SignalPolarity;
 
     let timestamps = vec![0.0, 0.1, 0.2, 0.3, 0.4];
     let raw_waveform = vec![1.0, 2.0, 0.5, 3.0, 0.0];

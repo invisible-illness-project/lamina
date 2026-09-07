@@ -69,19 +69,18 @@ pub fn classify_intervals(
             quality[i] = IntervalQuality::Missing;
             continue;
         }
-        if val < 300.0 || val > 2000.0 {
+        if !(300.0..=2000.0).contains(&val) {
             quality[i] = IntervalQuality::ArtifactRR;
             continue;
         }
 
-        // Local rolling window for median comparison
-        let start = i.saturating_sub(2);
-        let end = (i + 3).min(n);
-        let mut window: Vec<f64> = rr_intervals
-            .slice(ndarray::s![start..end])
-            .iter()
-            .copied()
-            .filter(|v| v.is_finite() && *v >= 300.0 && *v <= 2000.0)
+        // Local rolling window for median comparison (excluding candidate interval i)
+        let start = i.saturating_sub(3);
+        let end = (i + 4).min(n);
+        let mut window: Vec<f64> = (start..end)
+            .filter(|&j| j != i)
+            .map(|j| rr_intervals[j])
+            .filter(|v| v.is_finite() && (300.0..=2000.0).contains(v))
             .collect();
 
         if window.len() >= 2 {
@@ -89,6 +88,24 @@ pub fn classify_intervals(
             let median = window[window.len() / 2];
             if (val - median).abs() / median > threshold {
                 quality[i] = IntervalQuality::EctopicRR;
+                continue;
+            }
+        }
+
+        // Sustained Bigeminy / Ectopy sequence detection:
+        // Check for alternating short-long interval pattern (d_prev * d_next < 0) exceeding threshold
+        if i >= 1 && i + 1 < n {
+            let prev_val = rr_intervals[i - 1];
+            let next_val = rr_intervals[i + 1];
+            if prev_val.is_finite() && next_val.is_finite() {
+                let d_prev = val - prev_val;
+                let d_next = next_val - val;
+                if d_prev * d_next < 0.0
+                    && d_prev.abs() / val > threshold
+                    && d_next.abs() / val > threshold
+                {
+                    quality[i] = IntervalQuality::EctopicRR;
+                }
             }
         }
     }
@@ -154,7 +171,7 @@ pub fn clean_rr_intervals(
             }
             Ok(Array1::from_vec(valid))
         }
-        CorrectionPolicy::InterpolateLinear | CorrectionPolicy::InterpolateCubic => {
+        CorrectionPolicy::InterpolateLinear => {
             let q = classify_intervals(rr_intervals, None);
             let mut valid_indices = Vec::new();
             let mut valid_vals = Vec::new();
@@ -202,5 +219,119 @@ pub fn clean_rr_intervals(
             }
             Ok(Array1::from_vec(out))
         }
+        CorrectionPolicy::InterpolateCubic => {
+            let q = classify_intervals(rr_intervals, None);
+            let mut valid_indices = Vec::new();
+            let mut valid_vals = Vec::new();
+
+            for (i, (&val, &kind)) in rr_intervals.iter().zip(q.iter()).enumerate() {
+                if kind == IntervalQuality::NormalNN {
+                    valid_indices.push(i as f64);
+                    valid_vals.push(val);
+                }
+            }
+
+            if valid_vals.is_empty() {
+                return Err(SignalError::EmptySignal);
+            }
+            // Fallback to linear if fewer than 4 valid points for cubic spline stability
+            if valid_vals.len() < 4 {
+                return clean_rr_intervals(rr_intervals, &CorrectionPolicy::InterpolateLinear);
+            }
+
+            let query_x: Vec<f64> = (0..n).map(|i| i as f64).collect();
+            let interp_vals = natural_cubic_spline_interp(&valid_indices, &valid_vals, &query_x);
+
+            let mut out = Vec::with_capacity(n);
+            for i in 0..n {
+                if q[i] == IntervalQuality::NormalNN {
+                    out.push(rr_intervals[i]);
+                } else {
+                    out.push(interp_vals[i]);
+                }
+            }
+            Ok(Array1::from_vec(out))
+        }
     }
+}
+
+/// Natural Cubic Spline Interpolation using Thomas Algorithm ($O(N)$ tridiagonal solver).
+fn natural_cubic_spline_interp(x: &[f64], y: &[f64], query_x: &[f64]) -> Vec<f64> {
+    let n = x.len();
+    if n < 2 {
+        return vec![y[0]; query_x.len()];
+    }
+
+    let mut h = vec![0.0; n - 1];
+    for i in 0..(n - 1) {
+        h[i] = x[i + 1] - x[i];
+    }
+
+    let m_size = n - 2;
+    let mut a = vec![0.0; m_size];
+    let mut b = vec![0.0; m_size];
+    let mut c = vec![0.0; m_size];
+    let mut d = vec![0.0; m_size];
+
+    for i in 0..m_size {
+        let idx = i + 1;
+        b[i] = 2.0 * (h[idx - 1] + h[idx]);
+        d[i] = 6.0 * ((y[idx + 1] - y[idx]) / h[idx] - (y[idx] - y[idx - 1]) / h[idx - 1]);
+        if i > 0 {
+            a[i] = h[idx - 1];
+        }
+        if i < m_size - 1 {
+            c[i] = h[idx];
+        }
+    }
+
+    // Thomas algorithm forward elimination
+    let mut c_prime = vec![0.0; m_size];
+    let mut d_prime = vec![0.0; m_size];
+
+    if m_size > 0 {
+        c_prime[0] = c[0] / b[0];
+        d_prime[0] = d[0] / b[0];
+        for i in 1..m_size {
+            let denom = b[i] - a[i] * c_prime[i - 1];
+            c_prime[i] = c[i] / denom;
+            d_prime[i] = (d[i] - a[i] * d_prime[i - 1]) / denom;
+        }
+    }
+
+    // Back substitution
+    let mut m_moments = vec![0.0; n];
+    if m_size > 0 {
+        m_moments[n - 2] = d_prime[m_size - 1];
+        for i in (0..(m_size - 1)).rev() {
+            m_moments[i + 1] = d_prime[i] - c_prime[i] * m_moments[i + 2];
+        }
+    }
+
+    // Evaluate spline at query_x points with endpoint clamping
+    query_x
+        .iter()
+        .map(|&qx| {
+            if qx <= x[0] {
+                y[0]
+            } else if qx >= x[n - 1] {
+                y[n - 1]
+            } else {
+                let mut seg = 0;
+                while seg < n - 1 && x[seg + 1] < qx {
+                    seg += 1;
+                }
+                let h_i = h[seg];
+                let x_r = x[seg + 1] - qx;
+                let x_l = qx - x[seg];
+                let m_i = m_moments[seg];
+                let m_ip1 = m_moments[seg + 1];
+
+                (m_i * x_r * x_r * x_r / (6.0 * h_i))
+                    + (m_ip1 * x_l * x_l * x_l / (6.0 * h_i))
+                    + (y[seg] - m_i * h_i * h_i / 6.0) * (x_r / h_i)
+                    + (y[seg + 1] - m_ip1 * h_i * h_i / 6.0) * (x_l / h_i)
+            }
+        })
+        .collect()
 }

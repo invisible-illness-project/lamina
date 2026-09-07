@@ -116,7 +116,7 @@ impl Default for RppgConfig {
             window: RppgWindowConfig::default(),
             preprocessing: RppgPreprocessingConfig::default(),
             signal_band_hz: (0.75, 2.5),
-            polarity: SignalPolarity::default(),
+            polarity: SignalPolarity::Inverted,
         }
     }
 }

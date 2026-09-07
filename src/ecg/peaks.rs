@@ -210,7 +210,7 @@ pub fn ecg_findpeaks_config(
     let integrated = signal_smooth_moving_average(&sq_diff, integration_samples)?;
 
     // 5. Candidate Local Maxima Detection on Integrated Signal
-    let peak_cfg = PeakDetectionConfig::new().with_min_distance(1);
+    let peak_cfg = PeakDetectionConfig::new().with_min_distance(refractory_samples);
     let candidate_indices = signal_findpeaks_config(&integrated, &peak_cfg)?;
 
     if candidate_indices.is_empty() {
@@ -232,24 +232,38 @@ pub fn ecg_findpeaks_config(
     if spki <= npki || spki < 1e-12 {
         return Ok(Vec::new());
     }
-
     let mut validated_integrated_peaks: Vec<usize> = Vec::new();
     let mut last_peak_idx: Option<usize> = None;
     let mut rr_intervals: Vec<usize> = Vec::new();
+    let mut recent_qrs_peaks: Vec<f64> = Vec::new();
 
     for &cand_idx in &candidate_indices {
         let y_val = integrated[cand_idx];
         let threshold_i1 = npki + mult * (spki - npki);
 
         if matches!(last_peak_idx, Some(last_idx) if cand_idx < last_idx + refractory_samples) {
-            // Inside 200ms refractory period -> treat as T-wave or noise side-lobe
-            if y_val > threshold_i1 {
-                let y_eff = y_val.min(spki);
-                spki = 0.125 * y_eff + 0.875 * spki;
-            } else {
+            // Inside 200ms refractory period -> treat as T-wave or noise side-lobe.
+            // Refractory peaks MUST NOT decay SPKI; update NPKI if noise.
+            if y_val < threshold_i1 {
                 npki = 0.125 * y_val + 0.875 * npki;
             }
             continue;
+        }
+
+        // Pan-Tompkins T-Wave Discrimination (200ms - 360ms window)
+        // If candidate peak occurs within 360ms of previous peak and its magnitude is < 50% of recent QRS median,
+        // classify as T-wave / secondary lobe.
+        let twave_window_samples = (0.360 * sampling_rate).round() as usize;
+        if matches!(last_peak_idx, Some(last_idx) if cand_idx < last_idx + twave_window_samples)
+            && !recent_qrs_peaks.is_empty()
+        {
+            let mut sorted = recent_qrs_peaks.clone();
+            sorted.sort_by(|a, b| a.total_cmp(b));
+            let med_qrs = sorted[sorted.len() / 2];
+            if y_val < 0.5 * med_qrs {
+                npki = 0.125 * y_val + 0.875 * npki;
+                continue;
+            }
         }
 
         if y_val > threshold_i1 {
@@ -275,8 +289,20 @@ pub fn ecg_findpeaks_config(
                                     rr_intervals.remove(0);
                                 }
                                 last_peak_idx = Some(sb_cand);
-                                let sb_eff = sb_val.min(2.5 * spki);
-                                spki = 0.25 * sb_eff + 0.75 * spki;
+
+                                let capped_val = if !recent_qrs_peaks.is_empty() {
+                                    let mut sorted = recent_qrs_peaks.clone();
+                                    sorted.sort_by(|a, b| a.total_cmp(b));
+                                    let med_qrs = sorted[sorted.len() / 2];
+                                    sb_val.min(2.5 * med_qrs)
+                                } else {
+                                    sb_val
+                                };
+                                recent_qrs_peaks.push(capped_val);
+                                if recent_qrs_peaks.len() > 8 {
+                                    recent_qrs_peaks.remove(0);
+                                }
+                                spki = 0.25 * capped_val + 0.75 * spki;
                                 break;
                             }
                         }
@@ -293,8 +319,20 @@ pub fn ecg_findpeaks_config(
             }
             validated_integrated_peaks.push(cand_idx);
             last_peak_idx = Some(cand_idx);
-            let y_eff = y_val.min(2.5 * spki);
-            spki = 0.125 * y_eff + 0.875 * spki;
+
+            let capped_val = if !recent_qrs_peaks.is_empty() {
+                let mut sorted = recent_qrs_peaks.clone();
+                sorted.sort_by(|a, b| a.total_cmp(b));
+                let med_qrs = sorted[sorted.len() / 2];
+                y_val.min(2.5 * med_qrs)
+            } else {
+                y_val
+            };
+            recent_qrs_peaks.push(capped_val);
+            if recent_qrs_peaks.len() > 8 {
+                recent_qrs_peaks.remove(0);
+            }
+            spki = 0.125 * capped_val + 0.875 * spki;
         } else {
             npki = 0.125 * y_val + 0.875 * npki;
         }

@@ -21,6 +21,7 @@ pub fn ecg_clean(signal: &Array1<f64>, sampling_rate: f64, method: &str) -> Resu
 
     let norm_method = method.trim().to_lowercase();
     match norm_method.as_str() {
+        "none" | "raw" | "passthrough" => Ok(signal.clone()),
         "" | "neurokit" | "pantompkins" | "biosppy" => {
             // High-pass filter at 0.5 Hz to remove baseline wander
             signal_filter(signal, sampling_rate, Some(0.5), None, 5)
