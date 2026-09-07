@@ -7,7 +7,7 @@
 
 ## Executive Summary
 
-The remediation resolves **14–15 of 20** original findings — including the
+The remediation resolves **15 of 20** original findings — including the
 4 Hz EDA sampling-rate floor (BUG-003), `ecg_clean` method dispatch (BUG-001),
 the fs-explicit `eda_findpeaks`/`rsp_findpeaks` APIs (BUG-004), the
 checked-in golden fixtures (BUG-009), and the rsp `precleaned` flag
@@ -37,8 +37,8 @@ ran with **zero panics/timeouts/crashes**, and all cross-language protobuf
 round-trips are byte-identical.
 
 **Overall verdict: NOT fully validated — remediation partially successful with
-one severe (P0) regression.** 14/20 findings fully resolved, 3 partially
-resolved, 1 not resolved, 1 unchanged (reference-side), 1 not reproduced;
+one severe (P0) regression.** 15/20 findings fully resolved, 3 partially
+resolved, 1 not resolved, 1 not reproduced;
 15 new issues (1×P0, 2×P1, 6×P2, 6×P3); 53 regression rows, all tracing to
 the single P0 mechanism.
 
@@ -78,8 +78,9 @@ Full details in [`methodology.md`](methodology.md). Summary:
   diagnostics only (never as a proposed fix).
 - **Counting conventions** (for `summary.json`): `bugs_resolved` counts
   verdict==RESOLVED including BUG-011 resolved-on-target; BUG-020
-  (NOT REPRODUCED) and BUG-015 (unchanged, reference-side) are not counted as
-  resolved. All `regressions.csv` rows trace to BUG-NEW-03 (P0).
+  (NOT REPRODUCED) is not counted as
+  resolved; BUG-015 IS counted as resolved (question conclusively answered:
+  reference-side defect, no Lamina-side change — analogous to BUG-014). All `regressions.csv` rows trace to BUG-NEW-03 (P0).
 - **Accuracy rule applied throughout**: where a wave's prose notes and its
   CSV disagree, the CSV is authoritative; unverifiable items are marked
   INCONCLUSIVE rather than guessed.
@@ -247,7 +248,7 @@ Full details in [`methodology.md`](methodology.md). Summary:
 - **Previous Evidence:** baseline wearable-exam-stress hr_* metrics; IBI cross-check.
 - **Current Implementation:** ppg path untouched by remediation.
 - **Validation Performed (Wave C):** full adapter rerun; recomputed Lamina BVP IBI vs E4 IBI.csv aligned MAE for S2_Final and S5_midterm_2.
-- **Result:** **Wave C verdict (verbatim): "unresolved-unchanged (reference-side, as previously suspected)"** (P3). Every BVP session's peaks and hr_* metrics are **bit-identical to baseline**; HR MAE persists at 26.38–47.13 bpm (median 35.16). The counter-evidence reproduces exactly: Lamina BVP inter-beat intervals agree with E4's own confident IBI output within 28.9 ms (S2_Final, n=8361) and 45.4 ms (S5_midterm_2, n=4056); E4 HR.csv contains implausible seated-exam HR (150–170 bpm).
+- **Result:** **RESOLVED** — question conclusively answered: the defect is reference-side, with **no Lamina-side change** (P3). (Wave C verdict, verbatim: "unresolved-unchanged (reference-side, as previously suspected)".). Every BVP session's peaks and hr_* metrics are **bit-identical to baseline**; HR MAE persists at 26.38–47.13 bpm (median 35.16). The counter-evidence reproduces exactly: Lamina BVP inter-beat intervals agree with E4's own confident IBI output within 28.9 ms (S2_Final, n=8361) and 45.4 ms (S5_midterm_2, n=4056); E4 HR.csv contains implausible seated-exam HR (150–170 bpm).
 - **Remaining Concern (P3):** E4 HR.csv remains unreliable as a reference; no Lamina-side defect found. (Documentation-only remediation per plan; BUGS.md:883-920.)
 
 ## BUG-016 — wrist PPG over-counting under motion artifact
@@ -597,12 +598,12 @@ byte/bit-identical to baseline (each wave's own status column).
 
 Verdict scale used above: RESOLVED / PARTIALLY RESOLVED / NOT RESOLVED / NOT
 REPRODUCED / INCONCLUSIVE / DATASET INACCESSIBLE. Remaining original findings
-(6): **BUG-005** (P2 — polarity contract delivered, default/auto still wrong),
-**BUG-012** (P1 — blackout gone, F1 bar missed), **BUG-015** (P3 — unchanged,
-reference-side; Wave C verdict "unresolved-unchanged (reference-side, as
-previously suspected)"), **BUG-017** (P3 — prominence gating claimed but
-absent), **BUG-018** (P2 — architecture exists; default uncorrected; bigeminy
-evasion), **BUG-020** (P3 — anomaly gone; docs stale). New issues, normalized
+(5): **BUG-005** (P2 — polarity contract delivered, default/auto still wrong),
+**BUG-012** (P1 — blackout gone, F1 bar missed), **BUG-017** (P3 — prominence
+gating claimed but absent), **BUG-018** (P2 — architecture exists; default
+uncorrected; bigeminy evasion), **BUG-020** (P3 — anomaly gone; docs stale).
+(BUG-015 moved to RESOLVED: question conclusively answered as reference-side,
+no Lamina-side change.) New issues, normalized
 IDs (wave-local IDs mapped in `bugs_confirmed.csv`):
 
 ### BUG-NEW-03 — Fleet-wide ECG over-detection from SPKI clamp — **P0**
@@ -628,25 +629,25 @@ IDs (wave-local IDs mapped in `bugs_confirmed.csv`):
 
 ### P2 new issues
 
-| ID | Issue | Evidence | Affected component / recommended investigation |
-|---|---|---|---|
-| BUG-NEW-01 | `CorrectionPolicy::InterpolateCubic` executes the linear code path (bit-identical to linear; true cubic differs by up to 17.32 ms on the probe series) | `hrv/cubic_vs_linear.csv`; `bugs/evidence/bug018_output.txt` | `src/hrv/quality.rs:157` shared match arm. Implement a real cubic spline or rename/document; rustdoc + plan §4.4 currently overpromise. |
-| BUG-NEW-04 | Wrong-variant error pattern (`NonFiniteInput` for finite-but-out-of-range config) persists in **6 validators**, incl. the new hrv code (`percent_threshold` ∉ (0,1) at `src/hrv/quality.rs:138`) | `api/api_results.csv` (45 error_correct=no rows: 21 P2 + 24 P3); Wave G F1 | `src/eda/peaks.rs:71,74`; `src/ppg/peaks.rs:117`; `src/rsp/peaks.rs:118`; `src/rppg/config.rs:52,134,140`; `src/signal/peaks.rs:73`; `src/hrv/quality.rs:138`. Add a dedicated `InvalidParameter` variant to `SignalError`. |
-| BUG-NEW-05 | `InvalidWindowSize(0)` mislabels non-window parameters and echoes a value never supplied (e.g. `min_breath_interval_sec=10 > max=1` → "Invalid window size: 0") | Wave G F2; `api/api_results.csv` | `src/rsp/peaks.rs:108-115`, `src/eda/peaks.rs:77-87` (P2); ecg/ppg/rppg window-ish params (P3). Echo the actual parameter name/value. |
-| BUG-NEW-06 | `sample_entropy` accepts m=0 (mathematically undefined) and returns a plausible finite 2.1487 | Wave G F3; `api/api_results.csv` | `src/complexity/entropy.rs` — validate m ≥ 1 per its own rustdoc. |
-| BUG-NEW-10 | `SignalPolarity::AutoDetect` skewness heuristic backwards: flips contract-phase signals, keeps intensity-phase ones; 1/30 agreement with ground truth; chrom harmed if trusted (F1 0.768→0.723, HR MAE 11.82→14.16) | `rppg/polarity_matrix.csv`, `rppg/waveE-notes.md`, morphology plots | `src/rppg/signal.rs:558` `compute_should_flip`: flip when skew < −0.3 (or use Elgendi peak-prominence asymmetry); add realistic-morphology regression coverage. |
-| BUG-NEW-15 | Proto dead enums (`IntervalQualityKind`/`CorrectionPolicyKind` referenced by no message field; Lamina `BeatQuality` has no proto counterpart) + Dart diverts unknown enum values to `unknownFields` (typed getter returns default 0) while Rust/Python expose the raw value | `cross_language_results.csv`; Wave H findings 4–6 | `sensor-messages.proto`; Dart generated bindings. Wire the enums into messages; document the Dart asymmetry. |
+| ID | Issue | Evidence | Reproduction | Affected component / recommended investigation |
+|---|---|---|---|---|
+|BUG-NEW-01|`CorrectionPolicy::InterpolateCubic` executes the linear code path (bit-identical to linear; true cubic differs by up to 17.32 ms on the probe series)|`hrv/cubic_vs_linear.csv`; `bugs/evidence/bug018_output.txt`| bridge `hrv-correct` with `correction_policy=interpolate_cubic` vs `interpolate_linear` on any ectopy-containing RR series → outputs bit-identical |`src/hrv/quality.rs:157` shared match arm. Implement a real cubic spline or rename/document; rustdoc + plan §4.4 currently overpromise.|
+|BUG-NEW-04|Wrong-variant error pattern (`NonFiniteInput` for finite-but-out-of-range config) persists in **6 validators**, incl. the new hrv code (`percent_threshold` ∉ (0,1) at `src/hrv/quality.rs:138`)|`api/api_results.csv` (45 error_correct=no rows: 21 P2 + 24 P3); Wave G F1| bridge `hrv-correct` with `percent_threshold=1.5` (finite, out of range) → `NonFiniteInput`; same pattern at the other 5 listed validators |`src/eda/peaks.rs:71,74`; `src/ppg/peaks.rs:117`; `src/rsp/peaks.rs:118`; `src/rppg/config.rs:52,134,140`; `src/signal/peaks.rs:73`; `src/hrv/quality.rs:138`. Add a dedicated `InvalidParameter` variant to `SignalError`.|
+|BUG-NEW-05|`InvalidWindowSize(0)` mislabels non-window parameters and echoes a value never supplied (e.g. `min_breath_interval_sec=10 > max=1` → "Invalid window size: 0")|Wave G F2; `api/api_results.csv`| bridge `rsp-cycles` with `min_breath_interval_sec=10, max_breath_interval_sec=1` → "Invalid window size: 0" |`src/rsp/peaks.rs:108-115`, `src/eda/peaks.rs:77-87` (P2); ecg/ppg/rppg window-ish params (P3). Echo the actual parameter name/value.|
+|BUG-NEW-06|`sample_entropy` accepts m=0 (mathematically undefined) and returns a plausible finite 2.1487|Wave G F3; `api/api_results.csv`| bridge `sample-entropy` with `m=0` → returns finite 2.1487 instead of an error |`src/complexity/entropy.rs` — validate m ≥ 1 per its own rustdoc.|
+|BUG-NEW-10|`SignalPolarity::AutoDetect` skewness heuristic backwards: flips contract-phase signals, keeps intensity-phase ones; 1/30 agreement with ground truth; chrom harmed if trusted (F1 0.768→0.723, HR MAE 11.82→14.16)|`rppg/polarity_matrix.csv`, `rppg/waveE-notes.md`, morphology plots| bridge `rppg-polarity` with `polarity=auto_detect` on SCAMPS contract-phase waveforms → returns flipped phase in 29/30 cases |`src/rppg/signal.rs:558` `compute_should_flip`: flip when skew < −0.3 (or use Elgendi peak-prominence asymmetry); add realistic-morphology regression coverage.|
+|BUG-NEW-15|Proto dead enums (`IntervalQualityKind`/`CorrectionPolicyKind` referenced by no message field; Lamina `BeatQuality` has no proto counterpart) + Dart diverts unknown enum values to `unknownFields` (typed getter returns default 0) while Rust/Python expose the raw value|`cross_language_results.csv`; Wave H findings 4–6| inspect `sensor-messages.proto` (no message field references either enum); decode bytes carrying an unknown enum value in Dart → typed getter returns default 0, raw value diverted to `unknownFields` |`sensor-messages.proto`; Dart generated bindings. Wire the enums into messages; document the Dart asymmetry.|
 
 ### P3 new issues
 
-| ID | Issue | Evidence |
-|---|---|---|
-| BUG-NEW-07 | Silent edge-value acceptance: `ppg-peaks` alpha=0/1.5 accepted; `hrv-correct` classify_threshold ≤0 or >1 accepted (threshold 0/−0.1 classify everything ectopic on a clean RR series) | Wave G F4; `api/api_results.csv` |
-| BUG-NEW-08 | fs=1e9: silent degenerate filter output — `ppg-clean`/`eda-clean`/`filter` lowpass return ≈0 (max\|out−in\|=0.998 on a 5 Hz sine); biquad coefficients degenerate at normalized cutoff ~1e-8; no upper fs sanity check | Wave G F5; `api/api_results.csv` |
-| BUG-NEW-09 | `NonFiniteInput` contract unreachable via the JSON bridge (NaN/±inf/null elements fail serde parsing → `bad_request` "invalid input JSON" without naming the field). Safe but poor diagnosis; harness/protocol-level note | Wave G F6 |
-| BUG-NEW-11 | `eda-decompose` boundary transient creates spurious edge SCRs (1–2 FP at boundaries at every sampled rate; first wes event at onset_index=0) | `eda/eda_sweep.csv`, `eda/plots/eda_sweep.png` |
-| BUG-NEW-12 | `cargo clippy --all-targets --all-features -- -D warnings` fails on the pristine tree (unused import `tests/rppg_tests.rs:781`; `neg_multiply` `tests/ecg_tests.rs:376`); library target clean; fmt and 139/139 tests pass | stage-1 baseline verification |
-| BUG-NEW-13 | Dead `BeatQuality` enum (no public producer/consumer); `IntervalQuality::Missing` unreachable via the bridge; all-invalid `reject_invalid` surfaces bare `EmptySignal` instead of null metrics; no public `sdnn` | `hrv/bug_verdicts.csv` (BUG-OBS-01); Wave A |
+| ID | Issue | Evidence | Reproduction | Affected component |
+|---|---|---|---|---|
+|BUG-NEW-07|Silent edge-value acceptance: `ppg-peaks` alpha=0/1.5 accepted; `hrv-correct` classify_threshold ≤0 or >1 accepted (threshold 0/−0.1 classify everything ectopic on a clean RR series)|Wave G F4; `api/api_results.csv`| bridge `ppg-peaks` with `alpha=0` or `1.5` → accepted silently; bridge `hrv-correct` with `classify_threshold=0` → every interval of a clean RR series classified ectopic | `src/ppg/peaks.rs` alpha validation; `src/hrv/quality.rs` threshold validation |
+| BUG-NEW-08 | fs=1e9: silent degenerate filter output — `ppg-clean`/`eda-clean`/`filter` lowpass return ≈0 (max\|out−in\|=0.998 on a 5 Hz sine); biquad coefficients degenerate at normalized cutoff ~1e-8; no upper fs sanity check | Wave G F5; `api/api_results.csv` | bridge `ppg-clean` / `eda-clean` / `filter` (lowpass) at `fs=1e9` on a 5 Hz sine → output ≈ 0 (max\|out−in\| = 0.998) | biquad coefficient computation (no upper-fs sanity check) |
+|BUG-NEW-09|`NonFiniteInput` contract unreachable via the JSON bridge (NaN/±inf/null elements fail serde parsing → `bad_request` "invalid input JSON" without naming the field). Safe but poor diagnosis; harness/protocol-level note|Wave G F6| send any bridge op JSON containing NaN/±inf/null signal elements → `bad_request` "invalid input JSON", field not named | bridge serde parsing layer (harness/protocol level) |
+|BUG-NEW-11|`eda-decompose` boundary transient creates spurious edge SCRs (1–2 FP at boundaries at every sampled rate; first wes event at onset_index=0)|`eda/eda_sweep.csv`, `eda/plots/eda_sweep.png`| bridge `eda-decompose` on any EDA session at any sampled rate → first SCR event at `onset_index=0`; 1–2 boundary FPs per rate in `eda_sweep.csv` | `src/eda/decompose.rs` boundary handling |
+|BUG-NEW-12|`cargo clippy --all-targets --all-features -- -D warnings` fails on the pristine tree (unused import `tests/rppg_tests.rs:781`; `neg_multiply` `tests/ecg_tests.rs:376`); library target clean; fmt and 139/139 tests pass|stage-1 baseline verification| `cargo clippy --all-targets --all-features -- -D warnings` on pristine `fec2668` → 2 test-target errors | `tests/rppg_tests.rs:781`, `tests/ecg_tests.rs:376` |
+|BUG-NEW-13|Dead `BeatQuality` enum (no public producer/consumer); `IntervalQuality::Missing` unreachable via the bridge; all-invalid `reject_invalid` surfaces bare `EmptySignal` instead of null metrics; no public `sdnn`|`hrv/bug_verdicts.csv` (BUG-OBS-01); Wave A| grep public API for a `BeatQuality` producer/consumer → none; bridge `hrv-correct reject_invalid` on an all-invalid RR series → bare `EmptySignal` | `src/hrv/quality.rs` public surface |
 
 ### Doc-drift / remaining-concern items folded under parent bugs (P3)
 

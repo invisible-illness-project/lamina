@@ -63,10 +63,11 @@ files were modified at any point. All revalidation artifacts live under
   (resolved on the target record; its fleet-wide side effect is tracked
   separately as BUG-NEW-03) and BUG-013/BUG-014 (resolved as symptom /
   not-a-Lamina-defect). BUG-020 (NOT REPRODUCED — anomaly gone but original
-  attribution overturned) and BUG-015 (unchanged, reference-side) are **not**
-  counted as resolved. This gives 14 resolved of 20; counting BUG-020's
-  symptom disappearance would give 15 — hence the report's "14–15 of 20".
-- `bugs_remaining` = 20 − resolved = 6 (BUG-005 P2, BUG-012 P1, BUG-015 P3,
+  attribution overturned) is **not** counted as resolved. BUG-015 **is**
+  counted as resolved: the question was conclusively answered as a
+  reference-side defect with no Lamina-side defect (analogous to BUG-014).
+  This gives 15 resolved of 20.
+- `bugs_remaining` = 20 − resolved = 5 (BUG-005 P2, BUG-012 P1,
   BUG-017 P3, BUG-018 P2, BUG-020 P3).
 - `regressions_found` = row count of `regressions.csv` (53). All rows trace
   to the single BUG-NEW-03 SPKI-clamp mechanism, so

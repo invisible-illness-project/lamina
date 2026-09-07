@@ -28,14 +28,13 @@
     "ibvp"
   ],
   "bugs_revalidated": 20,
-  "bugs_resolved": 14,
-  "bugs_resolved_convention": "verdict==RESOLVED, including BUG-011 resolved-on-target (fleet side effect tracked separately as BUG-NEW-03) and BUG-013/014 resolved-as-symptom/not-a-Lamina-defect; BUG-020 (NOT REPRODUCED) and BUG-015 (unchanged, reference-side) are NOT counted as resolved",
+  "bugs_resolved": 15,
+  "bugs_resolved_convention": "verdict==RESOLVED, including BUG-011 resolved-on-target (fleet side effect tracked separately as BUG-NEW-03) and BUG-013/014 resolved-as-symptom/not-a-Lamina-defect; BUG-020 (NOT REPRODUCED) is NOT counted as resolved; BUG-015 IS counted as resolved (question conclusively answered as reference-side, no Lamina defect \u2014 analogous to BUG-014)",
   "bugs_partially_resolved": 3,
-  "bugs_remaining": 6,
+  "bugs_remaining": 5,
   "bugs_remaining_list": [
     "BUG-005 (P2)",
     "BUG-012 (P1)",
-    "BUG-015 (P3, reference-side unchanged)",
     "BUG-017 (P3)",
     "BUG-018 (P2)",
     "BUG-020 (P3, docs stale)"
