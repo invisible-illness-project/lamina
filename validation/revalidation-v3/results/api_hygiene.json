@@ -1,0 +1,105 @@
+{
+  "total_probes": 14,
+  "total_panics": 0,
+  "total_unhandled": 0,
+  "clean_hygiene": true,
+  "cases": [
+    {
+      "op": "ecg-peaks threshold_multiplier >= 1.0",
+      "status": "HANDLED_ERROR",
+      "panic": false,
+      "error_kind": "lamina_error",
+      "error_message": "bridge op 'ecg-peaks' failed [lamina_error]: Invalid cutoff frequency: Threshold multiplier must be strictly between 0.0 and 1.0"
+    },
+    {
+      "op": "ecg-clean unsupported_method string",
+      "status": "HANDLED_ERROR",
+      "panic": false,
+      "error_kind": "lamina_error",
+      "error_message": "bridge op 'ecg-clean' failed [lamina_error]: Invalid cutoff frequency: Unsupported ECG cleaning method: unsupported_method"
+    },
+    {
+      "op": "ecg-peaks NaN input",
+      "status": "HANDLED_ERROR",
+      "panic": false,
+      "error_kind": "bad_request",
+      "error_message": "bridge op 'ecg-peaks' failed [bad_request]: invalid input JSON: expected value at line 1 column 18"
+    },
+    {
+      "op": "ecg-peaks +Inf input",
+      "status": "HANDLED_ERROR",
+      "panic": false,
+      "error_kind": "bad_request",
+      "error_message": "bridge op 'ecg-peaks' failed [bad_request]: invalid input JSON: expected value at line 1 column 18"
+    },
+    {
+      "op": "ecg-peaks -Inf input",
+      "status": "HANDLED_ERROR",
+      "panic": false,
+      "error_kind": "bad_request",
+      "error_message": "bridge op 'ecg-peaks' failed [bad_request]: invalid input JSON: invalid number at line 1 column 19"
+    },
+    {
+      "op": "ecg-peaks empty signal",
+      "status": "HANDLED_ERROR",
+      "panic": false,
+      "error_kind": "lamina_error",
+      "error_message": "bridge op 'ecg-peaks' failed [lamina_error]: Signal array is empty"
+    },
+    {
+      "op": "ecg-peaks fs=0",
+      "status": "HANDLED_ERROR",
+      "panic": false,
+      "error_kind": "lamina_error",
+      "error_message": "bridge op 'ecg-peaks' failed [lamina_error]: Invalid sampling rate: 0 Hz (must be > 0.0 and finite)"
+    },
+    {
+      "op": "ecg-peaks fs=-100",
+      "status": "HANDLED_ERROR",
+      "panic": false,
+      "error_kind": "lamina_error",
+      "error_message": "bridge op 'ecg-peaks' failed [lamina_error]: Invalid sampling rate: -100 Hz (must be > 0.0 and finite)"
+    },
+    {
+      "op": "ecg-peaks short signal (5 samples)",
+      "status": "HANDLED_ERROR",
+      "panic": false,
+      "error_kind": "lamina_error",
+      "error_message": "bridge op 'ecg-peaks' failed [lamina_error]: Insufficient signal length: requires at least 19 samples, provided 5"
+    },
+    {
+      "op": "ecg-peaks lowcut >= highcut",
+      "status": "HANDLED_ERROR",
+      "panic": false,
+      "error_kind": "lamina_error",
+      "error_message": "bridge op 'ecg-peaks' failed [lamina_error]: Invalid cutoff frequency: Lowcut must be < Highcut"
+    },
+    {
+      "op": "ecg-peaks highcut >= Nyquist",
+      "status": "HANDLED_ERROR",
+      "panic": false,
+      "error_kind": "lamina_error",
+      "error_message": "bridge op 'ecg-peaks' failed [lamina_error]: Invalid cutoff frequency: Cutoff frequencies (5, 60) must satisfy 0 < lowcut < highcut < Nyquist (50)"
+    },
+    {
+      "op": "sample-entropy constant zeros",
+      "status": "HANDLED_ERROR",
+      "panic": false,
+      "error_kind": "lamina_error",
+      "error_message": "bridge op 'sample-entropy' failed [lamina_error]: Invalid cutoff frequency: Tolerance threshold r (0) must be > 0.0 and finite"
+    },
+    {
+      "op": "filter unknown kind",
+      "status": "HANDLED_ERROR",
+      "panic": false,
+      "error_kind": "bad_request",
+      "error_message": "bridge op 'filter' failed [bad_request]: unknown filter kind 'unknown_kind'"
+    },
+    {
+      "op": "hrv-correct negative classify threshold",
+      "status": "UNEXPECTED_SUCCESS",
+      "panic": false,
+      "result": "{'interval_quality': ['normal_nn', 'normal_nn'], 'mean_nn_ms': 800.0, 'n_input_intervals': 2, 'n_nn'"
+    }
+  ]
+}

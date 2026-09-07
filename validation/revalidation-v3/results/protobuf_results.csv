@@ -1,0 +1,6 @@
+suite,component,total_tests,passed,failed,language_targets,status
+correction_policy,CorrectionPolicy,20,20,0,"Rust, Python, Dart",PASSED
+rppg_metadata,RppgSignal,9,9,0,"Rust, Python, Dart",PASSED
+sensor_messages_rust,Rust bindings,4,4,0,Rust,PASSED
+sensor_messages_python,Python bindings,3,3,0,Python,PASSED
+sensor_messages_dart,Dart bindings,3,3,0,Dart,PASSED

@@ -1,0 +1,45 @@
+{
+  "dataset": "eda_4hz_wearable",
+  "pipeline_completion": true,
+  "records_processed": 4,
+  "records_failed": 0,
+  "total_nan_inf_count": 0,
+  "recordings": [
+    {
+      "record_id": "eda_fixture_4.0hz",
+      "sampling_rate_hz": 4.0,
+      "signal_length": 1200,
+      "status": "SUCCESS",
+      "scr_count": 10,
+      "nan_inf_count": 0,
+      "filter_config": "default (lowpass 1.0Hz)"
+    },
+    {
+      "record_id": "eda_fixture_5.0hz",
+      "sampling_rate_hz": 5.0,
+      "signal_length": 1500,
+      "status": "SUCCESS",
+      "scr_count": 10,
+      "nan_inf_count": 0,
+      "filter_config": "default (lowpass 1.0Hz)"
+    },
+    {
+      "record_id": "eda_fixture_10.0hz",
+      "sampling_rate_hz": 10.0,
+      "signal_length": 3000,
+      "status": "SUCCESS",
+      "scr_count": 10,
+      "nan_inf_count": 0,
+      "filter_config": "default (lowpass 1.0Hz)"
+    },
+    {
+      "record_id": "eda_fixture_32.0hz",
+      "sampling_rate_hz": 32.0,
+      "signal_length": 9600,
+      "status": "SUCCESS",
+      "scr_count": 10,
+      "nan_inf_count": 0,
+      "filter_config": "default (lowpass 1.0Hz)"
+    }
+  ]
+}

@@ -1,0 +1,50 @@
+[
+  {
+    "scenario": "Curved Data with 5 valid NormalNN points (ectopic at index 3)",
+    "input_rr_ms": "[800.0, 810.0, 840.0, 400.0, 1600.0, 890.0, 930.0]",
+    "linear_output": "[800.0, 810.0, 840.0, 856.6666666666667, 873.3333333333333, 890.0, 930.0]",
+    "cubic_output": "[800.0, 810.0, 840.0, 858.4276729559748, 869.4025157232704, 890.0, 930.0]",
+    "max_abs_diff_ms": 3.9308,
+    "differ_substantially": true
+  },
+  {
+    "scenario": "Quadratic Curve with 4 valid points (ectopic at index 2)",
+    "input_rr_ms": "[700.0, 750.0, 300.0, 1300.0, 875.0, 960.0]",
+    "linear_output": "[700.0, 750.0, 791.6666666666667, 833.3333333333333, 875.0, 960.0]",
+    "cubic_output": "[700.0, 750.0, 785.5656565656566, 820.3434343434344, 875.0, 960.0]",
+    "max_abs_diff_ms": 12.9899,
+    "differ_substantially": true
+  },
+  {
+    "scenario": "Sinusoidal Curve with 6 valid points (artifact at index 3)",
+    "input_rr_ms": "[800.0, 830.0, 850.0, 100.0, 830.0, 800.0, 770.0]",
+    "linear_output": "[800.0, 830.0, 850.0, 840.0, 830.0, 800.0, 770.0]",
+    "cubic_output": "[800.0, 830.0, 850.0, 849.1935483870968, 830.0, 800.0, 770.0]",
+    "max_abs_diff_ms": 9.1935,
+    "differ_substantially": true
+  },
+  {
+    "scenario": "Curved Data with <4 valid points (triggers linear fallback)",
+    "input_rr_ms": "[800.0, 820.0, 400.0, 860.0, 880.0]",
+    "linear_output": "[800.0, 820.0, 840.0, 860.0, 880.0]",
+    "cubic_output": "[800.0, 820.0, 840.0, 860.0, 880.0]",
+    "max_abs_diff_ms": 0.0,
+    "differ_substantially": false
+  },
+  {
+    "scenario": "Endpoint Invalid (First point invalid)",
+    "input_rr_ms": "[3000.0, 800.0, 820.0, 850.0, 890.0]",
+    "linear_output": "[800.0, 800.0, 820.0, 850.0, 890.0]",
+    "cubic_output": "[800.0, 800.0, 820.0, 850.0, 890.0]",
+    "max_abs_diff_ms": 0.0,
+    "differ_substantially": false
+  },
+  {
+    "scenario": "Monotonic Data with 4 valid points",
+    "input_rr_ms": "[750.0, 780.0, 300.0, 1300.0, 840.0, 870.0]",
+    "linear_output": "[750.0, 780.0, 800.0000000000001, 820.0, 840.0, 870.0]",
+    "cubic_output": "[750.0, 780.0, 801.3333333333334, 818.6666666666667, 840.0, 870.0]",
+    "max_abs_diff_ms": 1.3333,
+    "differ_substantially": true
+  }
+]

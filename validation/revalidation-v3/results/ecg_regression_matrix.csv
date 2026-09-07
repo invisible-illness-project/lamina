@@ -1,0 +1,7 @@
+case,description,expected_peaks,detected_peaks,TP,FP,FN,precision,recall,F1,peak_alignment_ok
+Case 1,Normal QRS,8,8,8,0,0,1.0,1.0,1.0,True
+Case 2,3.5:1 PVC amplitude disparity,8,8,8,0,0,1.0,1.0,1.0,True
+Case 3,Continuous bigeminy,12,12,12,0,0,1.0,1.0,1.0,True
+Case 4,Narrow/biphasic QRS,8,8,8,0,0,1.0,1.0,1.0,True
+Case 5,Paced ECG,8,8,8,0,0,1.0,1.0,1.0,True
+Case 6,EMG noise burst,8,9,8,1,0,0.888889,1.0,0.941176,True

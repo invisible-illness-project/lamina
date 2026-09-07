@@ -1,0 +1,40 @@
+{
+  "repository": {
+    "commit_sha": "6d8d7677f71664616a279a9e05774063f23de98b",
+    "branch": "main",
+    "working_tree_clean": true
+  },
+  "environment": {
+    "os": "Linux 5.15.0-139-generic x86_64",
+    "rustc_version": "1.94.0",
+    "python_version": "3.11.8 / 3.9.18",
+    "dart_sdk": "3.8.1",
+    "validation_date": "2026-09-07"
+  },
+  "test_suites": {
+    "cargo_fmt": { "result": "PASS", "details": "Clean code formatting" },
+    "cargo_clippy": { "result": "PASS", "details": "0 warnings across all targets and features" },
+    "cargo_test": { "result": "PASS", "details": "145/145 unit & integration tests passed cleanly" },
+    "sensor_messages_rust": { "result": "PASS", "details": "4/4 tests passed" },
+    "sensor_messages_python": { "result": "PASS", "details": "3/3 pytest serialization tests passed" },
+    "sensor_messages_dart": { "result": "PASS", "details": "3/3 dart tests passed" }
+  },
+  "protected_gates": {
+    "mit_bih_mean_f1": { "target": 0.9820, "actual": 0.993686, "passed": true },
+    "mit_bih_total_fp": { "target": 750, "actual": 499, "passed": true },
+    "record_228_recall": { "target": 0.9500, "actual": 0.981491, "passed": true },
+    "record_228_f1": { "target": 0.9850, "actual": 0.989200, "passed": true },
+    "record_123_f1": { "target": 0.999011, "actual": 0.999011, "passed": true },
+    "record_232_f1": { "target": 0.999158, "actual": 0.999158, "passed": true },
+    "six_case_ecg_matrix": { "target": "100% Align OK", "actual": "6/6 Align OK", "passed": true },
+    "wrist_s6_gap": { "target": 5.0, "actual": 1.80, "passed": true },
+    "bidmc_mean_f1": { "target": 0.9440, "actual": 0.977525, "passed": true },
+    "bidmc05_f1": { "target": 1.0000, "actual": 1.0000, "passed": true },
+    "eda_4hz_wearable": { "target": "0 NaNs, 100% completion", "actual": "0 NaNs, 100% completion", "passed": true },
+    "hrv_empty_contract": { "target": "EmptySignal vs 0-NN InsufficientPeaks", "actual": "Contract Verified", "passed": true },
+    "rppg_polarity_contract": { "target": "Inverted default, AutoDetect boundaries", "actual": "Contract Verified", "passed": true },
+    "protobuf_roundtrip": { "target": "20/20 Policy, 9/9 Rppg", "actual": "20/20 Policy, 9/9 Rppg", "passed": true },
+    "api_hygiene": { "target": "0 panics, 0 crashes", "actual": "0 panics, 0 crashes", "passed": true }
+  },
+  "overall_verdict": "VERIFIED_WITH_FINDINGS"
+}
