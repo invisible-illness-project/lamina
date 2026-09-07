@@ -194,6 +194,74 @@ class LaminaBridge:
 
     def rppg_algorithm(self, timestamps_sec, red, green, blue,
                        valid_pixel_counts=None, config: dict | None = None) -> dict[str, Any]:
+        payload = self._rppg_payload(timestamps_sec, red, green, blue,
+                                     valid_pixel_counts, config)
+        return self.result("rppg-algorithm", payload)
+
+    # -- revalidation extension ops (SPEC.md addendum §A) --------------------
+
+    def eda_clean_config(self, signal, fs: float,
+                         config: dict | None = None) -> dict[str, Any]:
+        """Run ``eda-clean-config`` (explicit EdaCleaningConfig).
+
+        ``config`` keys: ``lowpass_cutoff_hz`` (float, or explicit ``None``
+        to disable low-pass filtering entirely — distinct from omitting the
+        key, which keeps the Lamina default), ``filter_order``,
+        ``pass_through_if_nyquist_violated``. Returns the result dict with
+        ``signal`` converted to ``np.ndarray``.
+        """
+        r = self.result("eda-clean-config", _sig(signal, fs, config or {}))
+        return {**r, "signal": np.asarray(r["signal"], dtype=float)}
+
+    def rppg_polarity(self, timestamps_sec, red, green, blue,
+                      polarity: str = "normal", valid_pixel_counts=None,
+                      config: dict | None = None) -> dict[str, Any]:
+        """Run ``rppg-polarity``: raw rPPG window pipeline + BVP conversion.
+
+        Same input schema as :meth:`rppg_algorithm`; ``polarity`` is one of
+        ``"normal"``, ``"inverted"``, ``"auto"``. Returns the result dict
+        (``waveform``, ``polarity_resolved``, ``flipped``, ...).
+        """
+        cfg = dict(config or {})
+        cfg["polarity"] = polarity
+        payload = self._rppg_payload(timestamps_sec, red, green, blue,
+                                     valid_pixel_counts, cfg)
+        return self.result("rppg-polarity", payload)
+
+    def hrv_correct(self, rr_intervals_ms=None, *, peaks=None,
+                    signal_length: int | None = None, fs: float | None = None,
+                    policy: str = "none", percent_threshold: float | None = None,
+                    classify_threshold: float | None = None) -> dict[str, Any]:
+        """Run ``hrv-correct`` (classify -> correct -> NN -> HRV pipeline).
+
+        Provide either ``rr_intervals_ms`` directly or the peak-train envelope
+        (``peaks``, ``signal_length``, ``fs``) as in :meth:`hrv`.
+        ``policy``: ``none`` | ``reject_invalid`` | ``interpolate_linear`` |
+        ``interpolate_cubic`` | ``percent_threshold`` (the latter requires
+        ``percent_threshold``). ``classify_threshold`` overrides the
+        classify_intervals relative-deviation threshold (Lamina default 0.20).
+        """
+        payload: dict[str, Any] = {}
+        if rr_intervals_ms is not None:
+            payload["rr_intervals_ms"] = _tolist(rr_intervals_ms)
+        else:
+            if peaks is None or signal_length is None or fs is None:
+                raise ValueError(
+                    "hrv_correct requires rr_intervals_ms or "
+                    "(peaks, signal_length, fs)")
+            payload["peaks"] = [int(p) for p in peaks]
+            payload["signal_length"] = int(signal_length)
+            payload["sampling_rate"] = float(fs)
+        cfg: dict[str, Any] = {"policy": policy}
+        if percent_threshold is not None:
+            cfg["percent_threshold"] = float(percent_threshold)
+        if classify_threshold is not None:
+            cfg["classify_threshold"] = float(classify_threshold)
+        payload["config"] = cfg
+        return self.result("hrv-correct", payload)
+
+    def _rppg_payload(self, timestamps_sec, red, green, blue,
+                      valid_pixel_counts, config) -> dict[str, Any]:
         payload: dict[str, Any] = {
             "timestamps_sec": _tolist(timestamps_sec),
             "red": _tolist(red),
@@ -204,7 +272,7 @@ class LaminaBridge:
             payload["valid_pixel_counts"] = [int(v) for v in valid_pixel_counts]
         if config:
             payload["config"] = config
-        return self.result("rppg-algorithm", payload)
+        return payload
 
 
 def _tolist(x) -> list:

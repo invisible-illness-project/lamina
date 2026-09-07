@@ -1,0 +1,29 @@
+{
+  "created_utc": "2026-09-07T02:06:44+00:00",
+  "lamina_git_commit": "fd6c96b7cac6f8054cafb470c461eceab8e9e163",
+  "lamina_git_branch": "reval/rppg",
+  "lamina_version": "0.1.0",
+  "framework_version": "0.1.0",
+  "python_version": "3.12.12",
+  "package_versions": {
+    "numpy": "2.2.5",
+    "scipy": "1.16.2",
+    "pandas": "2.3.2",
+    "wfdb": null,
+    "matplotlib": "3.10.3",
+    "pytest": null
+  },
+  "seed": 0,
+  "tolerances": {
+    "peak_match_sec": 0.15,
+    "rsp_match_sec": 0.5,
+    "scr_match_sec": 1.0
+  },
+  "config_snapshot": {
+    "dataset": "scamps",
+    "smoke": false,
+    "subjects": null,
+    "recordings": null,
+    "max_recordings": null
+  }
+}

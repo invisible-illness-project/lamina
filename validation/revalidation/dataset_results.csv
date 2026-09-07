@@ -1,0 +1,61 @@
+dataset,metric,baseline,current,delta,status,notes
+mit-bih-arrhythmia,records_ok,48/48,48/48,,unchanged,
+mit-bih-arrhythmia,mean_beat_f1,0.982005,0.901573,-0.0804319,regression,mean over 48 records (mitdb_records.csv row ALL)
+mit-bih-arrhythmia,pooled_beat_f1,0.985614,0.902088,-0.083526,regression,pooled TP/FP/FN (mitdb_records.csv row ALL_pooled)
+mit-bih-arrhythmia,pooled_fp_count,698,17884,+17186,regression,mitdb_records.csv ALL_pooled row reads 698.25->17883.98 (fractional: the wave-B pooling script included the ALL mean-row in its count sum; true per-record sums are 684->17519). waveB-notes round the CSV values to 698->17884 (25.6x either way). Pooled F1 0.9856->0.9021 is exact.
+mit-bih-arrhythmia,pooled_fn_count,2492,5242,+2750,regression,ALL_pooled row 2491.85->5241.98; true per-record sums 2441->5135 (same mean-row artifact; waveB-notes 2492->5242)
+mit-bih-arrhythmia,mean_hr_mae_bpm,0.927189,8.61343,7.68624,regression,mean per-record HR MAE (ALL row)
+mit-bih-arrhythmia,mean_timing_mae_ms,4.56925,9.21135,,regression,mean abs timing error (ALL row)
+mit-bih-arrhythmia,record228_beat_f1,0.7492,0.9913,+0.2421,improvement,"BUG-011 target record; normal-beat recall 0.6016->0.9982, PVC recall 1.000 (record228_deepdive.md / 228_class_recall.csv)"
+mit-bih-arrhythmia,record104_v5_beat_f1,0.6834,0.9744,+0.2910,improvement,BUG-013 target; FP 2->98 (BUG-NEW-03 side effect)
+mit-bih-noise-stress,beat_f1_snr00db_118e00,0.831114,0.82006,-0.0110536,regression,
+mit-bih-noise-stress,beat_f1_snr06db_118e06,0.884386,0.842288,-0.0420985,regression,
+mit-bih-noise-stress,beat_f1_snr12db_118e12,0.958741,0.887819,-0.0709224,regression,
+mit-bih-noise-stress,beat_f1_snr18db_118e18,0.999342,0.978788,-0.0205541,regression,18dB current 0.979 below plan bar 0.990
+mit-bih-noise-stress,beat_f1_snr24db_118e24,0.999781,0.999781,0,unchanged,
+mit-bih-noise-stress,beat_f1_snr00db_119e00,0.786607,0.771069,-0.0155379,regression,
+mit-bih-noise-stress,beat_f1_snr24db_119e24,1,0.995486,-0.00451354,unchanged,
+mit-bih-noise-stress,records_ok,7/7,7/7,,unchanged,
+bidmc,records_ok,12/12,12/12,,unchanged,
+bidmc,mean_resp_cycle_f1,0.9437355712009113,0.9437355712009113,0.0,unchanged,all rsp metrics byte-identical on 12/12 records (waveD-notes)
+bidmc,bidmc05_resp_cycle_f1,0.6575342465753424,0.6575342465753424,0.0,unchanged,BUG-017: max_breath_interval raise is a no-op on this record; prominence gating absent
+bidmc,bidmc03_hr_consistency_ppg_vs_ecg_mae_bpm,51.5823,5.0951,-46.4872,improvement,BUG-020 anomaly no longer reproduces: ECG peaks 153->628 vs PPG 610
+wrist-ppg-exercise,records_ok,19/19,19/19,,unchanged,
+wrist-ppg-exercise,ppg_hr_mae_bpm_bike_high,20.26613822984655,20.26613822984655,0.0,unchanged,all PPG/HR metrics byte-identical to baseline (waveD)
+wrist-ppg-exercise,ppg_hr_mae_bpm_bike_low,14.731436417906272,14.731436417906272,0.0,unchanged,all PPG/HR metrics byte-identical to baseline (waveD)
+wrist-ppg-exercise,ppg_hr_mae_bpm_run,32.90113067405135,32.90113067405135,0.0,unchanged,all PPG/HR metrics byte-identical to baseline (waveD)
+wrist-ppg-exercise,ppg_hr_mae_bpm_walk,15.876475686102552,15.876475686102552,0.0,unchanged,all PPG/HR metrics byte-identical to baseline (waveD)
+wrist-ppg-exercise,ppg_hr_mae_bpm_motion,23.614955226079278,23.614955226079278,0.0,unchanged,all PPG/HR metrics byte-identical to baseline (waveD)
+wrist-ppg-exercise,ppg_hr_mae_bpm_stationary,16.806949597383877,16.806949597383877,0.0,unchanged,all PPG/HR metrics byte-identical to baseline (waveD)
+wrist-ppg-exercise,ppg_hr_mae_bpm_overall,20.748426540312792,20.748426540312792,0.0,unchanged,all PPG/HR metrics byte-identical to baseline (waveD)
+wrist-ppg-exercise,s6_low_resistance_bike_ecg_f1,0.6573,0.7363,+0.0790,improvement,"BUG-012: ~90 s blackout eliminated (longest gap 0.68 s, recall 0.614->0.966) but plan bar F1>=0.900 not met (353 FP, precision 0.595)"
+wrist-ppg-exercise,s2_walk_ecg_f1,0.8948,0.6879,-0.2068,regression,BUG-NEW-03 signature: FP 101->462 (wave D wrist metrics join)
+wesad,known_groups_delta_hr_stress_minus_baseline,16.75,12.0,-4.75,regression,attenuated by S3/S2 baseline ECG double-detection (NEW-C1); direction preserved
+wesad,known_groups_delta_scr_stress_minus_baseline,8.0,8.0,0.0,unchanged,direction preserved (stress>baseline)
+wesad,known_groups_delta_rr_stress_minus_baseline,4.638,4.638,0.0,unchanged,direction preserved (stress>baseline)
+wesad,records_ok,15/15,,,unchanged,
+autonomic-aging,rmssd_median_ms_young_18_39_raw_path,52.26,56.26,,regression,raw hrv op on detected peaks (baseline methodology); old-stratum inflation worsened by detector over-detection (0342/0637)
+autonomic-aging,rmssd_median_ms_young_18_39_corrected,52.26,54.24,,new-methodology,"hrv-correct reject_invalid (new path, no baseline); trend still non-monotone"
+autonomic-aging,rmssd_median_ms_middle_40_69_raw_path,24.92,24.92,,unchanged,raw hrv op on detected peaks (baseline methodology); old-stratum inflation worsened by detector over-detection (0342/0637)
+autonomic-aging,rmssd_median_ms_middle_40_69_corrected,24.92,18.19,,new-methodology,"hrv-correct reject_invalid (new path, no baseline); trend still non-monotone"
+autonomic-aging,rmssd_median_ms_old_70_plus_raw_path,142.84,174.42,,regression,raw hrv op on detected peaks (baseline methodology); old-stratum inflation worsened by detector over-detection (0342/0637)
+autonomic-aging,rmssd_median_ms_old_70_plus_corrected,142.84,89.51,,new-methodology,"hrv-correct reject_invalid (new path, no baseline); trend still non-monotone"
+autonomic-aging,records_ok,12/12,12/12,,unchanged,
+autonomic-aging,record0554_rmssd_ms,315.59,102.18,-213.41,improvement,baseline raw -> corrected(reject_invalid); current raw 224.12 (aging_results.csv); bigeminy still partly evades classifier (BUG-NEW-02)
+wearable-exam-stress,eda_recordings_ok,"0/15 (InvalidCutoffFrequency, BUG-003)",15/15,,improvement,dataset_results_eda.csv recording_status rows failed->ok
+wearable-exam-stress,bvp_recordings_ok,15/15,15/15,,unchanged,all BVP/hr metrics bit-identical to baseline
+wearable-exam-stress,scr_rate_per_min_median,,2.26,,new,range 0.36-5.73/min across 15 sessions (waveC-notes); no baseline (recordings previously failed)
+wearable-exam-stress,bvp_hr_mae_vs_e4_hrcsv_bpm_median,35.16,35.16,0.0,unchanged,"BUG-015: gap persists, reference-side (E4 HR.csv); range 26.38-47.13"
+big-ideas,dataset_status,failed (BUG-003),ok (2/2 recordings),,improvement,dataset_results_eda.csv recording_status rows
+big-ideas,scr_rate_per_min,,6.33 (015) / 10.88 (003),,new,waveC-notes deep validation; no baseline
+scamps,recordings_ok,30/30,30/30,,unchanged,510/510 metric rows bitwise identical to baseline (scamps_results.csv status=match)
+scamps,hr_mae_bpm_green,11.39,11.39,0.0,unchanged,raw rppg-algorithm path unchanged (additive-only remediation)
+scamps,peak_f1_green,0.245,0.245,0.0,unchanged,
+scamps,hr_mae_bpm_chrom,11.82,11.82,0.0,unchanged,raw rppg-algorithm path unchanged (additive-only remediation)
+scamps,peak_f1_chrom,0.768,0.768,0.0,unchanged,
+scamps,hr_mae_bpm_pos,16.19,16.19,0.0,unchanged,raw rppg-algorithm path unchanged (additive-only remediation)
+scamps,peak_f1_pos,0.540,0.540,0.0,unchanged,
+scamps,peak_f1_green_contract_polarity,0.245,0.918,+0.673,new-methodology,"polarity=inverted (correct per-algorithm phase); polarity_matrix.csv, 10-video means"
+scamps,peak_f1_pos_contract_polarity,0.540,0.920,+0.380,new-methodology,polarity=inverted; polarity_matrix.csv
+scamps,hr_mae_bpm_pos_contract_polarity,16.19,7.90,-8.29,new-methodology,polarity=inverted; polarity_matrix.csv
+scamps,peak_f1_chrom_contract_polarity,0.768,0.768,0.0,new-methodology,"chrom is natively contract-phase (polarity=normal); auto mode wrongly flips it (0.723, BUG-NEW-10)"

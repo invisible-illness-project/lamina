@@ -1,0 +1,16 @@
+===== bug004_fs =====
+RSP fs=  25.0: 11 peaks at ["1.96", "4.96", "8.00", "11.00", "14.00", "17.00", "20.00", "23.00", "26.00", "29.00", "32.00"]
+RSP fs= 100.0: 11 peaks at ["1.98", "4.98", "7.99", "11.00", "14.00", "17.00", "20.00", "23.00", "26.00", "29.00", "32.02"]
+EDA fs=  25.0: 6 peaks at ["3.00", "5.48", "8.00", "10.48", "13.00", "15.48"]
+EDA fs= 100.0: 6 peaks at ["3.00", "5.50", "8.00", "10.50", "13.00", "15.50"]
+rsp_findpeaks fs=0: Err(Invalid sampling rate: 0 Hz (must be > 0.0 and finite))
+eda_findpeaks fs=0: Err(Invalid sampling rate: 0 Hz (must be > 0.0 and finite))
+rsp_findpeaks fs=-25: Err(Invalid sampling rate: -25 Hz (must be > 0.0 and finite))
+eda_findpeaks fs=-25: Err(Invalid sampling rate: -25 Hz (must be > 0.0 and finite))
+rsp_findpeaks fs=NaN: Err(Invalid sampling rate: NaN Hz (must be > 0.0 and finite))
+eda_findpeaks fs=NaN: Err(Invalid sampling rate: NaN Hz (must be > 0.0 and finite))
+rsp_findpeaks fs=inf: Err(Invalid sampling rate: inf Hz (must be > 0.0 and finite))
+eda_findpeaks fs=inf: Err(Invalid sampling rate: inf Hz (must be > 0.0 and finite))
+RSP regression: true_fs=25, 25 breaths 2s apart -> 25 peaks (old hardcoded-100 gave 1)
+EDA regression: true_fs=250, 10 pulses 0.6s apart -> 5 peaks (old hardcoded-100 gave 10; config-correct = 5)
+

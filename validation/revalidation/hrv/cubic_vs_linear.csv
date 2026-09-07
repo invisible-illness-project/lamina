@@ -1,0 +1,6 @@
+index,quality,original_ms,interp_linear_ms,interp_cubic_ms,abs_diff_cubic_minus_linear,reference_cubicspline_ms,linear_vs_true_cubic_error_ms
+10,artifact_rr,250.0,750.0,750.0,0.0,732.678723,17.321277
+11,artifact_rr,250.0,780.0,780.0,0.0,762.741549,17.258451
+12,artifact_rr,250.0,810.0,810.0,0.0,801.4336,8.5664
+40,ectopic_rr,500.0,853.333333,853.333333,0.0,868.111896,14.778562
+41,ectopic_rr,500.0,826.666667,826.666667,0.0,838.917673,12.251006

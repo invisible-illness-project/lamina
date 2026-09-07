@@ -1,0 +1,11 @@
+{
+  "ok": false,
+  "op": "hrv",
+  "lamina_version": "0.1.0",
+  "bridge_version": "0.1.0",
+  "result": null,
+  "error": {
+    "kind": "bad_request",
+    "message": "missing required field 'signal_length'"
+  }
+}

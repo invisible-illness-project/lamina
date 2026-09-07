@@ -1,0 +1,19 @@
+case,source,expected,observed,pass,notes
+case1_normal_qrs,upstream-test,>=7 of 8 peaks (assert count>=7),cargo test test_ecg_6case_regression_matrix: ok (1 passed; 0 failed),PASS,count-only assertion; no FP bound encoded upstream
+case2_pvc_amplitude_disparity,upstream-test,==8 peaks (assert count==8),cargo test test_ecg_6case_regression_matrix: ok (1 passed; 0 failed),PASS,count-only assertion; no FP bound encoded upstream
+case3_bigeminy,upstream-test,>=10 of 12 peaks (assert count>=10),cargo test test_ecg_6case_regression_matrix: ok (1 passed; 0 failed),PASS,count-only assertion; no FP bound encoded upstream
+case4_narrow_biphasic,upstream-test,>=7 of 8 peaks (assert count>=7),cargo test test_ecg_6case_regression_matrix: ok (1 passed; 0 failed),PASS,count-only assertion; no FP bound encoded upstream
+case5_paced_spikes,upstream-test,>=7 of 8 peaks (assert count>=7),cargo test test_ecg_6case_regression_matrix: ok (1 passed; 0 failed),PASS,count-only assertion; no FP bound encoded upstream
+case6_emg_burst,upstream-test,>=7 of 8 peaks (assert count>=7),cargo test test_ecg_6case_regression_matrix: ok (1 passed; 0 failed),PASS,count-only assertion; no FP bound encoded upstream
+case1_normal_qrs,bridge-probe-upstream-10s,>=7 of 8 detected,P=1.0 R=1.0 F1=1.0 det=9/truth=9 tp=9 fp=0 fn=0,PASS,
+case2_pvc_amplitude_disparity,bridge-probe-upstream-10s,"all beats, no blackout",P=1.0 R=1.0 F1=1.0 det=9/truth=9 tp=9 fp=0 fn=0,PASS,
+case3_bigeminy,bridge-probe-upstream-10s,>=10 of 12 detected,P=1.0 R=1.0 F1=1.0 det=12/truth=12 tp=12 fp=0 fn=0,PASS,
+case4_narrow_biphasic,bridge-probe-upstream-10s,>=7 of 8,P=0.5 R=1.0 F1=0.6667 det=18/truth=9 tp=9 fp=9 fn=0,FAIL,DOUBLE-DETECTION: both phases of biphasic complex detected (det/truth=2.00x); upstream assert cannot catch this
+case5_paced_spikes,bridge-probe-upstream-10s,>=7 of 8 R-peaks,P=1.0 R=1.0 F1=1.0 det=9/truth=9 tp=9 fp=0 fn=0,PASS,
+case6_emg_burst,bridge-probe-upstream-10s,>=7 of 8 R-peaks,P=0.8182 R=1.0 F1=0.9 det=11/truth=9 tp=9 fp=2 fn=0,PASS,2 FP from noise burst (upstream assert passes)
+case1_normal_qrs,bridge-probe-extended-60s,>=7 of 8 detected,P=1.0 R=1.0 F1=1.0 det=59/truth=59 tp=59 fp=0 fn=0,PASS,
+case2_pvc_amplitude_disparity,bridge-probe-extended-60s,"all beats, no blackout",P=1.0 R=1.0 F1=1.0 det=59/truth=59 tp=59 fp=0 fn=0,PASS,
+case3_bigeminy,bridge-probe-extended-60s,>=10 of 12 detected,P=1.0 R=1.0 F1=1.0 det=72/truth=72 tp=72 fp=0 fn=0,PASS,
+case4_narrow_biphasic,bridge-probe-extended-60s,>=7 of 8,P=0.5 R=1.0 F1=0.6667 det=118/truth=59 tp=59 fp=59 fn=0,FAIL,DOUBLE-DETECTION: both phases of biphasic complex detected (det/truth=2.00x); upstream assert cannot catch this
+case5_paced_spikes,bridge-probe-extended-60s,>=7 of 8 R-peaks,P=1.0 R=1.0 F1=1.0 det=59/truth=59 tp=59 fp=0 fn=0,PASS,
+case6_emg_burst,bridge-probe-extended-60s,>=7 of 8 R-peaks,P=0.9672 R=1.0 F1=0.9833 det=61/truth=59 tp=59 fp=2 fn=0,PASS,2 FP from noise burst (upstream assert passes)

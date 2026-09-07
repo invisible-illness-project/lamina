@@ -1,0 +1,52 @@
+{
+  "S2_baseline": {
+    "n_scr_700hz": 0,
+    "n_scr_10hz": 2,
+    "n_scr_4hz": 1
+  },
+  "S2_stress": {
+    "n_scr_700hz": 4,
+    "n_scr_10hz": 9,
+    "n_scr_4hz": 16
+  },
+  "S3_baseline": {
+    "n_scr_700hz": 147,
+    "n_scr_10hz": 130,
+    "n_scr_4hz": 49
+  },
+  "S3_stress": {
+    "n_scr_700hz": 39,
+    "n_scr_10hz": 41,
+    "n_scr_4hz": 41
+  },
+  "S4_baseline": {
+    "n_scr_700hz": 1,
+    "n_scr_10hz": 2,
+    "n_scr_4hz": 1
+  },
+  "S4_stress": {
+    "n_scr_700hz": 21,
+    "n_scr_10hz": 29,
+    "n_scr_4hz": 37
+  },
+  "S5_baseline": {
+    "n_scr_700hz": 2,
+    "n_scr_10hz": 3,
+    "n_scr_4hz": 3
+  },
+  "S5_stress": {
+    "n_scr_700hz": 34,
+    "n_scr_10hz": 38,
+    "n_scr_4hz": 38
+  },
+  "S6_baseline": {
+    "n_scr_700hz": 42,
+    "n_scr_10hz": 34,
+    "n_scr_4hz": 2
+  },
+  "S6_stress": {
+    "n_scr_700hz": 47,
+    "n_scr_10hz": 44,
+    "n_scr_4hz": 35
+  }
+}

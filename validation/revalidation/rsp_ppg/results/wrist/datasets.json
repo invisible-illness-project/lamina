@@ -1,0 +1,48 @@
+[
+  {
+    "dataset": "wrist-ppg-exercise",
+    "version": "1.0.0",
+    "source": "https://physionet.org/content/wrist-ppg-during-exercise/",
+    "access_status": "validated",
+    "reason": "",
+    "subjects_evaluated": 8,
+    "recordings_evaluated": 19,
+    "modalities": [
+      "ppg",
+      "ecg",
+      "acc"
+    ],
+    "lamina_ops": [
+      "ppg-clean",
+      "ppg-peaks",
+      "ecg-peaks",
+      "hrv"
+    ],
+    "lamina_version": "0.1.0",
+    "git_commit": "caa748416a2184cbd622445293ba63da29af8b3e",
+    "validation_date": "2026-09-07T00:17:33+00:00",
+    "metrics": {
+      "ecg_ecg_f1": 0.8563431025160161,
+      "ecg_ecg_fn": 21.0,
+      "ecg_ecg_fp": 182.0,
+      "ecg_ecg_mean_abs_timing_error_sec": 0.02569861848359789,
+      "ecg_ecg_median_timing_error_sec": -0.012129934210526315,
+      "ecg_ecg_n_detected": 760.421052631579,
+      "ecg_ecg_n_peaks": 760.421052631579,
+      "ecg_ecg_n_reference": 599.421052631579,
+      "ecg_ecg_precision": 0.7918913243048088,
+      "ecg_ecg_recall": 0.9612562209614395,
+      "ecg_ecg_tolerance_sec": 0.15,
+      "ecg_ecg_tp": 578.421052631579,
+      "hr_bias": -3.1410681100977897,
+      "hr_mae": 20.748426540312792,
+      "hr_n": 175.3684210526316,
+      "hr_pearson_r": 0.08049547009174994,
+      "hr_rmse": 23.00710883989096,
+      "ppg_ppg_n_peaks": 546.6315789473684,
+      "structural_ppg_ppg_n_peaks": 546.6315789473684
+    },
+    "limitations": [],
+    "failures": []
+  }
+]
