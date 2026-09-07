@@ -1,0 +1,11 @@
+{
+  "ok": false,
+  "op": "hrv-correct",
+  "lamina_version": "0.1.0",
+  "bridge_version": "0.1.0",
+  "result": null,
+  "error": {
+    "kind": "bad_request",
+    "message": "policy 'percent_threshold' requires config 'percent_threshold' (0.0 < p < 1.0)"
+  }
+}

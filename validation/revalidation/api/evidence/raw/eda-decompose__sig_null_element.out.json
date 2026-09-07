@@ -1,0 +1,11 @@
+{
+  "ok": false,
+  "op": "eda-decompose",
+  "lamina_version": "0.1.0",
+  "bridge_version": "0.1.0",
+  "result": null,
+  "error": {
+    "kind": "bad_request",
+    "message": "invalid input JSON: invalid type: null, expected f64 at line 1 column 113"
+  }
+}

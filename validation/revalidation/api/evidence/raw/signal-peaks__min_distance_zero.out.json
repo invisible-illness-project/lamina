@@ -1,0 +1,11 @@
+{
+  "ok": false,
+  "op": "signal-peaks",
+  "lamina_version": "0.1.0",
+  "bridge_version": "0.1.0",
+  "result": null,
+  "error": {
+    "kind": "lamina_error",
+    "message": "Invalid window size: 0 (must be > 0)"
+  }
+}

@@ -1,0 +1,11 @@
+{
+  "ok": false,
+  "op": "eda-clean-config",
+  "lamina_version": "0.1.0",
+  "bridge_version": "0.1.0",
+  "result": null,
+  "error": {
+    "kind": "bad_request",
+    "message": "config 'lowpass_cutoff_hz' must be a number or null"
+  }
+}

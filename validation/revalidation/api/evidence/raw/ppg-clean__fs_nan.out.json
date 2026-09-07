@@ -1,0 +1,11 @@
+{
+  "ok": false,
+  "op": "ppg-clean",
+  "lamina_version": "0.1.0",
+  "bridge_version": "0.1.0",
+  "result": null,
+  "error": {
+    "kind": "bad_request",
+    "message": "invalid input JSON: expected value at line 1 column 24783"
+  }
+}
