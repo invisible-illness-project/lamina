@@ -193,8 +193,11 @@ pub fn rsp_cycles_config(
         return Ok(Vec::new());
     }
 
+    let mean_val = cleaned.mean().unwrap_or(0.0);
     let min_dist_samples = (min_interval_sec * sampling_rate).round().max(1.0) as usize;
-    let peak_cfg = PeakDetectionConfig::new().with_min_distance(min_dist_samples);
+    let peak_cfg = PeakDetectionConfig::new()
+        .with_min_distance(min_dist_samples)
+        .with_min_height(mean_val);
     let candidate_peaks = signal_findpeaks_config(&cleaned, &peak_cfg)?;
 
     if candidate_peaks.len() < 2 {

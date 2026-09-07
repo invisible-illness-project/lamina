@@ -333,3 +333,77 @@ fn test_rsp_precleaned_and_slow_breathing() {
         "Should detect slow breathing cycles (15s interval)"
     );
 }
+
+#[test]
+fn test_rsp_sub_baseline_ripple_rejection() {
+    let fs = 100.0;
+    let duration = 30.0;
+    let n = (fs * duration) as usize;
+    let t = Array1::linspace(0.0, duration, n);
+
+    // 6 breaths/min (0.1 Hz) sine wave + negative trough ripples during exhalation
+    let mut sig = t.mapv(|tv| (2.0 * PI * 0.1 * tv).sin());
+
+    // Add sub-baseline ripples in the expiratory trough (where sin < -0.5)
+    for i in 0..n {
+        if sig[i] < -0.5 {
+            // Sub-zero ripple of amplitude 0.2 that creates local maxima below baseline (around -0.7)
+            let ripple = 0.2 * (2.0 * PI * 1.5 * t[i]).sin();
+            sig[i] += ripple;
+        }
+    }
+
+    let cfg = RspProcessingConfig::default().with_precleaned(true);
+    let cycles = rsp_cycles_config(&sig, fs, &cfg).expect("rsp_cycles_config failed");
+
+    // 30 seconds at 6 bpm = 3 full cycles
+    assert_eq!(
+        cycles.len(),
+        2,
+        "Should detect exactly 2-3 main inspiratory cycles and reject sub-baseline trough ripples"
+    );
+
+    // Verify all detected inspiration peaks are above signal mean
+    let mean_val = sig.mean().unwrap();
+    for c in &cycles {
+        assert!(
+            sig[c.inspiration_index] > mean_val,
+            "Inspiration peak at sample {} must exceed signal mean ({})",
+            c.inspiration_index,
+            mean_val
+        );
+    }
+}
+
+#[test]
+fn test_rsp_dc_offset_invariance() {
+    let fs = 100.0;
+    let duration = 20.0;
+    let n = (fs * duration) as usize;
+    let t = Array1::linspace(0.0, duration, n);
+
+    let raw = t.mapv(|tv| (2.0 * PI * 0.2 * tv).sin());
+    let offset_sig = &raw + 100.0;
+
+    let cfg = RspProcessingConfig::default().with_precleaned(true);
+
+    let cycles_raw = rsp_cycles_config(&raw, fs, &cfg).expect("raw cycles failed");
+    let cycles_offset = rsp_cycles_config(&offset_sig, fs, &cfg).expect("offset cycles failed");
+
+    assert_eq!(
+        cycles_raw.len(),
+        cycles_offset.len(),
+        "Cycle count must be invariant to DC offset"
+    );
+
+    for (c1, c2) in cycles_raw.iter().zip(cycles_offset.iter()) {
+        assert_eq!(
+            c1.inspiration_index, c2.inspiration_index,
+            "Inspiration peak index must match under DC offset"
+        );
+        assert_eq!(
+            c1.expiration_index, c2.expiration_index,
+            "Expiration trough index must match under DC offset"
+        );
+    }
+}

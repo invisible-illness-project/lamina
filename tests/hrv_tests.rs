@@ -122,3 +122,109 @@ fn test_hrv_7case_counterexample_matrix() {
     let q7 = classify_intervals(&c7, Some(0.20));
     assert_eq!(q7[1], IntervalQuality::Missing);
 }
+
+#[test]
+fn test_hrv_empty_container_and_post_filter_contract() {
+    use lamina::error::SignalError;
+    use lamina::hrv::{CorrectionPolicy, clean_rr_intervals};
+
+    // 1. True empty input container (0 samples) -> Err(EmptySignal)
+    let empty_container = Array1::<f64>::zeros(0);
+    assert!(matches!(
+        clean_rr_intervals(&empty_container, &CorrectionPolicy::RejectInvalid),
+        Err(SignalError::EmptySignal)
+    ));
+    assert!(matches!(
+        clean_rr_intervals(&empty_container, &CorrectionPolicy::InterpolateLinear),
+        Err(SignalError::EmptySignal)
+    ));
+    assert!(matches!(
+        clean_rr_intervals(&empty_container, &CorrectionPolicy::InterpolateCubic),
+        Err(SignalError::EmptySignal)
+    ));
+
+    // 2. Non-empty input container (4 samples) where 100% are invalid -> Ok(empty Array1)
+    let all_ectopic = array![600.0, 1000.0, 600.0, 1000.0];
+    let cleaned_reject = clean_rr_intervals(&all_ectopic, &CorrectionPolicy::RejectInvalid)
+        .expect("RejectInvalid on 100% ectopic should return Ok(empty)");
+    assert_eq!(
+        cleaned_reject.len(),
+        0,
+        "Post-filter result should be empty Array1"
+    );
+
+    let cleaned_interp = clean_rr_intervals(&all_ectopic, &CorrectionPolicy::InterpolateLinear)
+        .expect("InterpolateLinear on 100% ectopic should return Ok(empty)");
+    assert_eq!(cleaned_interp.len(), 0);
+
+    let cleaned_cubic = clean_rr_intervals(&all_ectopic, &CorrectionPolicy::InterpolateCubic)
+        .expect("InterpolateCubic on 100% ectopic should return Ok(empty)");
+    assert_eq!(cleaned_cubic.len(), 0);
+
+    // 3. Metric calls on empty post-filter array -> InsufficientPeaks { provided: 0 }
+    assert!(matches!(
+        hrv_mean_nn(&cleaned_reject),
+        Err(SignalError::InsufficientPeaks {
+            required: 1,
+            provided: 0
+        })
+    ));
+
+    assert!(matches!(
+        hrv_rmssd(&cleaned_reject),
+        Err(SignalError::InsufficientPeaks {
+            required: 2,
+            provided: 0
+        })
+    ));
+
+    // 4. Metric call on single-element array -> InsufficientPeaks { provided: 1 } for RMSSD
+    let single_val = array![800.0];
+    assert_eq!(
+        hrv_mean_nn(&single_val).expect("Mean NN of 1 element"),
+        800.0
+    );
+    assert!(matches!(
+        hrv_rmssd(&single_val),
+        Err(SignalError::InsufficientPeaks {
+            required: 2,
+            provided: 1
+        })
+    ));
+}
+
+#[test]
+fn test_natural_cubic_spline_contract() {
+    use lamina::hrv::{CorrectionPolicy, clean_rr_intervals};
+
+    // 1. Verification of linear fallback when valid points < 4
+    let three_valid_raw = array![800.0, 805.0, 100.0, 795.0]; // 1 artifact @ idx 2, 3 valid NN
+    let clean_cubic_fallback =
+        clean_rr_intervals(&three_valid_raw, &CorrectionPolicy::InterpolateCubic)
+            .expect("Cubic fallback test failed");
+    let clean_linear = clean_rr_intervals(&three_valid_raw, &CorrectionPolicy::InterpolateLinear)
+        .expect("Linear compare failed");
+    assert_eq!(
+        clean_cubic_fallback, clean_linear,
+        "Cubic interpolation must fall back to linear when valid points < 4"
+    );
+
+    // 2. Verification of cubic curvature on 4+ valid points
+    let curved_raw = array![800.0, 850.0, 100.0, 840.0, 800.0, 770.0]; // idx 2 is artifact
+    let clean_c = clean_rr_intervals(&curved_raw, &CorrectionPolicy::InterpolateCubic).unwrap();
+    let clean_l = clean_rr_intervals(&curved_raw, &CorrectionPolicy::InterpolateLinear).unwrap();
+
+    assert_eq!(clean_c.len(), curved_raw.len());
+    assert!(clean_c.iter().all(|v| v.is_finite()));
+    // Cubic and linear should differ on curved points
+    assert!((clean_c[2] - clean_l[2]).abs() > 1e-4);
+
+    // 3. Endpoint clamping check: first or last element invalid
+    let end_invalid_raw = array![100.0, 800.0, 810.0, 805.0, 800.0, 795.0]; // idx 0 invalid
+    let clean_end =
+        clean_rr_intervals(&end_invalid_raw, &CorrectionPolicy::InterpolateCubic).unwrap();
+    assert_eq!(
+        clean_end[0], 800.0,
+        "Endpoint should clamp to nearest valid point"
+    );
+}

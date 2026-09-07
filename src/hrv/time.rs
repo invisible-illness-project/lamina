@@ -15,9 +15,6 @@ use ndarray::Array1;
 /// - `intervals` contains non-finite samples ([`SignalError::NonFiniteInput`]).
 pub fn hrv_rmssd(intervals: &Array1<f64>) -> Result<f64> {
     let n = intervals.len();
-    if n == 0 {
-        return Err(SignalError::EmptySignal);
-    }
     if n < 2 {
         return Err(SignalError::InsufficientPeaks {
             required: 2,
@@ -47,12 +44,15 @@ pub fn hrv_rmssd(intervals: &Array1<f64>) -> Result<f64> {
 ///
 /// # Errors
 /// Returns [`SignalError`] if:
-/// - `intervals` is empty ([`SignalError::EmptySignal`]).
+/// - `intervals` has fewer than 1 element ([`SignalError::InsufficientPeaks`]).
 /// - `intervals` contains non-finite samples ([`SignalError::NonFiniteInput`]).
 pub fn hrv_mean_nn(intervals: &Array1<f64>) -> Result<f64> {
     let n = intervals.len();
-    if n == 0 {
-        return Err(SignalError::EmptySignal);
+    if n < 1 {
+        return Err(SignalError::InsufficientPeaks {
+            required: 1,
+            provided: 0,
+        });
     }
     for &val in intervals.iter() {
         if !val.is_finite() {
@@ -60,5 +60,8 @@ pub fn hrv_mean_nn(intervals: &Array1<f64>) -> Result<f64> {
         }
     }
 
-    intervals.mean().ok_or(SignalError::EmptySignal)
+    intervals.mean().ok_or(SignalError::InsufficientPeaks {
+        required: 1,
+        provided: 0,
+    })
 }

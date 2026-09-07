@@ -24,3 +24,4 @@ validation/lamina_bridge/target/
 !validation/lamina_bridge/Cargo.lock
 validation/data/
 # results/ are committed deliverables (task §9) — do not ignore
+.venv_validation/

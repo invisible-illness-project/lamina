@@ -89,7 +89,7 @@ bidmc,bidmc01,hr_consistency_ppg_vs_ecg_mae,0.5191227025717476,bpm,"CONSISTENCY 
 bidmc,bidmc01,hr_consistency_ppg_vs_ecg_bias,-0.5005759595435648,bpm,mean(PPG-HR minus ECG-HR); both from Lamina
 bidmc,bidmc01,ecg_peaks_per_min,91.24847919201348,1/min,structural: Lamina ecg-peaks rate on II @125 Hz; plausible range ~40-180; 125 Hz is below the 5-15 Hz bandpass comfort zone (observation)
 bidmc,bidmc02,interannotator_breath_f1,0.9833333333333333,fraction,ann2 matched against ann1 @0.5 s tolerance (greedy 1:1)
-bidmc,bidmc02,lamina_rsp_vs_ann2_f1,0.983739837398374,fraction,robustness of runner metric to annotator choice (runner uses ann1)
+bidmc,bidmc02,lamina_rsp_vs_ann2_f1,0.9917355371900827,fraction,robustness of runner metric to annotator choice (runner uses ann1)
 bidmc,bidmc02,hr_consistency_ppg_vs_ecg_mae,0.2360706885297077,bpm,"CONSISTENCY CHECK (not independent validation): Lamina ppg-peaks HR vs Lamina ecg-peaks HR, 60 s windows / 30 s step"
 bidmc,bidmc02,hr_consistency_ppg_vs_ecg_bias,0.024009681019081578,bpm,mean(PPG-HR minus ECG-HR); both from Lamina
 bidmc,bidmc02,ecg_peaks_per_min,90.9984833586107,1/min,structural: Lamina ecg-peaks rate on II @125 Hz; plausible range ~40-180; 125 Hz is below the 5-15 Hz bandpass comfort zone (observation)
@@ -99,22 +99,22 @@ bidmc,bidmc03,hr_consistency_ppg_vs_ecg_mae,4.282424498210109,bpm,"CONSISTENCY C
 bidmc,bidmc03,hr_consistency_ppg_vs_ecg_bias,-4.181604148581318,bpm,mean(PPG-HR minus ECG-HR); both from Lamina
 bidmc,bidmc03,ecg_peaks_per_min,78.1236979383677,1/min,structural: Lamina ecg-peaks rate on II @125 Hz; plausible range ~40-180; 125 Hz is below the 5-15 Hz bandpass comfort zone (observation)
 bidmc,bidmc04,interannotator_breath_f1,0.972972972972973,fraction,ann2 matched against ann1 @0.5 s tolerance (greedy 1:1)
-bidmc,bidmc04,lamina_rsp_vs_ann2_f1,0.9530685920577616,fraction,robustness of runner metric to annotator choice (runner uses ann1)
+bidmc,bidmc04,lamina_rsp_vs_ann2_f1,0.9962264150943396,fraction,robustness of runner metric to annotator choice (runner uses ann1)
 bidmc,bidmc04,hr_consistency_ppg_vs_ecg_mae,1.6416294423257616,bpm,"CONSISTENCY CHECK (not independent validation): Lamina ppg-peaks HR vs Lamina ecg-peaks HR, 60 s windows / 30 s step"
 bidmc,bidmc04,hr_consistency_ppg_vs_ecg_bias,-1.641534291682303,bpm,mean(PPG-HR minus ECG-HR); both from Lamina
 bidmc,bidmc04,ecg_peaks_per_min,92.24846252562459,1/min,structural: Lamina ecg-peaks rate on II @125 Hz; plausible range ~40-180; 125 Hz is below the 5-15 Hz bandpass comfort zone (observation)
 bidmc,bidmc05,interannotator_breath_f1,1.0,fraction,ann2 matched against ann1 @0.5 s tolerance (greedy 1:1)
-bidmc,bidmc05,lamina_rsp_vs_ann2_f1,0.6575342465753424,fraction,robustness of runner metric to annotator choice (runner uses ann1)
+bidmc,bidmc05,lamina_rsp_vs_ann2_f1,1.0,fraction,robustness of runner metric to annotator choice (runner uses ann1)
 bidmc,bidmc05,hr_consistency_ppg_vs_ecg_mae,0.8820894069643411,bpm,"CONSISTENCY CHECK (not independent validation): Lamina ppg-peaks HR vs Lamina ecg-peaks HR, 60 s windows / 30 s step"
 bidmc,bidmc05,hr_consistency_ppg_vs_ecg_bias,-0.8161957228036159,bpm,mean(PPG-HR minus ECG-HR); both from Lamina
 bidmc,bidmc05,ecg_peaks_per_min,98.12336461058983,1/min,structural: Lamina ecg-peaks rate on II @125 Hz; plausible range ~40-180; 125 Hz is below the 5-15 Hz bandpass comfort zone (observation)
 bidmc,bidmc06,interannotator_breath_f1,0.9810126582278481,fraction,ann2 matched against ann1 @0.5 s tolerance (greedy 1:1)
-bidmc,bidmc06,lamina_rsp_vs_ann2_f1,0.9937106918238994,fraction,robustness of runner metric to annotator choice (runner uses ann1)
+bidmc,bidmc06,lamina_rsp_vs_ann2_f1,0.9873417721518987,fraction,robustness of runner metric to annotator choice (runner uses ann1)
 bidmc,bidmc06,hr_consistency_ppg_vs_ecg_mae,1.1844104842451297,bpm,"CONSISTENCY CHECK (not independent validation): Lamina ppg-peaks HR vs Lamina ecg-peaks HR, 60 s windows / 30 s step"
 bidmc,bidmc06,hr_consistency_ppg_vs_ecg_bias,-1.1844104842451297,bpm,mean(PPG-HR minus ECG-HR); both from Lamina
 bidmc,bidmc06,ecg_peaks_per_min,81.74863752270797,1/min,structural: Lamina ecg-peaks rate on II @125 Hz; plausible range ~40-180; 125 Hz is below the 5-15 Hz bandpass comfort zone (observation)
 bidmc,bidmc07,interannotator_breath_f1,0.9873417721518987,fraction,ann2 matched against ann1 @0.5 s tolerance (greedy 1:1)
-bidmc,bidmc07,lamina_rsp_vs_ann2_f1,0.9968652037617556,fraction,robustness of runner metric to annotator choice (runner uses ann1)
+bidmc,bidmc07,lamina_rsp_vs_ann2_f1,0.9937106918238994,fraction,robustness of runner metric to annotator choice (runner uses ann1)
 bidmc,bidmc07,hr_consistency_ppg_vs_ecg_mae,0.02314206978156316,bpm,"CONSISTENCY CHECK (not independent validation): Lamina ppg-peaks HR vs Lamina ecg-peaks HR, 60 s windows / 30 s step"
 bidmc,bidmc07,hr_consistency_ppg_vs_ecg_bias,0.007476675600887006,bpm,mean(PPG-HR minus ECG-HR); both from Lamina
 bidmc,bidmc07,ecg_peaks_per_min,90.12349794170098,1/min,structural: Lamina ecg-peaks rate on II @125 Hz; plausible range ~40-180; 125 Hz is below the 5-15 Hz bandpass comfort zone (observation)
@@ -129,12 +129,12 @@ bidmc,bidmc09,hr_consistency_ppg_vs_ecg_mae,0.022727203773927347,bpm,"CONSISTENC
 bidmc,bidmc09,hr_consistency_ppg_vs_ecg_bias,-0.007405389429375002,bpm,mean(PPG-HR minus ECG-HR); both from Lamina
 bidmc,bidmc09,ecg_peaks_per_min,76.74872085465243,1/min,structural: Lamina ecg-peaks rate on II @125 Hz; plausible range ~40-180; 125 Hz is below the 5-15 Hz bandpass comfort zone (observation)
 bidmc,bidmc10,interannotator_breath_f1,0.9591836734693879,fraction,ann2 matched against ann1 @0.5 s tolerance (greedy 1:1)
-bidmc,bidmc10,lamina_rsp_vs_ann2_f1,0.9801324503311258,fraction,robustness of runner metric to annotator choice (runner uses ann1)
+bidmc,bidmc10,lamina_rsp_vs_ann2_f1,0.9832775919732442,fraction,robustness of runner metric to annotator choice (runner uses ann1)
 bidmc,bidmc10,hr_consistency_ppg_vs_ecg_mae,0.8530315728730168,bpm,"CONSISTENCY CHECK (not independent validation): Lamina ppg-peaks HR vs Lamina ecg-peaks HR, 60 s windows / 30 s step"
 bidmc,bidmc10,hr_consistency_ppg_vs_ecg_bias,-0.6189327379922502,bpm,mean(PPG-HR minus ECG-HR); both from Lamina
 bidmc,bidmc10,ecg_peaks_per_min,82.24862918951352,1/min,structural: Lamina ecg-peaks rate on II @125 Hz; plausible range ~40-180; 125 Hz is below the 5-15 Hz bandpass comfort zone (observation)
 bidmc,bidmc11,interannotator_breath_f1,0.9356223175965666,fraction,ann2 matched against ann1 @0.5 s tolerance (greedy 1:1)
-bidmc,bidmc11,lamina_rsp_vs_ann2_f1,0.9586776859504132,fraction,robustness of runner metric to annotator choice (runner uses ann1)
+bidmc,bidmc11,lamina_rsp_vs_ann2_f1,0.9620253164556962,fraction,robustness of runner metric to annotator choice (runner uses ann1)
 bidmc,bidmc11,hr_consistency_ppg_vs_ecg_mae,0.049713475778192635,bpm,"CONSISTENCY CHECK (not independent validation): Lamina ppg-peaks HR vs Lamina ecg-peaks HR, 60 s windows / 30 s step"
 bidmc,bidmc11,hr_consistency_ppg_vs_ecg_bias,0.00727867510828825,bpm,mean(PPG-HR minus ECG-HR); both from Lamina
 bidmc,bidmc11,ecg_peaks_per_min,92.74845419243013,1/min,structural: Lamina ecg-peaks rate on II @125 Hz; plausible range ~40-180; 125 Hz is below the 5-15 Hz bandpass comfort zone (observation)

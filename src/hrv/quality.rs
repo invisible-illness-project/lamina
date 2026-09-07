@@ -145,9 +145,6 @@ pub fn clean_rr_intervals(
                     }
                 })
                 .collect();
-            if valid.is_empty() {
-                return Err(SignalError::EmptySignal);
-            }
             Ok(Array1::from_vec(valid))
         }
         CorrectionPolicy::PercentThreshold(pct) => {
@@ -166,9 +163,6 @@ pub fn clean_rr_intervals(
                     }
                 })
                 .collect();
-            if valid.is_empty() {
-                return Err(SignalError::EmptySignal);
-            }
             Ok(Array1::from_vec(valid))
         }
         CorrectionPolicy::InterpolateLinear => {
@@ -184,7 +178,7 @@ pub fn clean_rr_intervals(
             }
 
             if valid_vals.is_empty() {
-                return Err(SignalError::EmptySignal);
+                return Ok(Array1::from_vec(Vec::new()));
             }
             if valid_vals.len() == 1 {
                 return Ok(Array1::from_elem(n, valid_vals[0]));
@@ -232,7 +226,7 @@ pub fn clean_rr_intervals(
             }
 
             if valid_vals.is_empty() {
-                return Err(SignalError::EmptySignal);
+                return Ok(Array1::from_vec(Vec::new()));
             }
             // Fallback to linear if fewer than 4 valid points for cubic spline stability
             if valid_vals.len() < 4 {
