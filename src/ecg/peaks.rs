@@ -341,18 +341,42 @@ pub fn ecg_findpeaks_config(
     // 7. Precise R-Peak Fine-Alignment on Filtered ECG Signal
     let mut final_r_peaks: Vec<usize> = Vec::new();
     let search_radius = integration_samples;
+    let near_radius = (search_radius / 3).max(1);
 
     for &int_idx in &validated_integrated_peaks {
         let start = int_idx.saturating_sub(search_radius);
         let end = (int_idx + search_radius + 1).min(n);
 
+        // Determine local QRS polarity in a tight neighborhood around the candidate integrated peak
+        let near_start = int_idx.saturating_sub(near_radius);
+        let near_end = (int_idx + near_radius + 1).min(n);
+
+        let mut near_max_idx = near_start;
+        let mut near_max_abs = filtered_ecg[near_start].abs();
+
+        for i in near_start..near_end {
+            let abs_val = filtered_ecg[i].abs();
+            if abs_val > near_max_abs {
+                near_max_abs = abs_val;
+                near_max_idx = i;
+            }
+        }
+
+        let is_negative_qrs = filtered_ecg[near_max_idx] < 0.0;
+
+        // Fine-align to QRS peak matching candidate polarity within search window
         let mut max_idx = start;
-        let mut max_abs = filtered_ecg[start].abs();
+        let mut best_val = filtered_ecg[start];
 
         for i in start..end {
-            let abs_val = filtered_ecg[i].abs();
-            if abs_val > max_abs {
-                max_abs = abs_val;
+            let val = filtered_ecg[i];
+            if is_negative_qrs {
+                if val < best_val {
+                    best_val = val;
+                    max_idx = i;
+                }
+            } else if val > best_val {
+                best_val = val;
                 max_idx = i;
             }
         }

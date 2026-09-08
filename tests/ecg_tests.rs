@@ -542,3 +542,187 @@ fn test_inverted_ecg_fine_alignment() {
         );
     }
 }
+
+#[test]
+fn test_ecg_adversarial_fine_alignment_matrix() {
+    let fs = 250.0;
+    let duration = 10.0;
+    let n = (fs * duration) as usize;
+    let cfg = lamina::ecg::EcgPeakDetectionConfig::default();
+
+    let make_gaussian_pulse = |amp: f64, width_sec: f64| -> Vec<f64> {
+        let len = (width_sec * fs) as usize;
+        let mut pulse = Vec::with_capacity(len);
+        for i in 0..len {
+            let t = (i as f64 - len as f64 / 2.0) / (len as f64 / 4.0);
+            pulse.push(amp * (-0.5 * t * t).exp());
+        }
+        pulse
+    };
+
+    let qrs_len = (0.08 * fs) as usize;
+
+    // Case A: Negative QRS (-1.0) with larger positive T-wave (+1.5) inside search window
+    let mut sig_a = Array1::<f64>::zeros(n);
+    let mut exp_a = Vec::new();
+    for k in 1..9 {
+        let pos = (k as f64 * 1.0 * fs) as usize;
+        let qrs_center = pos + qrs_len / 2;
+        exp_a.push(qrs_center);
+
+        // Negative QRS (-1.0)
+        let qrs = make_gaussian_pulse(-1.0, 0.08);
+        for (i, &v) in qrs.iter().enumerate() {
+            if pos + i < n {
+                sig_a[pos + i] += v;
+            }
+        }
+        // Larger positive T-wave (+1.1) offset by +20 samples (80 ms), width 0.12s
+        let t_pos = pos + 20;
+        let tw = make_gaussian_pulse(1.1, 0.12);
+        for (i, &v) in tw.iter().enumerate() {
+            if t_pos + i < n {
+                sig_a[t_pos + i] += v;
+            }
+        }
+    }
+
+    let peaks_a = ecg_findpeaks_config(&sig_a, fs, &cfg).expect("Case A detection failed");
+    assert_eq!(
+        peaks_a.len(),
+        exp_a.len(),
+        "Case A: Must detect 8 QRS beats"
+    );
+    for (&det, &exp) in peaks_a.iter().zip(exp_a.iter()) {
+        let diff = (det as isize - exp as isize).abs();
+        assert!(
+            diff <= 5,
+            "Case A: Negative QRS R-peak must align to QRS ({}), not larger positive T-wave. Got det {}, diff {}",
+            exp,
+            det,
+            diff
+        );
+    }
+
+    // Case B: Positive QRS (+1.0) with larger negative excursion (-1.5) inside search window
+    let mut sig_b = Array1::<f64>::zeros(n);
+    let mut exp_b = Vec::new();
+    for k in 1..9 {
+        let pos = (k as f64 * 1.0 * fs) as usize;
+        let qrs_center = pos + qrs_len / 2;
+        exp_b.push(qrs_center);
+
+        // Positive QRS (+1.0)
+        let qrs = make_gaussian_pulse(1.0, 0.08);
+        for (i, &v) in qrs.iter().enumerate() {
+            if pos + i < n {
+                sig_b[pos + i] += v;
+            }
+        }
+        // Larger negative artifact (-1.1) offset by +20 samples (80 ms), width 0.12s
+        let art_pos = pos + 20;
+        let art = make_gaussian_pulse(-1.1, 0.12);
+        for (i, &v) in art.iter().enumerate() {
+            if art_pos + i < n {
+                sig_b[art_pos + i] += v;
+            }
+        }
+    }
+
+    let peaks_b = ecg_findpeaks_config(&sig_b, fs, &cfg).expect("Case B detection failed");
+    assert_eq!(
+        peaks_b.len(),
+        exp_b.len(),
+        "Case B: Must detect 8 QRS beats"
+    );
+    for (&det, &exp) in peaks_b.iter().zip(exp_b.iter()) {
+        let diff = (det as isize - exp as isize).abs();
+        assert!(
+            diff <= 5,
+            "Case B: Positive QRS R-peak must align to QRS ({}), not larger negative excursion. Got det {}, diff {}",
+            exp,
+            det,
+            diff
+        );
+    }
+
+    // Case C: Negative QRS (-1.0) + positive baseline ripple (+0.4)
+    let mut sig_c = Array1::<f64>::zeros(n);
+    let mut exp_c = Vec::new();
+    for k in 1..9 {
+        let pos = (k as f64 * 1.0 * fs) as usize;
+        let qrs_center = pos + qrs_len / 2;
+        exp_c.push(qrs_center);
+
+        let qrs = make_gaussian_pulse(-1.0, 0.08);
+        for (i, &v) in qrs.iter().enumerate() {
+            if pos + i < n {
+                sig_c[pos + i] += v;
+            }
+        }
+        let rip_pos = pos + 15;
+        let rip = make_gaussian_pulse(0.4, 0.04);
+        for (i, &v) in rip.iter().enumerate() {
+            if rip_pos + i < n {
+                sig_c[rip_pos + i] += v;
+            }
+        }
+    }
+
+    let peaks_c = ecg_findpeaks_config(&sig_c, fs, &cfg).expect("Case C detection failed");
+    assert_eq!(
+        peaks_c.len(),
+        exp_c.len(),
+        "Case C: Must detect 8 QRS beats"
+    );
+    for (&det, &exp) in peaks_c.iter().zip(exp_c.iter()) {
+        let diff = (det as isize - exp as isize).abs();
+        assert!(
+            diff <= 5,
+            "Case C: Negative QRS R-peak must align to QRS ({}), got det {}, diff {}",
+            exp,
+            det,
+            diff
+        );
+    }
+
+    // Case D: Positive QRS (+1.0) + negative baseline ripple (-0.4)
+    let mut sig_d = Array1::<f64>::zeros(n);
+    let mut exp_d = Vec::new();
+    for k in 1..9 {
+        let pos = (k as f64 * 1.0 * fs) as usize;
+        let qrs_center = pos + qrs_len / 2;
+        exp_d.push(qrs_center);
+
+        let qrs = make_gaussian_pulse(1.0, 0.08);
+        for (i, &v) in qrs.iter().enumerate() {
+            if pos + i < n {
+                sig_d[pos + i] += v;
+            }
+        }
+        let rip_pos = pos + 15;
+        let rip = make_gaussian_pulse(-0.4, 0.04);
+        for (i, &v) in rip.iter().enumerate() {
+            if rip_pos + i < n {
+                sig_d[rip_pos + i] += v;
+            }
+        }
+    }
+
+    let peaks_d = ecg_findpeaks_config(&sig_d, fs, &cfg).expect("Case D detection failed");
+    assert_eq!(
+        peaks_d.len(),
+        exp_d.len(),
+        "Case D: Must detect 8 QRS beats"
+    );
+    for (&det, &exp) in peaks_d.iter().zip(exp_d.iter()) {
+        let diff = (det as isize - exp as isize).abs();
+        assert!(
+            diff <= 5,
+            "Case D: Positive QRS R-peak must align to QRS ({}), got det {}, diff {}",
+            exp,
+            det,
+            diff
+        );
+    }
+}
