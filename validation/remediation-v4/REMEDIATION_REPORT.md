@@ -10,6 +10,8 @@ To remediate REV3-003, `compute_should_flip` was refactored to implement a direc
 - **Negative Sample Skewness ($\gamma_1 < -0.3$)**: Signals dominated by sharp downward excursions (e.g. raw optical intensity drops during systolic blood volume expansion) trigger inversion (`should_flip = true`).
 - **Positive / Ambiguous Skewness ($\gamma_1 \ge -0.3$)**: Signals with positive skewness (already BVP peak-up phase), near-zero skewness, or low variance ($\sigma \le 10^{-6}$) are preserved (`should_flip = false`).
 
+`AutoDetect` is a statistical polarity heuristic. Negative skewness below the configured threshold is treated as evidence for inversion, but skewness alone cannot establish the physical optical measurement convention or distinguish physiological waveform polarity from artifact-induced asymmetry.
+
 Crucially, `SignalPolarity::Inverted` remains the normative production default in `RppgConfig::default()`. The test suite was expanded with 16 comprehensive scenario tests, 5 explicit adversarial fixtures, and physical-vs-statistical contract tests. All 12 validation phases and protected signal-processing baselines pass 100%.
 
 ---
@@ -21,7 +23,7 @@ Prior to remediation, `SignalPolarity::AutoDetect` was evaluated in `src/rppg/si
 $$\gamma_1 > 0.3 \implies \text{flip}$$
 
 In optical photoplethysmography:
-- **Raw optical intensity domain**: Cardiac expansion increases tissue light absorption, causing reflected light intensity to drop. This produces downward-directed spikes, resulting in negative sample skewness ($\gamma_1 < 0$).
+- **Raw optical intensity domain**: Cardiac expansion increases tissue light absorption, causing reflected light intensity to drop. Waveforms belonging to this statistical class typically exhibit downward-directed spikes, resulting in negative sample skewness ($\gamma_1 < 0$).
 - **Normalized BVP pulse domain**: Blood volume expansion is represented as positive upward peaks, resulting in positive sample skewness ($\gamma_1 > 0$).
 
 Evaluating `skew > 0.3 => flip` resulted in flipping signals that were *already* positively skewed (turning valid BVP peaks upside down) while leaving negatively skewed raw absorption signals unflipped.
@@ -31,13 +33,13 @@ Evaluating `skew > 0.3 => flip` resulted in flipping signals that were *already*
 ## 3. Root Cause / Scientific Analysis
 
 Statistical sample skewness $\gamma_1 = \frac{1}{N} \sum \left(\frac{x_i - \mu}{\sigma}\right)^3$ measures distributional third-moment asymmetry around the sample mean:
-1. Skewness measures **statistical asymmetry**, NOT physical sensor orientation.
+1. Skewness measures **statistical asymmetry**, NOT physical sensor orientation or physiological pulse polarity.
 2. Positive skewness ($\gamma_1 > 0$) indicates a heavy upper tail (narrow upward peaks).
 3. Negative skewness ($\gamma_1 < 0$) indicates a heavy lower tail (narrow downward troughs).
 
 Therefore:
-- A raw optical intensity signal with systolic absorption drops has negative skewness ($\gamma_1 < -0.3$). To convert it to BVP peak-up phase, it MUST be inverted (`should_flip = true`).
-- A BVP signal already in peak-up phase has positive skewness ($\gamma_1 > +0.3$). Inverting it would destroy peak alignment.
+- A raw optical intensity signal with systolic absorption drops exhibits negative sample skewness ($\gamma_1 < -0.3$). Under the heuristic contract, `AutoDetect` negates the waveform (`should_flip = true`).
+- A BVP signal already in peak-up phase has positive sample skewness ($\gamma_1 > +0.3$). Inverting it would destroy peak alignment (`should_flip = false`).
 - A symmetric signal ($\gamma_1 \approx 0.0$), constant signal ($\sigma = 0$), or low-variance signal ($\sigma \le 10^{-6}$) has no statistical basis for polarity inference and MUST be preserved (`should_flip = false`).
 
 ---
@@ -79,7 +81,7 @@ The implementation enforces the following mathematical contract in `compute_shou
 
 - `src/rppg/config.rs`: Updated docstrings for `SignalPolarity` variants (`Normal`, `Inverted`, `AutoDetect`), clarifying physical optical absorption conventions, statistical limitations of skewness, experimental nature, low-variance/ambiguous behavior, and why explicit `Inverted` is normative.
 - `src/rppg/signal.rs`: Refactored `compute_should_flip(wf)` to enforce `skew < -0.3` for inversion and updated internal docstrings.
-- `tests/rppg_tests.rs`: Added 16 required test matrix scenarios, 5 explicit adversarial test fixtures (`test_rppg_five_adversarial_fixtures`), and physical-vs-statistical boundary tests (`test_rppg_physical_vs_statistical_contract`).
+- `tests/rppg_tests.rs`: Added 16 required test matrix scenarios, 5 explicit adversarial test fixtures (`test_rppg_five_adversarial_fixtures`), physical-vs-statistical boundary tests (`test_rppg_physical_vs_statistical_contract`), production default assertion (`test_rppg_config_default_polarity`), and exact threshold boundary tests (`test_rppg_autodetect_exact_boundary_thresholds`).
 
 ---
 
@@ -91,7 +93,7 @@ The table below records the measured empirical results for all 5 required advers
 |---|---|---|---|---|---|---|---|---|---|
 | **ADV-1** | Positive BVP (6 narrow systolic peaks up, amp +8.0) | 120 | 0.5500 | 1.8296 | +3.4713 | `false` | `false` | PASS | Guards directly against REV3-003 regression. Positively skewed BVP preserved. |
 | **ADV-2** | Negative Skew Waveform (6 narrow absorption drops, amp -8.0) | 120 | -0.5500 | 1.8296 | -3.4713 | `true` | `true` | PASS | Verifies directional inversion on raw absorption signals. |
-| **ADV-3** | Motion Artifact (pulse amp +0.5 + single -25.0 motion spike) | 120 | -0.1833 | 2.2775 | -10.7789 | `true` | `true` | PASS | Follows mathematical contract ($\gamma_1 < -0.3$). Documented operational limitation under severe artifact contamination. |
+| **ADV-3** | Motion Artifact (pulse amp +0.5 + single -25.0 motion spike) | 120 | -0.1833 | 2.2775 | -10.7789 | `true` | `true` | PASS | The large motion artifact produces strongly negative skewness ($\gamma_1 = -10.7789 < -0.3$) and therefore causes AutoDetect to invert according to its mathematical contract. This demonstrates a known failure mode of skewness-based polarity inference under severe artifact contamination rather than successful physiological polarity identification. |
 | **ADV-4** | Biphasic Ambiguous Signal (symmetric +4.0 and -4.0 spikes) | 120 | 0.0000 | 1.2649 | 0.0000 | `false` | `false` | PASS | Validates conservative preservation on ambiguous symmetric inputs. |
 | **ADV-5** | High-Frequency Noise Burst (alternating $\pm 2.0$ noise burst) | 120 | 0.0000 | 0.8165 | 0.0000 | `false` | `false` | PASS | Validates finite output, zero panics, and conservative preservation on noise. |
 
@@ -135,7 +137,7 @@ All 12 validation phases were executed and verified against protected baseline m
 
 Statistical skewness is a third-moment distributional summary and has explicit operational boundaries:
 1. **Physical Unidentifiability**: Skewness cannot determine whether an optical sensor measures increasing reflected light intensity or increasing absorption when waveform morphology is symmetric or noisy.
-2. **Nonstationary Artifacts**: Isolated large motion spikes (such as in ADV-3) dominate the third power of sample deviations, driving skewness negative or positive regardless of cardiac pulse polarity.
+2. **Nonstationary Artifacts**: Isolated large motion spikes (such as in ADV-3 where a single $-25.0$ spike contributes $> 99.9\%$ of the third central moment) dominate the cubic power of sample deviations, driving skewness negative or positive regardless of underlying cardiac pulse polarity.
 3. **Low Amplitude / High Noise**: When pulsatile signal-to-noise ratio is low, statistical skewness falls within the ambiguity band $[-0.3, +0.3]$, causing `AutoDetect` to default to `false` (no flip).
 
 Callers with known hardware optical sensor conventions should configure `SignalPolarity::Inverted` or `SignalPolarity::Normal` explicitly rather than relying on statistical auto-detection.
@@ -147,3 +149,4 @@ Callers with known hardware optical sensor conventions should configure `SignalP
 **FINAL STATUS: PASS**
 
 All implementation changes, unit tests, adversarial fixtures, code formatting, clippy lints, and 12 validation phases are 100% passing without regressions.
+

@@ -1375,3 +1375,111 @@ fn test_rppg_physical_vs_statistical_contract() {
     assert_ne!(bvp_auto_b.waveform, bvp_norm_b.waveform);
     // Explicit SignalPolarity::Normal or Inverted is required when caller has authoritative physical sensor metadata.
 }
+
+#[test]
+fn test_rppg_config_default_polarity() {
+    use lamina::rppg::{RppgConfig, SignalPolarity};
+    // Direct regression assertion that production default is SignalPolarity::Inverted
+    let default_config = RppgConfig::default();
+    assert_eq!(
+        default_config.polarity,
+        SignalPolarity::Inverted,
+        "RppgConfig::default().polarity MUST be SignalPolarity::Inverted"
+    );
+}
+
+#[test]
+fn test_rppg_autodetect_exact_boundary_thresholds() {
+    use lamina::rppg::{RppgAlgorithmId, RppgQualitySummary, RppgSignal, SignalPolarity};
+
+    let dummy_quality = RppgQualitySummary {
+        overall: 1.0,
+        valid_fraction: 1.0,
+        segments: Vec::new(),
+    };
+
+    // Vector with measured skewness precisely -0.300001
+    let vec_neg_300001 = vec![
+        -4.4927422365688565e-05,
+        1.0553526721561362,
+        0.6995577514623069,
+        -1.3964580922655145,
+        -0.5070985388410301,
+    ];
+    let (_, _, _, skew_300001) = compute_test_stats(&vec_neg_300001);
+    assert!(
+        skew_300001 < -0.3,
+        "skew_300001 must be < -0.3, got {}",
+        skew_300001
+    );
+
+    let sig_300001 = RppgSignal {
+        timestamps_sec: vec![0.0, 0.1, 0.2, 0.3, 0.4],
+        waveform: vec_neg_300001.clone(),
+        sampling_rate_hz: 10.0,
+        quality: dummy_quality.clone(),
+        algorithm: RppgAlgorithmId::Chrom,
+    };
+    let bvp_300001 = sig_300001.to_bvp_waveform(SignalPolarity::AutoDetect);
+    let expected_300001: Vec<f64> = vec_neg_300001.iter().map(|v| -v).collect();
+    assert_eq!(
+        bvp_300001.waveform, expected_300001,
+        "skew = -0.300001 (< -0.3) MUST return true (inversion)"
+    );
+
+    // Vector with measured skewness precisely -0.300000
+    let vec_neg_300000 = vec![
+        -4.398406362247541e-05,
+        1.0556404675742956,
+        0.7013143078543917,
+        -1.396508376324478,
+        -0.5069528978106992,
+    ];
+    let (_, _, _, skew_300000) = compute_test_stats(&vec_neg_300000);
+    assert!(
+        skew_300000 >= -0.3,
+        "skew_300000 must be >= -0.3, got {}",
+        skew_300000
+    );
+
+    let sig_300000 = RppgSignal {
+        timestamps_sec: vec![0.0, 0.1, 0.2, 0.3, 0.4],
+        waveform: vec_neg_300000.clone(),
+        sampling_rate_hz: 10.0,
+        quality: dummy_quality.clone(),
+        algorithm: RppgAlgorithmId::Chrom,
+    };
+    let bvp_300000 = sig_300000.to_bvp_waveform(SignalPolarity::AutoDetect);
+    assert_eq!(
+        bvp_300000.waveform, vec_neg_300000,
+        "skew = -0.300000 (>= -0.3) MUST return false (no inversion)"
+    );
+
+    // Vector with measured skewness precisely -0.299999
+    let vec_neg_299999 = vec![
+        -4.452951497521775e-05,
+        1.0555494674895416,
+        0.7003436711291042,
+        -1.3965184876408938,
+        -0.5070072746994043,
+    ];
+    let (_, _, _, skew_299999) = compute_test_stats(&vec_neg_299999);
+    assert!(
+        skew_299999 >= -0.3,
+        "skew_299999 must be >= -0.3, got {}",
+        skew_299999
+    );
+
+    let sig_299999 = RppgSignal {
+        timestamps_sec: vec![0.0, 0.1, 0.2, 0.3, 0.4],
+        waveform: vec_neg_299999.clone(),
+        sampling_rate_hz: 10.0,
+        quality: dummy_quality,
+        algorithm: RppgAlgorithmId::Chrom,
+    };
+    let bvp_299999 = sig_299999.to_bvp_waveform(SignalPolarity::AutoDetect);
+    assert_eq!(
+        bvp_299999.waveform, vec_neg_299999,
+        "skew = -0.299999 (>= -0.3) MUST return false (no inversion)"
+    );
+}
