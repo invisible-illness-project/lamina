@@ -555,12 +555,18 @@ impl RppgSignal {
     }
 }
 
-/// Internal heuristic for [`SignalPolarity::AutoDetect`].
+/// Internal statistical directional heuristic for [`SignalPolarity::AutoDetect`].
 ///
-/// Evaluates sample skewness $\gamma_1 = E[((X - \mu)/\sigma)^3]$. If $\gamma_1 > 0.3$, returns `true` to invert.
+/// Evaluates sample skewness $\gamma_1 = \frac{1}{N} \sum \left(\frac{x_i - \mu}{\sigma}\right)^3$.
+/// If $\gamma_1 < -0.3$ (negative sample skewness indicating downward excursion dominance, e.g. raw light intensity absorption drops),
+/// returns `true` to invert. If $\gamma_1 \ge -0.3$ (positive sample skewness, near-zero skewness, or low variance $\sigma \le 10^{-6}$),
+/// returns `false` (preserve signal without inversion).
 ///
-/// Note: Skewness alone cannot unambiguously determine physical optical polarity for all BVP waveforms.
-/// Explicit [`SignalPolarity::Inverted`] should be preferred for production absorption-domain pipelines.
+/// # Scientific Contract & Limitations
+/// Sample skewness is a statistical property of sample distributions, not a physical sensor-orientation detector.
+/// Negative skewness below $-0.3$ triggers inversion as a directional heuristic. Skewness statistics alone cannot
+/// establish physical optical sensor orientation when waveforms exhibit ambiguous morphology, motion artifacts, or noise.
+/// Explicit [`SignalPolarity::Inverted`] remains the normative production default for raw optical absorption measurements.
 fn compute_should_flip(wf: &[f64]) -> bool {
     let valid_samples: Vec<f64> = wf.iter().copied().filter(|v| v.is_finite()).collect();
     if valid_samples.len() > 3 {
@@ -577,7 +583,7 @@ fn compute_should_flip(wf: &[f64]) -> bool {
                 .map(|v| ((v - mean) / std).powi(3))
                 .sum::<f64>()
                 / valid_samples.len() as f64;
-            skew > 0.3
+            skew < -0.3
         } else {
             false
         }

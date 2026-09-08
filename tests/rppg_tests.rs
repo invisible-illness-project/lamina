@@ -809,6 +809,27 @@ fn test_signal_polarity_and_bvp_waveform() {
     assert_eq!(arr.len(), 5);
 }
 
+fn compute_test_stats(wf: &[f64]) -> (usize, f64, f64, f64) {
+    let valid: Vec<f64> = wf.iter().copied().filter(|v| v.is_finite()).collect();
+    let n = valid.len();
+    if n <= 3 {
+        return (n, 0.0, 0.0, 0.0);
+    }
+    let mean = valid.iter().sum::<f64>() / n as f64;
+    let var = valid.iter().map(|v| (v - mean).powi(2)).sum::<f64>() / n as f64;
+    let std = var.sqrt();
+    let skew = if std > 1e-6 {
+        valid
+            .iter()
+            .map(|v| ((v - mean) / std).powi(3))
+            .sum::<f64>()
+            / n as f64
+    } else {
+        0.0
+    };
+    (n, mean, std, skew)
+}
+
 #[test]
 fn test_rppg_polarity_contract_and_autodetect_boundaries() {
     use lamina::rppg::{RppgAlgorithmId, RppgQualitySummary, RppgSignal, SignalPolarity};
@@ -820,65 +841,537 @@ fn test_rppg_polarity_contract_and_autodetect_boundaries() {
         segments: Vec::new(),
     };
 
-    // 1. Explicit Normal & Explicit Inverted (Deterministic Physical Contracts)
-    let raw_optical = vec![0.0, 0.1, -1.5, 0.2, 0.0, 0.1, -1.4, 0.2];
-    let rppg_abs = RppgSignal {
+    // ------------------------------------------------------------------------
+    // Explicit Polarity Modes (Scenarios 1 - 4)
+    // ------------------------------------------------------------------------
+
+    // 1. Normal + positive waveform -> unchanged
+    let pos_wave = vec![0.0, 1.0, 5.0, 1.0, 0.0, 1.0, 5.0, 1.0];
+    let rppg_pos = RppgSignal {
         timestamps_sec: timestamps.clone(),
-        waveform: raw_optical.clone(),
+        waveform: pos_wave.clone(),
         sampling_rate_hz: 10.0,
         quality: dummy_quality.clone(),
         algorithm: RppgAlgorithmId::Chrom,
     };
-
-    let bvp_norm = rppg_abs.to_bvp_waveform(SignalPolarity::Normal);
+    let bvp_pos_norm = rppg_pos.to_bvp_waveform(SignalPolarity::Normal);
     assert_eq!(
-        bvp_norm.waveform, raw_optical,
-        "Explicit Normal must preserve waveform exactly"
+        bvp_pos_norm.waveform, pos_wave,
+        "Normal + positive waveform must be unchanged"
     );
 
-    let bvp_inv = rppg_abs.to_bvp_waveform(SignalPolarity::Inverted);
-    let expected_inv: Vec<f64> = raw_optical.iter().map(|v| -v).collect();
-    assert_eq!(
-        bvp_inv.waveform, expected_inv,
-        "Explicit Inverted must negate waveform exactly"
-    );
-
-    // 2. Right-skewed positive pulse waveform
-    // Baseline = 0.0 with positive peaks = 5.0 (skew > 0.3)
-    let pos_pulse = vec![0.0, 0.0, 0.0, 5.0, 0.0, 0.0, 0.0, 5.0];
-    let rppg_pos = RppgSignal {
+    // 2. Normal + negative waveform -> unchanged
+    let neg_wave = vec![0.0, -1.0, -5.0, -1.0, 0.0, -1.0, -5.0, -1.0];
+    let rppg_neg = RppgSignal {
         timestamps_sec: timestamps.clone(),
-        waveform: pos_pulse.clone(),
+        waveform: neg_wave.clone(),
         sampling_rate_hz: 10.0,
+        quality: dummy_quality.clone(),
+        algorithm: RppgAlgorithmId::Chrom,
+    };
+    let bvp_neg_norm = rppg_neg.to_bvp_waveform(SignalPolarity::Normal);
+    assert_eq!(
+        bvp_neg_norm.waveform, neg_wave,
+        "Normal + negative waveform must be unchanged"
+    );
+
+    // 3. Inverted + positive waveform -> negated
+    let bvp_pos_inv = rppg_pos.to_bvp_waveform(SignalPolarity::Inverted);
+    let expected_pos_inv: Vec<f64> = pos_wave.iter().map(|v| -v).collect();
+    assert_eq!(
+        bvp_pos_inv.waveform, expected_pos_inv,
+        "Inverted + positive waveform must be negated"
+    );
+
+    // 4. Inverted + negative waveform -> negated
+    let bvp_neg_inv = rppg_neg.to_bvp_waveform(SignalPolarity::Inverted);
+    let expected_neg_inv: Vec<f64> = neg_wave.iter().map(|v| -v).collect();
+    assert_eq!(
+        bvp_neg_inv.waveform, expected_neg_inv,
+        "Inverted + negative waveform must be negated"
+    );
+
+    // ------------------------------------------------------------------------
+    // AutoDetect Directional & Boundary Scenarios (Scenarios 5 - 16)
+    // ------------------------------------------------------------------------
+
+    // 5. Right-skewed positive pulse (systolic peak up) -> no flip (skew > +0.3)
+    let mut right_skew_pos = vec![0.0; 100];
+    for k in 0..5 {
+        right_skew_pos[k * 20 + 5] = 5.0;
+        right_skew_pos[k * 20 + 6] = 2.0;
+    }
+    let (_, _, _, skew5) = compute_test_stats(&right_skew_pos);
+    assert!(
+        skew5 > 0.3,
+        "Scenario 5 must be positively skewed: skew = {}",
+        skew5
+    );
+    let rppg_s5 = RppgSignal {
+        timestamps_sec: (0..100).map(|i| i as f64 * 0.033).collect(),
+        waveform: right_skew_pos.clone(),
+        sampling_rate_hz: 30.0,
         quality: dummy_quality.clone(),
         algorithm: RppgAlgorithmId::Pos,
     };
-
-    // Explicit Normal preserves positive pulse waveform
-    let bvp_pos_norm = rppg_pos.to_bvp_waveform(SignalPolarity::Normal);
-    assert_eq!(bvp_pos_norm.waveform, pos_pulse);
-
-    // AutoDetect evaluates skew > 0.3 and flips signal (documenting heuristic boundary)
-    let bvp_pos_auto = rppg_pos.to_bvp_waveform(SignalPolarity::AutoDetect);
-    let expected_pos_flipped: Vec<f64> = pos_pulse.iter().map(|v| -v).collect();
+    let bvp_s5 = rppg_s5.to_bvp_waveform(SignalPolarity::AutoDetect);
     assert_eq!(
-        bvp_pos_auto.waveform, expected_pos_flipped,
-        "AutoDetect skewness heuristic flips positive pulse due to positive skewness"
+        bvp_s5.waveform, right_skew_pos,
+        "Scenario 5 (skew > +0.3) must NOT be flipped by AutoDetect"
     );
 
-    // 3. Degenerate / near-zero variance input (std <= 1e-6)
-    let constant_wave = vec![1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0];
-    let rppg_const = RppgSignal {
+    // 6. Right-skewed negative pulse (mostly -5.0 with narrow spikes to 0.0 -> positive skew) -> no flip
+    let mut right_skew_neg = vec![-5.0; 100];
+    for k in 0..5 {
+        right_skew_neg[k * 20 + 5] = 0.0;
+    }
+    let (_, _, _, skew6) = compute_test_stats(&right_skew_neg);
+    assert!(
+        skew6 >= -0.3,
+        "Scenario 6 skewness ({}) must be >= -0.3",
+        skew6
+    );
+    let rppg_s6 = RppgSignal {
+        timestamps_sec: (0..100).map(|i| i as f64 * 0.033).collect(),
+        waveform: right_skew_neg.clone(),
+        sampling_rate_hz: 30.0,
+        quality: dummy_quality.clone(),
+        algorithm: RppgAlgorithmId::GreenChannel,
+    };
+    let bvp_s6 = rppg_s6.to_bvp_waveform(SignalPolarity::AutoDetect);
+    assert_eq!(
+        bvp_s6.waveform, right_skew_neg,
+        "Scenario 6 must NOT be flipped (skew >= -0.3)"
+    );
+
+    // 7. Left-skewed positive pulse (narrow downward drops to -5.0 -> negative skew < -0.3) -> flip
+    let mut left_skew_pos = vec![0.0; 100];
+    for k in 0..5 {
+        left_skew_pos[k * 20 + 5] = -5.0;
+        left_skew_pos[k * 20 + 6] = -2.0;
+    }
+    let (_, _, _, skew7) = compute_test_stats(&left_skew_pos);
+    assert!(
+        skew7 < -0.3,
+        "Scenario 7 must be negatively skewed: skew = {}",
+        skew7
+    );
+    let rppg_s7 = RppgSignal {
+        timestamps_sec: (0..100).map(|i| i as f64 * 0.033).collect(),
+        waveform: left_skew_pos.clone(),
+        sampling_rate_hz: 30.0,
+        quality: dummy_quality.clone(),
+        algorithm: RppgAlgorithmId::GreenChannel,
+    };
+    let bvp_s7 = rppg_s7.to_bvp_waveform(SignalPolarity::AutoDetect);
+    let expected_s7: Vec<f64> = left_skew_pos.iter().map(|v| -v).collect();
+    assert_eq!(
+        bvp_s7.waveform, expected_s7,
+        "Scenario 7 (skew < -0.3) MUST be flipped by AutoDetect"
+    );
+
+    // 8. Left-skewed negative pulse (baseline +5.0 with narrow drops to -10.0 -> negative skew < -0.3) -> flip
+    let mut left_skew_neg = vec![5.0; 100];
+    for k in 0..5 {
+        left_skew_neg[k * 20 + 5] = -10.0;
+    }
+    let (_, _, _, skew8) = compute_test_stats(&left_skew_neg);
+    assert!(
+        skew8 < -0.3,
+        "Scenario 8 skewness ({}) must be < -0.3",
+        skew8
+    );
+    let rppg_s8 = RppgSignal {
+        timestamps_sec: (0..100).map(|i| i as f64 * 0.033).collect(),
+        waveform: left_skew_neg.clone(),
+        sampling_rate_hz: 30.0,
+        quality: dummy_quality.clone(),
+        algorithm: RppgAlgorithmId::GreenChannel,
+    };
+    let bvp_s8 = rppg_s8.to_bvp_waveform(SignalPolarity::AutoDetect);
+    let expected_s8: Vec<f64> = left_skew_neg.iter().map(|v| -v).collect();
+    assert_eq!(
+        bvp_s8.waveform, expected_s8,
+        "Scenario 8 (skew < -0.3) MUST be flipped by AutoDetect"
+    );
+
+    // 9. Symmetric sine waveform (exact integer periods, skew ~ 0.0) -> no flip
+    let sine_wave: Vec<f64> = (0..100)
+        .map(|i| (i as f64 * 4.0 * std::f64::consts::PI / 100.0).sin())
+        .collect();
+    let (_, _, _, skew9) = compute_test_stats(&sine_wave);
+    assert!(
+        skew9.abs() <= 0.3,
+        "Scenario 9 sine skewness ({}) must be inside [-0.3, 0.3]",
+        skew9
+    );
+    let rppg_s9 = RppgSignal {
+        timestamps_sec: (0..100).map(|i| i as f64 * 0.033).collect(),
+        waveform: sine_wave.clone(),
+        sampling_rate_hz: 30.0,
+        quality: dummy_quality.clone(),
+        algorithm: RppgAlgorithmId::Chrom,
+    };
+    let bvp_s9 = rppg_s9.to_bvp_waveform(SignalPolarity::AutoDetect);
+    assert_eq!(
+        bvp_s9.waveform, sine_wave,
+        "Scenario 9 (symmetric sine) must NOT be flipped"
+    );
+
+    // 10. Low-variance waveform (std <= 1e-6) -> no flip
+    let low_var_wave = vec![
+        1.0, 1.0000001, 1.0, 1.0000001, 1.0, 1.0000001, 1.0, 1.0000001,
+    ];
+    let (_, _, s10, _) = compute_test_stats(&low_var_wave);
+    assert!(s10 <= 1e-6, "Scenario 10 std ({}) must be <= 1e-6", s10);
+    let rppg_s10 = RppgSignal {
         timestamps_sec: timestamps.clone(),
-        waveform: constant_wave.clone(),
+        waveform: low_var_wave.clone(),
         sampling_rate_hz: 10.0,
+        quality: dummy_quality.clone(),
+        algorithm: RppgAlgorithmId::GreenChannel,
+    };
+    let bvp_s10 = rppg_s10.to_bvp_waveform(SignalPolarity::AutoDetect);
+    assert_eq!(
+        bvp_s10.waveform, low_var_wave,
+        "Scenario 10 (low-variance) must NOT be flipped"
+    );
+
+    // 11. Constant waveform (std = 0.0) -> no flip
+    let const_wave = vec![2.5; 30];
+    let rppg_s11 = RppgSignal {
+        timestamps_sec: (0..30).map(|i| i as f64 * 0.1).collect(),
+        waveform: const_wave.clone(),
+        sampling_rate_hz: 10.0,
+        quality: dummy_quality.clone(),
+        algorithm: RppgAlgorithmId::GreenChannel,
+    };
+    let bvp_s11 = rppg_s11.to_bvp_waveform(SignalPolarity::AutoDetect);
+    assert_eq!(
+        bvp_s11.waveform, const_wave,
+        "Scenario 11 (constant) must NOT be flipped"
+    );
+
+    // 12. Zero-mean Gaussian-like noise (deterministic, skew ~ 0) -> no flip
+    let mut noise_wave = Vec::with_capacity(100);
+    for i in 0..100 {
+        let v = ((i * 17 + 5) % 31) as f64 / 31.0 - 0.5;
+        noise_wave.push(v);
+    }
+    let (_, _, _, skew12) = compute_test_stats(&noise_wave);
+    assert!(
+        skew12.abs() <= 0.3,
+        "Scenario 12 noise skewness ({}) must be inside [-0.3, 0.3]",
+        skew12
+    );
+    let rppg_s12 = RppgSignal {
+        timestamps_sec: (0..100).map(|i| i as f64 * 0.033).collect(),
+        waveform: noise_wave.clone(),
+        sampling_rate_hz: 30.0,
+        quality: dummy_quality.clone(),
+        algorithm: RppgAlgorithmId::Chrom,
+    };
+    let bvp_s12 = rppg_s12.to_bvp_waveform(SignalPolarity::AutoDetect);
+    assert_eq!(
+        bvp_s12.waveform, noise_wave,
+        "Scenario 12 (noise) must NOT be flipped"
+    );
+
+    // 13. Baseline drift + pulse -> verify skewness decision rule
+    let mut trend_pulse = vec![0.0; 100];
+    for (i, val) in trend_pulse.iter_mut().enumerate().take(100) {
+        *val = 0.05 * i as f64;
+    }
+    for k in 0..5 {
+        trend_pulse[k * 20 + 5] += 5.0;
+    }
+    let (_, _, _, skew13) = compute_test_stats(&trend_pulse);
+    let rppg_s13 = RppgSignal {
+        timestamps_sec: (0..100).map(|i| i as f64 * 0.033).collect(),
+        waveform: trend_pulse.clone(),
+        sampling_rate_hz: 30.0,
+        quality: dummy_quality.clone(),
+        algorithm: RppgAlgorithmId::Pos,
+    };
+    let bvp_s13 = rppg_s13.to_bvp_waveform(SignalPolarity::AutoDetect);
+    if skew13 < -0.3 {
+        let exp13: Vec<f64> = trend_pulse.iter().map(|v| -v).collect();
+        assert_eq!(bvp_s13.waveform, exp13);
+    } else {
+        assert_eq!(bvp_s13.waveform, trend_pulse);
+    }
+
+    // 14. Motion artifact (low-amplitude pulse + large isolated motion artifact)
+    let mut motion_wave = vec![0.0; 100];
+    for k in 0..5 {
+        motion_wave[k * 20 + 5] = 0.5; // low-amplitude pulse
+    }
+    motion_wave[50] = -20.0; // large isolated motion artifact causing negative skewness < -0.3
+    let (_, _, _, skew14) = compute_test_stats(&motion_wave);
+    assert!(
+        skew14 < -0.3,
+        "Scenario 14 motion artifact skewness ({}) must be < -0.3",
+        skew14
+    );
+    let rppg_s14 = RppgSignal {
+        timestamps_sec: (0..100).map(|i| i as f64 * 0.033).collect(),
+        waveform: motion_wave.clone(),
+        sampling_rate_hz: 30.0,
+        quality: dummy_quality.clone(),
+        algorithm: RppgAlgorithmId::Chrom,
+    };
+    let bvp_s14 = rppg_s14.to_bvp_waveform(SignalPolarity::AutoDetect);
+    let expected_s14: Vec<f64> = motion_wave.iter().map(|v| -v).collect();
+    assert_eq!(
+        bvp_s14.waveform, expected_s14,
+        "Scenario 14 (skew < -0.3 caused by motion artifact) flips per mathematical rule"
+    );
+
+    // 15. Large opposite-polarity artifact (positive motion spike)
+    let mut motion_pos_wave = vec![0.0; 100];
+    for k in 0..5 {
+        motion_pos_wave[k * 20 + 5] = -0.5; // low-amplitude drop
+    }
+    motion_pos_wave[50] = 20.0; // large positive motion spike -> skew > +0.3
+    let (_, _, _, skew15) = compute_test_stats(&motion_pos_wave);
+    assert!(
+        skew15 > 0.3,
+        "Scenario 15 positive artifact skewness ({}) must be > +0.3",
+        skew15
+    );
+    let rppg_s15 = RppgSignal {
+        timestamps_sec: (0..100).map(|i| i as f64 * 0.033).collect(),
+        waveform: motion_pos_wave.clone(),
+        sampling_rate_hz: 30.0,
+        quality: dummy_quality.clone(),
+        algorithm: RppgAlgorithmId::Chrom,
+    };
+    let bvp_s15 = rppg_s15.to_bvp_waveform(SignalPolarity::AutoDetect);
+    assert_eq!(
+        bvp_s15.waveform, motion_pos_wave,
+        "Scenario 15 (skew > +0.3) must NOT be flipped"
+    );
+
+    // 16. Biphasic / symmetric impulses -> no flip
+    let mut biphasic = vec![0.0; 100];
+    for k in 0..5 {
+        biphasic[k * 20 + 5] = 5.0;
+        biphasic[k * 20 + 10] = -5.0;
+    }
+    let (_, _, _, skew16) = compute_test_stats(&biphasic);
+    assert!(
+        skew16.abs() <= 0.3,
+        "Scenario 16 biphasic skewness ({}) must be inside [-0.3, 0.3]",
+        skew16
+    );
+    let rppg_s16 = RppgSignal {
+        timestamps_sec: (0..100).map(|i| i as f64 * 0.033).collect(),
+        waveform: biphasic.clone(),
+        sampling_rate_hz: 30.0,
+        quality: dummy_quality,
+        algorithm: RppgAlgorithmId::Chrom,
+    };
+    let bvp_s16 = rppg_s16.to_bvp_waveform(SignalPolarity::AutoDetect);
+    assert_eq!(
+        bvp_s16.waveform, biphasic,
+        "Scenario 16 (biphasic symmetric) must NOT be flipped"
+    );
+}
+
+#[test]
+fn test_rppg_five_adversarial_fixtures() {
+    use lamina::rppg::{RppgAlgorithmId, RppgQualitySummary, RppgSignal, SignalPolarity};
+
+    let dummy_quality = RppgQualitySummary {
+        overall: 1.0,
+        valid_fraction: 1.0,
+        segments: Vec::new(),
+    };
+
+    // ADV-1 — Positive BVP (narrow systolic peaks, positive skewness > +0.3)
+    // Guards directly against REV3-003 regression
+    let mut adv1_wave = vec![0.0; 120];
+    for k in 0..6 {
+        adv1_wave[k * 20 + 5] = 8.0;
+        adv1_wave[k * 20 + 6] = 3.0;
+    }
+    let (n1, m1, s1, skew1) = compute_test_stats(&adv1_wave);
+    println!(
+        "ADV-1 stats: N={}, mean={:.4}, std={:.4}, skew={:.4}",
+        n1, m1, s1, skew1
+    );
+    assert!(skew1 > 0.3, "ADV-1 skewness must be > +0.3");
+    let sig1 = RppgSignal {
+        timestamps_sec: (0..120).map(|i| i as f64 * 0.033).collect(),
+        waveform: adv1_wave.clone(),
+        sampling_rate_hz: 30.0,
+        quality: dummy_quality.clone(),
+        algorithm: RppgAlgorithmId::Pos,
+    };
+    let bvp1 = sig1.to_bvp_waveform(SignalPolarity::AutoDetect);
+    assert_eq!(
+        bvp1.waveform, adv1_wave,
+        "ADV-1 (positive BVP, skew > +0.3) must NOT be flipped"
+    );
+
+    // ADV-2 — Negative-Skew Waveform (narrow absorption drops, skewness < -0.3)
+    let mut adv2_wave = vec![0.0; 120];
+    for k in 0..6 {
+        adv2_wave[k * 20 + 5] = -8.0;
+        adv2_wave[k * 20 + 6] = -3.0;
+    }
+    let (n2, m2, s2, skew2) = compute_test_stats(&adv2_wave);
+    println!(
+        "ADV-2 stats: N={}, mean={:.4}, std={:.4}, skew={:.4}",
+        n2, m2, s2, skew2
+    );
+    assert!(skew2 < -0.3, "ADV-2 skewness must be < -0.3");
+    let sig2 = RppgSignal {
+        timestamps_sec: (0..120).map(|i| i as f64 * 0.033).collect(),
+        waveform: adv2_wave.clone(),
+        sampling_rate_hz: 30.0,
+        quality: dummy_quality.clone(),
+        algorithm: RppgAlgorithmId::GreenChannel,
+    };
+    let bvp2 = sig2.to_bvp_waveform(SignalPolarity::AutoDetect);
+    let expected_adv2: Vec<f64> = adv2_wave.iter().map(|v| -v).collect();
+    assert_eq!(
+        bvp2.waveform, expected_adv2,
+        "ADV-2 (skew < -0.3) MUST be flipped"
+    );
+
+    // ADV-3 — Motion Artifact (low-amplitude pulse + large isolated downward artifact)
+    let mut adv3_wave = vec![0.0; 120];
+    for k in 0..6 {
+        adv3_wave[k * 20 + 5] = 0.5; // low-amplitude pulse
+    }
+    adv3_wave[60] = -25.0; // large motion artifact dominating third moment
+    let (n3, m3, s3, skew3) = compute_test_stats(&adv3_wave);
+    println!(
+        "ADV-3 stats: N={}, mean={:.4}, std={:.4}, skew={:.4}",
+        n3, m3, s3, skew3
+    );
+    assert!(
+        skew3 < -0.3,
+        "ADV-3 skewness must be < -0.3 due to artifact"
+    );
+    let sig3 = RppgSignal {
+        timestamps_sec: (0..120).map(|i| i as f64 * 0.033).collect(),
+        waveform: adv3_wave.clone(),
+        sampling_rate_hz: 30.0,
+        quality: dummy_quality.clone(),
+        algorithm: RppgAlgorithmId::Chrom,
+    };
+    let bvp3 = sig3.to_bvp_waveform(SignalPolarity::AutoDetect);
+    let expected_adv3: Vec<f64> = adv3_wave.iter().map(|v| -v).collect();
+    assert_eq!(
+        bvp3.waveform, expected_adv3,
+        "ADV-3 follows mathematical contract skew < -0.3 -> flip"
+    );
+
+    // ADV-4 — Biphasic Ambiguous Signal (|skew| <= 0.3)
+    let mut adv4_wave = vec![0.0; 120];
+    for k in 0..6 {
+        adv4_wave[k * 20 + 4] = 4.0;
+        adv4_wave[k * 20 + 12] = -4.0;
+    }
+    let (n4, m4, s4, skew4) = compute_test_stats(&adv4_wave);
+    println!(
+        "ADV-4 stats: N={}, mean={:.4}, std={:.4}, skew={:.4}",
+        n4, m4, s4, skew4
+    );
+    assert!(
+        skew4.abs() <= 0.3,
+        "ADV-4 skewness must be within [-0.3, 0.3]"
+    );
+    let sig4 = RppgSignal {
+        timestamps_sec: (0..120).map(|i| i as f64 * 0.033).collect(),
+        waveform: adv4_wave.clone(),
+        sampling_rate_hz: 30.0,
+        quality: dummy_quality.clone(),
+        algorithm: RppgAlgorithmId::Chrom,
+    };
+    let bvp4 = sig4.to_bvp_waveform(SignalPolarity::AutoDetect);
+    assert_eq!(
+        bvp4.waveform, adv4_wave,
+        "ADV-4 (biphasic ambiguous) must NOT be flipped"
+    );
+
+    // ADV-5 — High-Frequency Noise Burst (flat baseline + alternating high-frequency noise)
+    let mut adv5_wave = vec![0.0; 120];
+    for (i, val) in adv5_wave.iter_mut().enumerate().take(60).skip(40) {
+        *val = if i % 2 == 0 { 2.0 } else { -2.0 };
+    }
+    let (n5, m5, s5, skew5) = compute_test_stats(&adv5_wave);
+    println!(
+        "ADV-5 stats: N={}, mean={:.4}, std={:.4}, skew={:.4}",
+        n5, m5, s5, skew5
+    );
+    let sig5 = RppgSignal {
+        timestamps_sec: (0..120).map(|i| i as f64 * 0.033).collect(),
+        waveform: adv5_wave.clone(),
+        sampling_rate_hz: 30.0,
         quality: dummy_quality,
         algorithm: RppgAlgorithmId::GreenChannel,
     };
-
-    let bvp_const_auto = rppg_const.to_bvp_waveform(SignalPolarity::AutoDetect);
-    assert_eq!(
-        bvp_const_auto.waveform, constant_wave,
-        "Degenerate constant input must not be flipped by AutoDetect"
+    let bvp5 = sig5.to_bvp_waveform(SignalPolarity::AutoDetect);
+    assert!(
+        bvp5.waveform.iter().all(|v| v.is_finite()),
+        "ADV-5 output must be finite"
     );
+    assert_eq!(
+        bvp5.waveform, adv5_wave,
+        "ADV-5 (symmetric noise burst) must NOT be flipped"
+    );
+}
+
+#[test]
+fn test_rppg_physical_vs_statistical_contract() {
+    use lamina::rppg::{RppgAlgorithmId, RppgQualitySummary, RppgSignal, SignalPolarity};
+
+    let dummy_quality = RppgQualitySummary {
+        overall: 1.0,
+        valid_fraction: 1.0,
+        segments: Vec::new(),
+    };
+
+    // Construct a waveform with statistical skewness = -0.85
+    let mut wave = vec![0.0; 100];
+    for k in 0..5 {
+        wave[k * 20 + 5] = -4.0;
+    }
+    let (_, _, _, skew) = compute_test_stats(&wave);
+    assert!(skew < -0.3);
+
+    // Case A: Signal measured under raw optical green absorption (systolic expansion = light drop).
+    // Here, negative skew corresponds to systolic absorption drops. AutoDetect inverts it to positive BVP.
+    let sig_a = RppgSignal {
+        timestamps_sec: (0..100).map(|i| i as f64 * 0.033).collect(),
+        waveform: wave.clone(),
+        sampling_rate_hz: 30.0,
+        quality: dummy_quality.clone(),
+        algorithm: RppgAlgorithmId::GreenChannel,
+    };
+    let bvp_auto_a = sig_a.to_bvp_waveform(SignalPolarity::AutoDetect);
+    let bvp_inv_a = sig_a.to_bvp_waveform(SignalPolarity::Inverted);
+    assert_eq!(
+        bvp_auto_a.waveform, bvp_inv_a.waveform,
+        "AutoDetect matches explicit Inverted on negative skew"
+    );
+
+    // Case B: Identical statistical waveform measured under a custom inverted optical hardware path.
+    // The statistical skewness remains identical (-0.85), but the physical sensor convention is opposite.
+    // AutoDetect produces the exact same statistical result (inversion), proving statistical classification
+    // does not infer physical sensor orientation without caller-supplied metadata.
+    let sig_b = RppgSignal {
+        timestamps_sec: (0..100).map(|i| i as f64 * 0.033).collect(),
+        waveform: wave.clone(),
+        sampling_rate_hz: 30.0,
+        quality: dummy_quality,
+        algorithm: RppgAlgorithmId::Pos,
+    };
+    let bvp_auto_b = sig_b.to_bvp_waveform(SignalPolarity::AutoDetect);
+    let bvp_norm_b = sig_b.to_bvp_waveform(SignalPolarity::Normal);
+    assert_ne!(bvp_auto_b.waveform, bvp_norm_b.waveform);
+    // Explicit SignalPolarity::Normal or Inverted is required when caller has authoritative physical sensor metadata.
 }

@@ -76,19 +76,22 @@ impl Default for RppgPreprocessingConfig {
 /// Signal polarity convention for optical surrogates and blood volume pulse (BVP) waveforms.
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Default)]
 pub enum SignalPolarity {
-    /// Standard optical surrogate (uninverted raw rPPG projection)
+    /// Normal optical surrogate (pass-through uninverted projection).
+    /// Assumes input is already normalized to the expected positive BVP peak expansion convention. No inversion occurs.
     #[default]
     Normal,
-    /// Inverted optical surrogate (negated waveform)
+    /// Inverted optical surrogate (explicitly negated waveform).
+    /// Assumes input uses raw optical absorption convention (where systolic blood expansion drops reflected light intensity).
+    /// This is the normative production default for raw optical signal processing.
     Inverted,
-    /// Auto-detect polarity using skewness heuristic (`skew > 0.3`).
+    /// Auto-detect polarity using a directional skewness heuristic (`skew < -0.3`).
     ///
     /// # Operational Contract & Limitations
-    /// `AutoDetect` is an experimental heuristic fallback based on waveform skewness.
-    /// Skewness statistics alone cannot reliably distinguish raw optical absorption signals
-    /// from right-skewed positive-pulse BVP waveforms in all physical operating conditions.
-    /// For robust production processing under physical optical conventions (where systolic
-    /// blood volume expansion corresponds to light absorption increases / raw green channel drops),
+    /// `AutoDetect` is an experimental statistical heuristic fallback. If sample skewness satisfies $\gamma_1 < -0.3$
+    /// (indicating strong downward excursion dominance, e.g. raw light intensity absorption drops), `AutoDetect` negates
+    /// the signal. If $\gamma_1 \ge -0.3$, or if signal variance is low ($\sigma \le 10^{-6}$), `AutoDetect` leaves the waveform unchanged.
+    ///
+    /// Statistical skewness alone cannot establish physical sensor optical orientation with certainty. For robust production processing,
     /// explicit [`SignalPolarity::Inverted`] remains the recommended production default.
     AutoDetect,
 }
