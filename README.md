@@ -1,6 +1,124 @@
-# Lamina (Rust) 🦀
+# Lamina 🦀 🐍 🎯
 
-**Lamina** is a safe, high-performance, scientific Rust library for biomedical and physiological signal processing (ECG, PPG, EDA, RSP, HRV, Complexity, and Multimodal Coupling). Inspired by Python's [NeuroKit2](https://github.com/neuropsychology/NeuroKit) and SciPy, Lamina provides zero-phase digital filtering, domain-specific physiological event extractors, and cross-modality cardiorespiratory coupling analysis with strict numerical stability, $O(N)$ linear complexity, and empirical scientific parity.
+**Multi-Language Scientific Biosignal Processing Engine in Rust, Python, and Dart**
+
+**Lamina** is a safe, high-performance, scientific computational engine for biomedical and physiological signal processing (ECG, PPG, EDA, RSP, HRV, Complexity, rPPG, and Multimodal Coupling). Inspired by Python's [NeuroKit2](https://github.com/neuropsychology/NeuroKit) and SciPy, Lamina provides zero-phase digital filtering, domain-specific physiological event extractors, and cross-modality cardiorespiratory coupling analysis with strict numerical stability, $O(N)$ linear complexity, and empirical scientific parity.
+
+---
+
+## ⚡ Quickstart across Rust, Python & Dart
+
+Process physiological signals using identical underlying Rust algorithms with native language bindings:
+
+### 🦀 Rust
+
+Add to `Cargo.toml`:
+```toml
+[dependencies]
+lamina = "0.1"
+ndarray = "0.17"
+```
+
+```rust
+use lamina::ecg::{ecg_clean, ecg_findpeaks};
+use lamina::hrv::intervals::peaks_to_intervals;
+use lamina::hrv::time::hrv_rmssd;
+use ndarray::Array1;
+
+fn main() -> lamina::Result<()> {
+    let sampling_rate = 250.0;
+    let raw_ecg = Array1::<f64>::zeros(2500); // Raw ECG waveform (10s @ 250Hz)
+
+    // 1. Clean ECG signal (bandpass filter + baseline removal)
+    let cleaned_ecg = ecg_clean(&raw_ecg, sampling_rate)?;
+
+    // 2. Detect R-peak sample indices
+    let peaks_mask = ecg_findpeaks(&cleaned_ecg, sampling_rate)?;
+
+    // 3. Convert peaks to RR intervals (ms) and compute RMSSD
+    let rr_intervals_ms = peaks_to_intervals(&peaks_mask, sampling_rate)?;
+    let rmssd = hrv_rmssd(&rr_intervals_ms)?;
+    println!("RMSSD: {:.2} ms", rmssd);
+
+    Ok(())
+}
+```
+
+---
+
+### 🐍 Python
+
+Install via `pip`:
+```bash
+pip install lamina
+```
+
+```python
+import numpy as np
+import lamina
+
+sampling_rate = 250.0
+raw_ecg = np.zeros(2500)  # Raw ECG waveform (10s @ 250Hz)
+
+# 1. Clean ECG signal (bandpass filter + baseline removal)
+cleaned_ecg = lamina.ecg.clean(raw_ecg, sampling_rate=sampling_rate)
+
+# 2. Detect R-peak sample indices
+r_peaks = lamina.ecg.findpeaks(cleaned_ecg, sampling_rate=sampling_rate)
+
+# 3. Convert peaks to RR intervals (seconds) and compute RMSSD
+rr_intervals = lamina.hrv.peaks_to_intervals(r_peaks, sampling_rate=sampling_rate)
+rmssd = lamina.hrv.rmssd(rr_intervals)
+print(f"RMSSD: {rmssd * 1000.0:.2f} ms")
+```
+
+---
+
+### 🎯 Dart & Flutter
+
+Add to `pubspec.yaml`:
+```yaml
+dependencies:
+  lamina_dart: ^0.1.0
+```
+
+```dart
+import 'dart:typed_data';
+import 'package:lamina_dart/lamina.dart';
+
+Future<void> main() async {
+  // 1. Initialize native Rust computational engine
+  await Lamina.init();
+
+  final samplingRate = 250.0;
+  final rawEcg = Float64List(2500); // Raw ECG waveform (10s @ 250Hz)
+
+  // 2. Clean ECG signal (bandpass filter + baseline removal)
+  final cleanedEcg = await Lamina.ecg.clean(rawEcg, samplingRate);
+
+  // 3. Detect R-peak sample indices
+  final rPeaks = await Lamina.ecg.findPeaks(cleanedEcg, samplingRate);
+
+  // 4. Convert peaks to RR intervals and compute RMSSD
+  final rrIntervals = await Lamina.hrv.peaksToIntervals(
+    Int64List.fromList(rPeaks),
+    samplingRate,
+  );
+  final rmssd = await Lamina.hrv.rmssd(rrIntervals);
+  print('RMSSD: ${(rmssd * 1000.0).toStringAsFixed(2)} ms');
+}
+```
+
+---
+
+## Ecosystem Packages
+
+| Ecosystem | Package Directory | Target | Documentation |
+| :--- | :--- | :--- | :--- |
+| **Rust** 🦀 | Core Crate (`src/`) | Native Rust applications, microcontrollers, servers | [API Inventory](./validation/API-INVENTORY.md) |
+| **Python** 🐍 | [`lamina_py/`](./lamina_py/) | CPython / PyO3 data science, Jupyter, ML | [`lamina_py/README.md`](./lamina_py/README.md) |
+| **Dart** 🎯 | [`lamina_dart/`](./lamina_dart/) | Flutter mobile, web, and desktop apps via FFI | [`lamina_dart/README.md`](./lamina_dart/README.md) |
+| **Validation** 🧪 | [`validation/`](./validation/) | Reproducible public dataset validation suite | [`validation/README.md`](./validation/README.md) |
 
 ---
 
@@ -74,59 +192,15 @@
 - **Structured Evidence States (`AutonomicState`, `CardiacState`, `ElectrodermalState`, `RespiratoryState`, `CouplingState`)**: Represents normalized physiological evidence without reinterpreting raw metrics as direct sympathetic/parasympathetic outflow (Carter et al., 2026). RespHRV coupling evidence strictly requires direct respiratory context (Buron & Menuet, 2026; Gevonden et al., 2025; 2025 RespHRV Expert Recommendation) and is marked unavailable (`None`) when absent. `RespiratoryState::regularity_index` captures baseline-relative rate regularity derived from inverse `rate_std_bpm`.
 - **Composite Evidence Indices & Recovery**: Computes Physiological Activation Evidence Index (`activation_score`), Cardiorespiratory Regulation & Coupling Index (`regulation_score`), and engineered cardiac recovery evidence (`recovery_evidence`) via `RecoveryConfig` ($w_{\text{var}} \ge 0$, $w_{\text{hr}} \ge 0$, $w_{\text{var}} + w_{\text{hr}} > 0$).
 - **Multi-Tiered Evidence Confidence (`StateConfidence`)**: Quantifies completeness and quality in $[0.0, 1.0]$ using `ConfidenceWeights` without artificial zero-filling for missing modalities.
+
 ### 11. `lamina::rppg` — Remote Photoplethysmography Optical Pulse Substrate
 - **Video & ROI Abstractions (`VideoFrame`, `VideoStream`, `Roi`, `StaticRoi`, `TrackedRoiSeries`)**: Enforces explicit 8-bit row-major RGB frame buffer layout, monotonic physical timestamps, and bounding box validation.
 - **Physical Timestamp Windowing & Zero-Copy Indexing (`timestamp_range`)**: Slices optical signals into physical-time sliding windows (`RppgWindowConfig`) using $O(\log N)$ binary search range lookup, avoiding unnecessary vector allocations.
 - **Window-Local Preprocessing & Classical Algorithms (`GreenChannel`, `CHROM`, `POS`)**: Applies window-local channel mean normalization and linear detrending before executing classical CHROM (de Haan & Jeanne, 2013) or POS (Wang et al., 2017) pulse projections.
 - **First-Class Quality Assessment (`RppgQualitySummary`, `RppgSegmentQuality`)**: Evaluates multi-tiered segment quality (ROI sufficiency, motion displacement, illumination stability, spectral periodicity) and computes recording-wide valid duration coverage fraction ($\text{valid\_fraction} = \frac{\text{valid\_duration}}{\text{total\_duration}}$). Rejects unusable segments below `min_quality` without artificial zero-filling.
-- **Gap-Aware Downstream PPG Integration (`RppgSignal`, `RppgSegment`)**: Output signals provide `.valid_segments(max_gap_sec)` to extract contiguous non-NaN `RppgSegment` slices paired with `.to_ndarray()` and `.resample_uniform(target_fs, max_gap_sec)` for direct integration into Lamina's existing `lamina::ppg` pulse processing pipeline (`ppg_clean`, `ppg_findpeaks`). See [`docs/rppg.md`](file:///home/eddiem3/development/roeh-health/lamina/docs/rppg.md).
+- **Gap-Aware Downstream PPG Integration (`RppgSignal`, `RppgSegment`)**: Output signals provide `.valid_segments(max_gap_sec)` to extract contiguous non-NaN `RppgSegment` slices paired with `.to_ndarray()` and `.resample_uniform(target_fs, max_gap_sec)` for direct integration into Lamina's existing `lamina::ppg` pulse processing pipeline (`ppg_clean`, `ppg_findpeaks`). See [`docs/rppg.md`](./docs/rppg.md).
 
 > *Disclaimer: Current rPPG support provides a research signal-processing substrate. It is not clinically validated and should not be interpreted as a validated medical vital-sign measurement.*
-
----
-
-## Code Example
-
-```rust
-use lamina::ecg::ecg_findpeaks;
-use lamina::rsp::{rsp_clean, rsp_cycles};
-use lamina::multimodal::{cardiac_respiratory_phase, rsa, cardiorespiratory_phase_coupling};
-use ndarray::Array1;
-
-fn main() -> lamina::Result<()> {
-    let fs = 100.0; // 100 Hz sampling rate
-
-    // 1. Process ECG
-    let raw_ecg = Array1::<f64>::zeros(1000); // Load raw ECG waveform
-    let r_peaks_mask = ecg_findpeaks(&raw_ecg, fs)?;
-
-    // 2. Process RSP
-    let raw_rsp = Array1::<f64>::zeros(1000); // Load raw RSP waveform
-    let cleaned_rsp = rsp_clean(&raw_rsp, fs)?;
-    let cycles = rsp_cycles(&cleaned_rsp, fs)?;
-
-    // Convert mask to index list
-    let r_peaks: Vec<usize> = r_peaks_mask
-        .iter()
-        .enumerate()
-        .filter_map(|(i, &p)| if p { Some(i) } else { None })
-        .collect();
-
-    // 3. Compute Multimodal RSA and Cardiorespiratory Phase Coupling
-    if !r_peaks.is_empty() && !cycles.is_empty() {
-        let rsa_result = rsa(&r_peaks, fs, 0.0, &cycles, fs, 0.0)?;
-        println!("RSA Amplitude: {:.2} BPM", rsa_result.amplitude_bpm);
-
-        let cardiac_phases = cardiac_respiratory_phase(&r_peaks, fs, 0.0, &cycles, fs, 0.0)?;
-        let phases: Vec<f64> = cardiac_phases.iter().map(|e| e.respiratory_phase).collect();
-        
-        let coupling = cardiorespiratory_phase_coupling(&phases)?;
-        println!("Phase Concentration (R): {:.4}", coupling.concentration);
-    }
-
-    Ok(())
-}
-```
 
 ---
 
