@@ -1,6 +1,8 @@
 """Signal processing module for Lamina."""
 
+from collections.abc import Sequence
 from typing import Optional, Union
+
 import numpy as np
 from numpy.typing import NDArray
 
@@ -9,7 +11,7 @@ import lamina._lamina as _native
 PeakDetectionConfig = _native.PyPeakDetectionConfig
 
 def smooth_moving_average(
-    signal: Union[NDArray[np.float64], NDArray[np.float32], list],
+    signal: Union[NDArray[np.float64], NDArray[np.float32], Sequence[float]],
     window_size: int,
 ) -> NDArray[np.float64]:
     """Smooth a 1D numerical signal using a moving average window."""
@@ -17,7 +19,7 @@ def smooth_moving_average(
     return _native.smooth_moving_average(arr, window_size)
 
 def filter(
-    signal: Union[NDArray[np.float64], NDArray[np.float32], list],
+    signal: Union[NDArray[np.float64], NDArray[np.float32], Sequence[float]],
     sampling_rate: float,
     low_cutoff: Optional[float] = None,
     high_cutoff: Optional[float] = None,
@@ -29,7 +31,7 @@ def filter(
     return _native.filter(arr, sampling_rate, low_cutoff, high_cutoff, order)
 
 def filtfilt(
-    signal: Union[NDArray[np.float64], NDArray[np.float32], list],
+    signal: Union[NDArray[np.float64], NDArray[np.float32], Sequence[float]],
     sampling_rate: float,
     low_cutoff: Optional[float] = None,
     high_cutoff: Optional[float] = None,
@@ -41,7 +43,7 @@ def filtfilt(
     return _native.filtfilt(arr, sampling_rate, low_cutoff, high_cutoff, order)
 
 def findpeaks(
-    signal: Union[NDArray[np.float64], NDArray[np.float32], list],
+    signal: Union[NDArray[np.float64], NDArray[np.float32], Sequence[float]],
     sampling_rate: float,
     min_distance_sec: float = 0.4,
     min_height: Optional[float] = None,
@@ -54,7 +56,7 @@ def findpeaks(
     return np.asarray(indices, dtype=np.int64)
 
 def findpeaks_mask(
-    signal: Union[NDArray[np.float64], NDArray[np.float32], list],
+    signal: Union[NDArray[np.float64], NDArray[np.float32], Sequence[float]],
     sampling_rate: float,
     min_distance_sec: float = 0.4,
     min_height: Optional[float] = None,

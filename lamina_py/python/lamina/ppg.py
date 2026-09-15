@@ -1,6 +1,8 @@
 """Photoplethysmogram (PPG) processing module for Lamina."""
 
+from collections.abc import Sequence
 from typing import Optional, Union
+
 import numpy as np
 from numpy.typing import NDArray
 
@@ -9,7 +11,7 @@ import lamina._lamina as _native
 PpgPeakDetectionConfig = _native.PyPpgPeakDetectionConfig
 
 def clean(
-    signal: Union[NDArray[np.float64], NDArray[np.float32], list],
+    signal: Union[NDArray[np.float64], NDArray[np.float32], Sequence[float]],
     sampling_rate: float = 100.0,
 ) -> NDArray[np.float64]:
     """Clean a PPG signal using bandpass filtering and smoothing."""
@@ -17,7 +19,7 @@ def clean(
     return _native.ppg_clean(arr, sampling_rate)
 
 def findpeaks(
-    signal: Union[NDArray[np.float64], NDArray[np.float32], list],
+    signal: Union[NDArray[np.float64], NDArray[np.float32], Sequence[float]],
     sampling_rate: float = 100.0,
     config: Optional[PpgPeakDetectionConfig] = None,
 ) -> NDArray[np.int64]:
@@ -27,7 +29,7 @@ def findpeaks(
     return np.asarray(peaks, dtype=np.int64)
 
 def findpeaks_mask(
-    signal: Union[NDArray[np.float64], NDArray[np.float32], list],
+    signal: Union[NDArray[np.float64], NDArray[np.float32], Sequence[float]],
     sampling_rate: float = 100.0,
     config: Optional[PpgPeakDetectionConfig] = None,
 ) -> NDArray[np.bool_]:
