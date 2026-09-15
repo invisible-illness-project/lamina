@@ -8,6 +8,7 @@ version = "0.1.0"
 description = "Core scientific and signal-processing library for physiological analysis."
 authors = [{name = "Lamina Contributors"}]
 dependencies = [
+    "maturin>=1.15.0",
     "numpy>=1.20",
 ]
 requires-python = ">=3.9"
