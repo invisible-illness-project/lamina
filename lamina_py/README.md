@@ -32,7 +32,7 @@ Clone the repository and build the native extension module in release mode using
 cd lamina_py
 
 # Install build dependencies
-pip install maturin numpy
+pip install maturin numpy or uv add maturin numpy
 
 # Build and install the extension into your active virtual environment
 maturin develop --release
