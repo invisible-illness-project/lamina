@@ -25,3 +25,5 @@ validation/lamina_bridge/target/
 validation/data/
 # results/ are committed deliverables (task §9) — do not ignore
 .venv_validation/
+*.DS_Store
+.python-version
