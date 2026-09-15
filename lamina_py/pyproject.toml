@@ -9,9 +9,12 @@ description = "Core scientific and signal-processing library for physiological a
 authors = [{name = "Lamina Contributors"}]
 dependencies = [
     "maturin>=1.15.0",
+    "mypy>=1.19.1",
     "numpy>=1.20",
+    "pytest>=8.4.2",
+    "ruff>=0.16.7",
 ]
-requires-python = ">=3.9"
+requires-python = ">=3.10"
 readme = "README.md"
 license = {text = "MIT"}
 classifiers = [
@@ -41,9 +44,15 @@ python_files = ["test_*.py"]
 
 [tool.ruff]
 line-length = 100
-target-version = "py39"
+target-version = "py312"
+
+[tool.ruff.lint]
+ignore = [
+    "UP",    # Ignores all pyupgrade syntax modernization checks (UP035, UP045, etc.)
+    "FA100", # Ignores mandatory 'from __future__ import annotations' requirement
+]
 
 [tool.mypy]
-python_version = "3.9"
+python_version = "3.12"
 strict = true
 ignore_missing_imports = true
