@@ -1,4 +1,5 @@
 import os
+import glob
 
 import numpy as np
 import pandas as pd
@@ -47,6 +48,53 @@ class DataProcessing:
     # -------------------------------------------------------------------------
     # WESAD loaders
     # -------------------------------------------------------------------------
+    @staticmethod
+    def save_all_wrist_data_per_subject(notebook_dir: str):
+        base_dir = DataProcessing.load_base_data_path(notebook_dir)
+        pkl_files = sorted(glob.glob(os.path.join(base_dir, 'WESAD', 'per_subject', 'S*', 'S*.pkl')))
+
+        all_subject_dfs = []
+        
+        for pkl_path in pkl_files:
+            with open(pkl_path, 'rb') as f:
+                data = pd.read_pickle(f)
+
+            subject = data['subject']
+            wrist = data['signal']['wrist']
+            label_700hz = data['label'].ravel()  # Chest-level 700 Hz ground-truth labels[cite: 1]
+
+            # Extract raw arrays for wrist channels
+            acc = wrist['ACC']           # 32 Hz[cite: 1]
+            bvp = wrist['BVP'].ravel()   # 64 Hz[cite: 1]
+            eda = wrist['EDA'].ravel()   # 4 Hz[cite: 1]
+            temp = wrist['TEMP'].ravel() # 4 Hz[cite: 1]
+
+            # Create separate DataFrames per channel
+            df_acc = pd.DataFrame({'ACC_x': acc[:, 0], 'ACC_y': acc[:, 1], 'ACC_z': acc[:, 2]})
+            df_bvp = pd.DataFrame({'BVP': bvp})
+            df_eda = pd.DataFrame({'EDA': eda})
+            df_temp = pd.DataFrame({'TEMP': temp})
+
+            # Concatenate wrist channels column-wise
+            subj_df = pd.concat([df_acc, df_bvp, df_eda, df_temp], axis=1)
+
+            # Downsample/align the 700 Hz labels to match wrist DataFrame length
+            label_indices = np.round(np.linspace(0, len(label_700hz) - 1, len(subj_df))).astype(int)
+            subj_df['label'] = label_700hz[label_indices]
+            subj_df['subject'] = subject
+
+            all_subject_dfs.append(subj_df)
+
+        # Combine all subject DataFrames
+        combined_df = pd.concat(all_subject_dfs, ignore_index=True)
+
+        # Save output CSV
+        out_path = os.path.join(base_dir, 'WESAD', 'all_subjects', 'wrist-all_labels.csv')
+        os.makedirs(os.path.dirname(out_path), exist_ok=True)
+        combined_df.to_csv(out_path, index=False)
+        
+        # print(f"Saved wrist channels with preserved labels to: {out_path}")
+        return combined_df
 
     @staticmethod
     def load_wesad(notebook_dir: str) -> tuple[pd.DataFrame, pd.DataFrame]:
@@ -248,137 +296,3 @@ class DataProcessing:
         out['window_end_seconds'] = out['window_start_seconds'] + window_size_sec
         samples_per_window = out.groupby('window_id').size()
         return out, samples_per_window
-
-    # -------------------------------------------------------------------------
-    # PulseLM preprocessing pipeline (Phase 0B)
-    # -------------------------------------------------------------------------
-
-    @staticmethod
-    def resample_signal(signal: np.ndarray,
-                        fs_original: int,
-                        fs_target: int = 125) -> np.ndarray:
-        """Resample a 1-D signal from fs_original to fs_target using
-        a polyphase filter (lossless rational resampling).
-
-        Parameters
-        ----------
-        signal : np.ndarray
-        fs_original : int
-        fs_target : int
-            Default 125 Hz per PulseLM spec [8].
-        """
-        common = gcd(fs_target, fs_original)
-        up = fs_target // common
-        down = fs_original // common
-        return resample_poly(signal, up, down)
-
-    @staticmethod
-    def butterworth_lowpass(signal: np.ndarray,
-                            fs: int = 125,
-                            cutoff: float = 8.0,
-                            order: int = 4) -> np.ndarray:
-        """Apply fourth-order Butterworth low-pass filter at 8 Hz cutoff [8].
-
-        Parameters
-        ----------
-        signal : np.ndarray
-        fs : int
-            Sampling rate of the (already resampled) signal.
-        cutoff : float
-            Cutoff frequency in Hz. Default 8 Hz per PulseLM spec [8].
-        order : int
-            Filter order. Default 4 per PulseLM spec [8].
-        """
-        nyq = fs / 2.0
-        sos = butter(order, cutoff / nyq, btype='low', output='sos')
-        return sosfilt(sos, signal)
-
-    @staticmethod
-    def remove_dc_offset(signal: np.ndarray) -> np.ndarray:
-        """Remove DC offset via mean subtraction (per-segment) [8]."""
-        return signal - np.mean(signal)
-
-    @staticmethod
-    def minmax_normalize(signal: np.ndarray) -> np.ndarray:
-        """Per-segment min-max normalization to [0, 1] [8]."""
-        s_min, s_max = signal.min(), signal.max()
-        if s_max - s_min == 0:
-            return np.zeros_like(signal)
-        return (signal - s_min) / (s_max - s_min)
-
-    @staticmethod
-    def slice_into_windows(signal: np.ndarray,
-                           fs: int = 125,
-                           window_sec: int = 10) -> np.ndarray:
-        """Slice a 1-D signal into fixed-length windows.
-
-        Parameters
-        ----------
-        signal : np.ndarray
-        fs : int
-            Sampling rate of the signal (post-resample).
-        window_sec : int
-            Window duration in seconds. Default 10 s per PulseLM spec [8].
-
-        Returns
-        -------
-        np.ndarray  shape (n_windows, window_length)
-            Incomplete trailing window is discarded.
-        """
-        window_length = fs * window_sec
-        n_windows = len(signal) // window_length
-        return signal[:n_windows * window_length].reshape(n_windows, window_length)
-
-    @staticmethod
-    def preprocess_ppg_pipeline(signal: np.ndarray,
-                                 fs_original: int,
-                                 fs_target: int = 125,
-                                 cutoff: float = 8.0,
-                                 order: int = 4,
-                                 window_sec: int = 10) -> np.ndarray:
-        """Full PulseLM harmonization pipeline for a raw PPG/BVP signal [8].
-
-        Steps
-        -----
-        1. Resample to 125 Hz
-        2. Fourth-order Butterworth low-pass filter at 8 Hz
-        3. DC offset removal
-        4. Slice into 10-second windows
-        5. Per-segment min-max normalization
-
-        Parameters
-        ----------
-        signal : np.ndarray
-            Raw 1-D waveform (e.g. WESAD wrist BVP at 64 Hz).
-        fs_original : int
-            Original sampling rate (e.g. 64 for WESAD wrist BVP [7]).
-        fs_target : int
-            Target sampling rate. Default 125 Hz [8].
-        cutoff : float
-            Low-pass cutoff in Hz. Default 8 Hz [8].
-        order : int
-            Butterworth filter order. Default 4 [8].
-        window_sec : int
-            Window duration in seconds. Default 10 s [8].
-
-        Returns
-        -------
-        np.ndarray  shape (n_windows, fs_target * window_sec)
-            Preprocessed, normalized segments ready for PaPaGei [1].
-        """
-        # 1. Resample
-        resampled = DataProcessing.resample_signal(signal, fs_original, fs_target)
-
-        # 2. Low-pass filter
-        filtered = DataProcessing.butterworth_lowpass(resampled, fs_target, cutoff, order)
-
-        # 3. DC offset removal
-        dc_removed = DataProcessing.remove_dc_offset(filtered)
-
-        # 4. Slice into windows
-        windows = DataProcessing.slice_into_windows(dc_removed, fs_target, window_sec)
-
-        # 5. Per-segment min-max normalization
-        normalized = np.array([DataProcessing.minmax_normalize(w) for w in windows])
-
-        return normalized
