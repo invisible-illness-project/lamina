@@ -1,10 +1,13 @@
 """Heart Rate Variability (HRV) metrics module for Lamina."""
 
-from typing import Union, List
+from collections.abc import Sequence
+from typing import List, Union
+
 import numpy as np
 from numpy.typing import NDArray
 
 import lamina._lamina as _native
+
 
 def peaks_to_intervals(
     peaks: Union[NDArray[np.int64], NDArray[np.bool_], List[int]],
@@ -30,14 +33,14 @@ def indices_to_intervals(
     return np.asarray(res, dtype=np.float64) / 1000.0
 
 def rmssd(
-    rr_intervals: Union[NDArray[np.float64], NDArray[np.float32], list],
+    rr_intervals: Union[NDArray[np.float64], NDArray[np.float32], Sequence[float]],
 ) -> float:
     """Compute Root Mean Square of Successive Differences (RMSSD) in seconds."""
     arr = np.asarray(rr_intervals, dtype=np.float64)
     return _native.rmssd(arr)
 
 def mean_nn(
-    rr_intervals: Union[NDArray[np.float64], NDArray[np.float32], list],
+    rr_intervals: Union[NDArray[np.float64], NDArray[np.float32], Sequence[float]],
 ) -> float:
     """Compute mean normal-to-normal (NN) inter-beat interval in seconds."""
     arr = np.asarray(rr_intervals, dtype=np.float64)

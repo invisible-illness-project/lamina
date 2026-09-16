@@ -1,6 +1,8 @@
 """Respiration (RSP) processing module for Lamina."""
 
+from collections.abc import Sequence
 from typing import List, Optional, Union
+
 import numpy as np
 from numpy.typing import NDArray
 
@@ -11,7 +13,7 @@ RspProcessingConfig = _native.PyRspProcessingConfig
 RespirationCycle = _native.PyRespirationCycle
 
 def clean(
-    signal: Union[NDArray[np.float64], NDArray[np.float32], list],
+    signal: Union[NDArray[np.float64], NDArray[np.float32], Sequence[float]],
     sampling_rate: float = 100.0,
     config: Optional[RspCleaningConfig] = None,
 ) -> NDArray[np.float64]:
@@ -20,7 +22,7 @@ def clean(
     return _native.rsp_clean(arr, sampling_rate, config)
 
 def findpeaks(
-    signal: Union[NDArray[np.float64], NDArray[np.float32], list],
+    signal: Union[NDArray[np.float64], NDArray[np.float32], Sequence[float]],
     sampling_rate: float = 100.0,
     config: Optional[RspProcessingConfig] = None,
 ) -> NDArray[np.int64]:
@@ -30,7 +32,7 @@ def findpeaks(
     return np.asarray(peaks, dtype=np.int64)
 
 def cycles(
-    signal: Union[NDArray[np.float64], NDArray[np.float32], list],
+    signal: Union[NDArray[np.float64], NDArray[np.float32], Sequence[float]],
     sampling_rate: float = 100.0,
     config: Optional[RspProcessingConfig] = None,
 ) -> List[RespirationCycle]:
@@ -39,7 +41,7 @@ def cycles(
     return _native.rsp_cycles(arr, sampling_rate, config)
 
 def rate(
-    signal: Union[NDArray[np.float64], NDArray[np.float32], list],
+    signal: Union[NDArray[np.float64], NDArray[np.float32], Sequence[float]],
     sampling_rate: float = 100.0,
     config: Optional[RspProcessingConfig] = None,
 ) -> NDArray[np.float64]:

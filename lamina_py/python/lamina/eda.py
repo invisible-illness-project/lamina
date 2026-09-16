@@ -1,6 +1,8 @@
 """Electrodermal Activity (EDA / GSR) processing module for Lamina."""
 
+from collections.abc import Sequence
 from typing import List, Optional, Union
+
 import numpy as np
 from numpy.typing import NDArray
 
@@ -12,7 +14,7 @@ ScrEvent = _native.PyScrEvent
 EdaComponents = _native.PyEdaComponents
 
 def clean(
-    signal: Union[NDArray[np.float64], NDArray[np.float32], list],
+    signal: Union[NDArray[np.float64], NDArray[np.float32], Sequence[float]],
     sampling_rate: float = 100.0,
 ) -> NDArray[np.float64]:
     """Clean an EDA signal using lowpass filtering."""
@@ -20,7 +22,7 @@ def clean(
     return _native.eda_clean(arr, sampling_rate)
 
 def decompose(
-    signal: Union[NDArray[np.float64], NDArray[np.float32], list],
+    signal: Union[NDArray[np.float64], NDArray[np.float32], Sequence[float]],
     sampling_rate: float = 100.0,
     config: Optional[EdaDecompositionConfig] = None,
 ) -> EdaComponents:
@@ -29,7 +31,7 @@ def decompose(
     return _native.eda_decompose(arr, sampling_rate, config)
 
 def phasic(
-    signal: Union[NDArray[np.float64], NDArray[np.float32], list],
+    signal: Union[NDArray[np.float64], NDArray[np.float32], Sequence[float]],
     sampling_rate: float = 100.0,
 ) -> NDArray[np.float64]:
     """Extract phasic SCR driver signal directly from EDA."""
@@ -37,7 +39,7 @@ def phasic(
     return _native.eda_phasic(arr, sampling_rate)
 
 def findpeaks(
-    signal: Union[NDArray[np.float64], NDArray[np.float32], list],
+    signal: Union[NDArray[np.float64], NDArray[np.float32], Sequence[float]],
     sampling_rate: float = 100.0,
     config: Optional[EdaPeakDetectionConfig] = None,
 ) -> NDArray[np.int64]:
@@ -47,7 +49,7 @@ def findpeaks(
     return np.asarray(peaks, dtype=np.int64)
 
 def findpeaks_events(
-    signal: Union[NDArray[np.float64], NDArray[np.float32], list],
+    signal: Union[NDArray[np.float64], NDArray[np.float32], Sequence[float]],
     sampling_rate: float = 100.0,
     config: Optional[EdaPeakDetectionConfig] = None,
 ) -> List[ScrEvent]:
