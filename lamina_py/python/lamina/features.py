@@ -2,6 +2,7 @@
 
 import lamina._lamina as _native
 
+WindowConfig = _native.PyWindowConfig
 FeatureConfig = _native.PyFeatureConfig
 MultimodalInput = _native.PyMultimodalInput
 MultimodalFeatureVector = _native.PyMultimodalFeatureVector

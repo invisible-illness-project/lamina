@@ -6,6 +6,7 @@ from numpy.typing import NDArray
 
 import lamina._lamina as _native
 
+EdaCleaningConfig = _native.PyEdaCleaningConfig
 EdaDecompositionConfig = _native.PyEdaDecompositionConfig
 EdaPeakDetectionConfig = _native.PyEdaPeakDetectionConfig
 ScrEvent = _native.PyScrEvent
@@ -14,10 +15,11 @@ EdaComponents = _native.PyEdaComponents
 def clean(
     signal: Union[NDArray[np.float64], NDArray[np.float32], list],
     sampling_rate: float = 100.0,
+    config: Optional[EdaCleaningConfig] = None,
 ) -> NDArray[np.float64]:
     """Clean an EDA signal using lowpass filtering."""
     arr = np.asarray(signal, dtype=np.float64)
-    return _native.eda_clean(arr, sampling_rate)
+    return _native.eda_clean(arr, sampling_rate, config)
 
 def decompose(
     signal: Union[NDArray[np.float64], NDArray[np.float32], list],
@@ -45,6 +47,16 @@ def findpeaks(
     arr = np.asarray(signal, dtype=np.float64)
     peaks = _native.eda_findpeaks(arr, sampling_rate, config)
     return np.asarray(peaks, dtype=np.int64)
+
+def findpeaks_mask(
+    signal: Union[NDArray[np.float64], NDArray[np.float32], list],
+    sampling_rate: float = 100.0,
+    config: Optional[EdaPeakDetectionConfig] = None,
+) -> NDArray[np.bool_]:
+    """Detect SCR peaks in an EDA signal, returned as a boolean mask."""
+    arr = np.asarray(signal, dtype=np.float64)
+    mask = _native.eda_findpeaks_mask(arr, sampling_rate, config)
+    return np.asarray(mask, dtype=np.bool_)
 
 def findpeaks_events(
     signal: Union[NDArray[np.float64], NDArray[np.float32], list],

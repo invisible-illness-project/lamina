@@ -4,6 +4,35 @@ use pyo3::prelude::*;
 
 #[pyclass]
 #[derive(Clone)]
+pub struct PyWindowConfig {
+    pub inner: lamina::features::WindowConfig,
+}
+
+#[pymethods]
+impl PyWindowConfig {
+    #[new]
+    #[pyo3(signature = (window_duration_sec=None, step_sec=None, min_coverage=None))]
+    pub fn new(
+        window_duration_sec: Option<f64>,
+        step_sec: Option<f64>,
+        min_coverage: Option<f64>,
+    ) -> Self {
+        let mut inner = lamina::features::WindowConfig::default();
+        if let Some(v) = window_duration_sec {
+            inner.window_duration_sec = v;
+        }
+        if let Some(v) = step_sec {
+            inner.step_sec = v;
+        }
+        if let Some(v) = min_coverage {
+            inner.min_coverage = v;
+        }
+        Self { inner }
+    }
+}
+
+#[pyclass]
+#[derive(Clone)]
 pub struct PyFeatureConfig {
     pub inner: lamina::features::FeatureConfig,
 }
@@ -11,16 +40,48 @@ pub struct PyFeatureConfig {
 #[pymethods]
 impl PyFeatureConfig {
     #[new]
-    pub fn new() -> Self {
-        Self {
-            inner: lamina::features::FeatureConfig::default(),
+    #[pyo3(signature = (window=None, min_beats=None, min_respiration_cycles=None, min_scr_events=None, require_cardiac=None, require_respiration=None, require_eda=None))]
+    #[allow(clippy::too_many_arguments)]
+    pub fn new(
+        window: Option<PyWindowConfig>,
+        min_beats: Option<usize>,
+        min_respiration_cycles: Option<usize>,
+        min_scr_events: Option<usize>,
+        require_cardiac: Option<bool>,
+        require_respiration: Option<bool>,
+        require_eda: Option<bool>,
+    ) -> Self {
+        let mut inner = lamina::features::FeatureConfig::default();
+        if let Some(w) = window {
+            inner.window = w.inner;
         }
+        if let Some(v) = min_beats {
+            inner.min_beats = v;
+        }
+        if let Some(v) = min_respiration_cycles {
+            inner.min_respiration_cycles = v;
+        }
+        if let Some(v) = min_scr_events {
+            inner.min_scr_events = v;
+        }
+        if let Some(v) = require_cardiac {
+            inner.require_cardiac = v;
+        }
+        if let Some(v) = require_respiration {
+            inner.require_respiration = v;
+        }
+        if let Some(v) = require_eda {
+            inner.require_eda = v;
+        }
+        Self { inner }
     }
 }
 
 impl Default for PyFeatureConfig {
     fn default() -> Self {
-        Self::new()
+        Self {
+            inner: lamina::features::FeatureConfig::default(),
+        }
     }
 }
 
@@ -97,6 +158,33 @@ impl PyMultimodalInput {
         self_.inner = updated;
         Ok(())
     }
+
+    #[pyo3(signature = (cycles, sampling_rate, offset_sec=0.0))]
+    pub fn with_rsp(
+        mut self_: PyRefMut<'_, Self>,
+        cycles: Vec<crate::rsp::PyRespirationCycle>,
+        sampling_rate: f64,
+        offset_sec: f64,
+    ) -> PyResult<()> {
+        let rust_cycles: Vec<lamina::rsp::RespirationCycle> = cycles
+            .into_iter()
+            .map(|c| lamina::rsp::RespirationCycle {
+                inspiration_index: c.inspiration_index,
+                expiration_index: c.expiration_index,
+                next_inspiration_index: c.next_inspiration_index,
+                duration_sec: c.duration_sec,
+                respiratory_rate_bpm: c.respiratory_rate_bpm,
+                amplitude: c.amplitude,
+            })
+            .collect();
+
+        let input = self_.inner.clone();
+        let updated = input
+            .with_rsp(rust_cycles, sampling_rate, offset_sec)
+            .map_err(map_signal_error)?;
+        self_.inner = updated;
+        Ok(())
+    }
 }
 
 impl Default for PyMultimodalInput {
@@ -109,6 +197,15 @@ impl Default for PyMultimodalInput {
 #[derive(Clone)]
 pub struct PyMultimodalFeatureVector {
     pub inner: lamina::features::MultimodalFeatureVector,
+}
+
+macro_rules! opt_getter {
+    ($name:ident, $group:ident, $field:ident) => {
+        #[getter]
+        pub fn $name(&self) -> Option<f64> {
+            self.inner.$group.$field
+        }
+    };
 }
 
 #[pymethods]
@@ -124,38 +221,145 @@ impl PyMultimodalFeatureVector {
     }
 
     #[getter]
-    pub fn mean_hr_bpm(&self) -> Option<f64> {
-        self.inner.cardiac.mean_hr_bpm
+    pub fn duration_sec(&self) -> f64 {
+        self.inner.window.duration_sec
     }
 
-    #[getter]
-    pub fn sdnn_ms(&self) -> Option<f64> {
-        self.inner.cardiac.sdnn_ms
-    }
+    // Cardiac
+    opt_getter!(mean_hr_bpm, cardiac, mean_hr_bpm);
+    opt_getter!(median_hr_bpm, cardiac, median_hr_bpm);
+    opt_getter!(sdnn_ms, cardiac, sdnn_ms);
+    opt_getter!(rmssd_ms, cardiac, rmssd_ms);
+    opt_getter!(pnn50, cardiac, pnn50);
+    opt_getter!(rr_mean_ms, cardiac, rr_mean_ms);
+    opt_getter!(rr_std_ms, cardiac, rr_std_ms);
 
     #[getter]
-    pub fn rmssd_ms(&self) -> Option<f64> {
-        self.inner.cardiac.rmssd_ms
+    pub fn beat_count(&self) -> usize {
+        self.inner.cardiac.beat_count
     }
 
-    #[getter]
-    pub fn mean_tonic_us(&self) -> Option<f64> {
-        self.inner.eda.mean_tonic_us
-    }
-
-    #[getter]
-    pub fn mean_phasic_us(&self) -> Option<f64> {
-        self.inner.eda.mean_phasic_us
-    }
+    // EDA
+    opt_getter!(mean_tonic_us, eda, mean_tonic_us);
+    opt_getter!(median_tonic_us, eda, median_tonic_us);
+    opt_getter!(tonic_std_us, eda, tonic_std_us);
+    opt_getter!(mean_phasic_us, eda, mean_phasic_us);
+    opt_getter!(phasic_std_us, eda, phasic_std_us);
 
     #[getter]
     pub fn scr_count(&self) -> usize {
         self.inner.eda.scr_count
     }
 
+    opt_getter!(scr_rate_per_min, eda, scr_rate_per_min);
+    opt_getter!(mean_scr_amplitude_us, eda, mean_scr_amplitude_us);
+    opt_getter!(median_scr_amplitude_us, eda, median_scr_amplitude_us);
+    opt_getter!(mean_scr_rise_time_sec, eda, mean_scr_rise_time_sec);
+
+    // Respiration
+    opt_getter!(mean_rsp_rate_bpm, respiration, mean_rate_bpm);
+    opt_getter!(median_rsp_rate_bpm, respiration, median_rate_bpm);
+    opt_getter!(rsp_rate_std_bpm, respiration, rate_std_bpm);
+    opt_getter!(mean_cycle_duration_sec, respiration, mean_cycle_duration_sec);
+
     #[getter]
-    pub fn mean_rsp_rate_bpm(&self) -> Option<f64> {
-        self.inner.respiration.mean_rate_bpm
+    pub fn cycle_count(&self) -> usize {
+        self.inner.respiration.cycle_count
+    }
+
+    opt_getter!(mean_rsp_amplitude, respiration, mean_amplitude);
+    opt_getter!(rsp_amplitude_std, respiration, amplitude_std);
+
+    // Coupling
+    opt_getter!(rsa_amplitude_bpm, coupling, rsa_amplitude_bpm);
+    opt_getter!(rsa_amplitude_rr_sec, coupling, rsa_amplitude_rr_sec);
+    opt_getter!(
+        cardiac_respiratory_concentration,
+        coupling,
+        cardiac_respiratory_concentration
+    );
+    opt_getter!(
+        cardiac_respiratory_mean_phase,
+        coupling,
+        cardiac_respiratory_mean_phase
+    );
+    opt_getter!(mean_pulse_delay_sec, coupling, mean_pulse_delay_sec);
+    opt_getter!(pulse_delay_std_sec, coupling, pulse_delay_std_sec);
+
+    #[getter]
+    pub fn scr_cardiac_association_count(&self) -> usize {
+        self.inner.coupling.scr_cardiac_association_count
+    }
+
+    // Quality
+    #[getter]
+    pub fn coverage(&self) -> f64 {
+        self.inner.quality.coverage
+    }
+
+    #[getter]
+    pub fn coverage_overall(&self) -> Option<f64> {
+        self.inner.quality.modality_coverage.overall
+    }
+
+    #[getter]
+    pub fn coverage_ecg(&self) -> Option<f64> {
+        self.inner.quality.modality_coverage.ecg
+    }
+
+    #[getter]
+    pub fn coverage_ppg(&self) -> Option<f64> {
+        self.inner.quality.modality_coverage.ppg
+    }
+
+    #[getter]
+    pub fn coverage_eda(&self) -> Option<f64> {
+        self.inner.quality.modality_coverage.eda
+    }
+
+    #[getter]
+    pub fn coverage_rsp(&self) -> Option<f64> {
+        self.inner.quality.modality_coverage.rsp
+    }
+
+    #[getter]
+    pub fn cardiac_valid(&self) -> bool {
+        self.inner.quality.cardiac_valid
+    }
+
+    #[getter]
+    pub fn eda_valid(&self) -> bool {
+        self.inner.quality.eda_valid
+    }
+
+    #[getter]
+    pub fn respiration_valid(&self) -> bool {
+        self.inner.quality.respiration_valid
+    }
+
+    #[getter]
+    pub fn coupling_valid(&self) -> bool {
+        self.inner.quality.coupling_valid
+    }
+
+    #[getter]
+    pub fn usable_feature_count(&self) -> usize {
+        self.inner.quality.usable_feature_count
+    }
+
+    #[getter]
+    pub fn total_feature_count(&self) -> usize {
+        self.inner.quality.total_feature_count
+    }
+
+    #[getter]
+    pub fn quality_issues(&self) -> Vec<String> {
+        self.inner
+            .quality
+            .issues
+            .iter()
+            .map(|i| format!("{:?}", i))
+            .collect()
     }
 
     fn __repr__(&self) -> String {

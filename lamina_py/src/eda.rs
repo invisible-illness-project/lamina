@@ -265,3 +265,23 @@ pub fn eda_findpeaks_events<'py>(
 
     Ok(events.iter().map(PyScrEvent::from).collect())
 }
+
+
+#[pyfunction]
+#[pyo3(signature = (phasic_signal, sampling_rate, config=None))]
+pub fn eda_findpeaks_mask<'py>(
+    py: Python<'py>,
+    phasic_signal: PyReadonlyArray1<'py, f64>,
+    sampling_rate: f64,
+    config: Option<&PyEdaPeakDetectionConfig>,
+) -> PyResult<Bound<'py, PyArray1<bool>>> {
+    let array_view = phasic_signal.as_array();
+    let arr = array_view.to_owned();
+    let rust_cfg = config.map(|c| c.into()).unwrap_or_default();
+
+    let out = py
+        .detach(|| lamina::eda::eda_findpeaks_mask(&arr, sampling_rate, &rust_cfg))
+        .map_err(map_signal_error)?;
+
+    Ok(out.into_pyarray(py))
+}

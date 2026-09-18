@@ -227,3 +227,23 @@ pub fn rsp_rate<'py>(
 
     Ok(out.into_pyarray(py))
 }
+
+
+#[pyfunction]
+#[pyo3(signature = (signal, sampling_rate, config=None))]
+pub fn rsp_findpeaks_mask<'py>(
+    py: Python<'py>,
+    signal: PyReadonlyArray1<'py, f64>,
+    sampling_rate: f64,
+    config: Option<&PyRspProcessingConfig>,
+) -> PyResult<Bound<'py, PyArray1<bool>>> {
+    let array_view = signal.as_array();
+    let arr = array_view.to_owned();
+    let rust_cfg = config.map(|c| c.into()).unwrap_or_default();
+
+    let out = py
+        .detach(|| lamina::rsp::rsp_findpeaks_mask(&arr, sampling_rate, &rust_cfg))
+        .map_err(map_signal_error)?;
+
+    Ok(out.into_pyarray(py))
+}

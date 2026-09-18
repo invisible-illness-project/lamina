@@ -50,6 +50,7 @@ fn _lamina(m: &Bound<'_, PyModule>) -> PyResult<()> {
     m.add_function(wrap_pyfunction!(eda::eda_decompose, m)?)?;
     m.add_function(wrap_pyfunction!(eda::eda_phasic, m)?)?;
     m.add_function(wrap_pyfunction!(eda::eda_findpeaks, m)?)?;
+    m.add_function(wrap_pyfunction!(eda::eda_findpeaks_mask, m)?)?;
     m.add_function(wrap_pyfunction!(eda::eda_findpeaks_events, m)?)?;
 
     // RSP
@@ -58,49 +59,84 @@ fn _lamina(m: &Bound<'_, PyModule>) -> PyResult<()> {
     m.add_class::<rsp::PyRespirationCycle>()?;
     m.add_function(wrap_pyfunction!(rsp::rsp_clean, m)?)?;
     m.add_function(wrap_pyfunction!(rsp::rsp_findpeaks, m)?)?;
+    m.add_function(wrap_pyfunction!(rsp::rsp_findpeaks_mask, m)?)?;
     m.add_function(wrap_pyfunction!(rsp::rsp_cycles, m)?)?;
     m.add_function(wrap_pyfunction!(rsp::rsp_rate, m)?)?;
 
     // HRV
+    m.add_class::<hrv::PyCorrectionPolicy>()?;
     m.add_function(wrap_pyfunction!(hrv::peaks_to_intervals, m)?)?;
     m.add_function(wrap_pyfunction!(hrv::indices_to_intervals, m)?)?;
     m.add_function(wrap_pyfunction!(hrv::rmssd, m)?)?;
     m.add_function(wrap_pyfunction!(hrv::mean_nn, m)?)?;
+    m.add_function(wrap_pyfunction!(hrv::classify_intervals, m)?)?;
+    m.add_function(wrap_pyfunction!(hrv::clean_rr_intervals, m)?)?;
 
     // Complexity
     m.add_function(wrap_pyfunction!(complexity::sample_entropy, m)?)?;
 
     // Autonomic
+    m.add_class::<autonomic::PyNormalizationMethod>()?;
+    m.add_class::<autonomic::PyFeatureDirection>()?;
+    m.add_class::<autonomic::PyNormalizationConfig>()?;
+    m.add_class::<autonomic::PyActivationWeights>()?;
+    m.add_class::<autonomic::PyRegulationWeights>()?;
+    m.add_class::<autonomic::PyRecoveryConfig>()?;
+    m.add_class::<autonomic::PyConfidenceWeights>()?;
+    m.add_class::<autonomic::PyQualityConfig>()?;
+    m.add_class::<autonomic::PySmoothingConfig>()?;
     m.add_class::<autonomic::PyAutonomicEstimatorConfig>()?;
     m.add_class::<autonomic::PyBaselineFeatureStats>()?;
     m.add_class::<autonomic::PyAutonomicBaseline>()?;
     m.add_class::<autonomic::PyAutonomicState>()?;
+    m.add_class::<autonomic::PyAutonomicStateSeries>()?;
     m.add_class::<autonomic::PyAutonomicEstimator>()?;
 
     // rPPG
     m.add_class::<rppg::PyVideoFrame>()?;
     m.add_class::<rppg::PyVideoStream>()?;
     m.add_class::<rppg::PyRoi>()?;
+    m.add_class::<rppg::PyRppgAlgorithmId>()?;
+    m.add_class::<rppg::PySignalPolarity>()?;
+    m.add_class::<rppg::PyRppgWindowConfig>()?;
+    m.add_class::<rppg::PyRppgPreprocessingConfig>()?;
     m.add_class::<rppg::PyRppgConfig>()?;
+    m.add_class::<rppg::PyRppgSegmentQuality>()?;
     m.add_class::<rppg::PyRppgSignal>()?;
     m.add_function(wrap_pyfunction!(rppg::extract_rppg, m)?)?;
 
     // Features
+    m.add_class::<features::PyWindowConfig>()?;
     m.add_class::<features::PyFeatureConfig>()?;
     m.add_class::<features::PyMultimodalInput>()?;
     m.add_class::<features::PyMultimodalFeatureVector>()?;
     m.add_function(wrap_pyfunction!(features::extract_features, m)?)?;
 
     // Multimodal
+    m.add_class::<multimodal::PyRsaConfig>()?;
+    m.add_class::<multimodal::PyPulseTimingConfig>()?;
+    m.add_class::<multimodal::PyPulseTimingResult>()?;
+    m.add_class::<multimodal::PyCardiacRespiratoryEvent>()?;
+    m.add_class::<multimodal::PyScrCardiorespiratoryAssociation>()?;
     m.add_class::<multimodal::PyRsaResult>()?;
     m.add_class::<multimodal::PyPhaseCouplingResult>()?;
     m.add_class::<multimodal::PyModalityQuality>()?;
     m.add_class::<multimodal::PyMultimodalQuality>()?;
     m.add_function(wrap_pyfunction!(multimodal::rsa, m)?)?;
+    m.add_function(wrap_pyfunction!(multimodal::rsa_config, m)?)?;
+    m.add_function(wrap_pyfunction!(multimodal::cardiac_respiratory_phase, m)?)?;
     m.add_function(wrap_pyfunction!(
         multimodal::cardiorespiratory_phase_coupling,
         m
     )?)?;
+    m.add_function(wrap_pyfunction!(multimodal::ecg_ppg_timing, m)?)?;
+    m.add_function(wrap_pyfunction!(
+        multimodal::eda_cardiorespiratory_association,
+        m
+    )?)?;
+    m.add_function(wrap_pyfunction!(multimodal::respiratory_phase_at_time, m)?)?;
+    m.add_function(wrap_pyfunction!(multimodal::evaluate_ecg_quality, m)?)?;
+    m.add_function(wrap_pyfunction!(multimodal::evaluate_rsp_quality, m)?)?;
     m.add_function(wrap_pyfunction!(multimodal::multimodal_quality, m)?)?;
 
     Ok(())

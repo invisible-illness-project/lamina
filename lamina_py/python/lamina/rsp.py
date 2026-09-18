@@ -29,6 +29,16 @@ def findpeaks(
     peaks = _native.rsp_findpeaks(arr, sampling_rate, config)
     return np.asarray(peaks, dtype=np.int64)
 
+def findpeaks_mask(
+    signal: Union[NDArray[np.float64], NDArray[np.float32], list],
+    sampling_rate: float = 100.0,
+    config: Optional[RspProcessingConfig] = None,
+) -> NDArray[np.bool_]:
+    """Detect inspiration peaks in a respiration signal, returned as a boolean mask."""
+    arr = np.asarray(signal, dtype=np.float64)
+    mask = _native.rsp_findpeaks_mask(arr, sampling_rate, config)
+    return np.asarray(mask, dtype=np.bool_)
+
 def cycles(
     signal: Union[NDArray[np.float64], NDArray[np.float32], list],
     sampling_rate: float = 100.0,

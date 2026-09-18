@@ -1,4 +1,6 @@
 use crate::error::map_signal_error;
+use lamina::error::SignalError;
+use lamina::signal::filter::FilterSpec;
 use numpy::{IntoPyArray, PyArray1, PyReadonlyArray1};
 use pyo3::prelude::*;
 
@@ -66,8 +68,55 @@ pub fn smooth_moving_average<'py>(
     Ok(out.into_pyarray(py))
 }
 
+fn build_spec(
+    kind: &str,
+    sampling_rate: f64,
+    lowcut: Option<f64>,
+    highcut: Option<f64>,
+    order: usize,
+) -> Result<FilterSpec, SignalError> {
+    match kind {
+        "lowpass" => {
+            let fc = lowcut.or(highcut).ok_or_else(|| {
+                SignalError::InvalidCutoffFrequency(
+                    "lowpass requires low_cutoff (or high_cutoff)".to_string(),
+                )
+            })?;
+            Ok(FilterSpec::lowpass(sampling_rate, fc, order))
+        }
+        "highpass" => {
+            let fc = lowcut.or(highcut).ok_or_else(|| {
+                SignalError::InvalidCutoffFrequency(
+                    "highpass requires low_cutoff (or high_cutoff)".to_string(),
+                )
+            })?;
+            Ok(FilterSpec::highpass(sampling_rate, fc, order))
+        }
+        "bandpass" => {
+            let (lc, hc) = lowcut.zip(highcut).ok_or_else(|| {
+                SignalError::InvalidCutoffFrequency(
+                    "bandpass requires both low_cutoff and high_cutoff".to_string(),
+                )
+            })?;
+            Ok(FilterSpec::bandpass(sampling_rate, lc, hc, order))
+        }
+        "notch" => {
+            let (lc, hc) = lowcut.zip(highcut).ok_or_else(|| {
+                SignalError::InvalidCutoffFrequency(
+                    "notch requires both low_cutoff and high_cutoff".to_string(),
+                )
+            })?;
+            Ok(FilterSpec::notch(sampling_rate, lc, hc, order))
+        }
+        other => Err(SignalError::InvalidCutoffFrequency(format!(
+            "Unknown filter kind: {} (expected lowpass|highpass|bandpass|notch)",
+            other
+        ))),
+    }
+}
+
 #[pyfunction]
-#[pyo3(signature = (signal, sampling_rate, lowcut=None, highcut=None, order=1))]
+#[pyo3(signature = (signal, sampling_rate, lowcut=None, highcut=None, order=1, kind="bandpass"))]
 pub fn filter<'py>(
     py: Python<'py>,
     signal: PyReadonlyArray1<'py, f64>,
@@ -75,13 +124,15 @@ pub fn filter<'py>(
     lowcut: Option<f64>,
     highcut: Option<f64>,
     order: usize,
+    kind: &str,
 ) -> PyResult<Bound<'py, PyArray1<f64>>> {
     let array_view = signal.as_array();
     let arr = array_view.to_owned();
 
     let out = py
         .detach(|| {
-            lamina::signal::filter::signal_filter(&arr, sampling_rate, lowcut, highcut, order)
+            let spec = build_spec(kind, sampling_rate, lowcut, highcut, order)?;
+            lamina::signal::filter::signal_filtfilt(&arr, &spec)
         })
         .map_err(map_signal_error)?;
 
@@ -89,7 +140,7 @@ pub fn filter<'py>(
 }
 
 #[pyfunction]
-#[pyo3(signature = (signal, sampling_rate, lowcut=None, highcut=None, order=1))]
+#[pyo3(signature = (signal, sampling_rate, lowcut=None, highcut=None, order=1, kind="bandpass"))]
 pub fn filtfilt<'py>(
     py: Python<'py>,
     signal: PyReadonlyArray1<'py, f64>,
@@ -97,8 +148,9 @@ pub fn filtfilt<'py>(
     lowcut: Option<f64>,
     highcut: Option<f64>,
     order: usize,
+    kind: &str,
 ) -> PyResult<Bound<'py, PyArray1<f64>>> {
-    filter(py, signal, sampling_rate, lowcut, highcut, order)
+    filter(py, signal, sampling_rate, lowcut, highcut, order, kind)
 }
 
 #[pyfunction]

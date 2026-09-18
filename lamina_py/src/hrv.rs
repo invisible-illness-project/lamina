@@ -1,4 +1,8 @@
 use crate::error::map_signal_error;
+use lamina::hrv::quality::{
+    classify_intervals as rust_classify_intervals, clean_rr_intervals as rust_clean_rr_intervals,
+    CorrectionPolicy, IntervalQuality,
+};
 use numpy::{IntoPyArray, PyArray1, PyReadonlyArray1};
 use pyo3::prelude::*;
 
@@ -64,4 +68,93 @@ pub fn mean_nn<'py>(py: Python<'py>, intervals: PyReadonlyArray1<'py, f64>) -> P
 
     py.detach(|| lamina::hrv::time::hrv_mean_nn(&arr))
         .map_err(map_signal_error)
+}
+
+fn interval_quality_str(q: IntervalQuality) -> &'static str {
+    match q {
+        IntervalQuality::NormalNN => "NormalNN",
+        IntervalQuality::EctopicRR => "EctopicRR",
+        IntervalQuality::ArtifactRR => "ArtifactRR",
+        IntervalQuality::Missing => "Missing",
+    }
+}
+
+/// Correction policy for handling invalid/ectopic inter-beat intervals.
+///
+/// Construct via static methods: CorrectionPolicy.none(),
+/// .reject_invalid(), .interpolate_linear(), .interpolate_cubic(),
+/// .percent_threshold(pct).
+#[pyclass]
+#[derive(Clone)]
+pub struct PyCorrectionPolicy {
+    pub inner: CorrectionPolicy,
+}
+
+#[pymethods]
+impl PyCorrectionPolicy {
+    #[staticmethod]
+    pub fn none() -> Self {
+        Self {
+            inner: CorrectionPolicy::None,
+        }
+    }
+    #[staticmethod]
+    pub fn reject_invalid() -> Self {
+        Self {
+            inner: CorrectionPolicy::RejectInvalid,
+        }
+    }
+    #[staticmethod]
+    pub fn interpolate_linear() -> Self {
+        Self {
+            inner: CorrectionPolicy::InterpolateLinear,
+        }
+    }
+    #[staticmethod]
+    pub fn interpolate_cubic() -> Self {
+        Self {
+            inner: CorrectionPolicy::InterpolateCubic,
+        }
+    }
+    #[staticmethod]
+    pub fn percent_threshold(pct: f64) -> Self {
+        Self {
+            inner: CorrectionPolicy::PercentThreshold(pct),
+        }
+    }
+}
+
+/// Classify inter-beat intervals (ms) into quality categories.
+///
+/// Returns one of "NormalNN", "EctopicRR", "ArtifactRR", "Missing" per interval.
+#[pyfunction]
+#[pyo3(signature = (intervals, percent_threshold=None))]
+pub fn classify_intervals<'py>(
+    py: Python<'py>,
+    intervals: PyReadonlyArray1<'py, f64>,
+    percent_threshold: Option<f64>,
+) -> Vec<String> {
+    let arr = intervals.as_array().to_owned();
+    py.detach(|| {
+        rust_classify_intervals(&arr, percent_threshold)
+            .into_iter()
+            .map(interval_quality_str)
+            .collect()
+    })
+}
+
+/// Clean inter-beat intervals (ms) into a validated N-N series per the correction policy.
+#[pyfunction]
+pub fn clean_rr_intervals<'py>(
+    py: Python<'py>,
+    intervals: PyReadonlyArray1<'py, f64>,
+    policy: &PyCorrectionPolicy,
+) -> PyResult<Bound<'py, PyArray1<f64>>> {
+    let arr = intervals.as_array().to_owned();
+
+    let out = py
+        .detach(|| rust_clean_rr_intervals(&arr, &policy.inner))
+        .map_err(map_signal_error)?;
+
+    Ok(out.into_pyarray(py))
 }

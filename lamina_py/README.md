@@ -76,13 +76,13 @@ cleaned_ecg = lamina.ecg.clean(raw_ecg, sampling_rate=sampling_rate)
 r_peaks = lamina.ecg.findpeaks(cleaned_ecg, sampling_rate=sampling_rate)
 print(f"Detected R-peaks at sample indices: {r_peaks}")
 
-# 3. Convert peaks to inter-beat intervals (in seconds)
+# 3. Convert peaks to inter-beat intervals (in milliseconds)
 rr_intervals = lamina.hrv.peaks_to_intervals(r_peaks, sampling_rate=sampling_rate)
 
 # 4. Compute HRV metrics (RMSSD and Mean NN in seconds)
 rmssd_val = lamina.hrv.rmssd(rr_intervals)
 mean_nn_val = lamina.hrv.mean_nn(rr_intervals)
-print(f"RMSSD: {rmssd_val * 1000.0:.2f} ms | Mean NN: {mean_nn_val * 1000.0:.2f} ms")
+print(f"RMSSD: {rmssd_val:.2f} ms | Mean NN: {mean_nn_val:.2f} ms")
 ```
 
 ### 2. Electrodermal Activity (EDA / GSR) Decomposition
