@@ -181,13 +181,17 @@ cleaned_eda = lamina.eda.clean(raw_eda, sampling_rate=100.0)
 components = lamina.eda.decompose(cleaned_eda, sampling_rate=100.0)
 scl_tonic = components.tonic
 scr_phasic = components.phasic
+print(f"Tonic SCL: {scl_tonic.min():.3f}-{scl_tonic.max():.3f} µS rising")
 
-# Detect individual SCR peak events
-events = lamina.eda.findpeaks_events(cleaned_eda, sampling_rate=100.0)
+# Detect individual SCR peak events on the phasic component
+# (findpeaks_events expects a phasic signal — feeding it the raw cleaned
+# signal makes onsets fire on the tonic drift, several seconds early)
+events = lamina.eda.findpeaks_events(scr_phasic, sampling_rate=100.0)
 for ev in events:
     print(f"SCR Event: onset={ev.onset_index}, peak={ev.peak_index}, amp={ev.amplitude:.3f} µS")
-# SCR Event: onset=102, peak=602, amp=0.750 µS
-# SCR Event: onset=901, peak=1401, amp=1.050 µS
+# Tonic SCL: 2.072-2.891 µS rising
+# SCR Event: onset=500, peak=599, amp=0.423 µS
+# SCR Event: onset=1302, peak=1400, amp=0.687 µS
 ```
 
 ### 4. Respiration Rate & Breath Cycle Extraction
