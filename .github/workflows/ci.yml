@@ -55,6 +55,12 @@ jobs:
       - name: Fetch dependencies
         working-directory: lamina_dart
         run: flutter pub get
+      - name: Fetch cargokit build_tool dependencies
+        # nested self-contained package (own pubspec+lock), not in the root
+        # app's package graph; without this the analyzer cannot resolve its
+        # package: URIs (run 35536558248 confirmed root pub get is insufficient)
+        working-directory: lamina_dart/rust_builder/cargokit/build_tool
+        run: dart pub get
       - name: Analyze
         working-directory: lamina_dart
         run: flutter analyze
