@@ -39,7 +39,7 @@ flutter_rust_bridge::frb_generated_boilerplate!(
     default_rust_auto_opaque = RustAutoOpaqueMoi,
 );
 pub(crate) const FLUTTER_RUST_BRIDGE_CODEGEN_VERSION: &str = "2.12.0";
-pub(crate) const FLUTTER_RUST_BRIDGE_CODEGEN_CONTENT_HASH: i32 = 1499871726;
+pub(crate) const FLUTTER_RUST_BRIDGE_CODEGEN_CONTENT_HASH: i32 = -1382637150;
 
 // Section: executor
 
@@ -1767,6 +1767,178 @@ fn wire__crate__api__rsp__rsp_processing_config_default_impl(
         },
     )
 }
+fn wire__crate__api__error__signal_error_dimension_mismatch_impl(
+    port_: flutter_rust_bridge::for_generated::MessagePort,
+    ptr_: flutter_rust_bridge::for_generated::PlatformGeneralizedUint8ListPtr,
+    rust_vec_len_: i32,
+    data_len_: i32,
+) {
+    FLUTTER_RUST_BRIDGE_HANDLER.wrap_normal::<flutter_rust_bridge::for_generated::SseCodec, _, _>(
+        flutter_rust_bridge::for_generated::TaskInfo {
+            debug_name: "signal_error_dimension_mismatch",
+            port: Some(port_),
+            mode: flutter_rust_bridge::for_generated::FfiCallMode::Normal,
+        },
+        move || {
+            let message = unsafe {
+                flutter_rust_bridge::for_generated::Dart2RustMessageSse::from_wire(
+                    ptr_,
+                    rust_vec_len_,
+                    data_len_,
+                )
+            };
+            let mut deserializer =
+                flutter_rust_bridge::for_generated::SseDeserializer::new(message);
+            deserializer.end();
+            move |context| {
+                transform_result_sse::<_, ()>((move || {
+                    let output_ok =
+                        Result::<_, ()>::Ok(crate::api::error::SignalError::dimension_mismatch())?;
+                    Ok(output_ok)
+                })())
+            }
+        },
+    )
+}
+fn wire__crate__api__error__signal_error_empty_signal_impl(
+    port_: flutter_rust_bridge::for_generated::MessagePort,
+    ptr_: flutter_rust_bridge::for_generated::PlatformGeneralizedUint8ListPtr,
+    rust_vec_len_: i32,
+    data_len_: i32,
+) {
+    FLUTTER_RUST_BRIDGE_HANDLER.wrap_normal::<flutter_rust_bridge::for_generated::SseCodec, _, _>(
+        flutter_rust_bridge::for_generated::TaskInfo {
+            debug_name: "signal_error_empty_signal",
+            port: Some(port_),
+            mode: flutter_rust_bridge::for_generated::FfiCallMode::Normal,
+        },
+        move || {
+            let message = unsafe {
+                flutter_rust_bridge::for_generated::Dart2RustMessageSse::from_wire(
+                    ptr_,
+                    rust_vec_len_,
+                    data_len_,
+                )
+            };
+            let mut deserializer =
+                flutter_rust_bridge::for_generated::SseDeserializer::new(message);
+            deserializer.end();
+            move |context| {
+                transform_result_sse::<_, ()>((move || {
+                    let output_ok =
+                        Result::<_, ()>::Ok(crate::api::error::SignalError::empty_signal())?;
+                    Ok(output_ok)
+                })())
+            }
+        },
+    )
+}
+fn wire__crate__api__error__signal_error_insufficient_peaks_impl(
+    port_: flutter_rust_bridge::for_generated::MessagePort,
+    ptr_: flutter_rust_bridge::for_generated::PlatformGeneralizedUint8ListPtr,
+    rust_vec_len_: i32,
+    data_len_: i32,
+) {
+    FLUTTER_RUST_BRIDGE_HANDLER.wrap_normal::<flutter_rust_bridge::for_generated::SseCodec, _, _>(
+        flutter_rust_bridge::for_generated::TaskInfo {
+            debug_name: "signal_error_insufficient_peaks",
+            port: Some(port_),
+            mode: flutter_rust_bridge::for_generated::FfiCallMode::Normal,
+        },
+        move || {
+            let message = unsafe {
+                flutter_rust_bridge::for_generated::Dart2RustMessageSse::from_wire(
+                    ptr_,
+                    rust_vec_len_,
+                    data_len_,
+                )
+            };
+            let mut deserializer =
+                flutter_rust_bridge::for_generated::SseDeserializer::new(message);
+            let api_required = <usize>::sse_decode(&mut deserializer);
+            let api_provided = <usize>::sse_decode(&mut deserializer);
+            deserializer.end();
+            move |context| {
+                transform_result_sse::<_, ()>((move || {
+                    let output_ok =
+                        Result::<_, ()>::Ok(crate::api::error::SignalError::insufficient_peaks(
+                            api_required,
+                            api_provided,
+                        ))?;
+                    Ok(output_ok)
+                })())
+            }
+        },
+    )
+}
+fn wire__crate__api__error__signal_error_invalid_sampling_rate_impl(
+    port_: flutter_rust_bridge::for_generated::MessagePort,
+    ptr_: flutter_rust_bridge::for_generated::PlatformGeneralizedUint8ListPtr,
+    rust_vec_len_: i32,
+    data_len_: i32,
+) {
+    FLUTTER_RUST_BRIDGE_HANDLER.wrap_normal::<flutter_rust_bridge::for_generated::SseCodec, _, _>(
+        flutter_rust_bridge::for_generated::TaskInfo {
+            debug_name: "signal_error_invalid_sampling_rate",
+            port: Some(port_),
+            mode: flutter_rust_bridge::for_generated::FfiCallMode::Normal,
+        },
+        move || {
+            let message = unsafe {
+                flutter_rust_bridge::for_generated::Dart2RustMessageSse::from_wire(
+                    ptr_,
+                    rust_vec_len_,
+                    data_len_,
+                )
+            };
+            let mut deserializer =
+                flutter_rust_bridge::for_generated::SseDeserializer::new(message);
+            let api_rate = <f64>::sse_decode(&mut deserializer);
+            deserializer.end();
+            move |context| {
+                transform_result_sse::<_, ()>((move || {
+                    let output_ok = Result::<_, ()>::Ok(
+                        crate::api::error::SignalError::invalid_sampling_rate(api_rate),
+                    )?;
+                    Ok(output_ok)
+                })())
+            }
+        },
+    )
+}
+fn wire__crate__api__error__signal_error_non_finite_input_impl(
+    port_: flutter_rust_bridge::for_generated::MessagePort,
+    ptr_: flutter_rust_bridge::for_generated::PlatformGeneralizedUint8ListPtr,
+    rust_vec_len_: i32,
+    data_len_: i32,
+) {
+    FLUTTER_RUST_BRIDGE_HANDLER.wrap_normal::<flutter_rust_bridge::for_generated::SseCodec, _, _>(
+        flutter_rust_bridge::for_generated::TaskInfo {
+            debug_name: "signal_error_non_finite_input",
+            port: Some(port_),
+            mode: flutter_rust_bridge::for_generated::FfiCallMode::Normal,
+        },
+        move || {
+            let message = unsafe {
+                flutter_rust_bridge::for_generated::Dart2RustMessageSse::from_wire(
+                    ptr_,
+                    rust_vec_len_,
+                    data_len_,
+                )
+            };
+            let mut deserializer =
+                flutter_rust_bridge::for_generated::SseDeserializer::new(message);
+            deserializer.end();
+            move |context| {
+                transform_result_sse::<_, ()>((move || {
+                    let output_ok =
+                        Result::<_, ()>::Ok(crate::api::error::SignalError::non_finite_input())?;
+                    Ok(output_ok)
+                })())
+            }
+        },
+    )
+}
 
 // Section: related_funcs
 
@@ -2451,6 +2623,7 @@ impl SseDecode for crate::api::rsp::RspProcessingConfig {
         let mut var_minBreathIntervalSec = <Option<f64>>::sse_decode(deserializer);
         let mut var_maxBreathIntervalSec = <Option<f64>>::sse_decode(deserializer);
         let mut var_minAmplitude = <Option<f64>>::sse_decode(deserializer);
+        let mut var_precleaned = <Option<bool>>::sse_decode(deserializer);
         return crate::api::rsp::RspProcessingConfig {
             lowcut: var_lowcut,
             highcut: var_highcut,
@@ -2458,6 +2631,7 @@ impl SseDecode for crate::api::rsp::RspProcessingConfig {
             min_breath_interval_sec: var_minBreathIntervalSec,
             max_breath_interval_sec: var_maxBreathIntervalSec,
             min_amplitude: var_minAmplitude,
+            precleaned: var_precleaned,
         };
     }
 }
@@ -2675,6 +2849,36 @@ fn pde_ffi_dispatcher_primary_impl(
         ),
         45 => wire__crate__api__rppg__rppg_config_default_impl(port, ptr, rust_vec_len, data_len),
         46 => wire__crate__api__rsp__rsp_processing_config_default_impl(
+            port,
+            ptr,
+            rust_vec_len,
+            data_len,
+        ),
+        47 => wire__crate__api__error__signal_error_dimension_mismatch_impl(
+            port,
+            ptr,
+            rust_vec_len,
+            data_len,
+        ),
+        48 => wire__crate__api__error__signal_error_empty_signal_impl(
+            port,
+            ptr,
+            rust_vec_len,
+            data_len,
+        ),
+        49 => wire__crate__api__error__signal_error_insufficient_peaks_impl(
+            port,
+            ptr,
+            rust_vec_len,
+            data_len,
+        ),
+        50 => wire__crate__api__error__signal_error_invalid_sampling_rate_impl(
+            port,
+            ptr,
+            rust_vec_len,
+            data_len,
+        ),
+        51 => wire__crate__api__error__signal_error_non_finite_input_impl(
             port,
             ptr,
             rust_vec_len,
@@ -3289,6 +3493,7 @@ impl flutter_rust_bridge::IntoDart for crate::api::rsp::RspProcessingConfig {
             self.min_breath_interval_sec.into_into_dart().into_dart(),
             self.max_breath_interval_sec.into_into_dart().into_dart(),
             self.min_amplitude.into_into_dart().into_dart(),
+            self.precleaned.into_into_dart().into_dart(),
         ]
         .into_dart()
     }
@@ -3802,6 +4007,7 @@ impl SseEncode for crate::api::rsp::RspProcessingConfig {
         <Option<f64>>::sse_encode(self.min_breath_interval_sec, serializer);
         <Option<f64>>::sse_encode(self.max_breath_interval_sec, serializer);
         <Option<f64>>::sse_encode(self.min_amplitude, serializer);
+        <Option<bool>>::sse_encode(self.precleaned, serializer);
     }
 }
 

@@ -103,6 +103,7 @@ class RspProcessingConfig {
   final double? minBreathIntervalSec;
   final double? maxBreathIntervalSec;
   final double? minAmplitude;
+  final bool? precleaned;
 
   const RspProcessingConfig({
     this.lowcut,
@@ -111,6 +112,7 @@ class RspProcessingConfig {
     this.minBreathIntervalSec,
     this.maxBreathIntervalSec,
     this.minAmplitude,
+    this.precleaned,
   });
 
   static Future<RspProcessingConfig> default_() =>
@@ -123,7 +125,8 @@ class RspProcessingConfig {
       filterOrder.hashCode ^
       minBreathIntervalSec.hashCode ^
       maxBreathIntervalSec.hashCode ^
-      minAmplitude.hashCode;
+      minAmplitude.hashCode ^
+      precleaned.hashCode;
 
   @override
   bool operator ==(Object other) =>
@@ -135,5 +138,6 @@ class RspProcessingConfig {
           filterOrder == other.filterOrder &&
           minBreathIntervalSec == other.minBreathIntervalSec &&
           maxBreathIntervalSec == other.maxBreathIntervalSec &&
-          minAmplitude == other.minAmplitude;
+          minAmplitude == other.minAmplitude &&
+          precleaned == other.precleaned;
 }

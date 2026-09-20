@@ -14,6 +14,28 @@ class SignalError implements FrbException {
 
   const SignalError({required this.message});
 
+  static Future<SignalError> dimensionMismatch() =>
+      RustLib.instance.api.crateApiErrorSignalErrorDimensionMismatch();
+
+  static Future<SignalError> emptySignal() =>
+      RustLib.instance.api.crateApiErrorSignalErrorEmptySignal();
+
+  static Future<SignalError> insufficientPeaks({
+    required int required_,
+    required int provided,
+  }) => RustLib.instance.api.crateApiErrorSignalErrorInsufficientPeaks(
+    required_: required_,
+    provided: provided,
+  );
+
+  static Future<SignalError> invalidSamplingRate({required double rate}) =>
+      RustLib.instance.api.crateApiErrorSignalErrorInvalidSamplingRate(
+        rate: rate,
+      );
+
+  static Future<SignalError> nonFiniteInput() =>
+      RustLib.instance.api.crateApiErrorSignalErrorNonFiniteInput();
+
   @override
   int get hashCode => message.hashCode;
 

@@ -16,6 +16,7 @@ pub struct RspProcessingConfig {
     pub min_breath_interval_sec: Option<f64>,
     pub max_breath_interval_sec: Option<f64>,
     pub min_amplitude: Option<f64>,
+    pub precleaned: Option<bool>,
 }
 
 impl From<RspProcessingConfig> for CoreRspProcessingConfig {
@@ -27,6 +28,7 @@ impl From<RspProcessingConfig> for CoreRspProcessingConfig {
             min_breath_interval_sec: c.min_breath_interval_sec,
             max_breath_interval_sec: c.max_breath_interval_sec,
             min_amplitude: c.min_amplitude,
+            precleaned: c.precleaned,
         }
     }
 }

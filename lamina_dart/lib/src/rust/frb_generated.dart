@@ -75,7 +75,7 @@ class RustLib extends BaseEntrypoint<RustLibApi, RustLibApiImpl, RustLibWire> {
   String get codegenVersion => '2.12.0';
 
   @override
-  int get rustContentHash => 1499871726;
+  int get rustContentHash => -1382637150;
 
   static const kDefaultExternalLibraryLoaderConfig =
       ExternalLibraryLoaderConfig(
@@ -305,6 +305,21 @@ abstract class RustLibApi extends BaseApi {
   Future<RppgConfig> crateApiRppgRppgConfigDefault();
 
   Future<RspProcessingConfig> crateApiRspRspProcessingConfigDefault();
+
+  Future<SignalError> crateApiErrorSignalErrorDimensionMismatch();
+
+  Future<SignalError> crateApiErrorSignalErrorEmptySignal();
+
+  Future<SignalError> crateApiErrorSignalErrorInsufficientPeaks({
+    required int required_,
+    required int provided,
+  });
+
+  Future<SignalError> crateApiErrorSignalErrorInvalidSamplingRate({
+    required double rate,
+  });
+
+  Future<SignalError> crateApiErrorSignalErrorNonFiniteInput();
 
   RustArcIncrementStrongCountFnType
   get rust_arc_increment_strong_count_AutonomicEstimator;
@@ -1983,6 +1998,161 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
         argNames: [],
       );
 
+  @override
+  Future<SignalError> crateApiErrorSignalErrorDimensionMismatch() {
+    return handler.executeNormal(
+      NormalTask(
+        callFfi: (port_) {
+          final serializer = SseSerializer(generalizedFrbRustBinding);
+          pdeCallFfi(
+            generalizedFrbRustBinding,
+            serializer,
+            funcId: 47,
+            port: port_,
+          );
+        },
+        codec: SseCodec(
+          decodeSuccessData: sse_decode_signal_error,
+          decodeErrorData: null,
+        ),
+        constMeta: kCrateApiErrorSignalErrorDimensionMismatchConstMeta,
+        argValues: [],
+        apiImpl: this,
+      ),
+    );
+  }
+
+  TaskConstMeta get kCrateApiErrorSignalErrorDimensionMismatchConstMeta =>
+      const TaskConstMeta(
+        debugName: "signal_error_dimension_mismatch",
+        argNames: [],
+      );
+
+  @override
+  Future<SignalError> crateApiErrorSignalErrorEmptySignal() {
+    return handler.executeNormal(
+      NormalTask(
+        callFfi: (port_) {
+          final serializer = SseSerializer(generalizedFrbRustBinding);
+          pdeCallFfi(
+            generalizedFrbRustBinding,
+            serializer,
+            funcId: 48,
+            port: port_,
+          );
+        },
+        codec: SseCodec(
+          decodeSuccessData: sse_decode_signal_error,
+          decodeErrorData: null,
+        ),
+        constMeta: kCrateApiErrorSignalErrorEmptySignalConstMeta,
+        argValues: [],
+        apiImpl: this,
+      ),
+    );
+  }
+
+  TaskConstMeta get kCrateApiErrorSignalErrorEmptySignalConstMeta =>
+      const TaskConstMeta(debugName: "signal_error_empty_signal", argNames: []);
+
+  @override
+  Future<SignalError> crateApiErrorSignalErrorInsufficientPeaks({
+    required int required_,
+    required int provided,
+  }) {
+    return handler.executeNormal(
+      NormalTask(
+        callFfi: (port_) {
+          final serializer = SseSerializer(generalizedFrbRustBinding);
+          sse_encode_CastedPrimitive_usize(required_, serializer);
+          sse_encode_CastedPrimitive_usize(provided, serializer);
+          pdeCallFfi(
+            generalizedFrbRustBinding,
+            serializer,
+            funcId: 49,
+            port: port_,
+          );
+        },
+        codec: SseCodec(
+          decodeSuccessData: sse_decode_signal_error,
+          decodeErrorData: null,
+        ),
+        constMeta: kCrateApiErrorSignalErrorInsufficientPeaksConstMeta,
+        argValues: [required_, provided],
+        apiImpl: this,
+      ),
+    );
+  }
+
+  TaskConstMeta get kCrateApiErrorSignalErrorInsufficientPeaksConstMeta =>
+      const TaskConstMeta(
+        debugName: "signal_error_insufficient_peaks",
+        argNames: ["required_", "provided"],
+      );
+
+  @override
+  Future<SignalError> crateApiErrorSignalErrorInvalidSamplingRate({
+    required double rate,
+  }) {
+    return handler.executeNormal(
+      NormalTask(
+        callFfi: (port_) {
+          final serializer = SseSerializer(generalizedFrbRustBinding);
+          sse_encode_f_64(rate, serializer);
+          pdeCallFfi(
+            generalizedFrbRustBinding,
+            serializer,
+            funcId: 50,
+            port: port_,
+          );
+        },
+        codec: SseCodec(
+          decodeSuccessData: sse_decode_signal_error,
+          decodeErrorData: null,
+        ),
+        constMeta: kCrateApiErrorSignalErrorInvalidSamplingRateConstMeta,
+        argValues: [rate],
+        apiImpl: this,
+      ),
+    );
+  }
+
+  TaskConstMeta get kCrateApiErrorSignalErrorInvalidSamplingRateConstMeta =>
+      const TaskConstMeta(
+        debugName: "signal_error_invalid_sampling_rate",
+        argNames: ["rate"],
+      );
+
+  @override
+  Future<SignalError> crateApiErrorSignalErrorNonFiniteInput() {
+    return handler.executeNormal(
+      NormalTask(
+        callFfi: (port_) {
+          final serializer = SseSerializer(generalizedFrbRustBinding);
+          pdeCallFfi(
+            generalizedFrbRustBinding,
+            serializer,
+            funcId: 51,
+            port: port_,
+          );
+        },
+        codec: SseCodec(
+          decodeSuccessData: sse_decode_signal_error,
+          decodeErrorData: null,
+        ),
+        constMeta: kCrateApiErrorSignalErrorNonFiniteInputConstMeta,
+        argValues: [],
+        apiImpl: this,
+      ),
+    );
+  }
+
+  TaskConstMeta get kCrateApiErrorSignalErrorNonFiniteInputConstMeta =>
+      const TaskConstMeta(
+        debugName: "signal_error_non_finite_input",
+        argNames: [],
+      );
+
   RustArcIncrementStrongCountFnType
   get rust_arc_increment_strong_count_AutonomicEstimator => wire
       .rust_arc_increment_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerAutonomicEstimator;
@@ -2604,8 +2774,8 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   RspProcessingConfig dco_decode_rsp_processing_config(dynamic raw) {
     // Codec=Dco (DartCObject based), see doc to use other codecs
     final arr = raw as List<dynamic>;
-    if (arr.length != 6)
-      throw Exception('unexpected arr length: expect 6 but see ${arr.length}');
+    if (arr.length != 7)
+      throw Exception('unexpected arr length: expect 7 but see ${arr.length}');
     return RspProcessingConfig(
       lowcut: dco_decode_opt_box_autoadd_f_64(arr[0]),
       highcut: dco_decode_opt_box_autoadd_f_64(arr[1]),
@@ -2613,6 +2783,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
       minBreathIntervalSec: dco_decode_opt_box_autoadd_f_64(arr[3]),
       maxBreathIntervalSec: dco_decode_opt_box_autoadd_f_64(arr[4]),
       minAmplitude: dco_decode_opt_box_autoadd_f_64(arr[5]),
+      precleaned: dco_decode_opt_box_autoadd_bool(arr[6]),
     );
   }
 
@@ -3426,6 +3597,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
       deserializer,
     );
     var var_minAmplitude = sse_decode_opt_box_autoadd_f_64(deserializer);
+    var var_precleaned = sse_decode_opt_box_autoadd_bool(deserializer);
     return RspProcessingConfig(
       lowcut: var_lowcut,
       highcut: var_highcut,
@@ -3433,6 +3605,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
       minBreathIntervalSec: var_minBreathIntervalSec,
       maxBreathIntervalSec: var_maxBreathIntervalSec,
       minAmplitude: var_minAmplitude,
+      precleaned: var_precleaned,
     );
   }
 
@@ -4120,6 +4293,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
     sse_encode_opt_box_autoadd_f_64(self.minBreathIntervalSec, serializer);
     sse_encode_opt_box_autoadd_f_64(self.maxBreathIntervalSec, serializer);
     sse_encode_opt_box_autoadd_f_64(self.minAmplitude, serializer);
+    sse_encode_opt_box_autoadd_bool(self.precleaned, serializer);
   }
 
   @protected
