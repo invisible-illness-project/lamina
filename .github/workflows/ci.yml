@@ -5,6 +5,9 @@ on:
     branches: [main]
   pull_request:
 
+permissions:
+  contents: read
+
 env:
   CARGO_TERM_COLOR: always
 
@@ -14,7 +17,9 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - uses: dtolnay/rust-toolchain@stable
+      - uses: dtolnay/rust-toolchain@master
+        with:
+          toolchain: 1.94.0
       - uses: Swatinem/rust-cache@v2
       - run: cargo test --workspace
 
@@ -47,6 +52,15 @@ jobs:
       - uses: subosito/flutter-action@v2
         with:
           channel: stable
+      - name: Fetch dependencies
+        working-directory: lamina_dart
+        run: flutter pub get
+      - name: Fetch cargokit build_tool dependencies
+        # nested self-contained package (own pubspec+lock), not in the root
+        # app's package graph; without this the analyzer cannot resolve its
+        # package: URIs (run 35536558248 confirmed root pub get is insufficient)
+        working-directory: lamina_dart/rust_builder/cargokit/build_tool
+        run: dart pub get
       - name: Analyze
         working-directory: lamina_dart
         run: flutter analyze
