@@ -1,7 +1,6 @@
 # Rust / Cargo build directories
 /target/
 **/*.rs.bk
-Cargo.lock
 
 # Windows debugging information
 *.pdb
