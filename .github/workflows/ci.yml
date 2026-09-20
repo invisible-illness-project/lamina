@@ -9,7 +9,7 @@ env:
   CARGO_TERM_COLOR: always
 
 jobs:
-  rust:
+  rust-tests:
     name: cargo test --workspace
     runs-on: ubuntu-latest
     steps:
