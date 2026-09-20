@@ -2,9 +2,9 @@ use crate::error::map_signal_error;
 use crate::features::PyMultimodalFeatureVector;
 use lamina::autonomic::{
     ActivationWeights, AutonomicBaseline, AutonomicEstimator, AutonomicEstimatorConfig,
-    AutonomicState, AutonomicStateSeries, BaselineFeatureStats, ConfidenceWeights, CouplingState,
-    ElectrodermalState, FeatureDirection, NormalizationConfig, NormalizationMethod, QualityConfig,
-    RecoveryConfig, RegulationWeights, RespiratoryState, SmoothingConfig, StateConfidence,
+    AutonomicState, AutonomicStateSeries, BaselineFeatureStats, ConfidenceWeights, FeatureDirection,
+    NormalizationConfig, NormalizationMethod, QualityConfig, RecoveryConfig, RegulationWeights,
+    SmoothingConfig, StateConfidence,
 };
 use pyo3::prelude::*;
 

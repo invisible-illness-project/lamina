@@ -1,5 +1,5 @@
 use crate::error::map_signal_error;
-use numpy::{IntoPyArray, PyArray1};
+use numpy::IntoPyArray;
 use pyo3::prelude::*;
 
 #[pyclass]

@@ -79,7 +79,7 @@ print(f"Detected R-peaks at sample indices: {r_peaks}")
 # 3. Convert peaks to inter-beat intervals (in milliseconds)
 rr_intervals = lamina.hrv.peaks_to_intervals(r_peaks, sampling_rate=sampling_rate)
 
-# 4. Compute HRV metrics (RMSSD and Mean NN in seconds)
+# 4. Compute HRV metrics (RMSSD and Mean NN in milliseconds)
 rmssd_val = lamina.hrv.rmssd(rr_intervals)
 mean_nn_val = lamina.hrv.mean_nn(rr_intervals)
 print(f"RMSSD: {rmssd_val:.2f} ms | Mean NN: {mean_nn_val:.2f} ms")

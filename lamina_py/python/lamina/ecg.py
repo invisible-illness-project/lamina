@@ -1,6 +1,6 @@
 """Electrocardiogram (ECG) processing module for Lamina."""
 
-from typing import Optional, Union
+from typing import List, Optional, Union
 import numpy as np
 from numpy.typing import NDArray
 
@@ -9,7 +9,7 @@ import lamina._lamina as _native
 EcgPeakDetectionConfig = _native.PyEcgPeakDetectionConfig
 
 def clean(
-    signal: Union[NDArray[np.float64], NDArray[np.float32], list],
+    signal: Union[NDArray[np.float64], NDArray[np.float32], List[float]],
     sampling_rate: float = 250.0,
 ) -> NDArray[np.float64]:
     """Clean an ECG signal using bandpass filtering and baseline removal."""
@@ -17,7 +17,7 @@ def clean(
     return _native.ecg_clean(arr, sampling_rate)
 
 def findpeaks(
-    signal: Union[NDArray[np.float64], NDArray[np.float32], list],
+    signal: Union[NDArray[np.float64], NDArray[np.float32], List[float]],
     sampling_rate: float = 250.0,
     config: Optional[EcgPeakDetectionConfig] = None,
 ) -> NDArray[np.int64]:
@@ -27,7 +27,7 @@ def findpeaks(
     return np.asarray(peaks, dtype=np.int64)
 
 def findpeaks_mask(
-    signal: Union[NDArray[np.float64], NDArray[np.float32], list],
+    signal: Union[NDArray[np.float64], NDArray[np.float32], List[float]],
     sampling_rate: float = 250.0,
     config: Optional[EcgPeakDetectionConfig] = None,
 ) -> NDArray[np.bool_]:

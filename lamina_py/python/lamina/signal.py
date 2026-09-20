@@ -1,6 +1,6 @@
 """Signal processing module for Lamina."""
 
-from typing import Optional, Union
+from typing import List, Optional, Union
 import numpy as np
 from numpy.typing import NDArray
 
@@ -11,7 +11,7 @@ PeakDetectionConfig = _native.PyPeakDetectionConfig
 _VALID_BTYPES = ("lowpass", "highpass", "bandpass", "notch")
 
 def smooth_moving_average(
-    signal: Union[NDArray[np.float64], NDArray[np.float32], list],
+    signal: Union[NDArray[np.float64], NDArray[np.float32], List[float]],
     window_size: int,
 ) -> NDArray[np.float64]:
     """Smooth a 1D numerical signal using a moving average window."""
@@ -19,7 +19,7 @@ def smooth_moving_average(
     return _native.smooth_moving_average(arr, window_size)
 
 def filter(
-    signal: Union[NDArray[np.float64], NDArray[np.float32], list],
+    signal: Union[NDArray[np.float64], NDArray[np.float32], List[float]],
     sampling_rate: float,
     low_cutoff: Optional[float] = None,
     high_cutoff: Optional[float] = None,
@@ -38,7 +38,7 @@ def filter(
     return _native.filter(arr, sampling_rate, low_cutoff, high_cutoff, order, btype)
 
 def filtfilt(
-    signal: Union[NDArray[np.float64], NDArray[np.float32], list],
+    signal: Union[NDArray[np.float64], NDArray[np.float32], List[float]],
     sampling_rate: float,
     low_cutoff: Optional[float] = None,
     high_cutoff: Optional[float] = None,
@@ -52,7 +52,7 @@ def filtfilt(
     return _native.filtfilt(arr, sampling_rate, low_cutoff, high_cutoff, order, btype)
 
 def findpeaks(
-    signal: Union[NDArray[np.float64], NDArray[np.float32], list],
+    signal: Union[NDArray[np.float64], NDArray[np.float32], List[float]],
     sampling_rate: float,
     min_distance_sec: float = 0.4,
     min_height: Optional[float] = None,
@@ -77,7 +77,7 @@ def findpeaks(
     return np.asarray(indices, dtype=np.int64)
 
 def findpeaks_mask(
-    signal: Union[NDArray[np.float64], NDArray[np.float32], list],
+    signal: Union[NDArray[np.float64], NDArray[np.float32], List[float]],
     sampling_rate: float,
     min_distance_sec: float = 0.4,
     min_height: Optional[float] = None,

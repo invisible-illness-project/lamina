@@ -11,7 +11,7 @@ RspProcessingConfig = _native.PyRspProcessingConfig
 RespirationCycle = _native.PyRespirationCycle
 
 def clean(
-    signal: Union[NDArray[np.float64], NDArray[np.float32], list],
+    signal: Union[NDArray[np.float64], NDArray[np.float32], List[float]],
     sampling_rate: float = 100.0,
     config: Optional[RspCleaningConfig] = None,
 ) -> NDArray[np.float64]:
@@ -20,7 +20,7 @@ def clean(
     return _native.rsp_clean(arr, sampling_rate, config)
 
 def findpeaks(
-    signal: Union[NDArray[np.float64], NDArray[np.float32], list],
+    signal: Union[NDArray[np.float64], NDArray[np.float32], List[float]],
     sampling_rate: float = 100.0,
     config: Optional[RspProcessingConfig] = None,
 ) -> NDArray[np.int64]:
@@ -30,7 +30,7 @@ def findpeaks(
     return np.asarray(peaks, dtype=np.int64)
 
 def findpeaks_mask(
-    signal: Union[NDArray[np.float64], NDArray[np.float32], list],
+    signal: Union[NDArray[np.float64], NDArray[np.float32], List[float]],
     sampling_rate: float = 100.0,
     config: Optional[RspProcessingConfig] = None,
 ) -> NDArray[np.bool_]:
@@ -40,7 +40,7 @@ def findpeaks_mask(
     return np.asarray(mask, dtype=np.bool_)
 
 def cycles(
-    signal: Union[NDArray[np.float64], NDArray[np.float32], list],
+    signal: Union[NDArray[np.float64], NDArray[np.float32], List[float]],
     sampling_rate: float = 100.0,
     config: Optional[RspProcessingConfig] = None,
 ) -> List[RespirationCycle]:
@@ -49,7 +49,7 @@ def cycles(
     return _native.rsp_cycles(arr, sampling_rate, config)
 
 def rate(
-    signal: Union[NDArray[np.float64], NDArray[np.float32], list],
+    signal: Union[NDArray[np.float64], NDArray[np.float32], List[float]],
     sampling_rate: float = 100.0,
     config: Optional[RspProcessingConfig] = None,
 ) -> NDArray[np.float64]:

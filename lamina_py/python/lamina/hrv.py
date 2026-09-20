@@ -32,21 +32,21 @@ def indices_to_intervals(
     return np.asarray(_native.indices_to_intervals(idx_vec, sampling_rate), dtype=np.float64)
 
 def rmssd(
-    rr_intervals: Union[NDArray[np.float64], NDArray[np.float32], list],
+    rr_intervals: Union[NDArray[np.float64], NDArray[np.float32], List[float]],
 ) -> float:
     """Compute Root Mean Square of Successive Differences (RMSSD) in milliseconds (ms)."""
     arr = np.asarray(rr_intervals, dtype=np.float64)
     return _native.rmssd(arr)
 
 def mean_nn(
-    rr_intervals: Union[NDArray[np.float64], NDArray[np.float32], list],
+    rr_intervals: Union[NDArray[np.float64], NDArray[np.float32], List[float]],
 ) -> float:
     """Compute the mean normal-to-normal (NN) inter-beat interval in milliseconds (ms)."""
     arr = np.asarray(rr_intervals, dtype=np.float64)
     return _native.mean_nn(arr)
 
 def classify_intervals(
-    rr_intervals: Union[NDArray[np.float64], NDArray[np.float32], list],
+    rr_intervals: Union[NDArray[np.float64], NDArray[np.float32], List[float]],
     percent_threshold: Optional[float] = None,
 ) -> List[str]:
     """Classify each inter-beat interval (ms) as NormalNN, EctopicRR, ArtifactRR, or Missing."""
@@ -54,7 +54,7 @@ def classify_intervals(
     return _native.classify_intervals(arr, percent_threshold)
 
 def clean_rr_intervals(
-    rr_intervals: Union[NDArray[np.float64], NDArray[np.float32], list],
+    rr_intervals: Union[NDArray[np.float64], NDArray[np.float32], List[float]],
     policy: CorrectionPolicy,
 ) -> NDArray[np.float64]:
     """Clean inter-beat intervals (ms) into a validated N-N series per the correction policy."""

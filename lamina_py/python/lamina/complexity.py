@@ -1,13 +1,13 @@
 """Nonlinear complexity metrics module for Lamina."""
 
-from typing import Union
+from typing import List, Union
 import numpy as np
 from numpy.typing import NDArray
 
 import lamina._lamina as _native
 
 def sample_entropy(
-    signal: Union[NDArray[np.float64], NDArray[np.float32], list],
+    signal: Union[NDArray[np.float64], NDArray[np.float32], List[float]],
     m: int = 2,
     r: float = 0.2,
 ) -> float:
