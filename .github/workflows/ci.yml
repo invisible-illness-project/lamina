@@ -1,0 +1,52 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+env:
+  CARGO_TERM_COLOR: always
+
+jobs:
+  rust:
+    name: cargo test --workspace
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: dtolnay/rust-toolchain@stable
+      - uses: Swatinem/rust-cache@v2
+      - run: cargo test --workspace
+
+  python:
+    name: lamina_py build, tests, lint, stub parity
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: Install Python tooling
+        run: pip install maturin==1.15.0 mypy==1.7.1 ruff==0.1.6 pytest numpy
+      - name: Stub parity check (issue #29 drift guard)
+        run: python3 lamina_py/scripts/check_stub_parity.py
+      - name: Ruff
+        run: ruff check lamina_py/python/lamina
+      - name: Mypy
+        run: mypy lamina_py/python/lamina
+      - name: Build and install extension
+        run: pip install ./lamina_py
+      - name: Pytest
+        run: python -m pytest lamina_py/tests -q
+
+  dart:
+    name: flutter analyze (lamina_dart)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: subosito/flutter-action@v2
+        with:
+          channel: stable
+      - name: Analyze
+        working-directory: lamina_dart
+        run: flutter analyze
