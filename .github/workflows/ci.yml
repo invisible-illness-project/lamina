@@ -18,4 +18,7 @@ jobs:
           toolchain: 1.94.0
       - uses: Swatinem/rust-cache@v2
       - name: cargo test
-        run: cargo test --locked
+        # NOTE: no --locked — lamina is a library and does not commit Cargo.lock
+        # (.gitignore line 4). Toolchain is pinned; deps resolve per semver.
+        # Committing a lockfile is a policy decision for the founder.
+        run: cargo test
