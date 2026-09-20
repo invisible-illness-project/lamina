@@ -133,6 +133,22 @@ pub struct PyScrEvent {
 
 #[pymethods]
 impl PyScrEvent {
+    #[new]
+    #[pyo3(signature = (onset_index, peak_index, amplitude, rise_time_sec))]
+    pub fn new(
+        onset_index: usize,
+        peak_index: usize,
+        amplitude: f64,
+        rise_time_sec: f64,
+    ) -> Self {
+        Self {
+            onset_index,
+            peak_index,
+            amplitude,
+            rise_time_sec,
+        }
+    }
+
     fn __repr__(&self) -> String {
         format!(
             "ScrEvent(onset_index={}, peak_index={}, amplitude={:.4}, rise_time_sec={:.3})",

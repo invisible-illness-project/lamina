@@ -136,7 +136,7 @@ pub struct PyRppgWindowConfig {
 #[pymethods]
 impl PyRppgWindowConfig {
     #[new]
-    #[pyo3(signature = (window_sec=3.0, step_sec=0.5, min_window_fraction=0.8))]
+    #[pyo3(signature = (window_sec=1.6, step_sec=0.8, min_window_fraction=0.8))]
     pub fn new(window_sec: f64, step_sec: f64, min_window_fraction: f64) -> Self {
         Self {
             window_sec,
@@ -144,7 +144,9 @@ impl PyRppgWindowConfig {
             min_window_fraction,
         }
     }
+}
 
+impl PyRppgWindowConfig {
     pub fn to_rust(&self) -> lamina::rppg::RppgWindowConfig {
         lamina::rppg::RppgWindowConfig {
             window_sec: self.window_sec,
@@ -173,7 +175,9 @@ impl PyRppgPreprocessingConfig {
             detrend,
         }
     }
+}
 
+impl PyRppgPreprocessingConfig {
     pub fn to_rust(&self) -> lamina::rppg::RppgPreprocessingConfig {
         lamina::rppg::RppgPreprocessingConfig {
             normalize_channels: self.normalize_channels,

@@ -251,15 +251,6 @@ pub struct PyAutonomicBaseline {
     pub inner: AutonomicBaseline,
 }
 
-macro_rules! stats_getter {
-    ($name:ident, $field:ident) => {
-        #[getter]
-        pub fn $name(&self) -> PyBaselineFeatureStats {
-            PyBaselineFeatureStats::from(&self.inner.$field)
-        }
-    };
-}
-
 #[pymethods]
 impl PyAutonomicBaseline {
     #[pyo3(name = "from_features")]
@@ -277,18 +268,65 @@ impl PyAutonomicBaseline {
         Ok(Self { inner: baseline })
     }
 
-    stats_getter!(hr_bpm_stats, hr_bpm_stats);
-    stats_getter!(sdnn_ms_stats, sdnn_ms_stats);
-    stats_getter!(rmssd_ms_stats, rmssd_ms_stats);
-    stats_getter!(eda_tonic_stats, eda_tonic_stats);
-    stats_getter!(eda_phasic_stats, eda_phasic_stats);
-    stats_getter!(scr_rate_stats, scr_rate_stats);
-    stats_getter!(rsp_rate_stats, rsp_rate_stats);
-    stats_getter!(rsp_amplitude_stats, rsp_amplitude_stats);
-    stats_getter!(rsp_std_stats, rsp_std_stats);
-    stats_getter!(rsa_bpm_stats, rsa_bpm_stats);
-    stats_getter!(phase_coupling_stats, phase_coupling_stats);
-    stats_getter!(pulse_delay_stats, pulse_delay_stats);
+    #[getter]
+    pub fn hr_bpm_stats(&self) -> PyBaselineFeatureStats {
+        PyBaselineFeatureStats::from(&self.inner.hr_bpm_stats)
+    }
+
+    #[getter]
+    pub fn sdnn_ms_stats(&self) -> PyBaselineFeatureStats {
+        PyBaselineFeatureStats::from(&self.inner.sdnn_ms_stats)
+    }
+
+    #[getter]
+    pub fn rmssd_ms_stats(&self) -> PyBaselineFeatureStats {
+        PyBaselineFeatureStats::from(&self.inner.rmssd_ms_stats)
+    }
+
+    #[getter]
+    pub fn eda_tonic_stats(&self) -> PyBaselineFeatureStats {
+        PyBaselineFeatureStats::from(&self.inner.eda_tonic_stats)
+    }
+
+    #[getter]
+    pub fn eda_phasic_stats(&self) -> PyBaselineFeatureStats {
+        PyBaselineFeatureStats::from(&self.inner.eda_phasic_stats)
+    }
+
+    #[getter]
+    pub fn scr_rate_stats(&self) -> PyBaselineFeatureStats {
+        PyBaselineFeatureStats::from(&self.inner.scr_rate_stats)
+    }
+
+    #[getter]
+    pub fn rsp_rate_stats(&self) -> PyBaselineFeatureStats {
+        PyBaselineFeatureStats::from(&self.inner.rsp_rate_stats)
+    }
+
+    #[getter]
+    pub fn rsp_amplitude_stats(&self) -> PyBaselineFeatureStats {
+        PyBaselineFeatureStats::from(&self.inner.rsp_amplitude_stats)
+    }
+
+    #[getter]
+    pub fn rsp_std_stats(&self) -> PyBaselineFeatureStats {
+        PyBaselineFeatureStats::from(&self.inner.rsp_std_stats)
+    }
+
+    #[getter]
+    pub fn rsa_bpm_stats(&self) -> PyBaselineFeatureStats {
+        PyBaselineFeatureStats::from(&self.inner.rsa_bpm_stats)
+    }
+
+    #[getter]
+    pub fn phase_coupling_stats(&self) -> PyBaselineFeatureStats {
+        PyBaselineFeatureStats::from(&self.inner.phase_coupling_stats)
+    }
+
+    #[getter]
+    pub fn pulse_delay_stats(&self) -> PyBaselineFeatureStats {
+        PyBaselineFeatureStats::from(&self.inner.pulse_delay_stats)
+    }
 }
 
 // ---- States ----

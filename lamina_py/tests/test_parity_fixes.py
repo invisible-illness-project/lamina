@@ -29,14 +29,14 @@ def test_filter_btype_kinds():
         sig.filter(x, 250.0, low_cutoff=1.0, high_cutoff=5.0, btype="bogus")
 
 def test_findpeaks_extra_params():
-    x = np.array([0, 0, 1, 0, 0, 0, 0, 0.2, 0, 0, 0, 1, 0, 0], dtype=float)
-    all_p = sig.findpeaks(x, 10.0, min_height=0.5, min_distance_sec=0.0)
-    prom_p = sig.findpeaks(x, 10.0, min_height=0.5, min_distance_sec=0.0, min_prominence=0.9)
+    x = np.array([0, 0, 1, 0, 0, 0, 0, 0.6, 0, 0, 0, 0.8, 0, 0], dtype=float)
+    all_p = sig.findpeaks(x, 10.0, min_height=0.7, min_distance_sec=0.0)
+    prom_p = sig.findpeaks(x, 10.0, min_height=0.7, min_distance_sec=0.0, min_prominence=0.9)
     assert len(all_p) == 2 and len(prom_p) == 1
 
 def test_mask_variants_match_indices():
     phasic = np.zeros(2000); phasic[[500, 1000, 1500]] = 1.0
-    cfg = lamina.eda.EdaPeakDetectionConfig(min_height=0.5)
+    cfg = lamina.eda.EdaPeakDetectionConfig(min_amplitude=0.5)
     idx = lamina.eda.findpeaks(phasic, 100.0, config=cfg)
     mask = lamina.eda.findpeaks_mask(phasic, 100.0, config=cfg)
     assert set(np.asarray(idx).tolist()) == set(np.nonzero(np.asarray(mask))[0].tolist())
@@ -46,12 +46,17 @@ def test_mask_variants_match_indices():
     assert set(np.asarray(ridx).tolist()) == set(np.nonzero(np.asarray(rmask))[0].tolist())
 
 def test_multimodal_input_with_rsp():
-    cyc = lamina.rsp.RespirationCycle(
+    cyc1 = lamina.rsp.RespirationCycle(
         inspiration_index=100, expiration_index=300, next_inspiration_index=500,
         duration_sec=4.0, respiratory_rate_bpm=15.0, amplitude=1.0)
+    cyc2 = lamina.rsp.RespirationCycle(
+        inspiration_index=500, expiration_index=700, next_inspiration_index=900,
+        duration_sec=4.0, respiratory_rate_bpm=15.0, amplitude=1.0)
     inp = lamina.features.MultimodalInput()
-    inp.with_rsp([cyc], sampling_rate=100.0)
-    fvs = lamina.features.extract_features(inp)
+    inp.with_rsp([cyc1, cyc2], sampling_rate=100.0)
+    wcfg = lamina.features.WindowConfig(window_duration_sec=4.0, step_sec=2.0, min_coverage=0.01)
+    cfg = lamina.features.FeatureConfig(window=wcfg)
+    fvs = lamina.features.extract_features(inp, config=cfg)
     assert len(fvs) >= 1 and fvs[0].mean_rsp_rate_bpm is not None
 
 def test_hrv_quality():

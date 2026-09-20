@@ -113,6 +113,26 @@ pub struct PyRespirationCycle {
 
 #[pymethods]
 impl PyRespirationCycle {
+    #[new]
+    #[pyo3(signature = (inspiration_index, expiration_index, next_inspiration_index, duration_sec, respiratory_rate_bpm, amplitude))]
+    pub fn new(
+        inspiration_index: usize,
+        expiration_index: usize,
+        next_inspiration_index: usize,
+        duration_sec: f64,
+        respiratory_rate_bpm: f64,
+        amplitude: f64,
+    ) -> Self {
+        Self {
+            inspiration_index,
+            expiration_index,
+            next_inspiration_index,
+            duration_sec,
+            respiratory_rate_bpm,
+            amplitude,
+        }
+    }
+
     fn __repr__(&self) -> String {
         format!(
             "RespirationCycle(insp={}, exp={}, next_insp={}, duration={:.3}s, rate={:.1}BPM, amp={:.4})",

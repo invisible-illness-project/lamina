@@ -150,7 +150,7 @@ impl From<&lamina::multimodal::ModalityQuality> for PyModalityQuality {
         Self {
             score: q.score,
             valid: q.valid,
-            issues: q.issues.iter().map(quality_issue_str).collect(),
+            issues: q.issues.iter().map(|i| quality_issue_str(i).to_string()).collect(),
         }
     }
 }

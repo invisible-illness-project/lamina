@@ -88,6 +88,11 @@ fn _lamina(m: &Bound<'_, PyModule>) -> PyResult<()> {
     m.add_class::<autonomic::PyAutonomicEstimatorConfig>()?;
     m.add_class::<autonomic::PyBaselineFeatureStats>()?;
     m.add_class::<autonomic::PyAutonomicBaseline>()?;
+    m.add_class::<autonomic::PyCardiacState>()?;
+    m.add_class::<autonomic::PyElectrodermalState>()?;
+    m.add_class::<autonomic::PyRespiratoryState>()?;
+    m.add_class::<autonomic::PyCouplingState>()?;
+    m.add_class::<autonomic::PyStateConfidence>()?;
     m.add_class::<autonomic::PyAutonomicState>()?;
     m.add_class::<autonomic::PyAutonomicStateSeries>()?;
     m.add_class::<autonomic::PyAutonomicEstimator>()?;

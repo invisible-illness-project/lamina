@@ -138,7 +138,7 @@ pub fn classify_intervals<'py>(
     py.detach(|| {
         rust_classify_intervals(&arr, percent_threshold)
             .into_iter()
-            .map(interval_quality_str)
+            .map(|q| interval_quality_str(q).to_string())
             .collect()
     })
 }

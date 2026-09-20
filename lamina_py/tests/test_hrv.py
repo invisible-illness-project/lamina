@@ -7,7 +7,7 @@ def test_hrv_peaks_to_intervals():
     intervals = lamina.hrv.peaks_to_intervals(peaks, sampling_rate=250.0)
     assert isinstance(intervals, np.ndarray)
     assert len(intervals) == 4
-    np.testing.assert_allclose(intervals, [1.0, 1.0, 1.0, 1.0])
+    np.testing.assert_allclose(intervals, [1000.0, 1000.0, 1000.0, 1000.0])
 
 def test_hrv_rmssd():
     rr = np.array([1.0, 1.05, 0.98, 1.02, 0.99], dtype=np.float64)

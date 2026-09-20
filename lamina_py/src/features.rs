@@ -199,15 +199,6 @@ pub struct PyMultimodalFeatureVector {
     pub inner: lamina::features::MultimodalFeatureVector,
 }
 
-macro_rules! opt_getter {
-    ($name:ident, $group:ident, $field:ident) => {
-        #[getter]
-        pub fn $name(&self) -> Option<f64> {
-            self.inner.$group.$field
-        }
-    };
-}
-
 #[pymethods]
 impl PyMultimodalFeatureVector {
     #[getter]
@@ -226,13 +217,34 @@ impl PyMultimodalFeatureVector {
     }
 
     // Cardiac
-    opt_getter!(mean_hr_bpm, cardiac, mean_hr_bpm);
-    opt_getter!(median_hr_bpm, cardiac, median_hr_bpm);
-    opt_getter!(sdnn_ms, cardiac, sdnn_ms);
-    opt_getter!(rmssd_ms, cardiac, rmssd_ms);
-    opt_getter!(pnn50, cardiac, pnn50);
-    opt_getter!(rr_mean_ms, cardiac, rr_mean_ms);
-    opt_getter!(rr_std_ms, cardiac, rr_std_ms);
+    #[getter]
+    pub fn mean_hr_bpm(&self) -> Option<f64> {
+        self.inner.cardiac.mean_hr_bpm
+    }
+    #[getter]
+    pub fn median_hr_bpm(&self) -> Option<f64> {
+        self.inner.cardiac.median_hr_bpm
+    }
+    #[getter]
+    pub fn sdnn_ms(&self) -> Option<f64> {
+        self.inner.cardiac.sdnn_ms
+    }
+    #[getter]
+    pub fn rmssd_ms(&self) -> Option<f64> {
+        self.inner.cardiac.rmssd_ms
+    }
+    #[getter]
+    pub fn pnn50(&self) -> Option<f64> {
+        self.inner.cardiac.pnn50
+    }
+    #[getter]
+    pub fn rr_mean_ms(&self) -> Option<f64> {
+        self.inner.cardiac.rr_mean_ms
+    }
+    #[getter]
+    pub fn rr_std_ms(&self) -> Option<f64> {
+        self.inner.cardiac.rr_std_ms
+    }
 
     #[getter]
     pub fn beat_count(&self) -> usize {
@@ -240,51 +252,106 @@ impl PyMultimodalFeatureVector {
     }
 
     // EDA
-    opt_getter!(mean_tonic_us, eda, mean_tonic_us);
-    opt_getter!(median_tonic_us, eda, median_tonic_us);
-    opt_getter!(tonic_std_us, eda, tonic_std_us);
-    opt_getter!(mean_phasic_us, eda, mean_phasic_us);
-    opt_getter!(phasic_std_us, eda, phasic_std_us);
+    #[getter]
+    pub fn mean_tonic_us(&self) -> Option<f64> {
+        self.inner.eda.mean_tonic_us
+    }
+    #[getter]
+    pub fn median_tonic_us(&self) -> Option<f64> {
+        self.inner.eda.median_tonic_us
+    }
+    #[getter]
+    pub fn tonic_std_us(&self) -> Option<f64> {
+        self.inner.eda.tonic_std_us
+    }
+    #[getter]
+    pub fn mean_phasic_us(&self) -> Option<f64> {
+        self.inner.eda.mean_phasic_us
+    }
+    #[getter]
+    pub fn phasic_std_us(&self) -> Option<f64> {
+        self.inner.eda.phasic_std_us
+    }
 
     #[getter]
     pub fn scr_count(&self) -> usize {
         self.inner.eda.scr_count
     }
 
-    opt_getter!(scr_rate_per_min, eda, scr_rate_per_min);
-    opt_getter!(mean_scr_amplitude_us, eda, mean_scr_amplitude_us);
-    opt_getter!(median_scr_amplitude_us, eda, median_scr_amplitude_us);
-    opt_getter!(mean_scr_rise_time_sec, eda, mean_scr_rise_time_sec);
+    #[getter]
+    pub fn scr_rate_per_min(&self) -> Option<f64> {
+        self.inner.eda.scr_rate_per_min
+    }
+    #[getter]
+    pub fn mean_scr_amplitude_us(&self) -> Option<f64> {
+        self.inner.eda.mean_scr_amplitude_us
+    }
+    #[getter]
+    pub fn median_scr_amplitude_us(&self) -> Option<f64> {
+        self.inner.eda.median_scr_amplitude_us
+    }
+    #[getter]
+    pub fn mean_scr_rise_time_sec(&self) -> Option<f64> {
+        self.inner.eda.mean_scr_rise_time_sec
+    }
 
     // Respiration
-    opt_getter!(mean_rsp_rate_bpm, respiration, mean_rate_bpm);
-    opt_getter!(median_rsp_rate_bpm, respiration, median_rate_bpm);
-    opt_getter!(rsp_rate_std_bpm, respiration, rate_std_bpm);
-    opt_getter!(mean_cycle_duration_sec, respiration, mean_cycle_duration_sec);
+    #[getter]
+    pub fn mean_rsp_rate_bpm(&self) -> Option<f64> {
+        self.inner.respiration.mean_rate_bpm
+    }
+    #[getter]
+    pub fn median_rsp_rate_bpm(&self) -> Option<f64> {
+        self.inner.respiration.median_rate_bpm
+    }
+    #[getter]
+    pub fn rsp_rate_std_bpm(&self) -> Option<f64> {
+        self.inner.respiration.rate_std_bpm
+    }
+    #[getter]
+    pub fn mean_cycle_duration_sec(&self) -> Option<f64> {
+        self.inner.respiration.mean_cycle_duration_sec
+    }
 
     #[getter]
     pub fn cycle_count(&self) -> usize {
         self.inner.respiration.cycle_count
     }
 
-    opt_getter!(mean_rsp_amplitude, respiration, mean_amplitude);
-    opt_getter!(rsp_amplitude_std, respiration, amplitude_std);
+    #[getter]
+    pub fn mean_rsp_amplitude(&self) -> Option<f64> {
+        self.inner.respiration.mean_amplitude
+    }
+    #[getter]
+    pub fn rsp_amplitude_std(&self) -> Option<f64> {
+        self.inner.respiration.amplitude_std
+    }
 
     // Coupling
-    opt_getter!(rsa_amplitude_bpm, coupling, rsa_amplitude_bpm);
-    opt_getter!(rsa_amplitude_rr_sec, coupling, rsa_amplitude_rr_sec);
-    opt_getter!(
-        cardiac_respiratory_concentration,
-        coupling,
-        cardiac_respiratory_concentration
-    );
-    opt_getter!(
-        cardiac_respiratory_mean_phase,
-        coupling,
-        cardiac_respiratory_mean_phase
-    );
-    opt_getter!(mean_pulse_delay_sec, coupling, mean_pulse_delay_sec);
-    opt_getter!(pulse_delay_std_sec, coupling, pulse_delay_std_sec);
+    #[getter]
+    pub fn rsa_amplitude_bpm(&self) -> Option<f64> {
+        self.inner.coupling.rsa_amplitude_bpm
+    }
+    #[getter]
+    pub fn rsa_amplitude_rr_sec(&self) -> Option<f64> {
+        self.inner.coupling.rsa_amplitude_rr_sec
+    }
+    #[getter]
+    pub fn cardiac_respiratory_concentration(&self) -> Option<f64> {
+        self.inner.coupling.cardiac_respiratory_concentration
+    }
+    #[getter]
+    pub fn cardiac_respiratory_mean_phase(&self) -> Option<f64> {
+        self.inner.coupling.cardiac_respiratory_mean_phase
+    }
+    #[getter]
+    pub fn mean_pulse_delay_sec(&self) -> Option<f64> {
+        self.inner.coupling.mean_pulse_delay_sec
+    }
+    #[getter]
+    pub fn pulse_delay_std_sec(&self) -> Option<f64> {
+        self.inner.coupling.pulse_delay_std_sec
+    }
 
     #[getter]
     pub fn scr_cardiac_association_count(&self) -> usize {
@@ -298,7 +365,7 @@ impl PyMultimodalFeatureVector {
     }
 
     #[getter]
-    pub fn coverage_overall(&self) -> Option<f64> {
+    pub fn coverage_overall(&self) -> f64 {
         self.inner.quality.modality_coverage.overall
     }
 
