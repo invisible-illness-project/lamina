@@ -7,19 +7,19 @@ from numpy.typing import NDArray
 __version__: str
 
 class LaminaError(Exception): ...
-class LaminaInputError(ValueError, LaminaError): ...
+class LaminaInputError(ValueError): ...
 class EmptySignalError(LaminaInputError): ...
 class NonFiniteInputError(LaminaInputError): ...
 class DimensionMismatchError(LaminaInputError): ...
 class UnsortedEventsError(LaminaInputError): ...
 class InsufficientSamplesError(LaminaInputError): ...
 class InsufficientPeaksError(LaminaInputError): ...
-class LaminaConfigurationError(ValueError, LaminaError): ...
+class LaminaConfigurationError(ValueError): ...
 class InvalidSamplingRateError(LaminaConfigurationError): ...
 class InvalidCutoffFrequencyError(LaminaConfigurationError): ...
 class InvalidWindowSizeError(LaminaConfigurationError): ...
 class InvalidFilterOrderError(LaminaConfigurationError): ...
-class LaminaProcessingError(RuntimeError, LaminaError): ...
+class LaminaProcessingError(RuntimeError): ...
 
 class PyPeakDetectionConfig:
     min_height: Optional[float]
@@ -43,7 +43,7 @@ def filter(
     lowcut: Optional[float] = ...,
     highcut: Optional[float] = ...,
     order: int = ...,
-    kind: Optional[str] = ...,
+    kind: str = ...,
 ) -> NDArray[np.float64]: ...
 def filtfilt(
     signal: NDArray[np.float64],
@@ -51,46 +51,94 @@ def filtfilt(
     lowcut: Optional[float] = ...,
     highcut: Optional[float] = ...,
     order: int = ...,
-    kind: Optional[str] = ...,
+    kind: str = ...,
 ) -> NDArray[np.float64]: ...
 def findpeaks(signal: NDArray[np.float64], config: Optional[PyPeakDetectionConfig] = ...) -> NDArray[np.uint64]: ...
 def findpeaks_mask(signal: NDArray[np.float64], config: Optional[PyPeakDetectionConfig] = ...) -> NDArray[np.bool_]: ...
 
 class PyEcgPeakDetectionConfig:
-    min_rr_sec: float
-    max_rr_sec: float
-    def __init__(self, min_rr_sec: float = ..., max_rr_sec: float = ...) -> None: ...
+    lowcut: Optional[float]
+    highcut: Optional[float]
+    filter_order: Optional[int]
+    integration_window_sec: Optional[float]
+    refractory_period_sec: Optional[float]
+    searchback: Optional[bool]
+    threshold_multiplier: Optional[float]
+    def __init__(
+        self,
+        lowcut: Optional[float] = ...,
+        highcut: Optional[float] = ...,
+        filter_order: Optional[int] = ...,
+        integration_window_sec: Optional[float] = ...,
+        refractory_period_sec: Optional[float] = ...,
+        searchback: Optional[bool] = ...,
+        threshold_multiplier: Optional[float] = ...,
+    ) -> None: ...
 
-def ecg_clean(signal: NDArray[np.float64], sampling_rate: float) -> NDArray[np.float64]: ...
-def ecg_findpeaks(signal: NDArray[np.float64], sampling_rate: float, config: Optional[PyEcgPeakDetectionConfig] = ...) -> List[int]: ...
-def ecg_findpeaks_mask(signal: NDArray[np.float64], sampling_rate: float, config: Optional[PyEcgPeakDetectionConfig] = ...) -> List[bool]: ...
+def ecg_clean(signal: NDArray[np.float64], sampling_rate: float, method: str = ...) -> NDArray[np.float64]: ...
+def ecg_findpeaks(signal: NDArray[np.float64], sampling_rate: float, config: Optional[PyEcgPeakDetectionConfig] = ...) -> NDArray[np.uint64]: ...
+def ecg_findpeaks_mask(signal: NDArray[np.float64], sampling_rate: float, config: Optional[PyEcgPeakDetectionConfig] = ...) -> NDArray[np.bool_]: ...
 
 class PyPpgPeakDetectionConfig:
-    min_distance_sec: float
-    def __init__(self, min_distance_sec: float = ...) -> None: ...
+    lowcut: Optional[float]
+    highcut: Optional[float]
+    filter_order: Optional[int]
+    w_peak_sec: Optional[float]
+    w_beat_sec: Optional[float]
+    alpha: Optional[float]
+    refractory_period_sec: Optional[float]
+    def __init__(
+        self,
+        lowcut: Optional[float] = ...,
+        highcut: Optional[float] = ...,
+        filter_order: Optional[int] = ...,
+        w_peak_sec: Optional[float] = ...,
+        w_beat_sec: Optional[float] = ...,
+        alpha: Optional[float] = ...,
+        refractory_period_sec: Optional[float] = ...,
+    ) -> None: ...
 
 def ppg_clean(signal: NDArray[np.float64], sampling_rate: float) -> NDArray[np.float64]: ...
-def ppg_findpeaks(signal: NDArray[np.float64], sampling_rate: float, config: Optional[PyPpgPeakDetectionConfig] = ...) -> List[int]: ...
-def ppg_findpeaks_mask(signal: NDArray[np.float64], sampling_rate: float, config: Optional[PyPpgPeakDetectionConfig] = ...) -> List[bool]: ...
+def ppg_findpeaks(signal: NDArray[np.float64], sampling_rate: float, config: Optional[PyPpgPeakDetectionConfig] = ...) -> NDArray[np.uint64]: ...
+def ppg_findpeaks_mask(signal: NDArray[np.float64], sampling_rate: float, config: Optional[PyPpgPeakDetectionConfig] = ...) -> NDArray[np.bool_]: ...
 
 class PyEdaCleaningConfig:
-    lowpass_cutoff_hz: float
-    order: int
-    def __init__(self, lowpass_cutoff_hz: float = ..., order: int = ...) -> None: ...
+    lowpass_cutoff_hz: Optional[float]
+    filter_order: Optional[int]
+    pass_through_if_nyquist_violated: bool
+    def __init__(
+        self,
+        lowpass_cutoff_hz: Optional[float] = ...,
+        filter_order: Optional[int] = ...,
+        pass_through_if_nyquist_violated: bool = ...,
+    ) -> None: ...
 
 class PyEdaDecompositionConfig:
-    lowpass_cutoff_hz: float
-    def __init__(self, lowpass_cutoff_hz: float = ...) -> None: ...
+    tonic_cutoff_hz: Optional[float]
+    filter_order: Optional[int]
+    def __init__(self, tonic_cutoff_hz: Optional[float] = ..., filter_order: Optional[int] = ...) -> None: ...
 
 class PyEdaPeakDetectionConfig:
-    min_amplitude: float
-    def __init__(self, min_amplitude: float = ...) -> None: ...
+    min_amplitude: Optional[float]
+    min_prominence: Optional[float]
+    min_distance_sec: Optional[float]
+    min_rise_time_sec: Optional[float]
+    max_rise_time_sec: Optional[float]
+    def __init__(
+        self,
+        min_amplitude: Optional[float] = ...,
+        min_prominence: Optional[float] = ...,
+        min_distance_sec: Optional[float] = ...,
+        min_rise_time_sec: Optional[float] = ...,
+        max_rise_time_sec: Optional[float] = ...,
+    ) -> None: ...
 
 class PyScrEvent:
     onset_index: int
     peak_index: int
     amplitude: float
     rise_time_sec: float
+    def __init__(self, onset_index: int, peak_index: int, amplitude: float, rise_time_sec: float) -> None: ...
 
 class PyEdaComponents:
     tonic: Any
@@ -99,20 +147,39 @@ class PyEdaComponents:
 def eda_clean(signal: NDArray[np.float64], sampling_rate: float, config: Optional[PyEdaCleaningConfig] = ...) -> NDArray[np.float64]: ...
 def eda_decompose(signal: NDArray[np.float64], sampling_rate: float, config: Optional[PyEdaDecompositionConfig] = ...) -> PyEdaComponents: ...
 def eda_phasic(signal: NDArray[np.float64], sampling_rate: float) -> NDArray[np.float64]: ...
-def eda_findpeaks(signal: NDArray[np.float64], sampling_rate: float, config: Optional[PyEdaPeakDetectionConfig] = ...) -> List[int]: ...
-def eda_findpeaks_mask(signal: NDArray[np.float64], sampling_rate: float, config: Optional[PyEdaPeakDetectionConfig] = ...) -> List[bool]: ...
-def eda_findpeaks_events(signal: NDArray[np.float64], sampling_rate: float, config: Optional[PyEdaPeakDetectionConfig] = ...) -> List[PyScrEvent]: ...
+def eda_findpeaks(phasic_signal: NDArray[np.float64], sampling_rate: float, config: Optional[PyEdaPeakDetectionConfig] = ...) -> NDArray[np.uint64]: ...
+def eda_findpeaks_mask(phasic_signal: NDArray[np.float64], sampling_rate: float, config: Optional[PyEdaPeakDetectionConfig] = ...) -> NDArray[np.bool_]: ...
+def eda_findpeaks_events(phasic_signal: NDArray[np.float64], sampling_rate: float, config: Optional[PyEdaPeakDetectionConfig] = ...) -> List[PyScrEvent]: ...
 
 class PyRspCleaningConfig:
-    lowpass_hz: float
-    highpass_hz: float
-    order: int
-    def __init__(self, lowpass_hz: float = ..., highpass_hz: float = ..., order: int = ...) -> None: ...
+    lowcut: Optional[float]
+    highcut: Optional[float]
+    filter_order: Optional[int]
+    def __init__(
+        self,
+        lowcut: Optional[float] = ...,
+        highcut: Optional[float] = ...,
+        filter_order: Optional[int] = ...,
+    ) -> None: ...
 
 class PyRspProcessingConfig:
-    min_breath_duration_sec: float
-    max_breath_duration_sec: float
-    def __init__(self, min_breath_duration_sec: float = ..., max_breath_duration_sec: float = ...) -> None: ...
+    lowcut: Optional[float]
+    highcut: Optional[float]
+    filter_order: Optional[int]
+    min_breath_interval_sec: Optional[float]
+    max_breath_interval_sec: Optional[float]
+    min_amplitude: Optional[float]
+    precleaned: Optional[bool]
+    def __init__(
+        self,
+        lowcut: Optional[float] = ...,
+        highcut: Optional[float] = ...,
+        filter_order: Optional[int] = ...,
+        min_breath_interval_sec: Optional[float] = ...,
+        max_breath_interval_sec: Optional[float] = ...,
+        min_amplitude: Optional[float] = ...,
+        precleaned: Optional[bool] = ...,
+    ) -> None: ...
 
 class PyRespirationCycle:
     inspiration_index: int
@@ -121,69 +188,119 @@ class PyRespirationCycle:
     duration_sec: float
     respiratory_rate_bpm: float
     amplitude: float
+    def __init__(
+        self,
+        inspiration_index: int,
+        expiration_index: int,
+        next_inspiration_index: int,
+        duration_sec: float,
+        respiratory_rate_bpm: float,
+        amplitude: float,
+    ) -> None: ...
 
 def rsp_clean(signal: NDArray[np.float64], sampling_rate: float, config: Optional[PyRspCleaningConfig] = ...) -> NDArray[np.float64]: ...
-def rsp_findpeaks(signal: NDArray[np.float64], sampling_rate: float, config: Optional[PyRspProcessingConfig] = ...) -> List[int]: ...
-def rsp_findpeaks_mask(signal: NDArray[np.float64], sampling_rate: float, config: Optional[PyRspProcessingConfig] = ...) -> List[bool]: ...
+def rsp_findpeaks(signal: NDArray[np.float64], sampling_rate: float, config: Optional[PyRspProcessingConfig] = ...) -> NDArray[np.uint64]: ...
+def rsp_findpeaks_mask(signal: NDArray[np.float64], sampling_rate: float, config: Optional[PyRspProcessingConfig] = ...) -> NDArray[np.bool_]: ...
 def rsp_cycles(signal: NDArray[np.float64], sampling_rate: float, config: Optional[PyRspProcessingConfig] = ...) -> List[PyRespirationCycle]: ...
 def rsp_rate(signal: NDArray[np.float64], sampling_rate: float, config: Optional[PyRspProcessingConfig] = ...) -> NDArray[np.float64]: ...
 
 class PyCorrectionPolicy:
-    min_interval_ms: float
-    max_interval_ms: float
-    max_pct_change: float
-    min_consecutive_valid: int
-    def __init__(
-        self,
-        min_interval_ms: float = ...,
-        max_interval_ms: float = ...,
-        max_pct_change: float = ...,
-        min_consecutive_valid: int = ...,
-    ) -> None: ...
+    @staticmethod
+    def none() -> PyCorrectionPolicy: ...
+    @staticmethod
+    def reject_invalid() -> PyCorrectionPolicy: ...
+    @staticmethod
+    def interpolate_linear() -> PyCorrectionPolicy: ...
+    @staticmethod
+    def interpolate_cubic() -> PyCorrectionPolicy: ...
+    @staticmethod
+    def percent_threshold(pct: float) -> PyCorrectionPolicy: ...
 
-def peaks_to_intervals(peaks: Any, sampling_rate: float) -> NDArray[np.float64]: ...
+def peaks_to_intervals(peaks: NDArray[np.bool_], sampling_rate: float) -> NDArray[np.float64]: ...
 def indices_to_intervals(peak_indices: List[int], sampling_rate: float) -> NDArray[np.float64]: ...
-def rmssd(rr_intervals: NDArray[np.float64]) -> float: ...
-def mean_nn(rr_intervals: NDArray[np.float64]) -> float: ...
+def rmssd(intervals: NDArray[np.float64]) -> float: ...
+def mean_nn(intervals: NDArray[np.float64]) -> float: ...
 def classify_intervals(intervals: NDArray[np.float64], percent_threshold: Optional[float] = ...) -> List[str]: ...
 def clean_rr_intervals(intervals: NDArray[np.float64], policy: PyCorrectionPolicy) -> NDArray[np.float64]: ...
 
-def sample_entropy(signal: NDArray[np.float64], m: int = ..., r: float = ...) -> float: ...
+def sample_entropy(signal: NDArray[np.float64], m: int, r: float) -> float: ...
 
 class PyNormalizationMethod:
-    MIN_MAX: PyNormalizationMethod
-    Z_SCORE: PyNormalizationMethod
-    ROBUST: PyNormalizationMethod
+    ZScore: PyNormalizationMethod
+    RobustMedianMad: PyNormalizationMethod
 
 class PyFeatureDirection:
-    HIGHER_IS_MORE_AROUSAL: PyFeatureDirection
-    LOWER_IS_MORE_AROUSAL: PyFeatureDirection
+    Positive: PyFeatureDirection
+    Negative: PyFeatureDirection
 
 class PyNormalizationConfig:
-    method: PyNormalizationMethod
-    min_samples: int
-    def __init__(self, method: Optional[PyNormalizationMethod] = ..., min_samples: Optional[int] = ...) -> None: ...
+    def __init__(
+        self,
+        method: Optional[PyNormalizationMethod] = ...,
+        min_baseline_samples: Optional[int] = ...,
+        bounded_scale: Optional[float] = ...,
+        min_scale: Optional[float] = ...,
+        mad_multiplier: Optional[float] = ...,
+    ) -> None: ...
 
 class PyActivationWeights:
-    def __init__(self) -> None: ...
+    def __init__(
+        self,
+        hr_weight: Optional[float] = ...,
+        eda_phasic_weight: Optional[float] = ...,
+        scr_rate_weight: Optional[float] = ...,
+        rsp_rate_weight: Optional[float] = ...,
+    ) -> None: ...
 
 class PyRegulationWeights:
-    def __init__(self) -> None: ...
+    def __init__(
+        self,
+        cardiac_variability_weight: Optional[float] = ...,
+        resphr_coupling_weight: Optional[float] = ...,
+        phase_coupling_weight: Optional[float] = ...,
+    ) -> None: ...
 
 class PyRecoveryConfig:
-    def __init__(self) -> None: ...
+    def __init__(
+        self,
+        variability_weight: Optional[float] = ...,
+        heart_rate_weight: Optional[float] = ...,
+    ) -> None: ...
 
 class PyConfidenceWeights:
-    def __init__(self) -> None: ...
+    def __init__(
+        self,
+        min_beats: Optional[int] = ...,
+        min_cycles: Optional[int] = ...,
+        quality_factor: Optional[float] = ...,
+        cardiac_weight: Optional[float] = ...,
+        eda_weight: Optional[float] = ...,
+        rsp_weight: Optional[float] = ...,
+        coupling_weight: Optional[float] = ...,
+    ) -> None: ...
 
 class PyQualityConfig:
-    def __init__(self) -> None: ...
+    def __init__(
+        self,
+        min_coverage: Optional[float] = ...,
+        require_cardiac_validity: Optional[bool] = ...,
+        require_respiration_for_resphrv: Optional[bool] = ...,
+        confidence: Optional[PyConfidenceWeights] = ...,
+    ) -> None: ...
 
 class PySmoothingConfig:
-    def __init__(self) -> None: ...
+    def __init__(self, alpha: Optional[float] = ...) -> None: ...
 
 class PyAutonomicEstimatorConfig:
-    def __init__(self) -> None: ...
+    def __init__(
+        self,
+        normalization: Optional[PyNormalizationConfig] = ...,
+        activation: Optional[PyActivationWeights] = ...,
+        regulation: Optional[PyRegulationWeights] = ...,
+        recovery: Optional[PyRecoveryConfig] = ...,
+        quality: Optional[PyQualityConfig] = ...,
+        smoothing: Optional[PySmoothingConfig] = ...,
+    ) -> None: ...
 
 class PyBaselineFeatureStats:
     mean: Optional[float]
@@ -194,35 +311,23 @@ class PyBaselineFeatureStats:
     is_valid: bool
 
 class PyAutonomicBaseline:
+    hr_bpm_stats: PyBaselineFeatureStats
+    sdnn_ms_stats: PyBaselineFeatureStats
+    rmssd_ms_stats: PyBaselineFeatureStats
+    eda_tonic_stats: PyBaselineFeatureStats
+    eda_phasic_stats: PyBaselineFeatureStats
+    scr_rate_stats: PyBaselineFeatureStats
+    rsp_rate_stats: PyBaselineFeatureStats
+    rsp_amplitude_stats: PyBaselineFeatureStats
+    rsp_std_stats: PyBaselineFeatureStats
+    rsa_bpm_stats: PyBaselineFeatureStats
+    phase_coupling_stats: PyBaselineFeatureStats
+    pulse_delay_stats: PyBaselineFeatureStats
     @staticmethod
     def from_features(
         baseline_features: List[PyMultimodalFeatureVector],
         normalization: Optional[PyNormalizationConfig] = ...,
     ) -> PyAutonomicBaseline: ...
-    @property
-    def hr_bpm_stats(self) -> PyBaselineFeatureStats: ...
-    @property
-    def sdnn_ms_stats(self) -> PyBaselineFeatureStats: ...
-    @property
-    def rmssd_ms_stats(self) -> PyBaselineFeatureStats: ...
-    @property
-    def eda_tonic_stats(self) -> PyBaselineFeatureStats: ...
-    @property
-    def eda_phasic_stats(self) -> PyBaselineFeatureStats: ...
-    @property
-    def scr_rate_stats(self) -> PyBaselineFeatureStats: ...
-    @property
-    def rsp_rate_stats(self) -> PyBaselineFeatureStats: ...
-    @property
-    def rsp_amplitude_stats(self) -> PyBaselineFeatureStats: ...
-    @property
-    def rsp_std_stats(self) -> PyBaselineFeatureStats: ...
-    @property
-    def rsa_bpm_stats(self) -> PyBaselineFeatureStats: ...
-    @property
-    def phase_coupling_stats(self) -> PyBaselineFeatureStats: ...
-    @property
-    def pulse_delay_stats(self) -> PyBaselineFeatureStats: ...
 
 class PyCardiacState:
     variability_index: Optional[float]
@@ -286,24 +391,30 @@ class PyAutonomicEstimator:
     ) -> PyAutonomicStateSeries: ...
 
 class PyVideoFrame:
+    timestamp_sec: float
+    width: int
+    height: int
     def __init__(self, timestamp_sec: float, width: int, height: int, data: bytes) -> None: ...
 
 class PyVideoStream:
     def __init__(self, frames: List[PyVideoFrame], nominal_fps: Optional[float] = ...) -> None: ...
-    def add_frame(self, frame: PyVideoFrame) -> None: ...
 
 class PyRoi:
+    x: int
+    y: int
+    width: int
+    height: int
     def __init__(self, x: int, y: int, width: int, height: int) -> None: ...
 
 class PyRppgAlgorithmId:
-    CHROM: PyRppgAlgorithmId
-    POS: PyRppgAlgorithmId
-    GREEN: PyRppgAlgorithmId
+    GreenChannel: PyRppgAlgorithmId
+    Chrom: PyRppgAlgorithmId
+    Pos: PyRppgAlgorithmId
 
 class PySignalPolarity:
-    NON_INVERTED: PySignalPolarity
-    INVERTED: PySignalPolarity
-    AUTO_DETECT: PySignalPolarity
+    Normal: PySignalPolarity
+    Inverted: PySignalPolarity
+    AutoDetect: PySignalPolarity
 
 class PyRppgWindowConfig:
     window_sec: float
@@ -322,14 +433,6 @@ class PyRppgPreprocessingConfig:
     def __init__(self, normalize_channels: bool = ..., detrend: bool = ...) -> None: ...
 
 class PyRppgConfig:
-    algorithm: PyRppgAlgorithmId
-    min_quality: float
-    minimum_roi_pixels: int
-    max_gap_sec: float
-    window: PyRppgWindowConfig
-    preprocessing: PyRppgPreprocessingConfig
-    signal_band_hz: tuple[float, float]
-    polarity: PySignalPolarity
     def __init__(
         self,
         algorithm: Optional[PyRppgAlgorithmId] = ...,
@@ -343,44 +446,44 @@ class PyRppgConfig:
     ) -> None: ...
 
 class PyRppgSegmentQuality:
-    start_time_sec: float
-    end_time_sec: float
-    snr_db: float
-    peak_prominence: float
-    spectral_entropy: float
-    overall_quality: float
+    start_sec: float
+    end_sec: float
+    overall: float
+    roi_quality: float
+    motion_quality: float
+    illumination_quality: float
+    signal_quality: float
+    valid_fraction: float
 
 class PyRppgSignal:
     timestamps_sec: NDArray[np.float64]
     waveform: NDArray[np.float64]
     sampling_rate_hz: float
     overall_quality: float
-    segment_qualities: List[PyRppgSegmentQuality]
+    valid_fraction: float
+    algorithm: str
+    segments: List[PyRppgSegmentQuality]
 
 def extract_rppg(video: PyVideoStream, roi: PyRoi, config: Optional[PyRppgConfig] = ...) -> PyRppgSignal: ...
 
 class PyWindowConfig:
-    window_duration_sec: float
-    step_sec: float
-    min_coverage: float
     def __init__(
         self,
-        window_duration_sec: float = ...,
-        step_sec: float = ...,
-        min_coverage: float = ...,
+        window_duration_sec: Optional[float] = ...,
+        step_sec: Optional[float] = ...,
+        min_coverage: Optional[float] = ...,
     ) -> None: ...
 
 class PyFeatureConfig:
-    window: PyWindowConfig
-    cardiac_rr_min_ms: float
-    cardiac_rr_max_ms: float
-    eda_min_amplitude_us: float
     def __init__(
         self,
         window: Optional[PyWindowConfig] = ...,
-        cardiac_rr_min_ms: Optional[float] = ...,
-        cardiac_rr_max_ms: Optional[float] = ...,
-        eda_min_amplitude_us: Optional[float] = ...,
+        min_beats: Optional[int] = ...,
+        min_respiration_cycles: Optional[int] = ...,
+        min_scr_events: Optional[int] = ...,
+        require_cardiac: Optional[bool] = ...,
+        require_respiration: Optional[bool] = ...,
+        require_eda: Optional[bool] = ...,
     ) -> None: ...
 
 class PyMultimodalInput:
@@ -457,31 +560,42 @@ class PyMultimodalFeatureVector:
     total_feature_count: int
     quality_issues: List[str]
 
-    def to_dict(self) -> dict: ...
-    def to_numpy(self) -> NDArray[np.float64]: ...
-
 def extract_features(input: PyMultimodalInput, config: Optional[PyFeatureConfig] = ...) -> List[PyMultimodalFeatureVector]: ...
 
 class PyRsaConfig:
-    min_rsp_amplitude: float
-    def __init__(self, min_rsp_amplitude: float = ...) -> None: ...
+    min_valid_beats: Optional[int]
+    def __init__(self, min_valid_beats: Optional[int] = ...) -> None: ...
 
 class PyPulseTimingConfig:
-    max_transit_time_sec: float
-    min_transit_time_sec: float
-    def __init__(self, max_transit_time_sec: float = ..., min_transit_time_sec: float = ...) -> None: ...
+    min_delay_sec: Optional[float]
+    max_delay_sec: Optional[float]
+    def __init__(
+        self,
+        min_delay_sec: Optional[float] = ...,
+        max_delay_sec: Optional[float] = ...,
+    ) -> None: ...
 
 class PyPulseTimingResult:
-    transit_times_sec: List[float]
-    mean_transit_time_sec: Optional[float]
-    std_transit_time_sec: Optional[float]
+    ecg_peak_index: int
+    ppg_peak_index: int
+    ecg_timestamp_sec: float
+    ppg_timestamp_sec: float
+    pulse_delay_sec: float
 
 class PyCardiacRespiratoryEvent:
-    time_sec: float
-    phase_rad: float
+    r_peak_index: int
+    timestamp_sec: float
+    respiratory_phase: float
+    rr_interval_sec: Optional[float]
+    heart_rate_bpm: Optional[float]
 
 class PyScrCardiorespiratoryAssociation:
-    event_count: int
+    scr_peak_index: int
+    scr_peak_time_sec: float
+    scr_amplitude: float
+    respiratory_phase_rad: Optional[float]
+    nearest_r_peak_time_sec: Optional[float]
+    cardiac_delay_sec: Optional[float]
 
 class PyRsaResult:
     amplitude_bpm: float
@@ -541,23 +655,26 @@ def ecg_ppg_timing(
     ppg_sampling_rate: float,
     ppg_offset_sec: float,
     config: Optional[PyPulseTimingConfig] = ...,
-) -> PyPulseTimingResult: ...
+) -> List[PyPulseTimingResult]: ...
 def eda_cardiorespiratory_association(
     scr_events: List[PyScrEvent],
     eda_sampling_rate: float,
     eda_offset_sec: float,
+    r_peaks: List[int],
+    ecg_sampling_rate: float,
+    ecg_offset_sec: float,
     rsp_cycles: List[PyRespirationCycle],
     rsp_sampling_rate: float,
     rsp_offset_sec: float,
-) -> PyScrCardiorespiratoryAssociation: ...
+) -> List[PyScrCardiorespiratoryAssociation]: ...
 def respiratory_phase_at_time(
-    time_sec: float,
-    cycles: List[PyRespirationCycle],
-    sampling_rate: float,
-    offset_sec: float,
+    rsp_cycles: List[PyRespirationCycle],
+    timestamp_sec: float,
+    rsp_sampling_rate: float,
+    rsp_offset_sec: float,
 ) -> Optional[float]: ...
-def evaluate_ecg_quality(signal: NDArray[np.float64], sampling_rate: float, r_peaks: List[int]) -> PyModalityQuality: ...
-def evaluate_rsp_quality(signal: NDArray[np.float64], sampling_rate: float, cycles: List[PyRespirationCycle]) -> PyModalityQuality: ...
+def evaluate_ecg_quality(r_peaks: List[int], sampling_rate: float, signal_duration_sec: float) -> PyModalityQuality: ...
+def evaluate_rsp_quality(cycles_count: int, signal_duration_sec: float) -> PyModalityQuality: ...
 def multimodal_quality(
     ecg_quality: Optional[PyModalityQuality] = ...,
     ppg_quality: Optional[PyModalityQuality] = ...,
