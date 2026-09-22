@@ -115,3 +115,108 @@ pub fn ppg_findpeaks_mask<'py>(
 
     Ok(out.into_pyarray(py))
 }
+
+#[pyclass]
+#[derive(Clone)]
+pub struct PyPulseLmPipeline {
+    pipeline: lamina::ppg::PulseLmPipeline,
+}
+
+#[pymethods]
+impl PyPulseLmPipeline {
+    #[new]
+    #[pyo3(signature = (target_fs=125.0, filter_cutoff_hz=8.0, filter_order=4, window_sec=10.0, stride_sec=10.0, tail_policy="drop", degenerate_policy="midpoint"))]
+    pub fn new(
+        target_fs: f64,
+        filter_cutoff_hz: f64,
+        filter_order: usize,
+        window_sec: f64,
+        stride_sec: f64,
+        tail_policy: &str,
+        degenerate_policy: &str,
+    ) -> PyResult<Self> {
+        let t_policy = match tail_policy {
+            "drop" | "drop_incomplete" => lamina::signal::IncompleteTailPolicy::DropIncomplete,
+            "pad" | "pad_zeros" => lamina::signal::IncompleteTailPolicy::PadZeros,
+            "keep" | "keep_partial" => lamina::signal::IncompleteTailPolicy::KeepPartial,
+            other => {
+                return Err(pyo3::exceptions::PyValueError::new_err(format!(
+                    "Unknown tail_policy: {}",
+                    other
+                )));
+            }
+        };
+
+        let d_policy = match degenerate_policy {
+            "error" => lamina::signal::DegeneratePolicy::Error,
+            "zero" => lamina::signal::DegeneratePolicy::Zero,
+            "midpoint" => lamina::signal::DegeneratePolicy::Midpoint,
+            other => {
+                return Err(pyo3::exceptions::PyValueError::new_err(format!(
+                    "Unknown degenerate_policy: {}",
+                    other
+                )));
+            }
+        };
+
+        let mut spec = lamina::ppg::PulseLmPipelineSpec::default();
+        spec.target_fs = target_fs;
+        spec.filter_cutoff_hz = filter_cutoff_hz;
+        spec.filter_order = filter_order;
+        spec.window_sec = window_sec;
+        spec.stride_sec = stride_sec;
+        spec.tail_policy = tail_policy.to_string();
+        spec.degenerate_policy = degenerate_policy.to_string();
+
+        let pipeline = lamina::ppg::PulseLmPipeline::new(spec, t_policy, d_policy);
+        Ok(Self { pipeline })
+    }
+
+    pub fn compute_sha256_hash(&self) -> String {
+        self.pipeline.spec.compute_sha256_hash()
+    }
+
+    pub fn process<'py>(
+        &self,
+        py: Python<'py>,
+        signal: PyReadonlyArray1<'py, f64>,
+        sampling_rate: f64,
+    ) -> PyResult<Vec<Bound<'py, PyArray1<f64>>>> {
+        let array_view = signal.as_array();
+        let arr = array_view.to_owned();
+
+        let segments = py
+            .detach(|| self.pipeline.process(&arr, sampling_rate))
+            .map_err(map_signal_error)?;
+
+        let py_segs = segments
+            .into_iter()
+            .map(|seg| seg.into_pyarray(py))
+            .collect();
+
+        Ok(py_segs)
+    }
+}
+
+#[pyfunction]
+#[pyo3(signature = (signal, sampling_rate))]
+pub fn ppg_preprocess_pulselm<'py>(
+    py: Python<'py>,
+    signal: PyReadonlyArray1<'py, f64>,
+    sampling_rate: f64,
+) -> PyResult<Vec<Bound<'py, PyArray1<f64>>>> {
+    let array_view = signal.as_array();
+    let arr = array_view.to_owned();
+
+    let segments = py
+        .detach(|| lamina::ppg::ppg_preprocess_pulselm(&arr, sampling_rate))
+        .map_err(map_signal_error)?;
+
+    let py_segs = segments
+        .into_iter()
+        .map(|seg| seg.into_pyarray(py))
+        .collect();
+
+    Ok(py_segs)
+}
+

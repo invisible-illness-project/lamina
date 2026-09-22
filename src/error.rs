@@ -23,6 +23,8 @@ pub enum SignalError {
     DimensionMismatch,
     /// Event series timestamps or sample indices are not chronologically sorted.
     UnsortedEvents,
+    /// Degenerate flat/zero-variance signal segment.
+    DegenerateSignal,
 }
 
 impl fmt::Display for SignalError {
@@ -70,6 +72,9 @@ impl fmt::Display for SignalError {
             }
             SignalError::UnsortedEvents => {
                 write!(f, "Event series is not chronologically sorted")
+            }
+            SignalError::DegenerateSignal => {
+                write!(f, "Degenerate flat or zero-variance signal segment")
             }
         }
     }

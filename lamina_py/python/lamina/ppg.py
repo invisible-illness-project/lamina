@@ -35,3 +35,21 @@ def findpeaks_mask(
     arr = np.asarray(signal, dtype=np.float64)
     mask = _native.ppg_findpeaks_mask(arr, sampling_rate, config)
     return np.asarray(mask, dtype=np.bool_)
+
+PulseLmPipeline = _native.PyPulseLmPipeline
+
+def preprocess_pulselm(
+    signal: Union[NDArray[np.float64], NDArray[np.float32], List[float]],
+    sampling_rate: float,
+) -> List[NDArray[np.float64]]:
+    """Standardized 5-stage PulseLM PPG preprocessing pipeline.
+
+    1. Anti-aliased polyphase resampling -> 125 Hz
+    2. 4th-order zero-phase Butterworth low-pass -> 8 Hz
+    3. 10-second fixed window segmentation -> 1250 samples
+    4. Per-segment DC removal (mean subtraction)
+    5. Per-segment min-max scaling -> [0, 1]
+    """
+    arr = np.asarray(signal, dtype=np.float64)
+    return _native.ppg_preprocess_pulselm(arr, sampling_rate)
+

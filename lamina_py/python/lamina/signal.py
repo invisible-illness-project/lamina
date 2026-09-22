@@ -97,3 +97,42 @@ def findpeaks_mask(
     )
     mask = _native.findpeaks_mask(arr, cfg)
     return np.asarray(mask, dtype=np.bool_)
+
+def resample_poly(
+    signal: Union[NDArray[np.float64], NDArray[np.float32], List[float]],
+    up: int,
+    down: int,
+) -> NDArray[np.float64]:
+    """Polyphase rational resampling using Kaiser-windowed FIR filter.
+
+    Matches SciPy scipy.signal.resample_poly.
+    """
+    arr = np.asarray(signal, dtype=np.float64)
+    return _native.resample_poly(arr, up, down)
+
+def segment_signal(
+    signal: Union[NDArray[np.float64], NDArray[np.float32], List[float]],
+    window_samples: int,
+    step_samples: int,
+    tail_policy: str = "drop",
+) -> List[NDArray[np.float64]]:
+    """Partition a 1D signal into fixed-length window segments."""
+    arr = np.asarray(signal, dtype=np.float64)
+    return _native.segment_signal(arr, window_samples, step_samples, tail_policy)
+
+def remove_dc(
+    signal: Union[NDArray[np.float64], NDArray[np.float32], List[float]],
+) -> NDArray[np.float64]:
+    """Remove DC (non-pulsatile) baseline component via sample mean subtraction."""
+    arr = np.asarray(signal, dtype=np.float64)
+    return _native.remove_dc(arr)
+
+def minmax_scale(
+    signal: Union[NDArray[np.float64], NDArray[np.float32], List[float]],
+    feature_range: tuple[float, float] = (0.0, 1.0),
+    degenerate_policy: str = "midpoint",
+) -> NDArray[np.float64]:
+    """Scale signal values into feature_range [a, b]. Handles zero-variance signals with degenerate_policy."""
+    arr = np.asarray(signal, dtype=np.float64)
+    return _native.minmax_scale(arr, feature_range, degenerate_policy)
+

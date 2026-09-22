@@ -189,3 +189,102 @@ pub fn findpeaks_mask<'py>(
 
     Ok(out.into_pyarray(py))
 }
+
+#[pyfunction]
+pub fn resample_poly<'py>(
+    py: Python<'py>,
+    signal: PyReadonlyArray1<'py, f64>,
+    up: usize,
+    down: usize,
+) -> PyResult<Bound<'py, PyArray1<f64>>> {
+    let array_view = signal.as_array();
+    let arr = array_view.to_owned();
+
+    let out = py
+        .detach(|| lamina::signal::resample::signal_resample_poly(&arr, up, down))
+        .map_err(map_signal_error)?;
+
+    Ok(out.into_pyarray(py))
+}
+
+#[pyfunction]
+#[pyo3(signature = (signal, window_samples, step_samples, tail_policy="drop"))]
+pub fn segment_signal<'py>(
+    py: Python<'py>,
+    signal: PyReadonlyArray1<'py, f64>,
+    window_samples: usize,
+    step_samples: usize,
+    tail_policy: &str,
+) -> PyResult<Vec<Bound<'py, PyArray1<f64>>>> {
+    let array_view = signal.as_array();
+    let arr = array_view.to_owned();
+
+    let policy = match tail_policy {
+        "drop" | "drop_incomplete" => lamina::signal::segment::IncompleteTailPolicy::DropIncomplete,
+        "pad" | "pad_zeros" => lamina::signal::segment::IncompleteTailPolicy::PadZeros,
+        "keep" | "keep_partial" => lamina::signal::segment::IncompleteTailPolicy::KeepPartial,
+        other => {
+            return Err(pyo3::exceptions::PyValueError::new_err(format!(
+                "Unknown tail_policy: {} (expected drop|pad|keep)",
+                other
+            )));
+        }
+    };
+
+    let segments = py
+        .detach(|| lamina::signal::segment::signal_segment(&arr, window_samples, step_samples, policy))
+        .map_err(map_signal_error)?;
+
+    let py_segs = segments
+        .into_iter()
+        .map(|seg| seg.into_pyarray(py))
+        .collect();
+
+    Ok(py_segs)
+}
+
+#[pyfunction]
+pub fn remove_dc<'py>(
+    py: Python<'py>,
+    signal: PyReadonlyArray1<'py, f64>,
+) -> PyResult<Bound<'py, PyArray1<f64>>> {
+    let array_view = signal.as_array();
+    let arr = array_view.to_owned();
+
+    let out = py
+        .detach(|| lamina::signal::dc::signal_remove_dc(&arr))
+        .map_err(map_signal_error)?;
+
+    Ok(out.into_pyarray(py))
+}
+
+#[pyfunction]
+#[pyo3(signature = (signal, feature_range=(0.0, 1.0), degenerate_policy="midpoint"))]
+pub fn minmax_scale<'py>(
+    py: Python<'py>,
+    signal: PyReadonlyArray1<'py, f64>,
+    feature_range: (f64, f64),
+    degenerate_policy: &str,
+) -> PyResult<Bound<'py, PyArray1<f64>>> {
+    let array_view = signal.as_array();
+    let arr = array_view.to_owned();
+
+    let policy = match degenerate_policy {
+        "error" => lamina::signal::normalize::DegeneratePolicy::Error,
+        "zero" => lamina::signal::normalize::DegeneratePolicy::Zero,
+        "midpoint" => lamina::signal::normalize::DegeneratePolicy::Midpoint,
+        other => {
+            return Err(pyo3::exceptions::PyValueError::new_err(format!(
+                "Unknown degenerate_policy: {} (expected error|zero|midpoint)",
+                other
+            )));
+        }
+    };
+
+    let out = py
+        .detach(|| lamina::signal::normalize::signal_minmax(&arr, feature_range, policy))
+        .map_err(map_signal_error)?;
+
+    Ok(out.into_pyarray(py))
+}
+

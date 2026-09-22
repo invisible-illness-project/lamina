@@ -27,6 +27,10 @@ fn _lamina(m: &Bound<'_, PyModule>) -> PyResult<()> {
     m.add_function(wrap_pyfunction!(signal::filtfilt, m)?)?;
     m.add_function(wrap_pyfunction!(signal::findpeaks, m)?)?;
     m.add_function(wrap_pyfunction!(signal::findpeaks_mask, m)?)?;
+    m.add_function(wrap_pyfunction!(signal::resample_poly, m)?)?;
+    m.add_function(wrap_pyfunction!(signal::segment_signal, m)?)?;
+    m.add_function(wrap_pyfunction!(signal::remove_dc, m)?)?;
+    m.add_function(wrap_pyfunction!(signal::minmax_scale, m)?)?;
 
     // ECG
     m.add_class::<ecg::PyEcgPeakDetectionConfig>()?;
@@ -36,9 +40,11 @@ fn _lamina(m: &Bound<'_, PyModule>) -> PyResult<()> {
 
     // PPG
     m.add_class::<ppg::PyPpgPeakDetectionConfig>()?;
+    m.add_class::<ppg::PyPulseLmPipeline>()?;
     m.add_function(wrap_pyfunction!(ppg::ppg_clean, m)?)?;
     m.add_function(wrap_pyfunction!(ppg::ppg_findpeaks, m)?)?;
     m.add_function(wrap_pyfunction!(ppg::ppg_findpeaks_mask, m)?)?;
+    m.add_function(wrap_pyfunction!(ppg::ppg_preprocess_pulselm, m)?)?;
 
     // EDA
     m.add_class::<eda::PyEdaCleaningConfig>()?;

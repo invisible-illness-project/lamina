@@ -22,6 +22,7 @@ create_exception!(
 create_exception!(_lamina, InvalidWindowSizeError, LaminaConfigurationError);
 create_exception!(_lamina, InvalidFilterOrderError, LaminaConfigurationError);
 
+create_exception!(_lamina, DegenerateSignalError, LaminaInputError);
 create_exception!(_lamina, LaminaProcessingError, PyRuntimeError);
 
 pub fn map_signal_error(err: SignalError) -> PyErr {
@@ -40,6 +41,7 @@ pub fn map_signal_error(err: SignalError) -> PyErr {
         SignalError::InsufficientPeaks { .. } => InsufficientPeaksError::new_err(err.to_string()),
         SignalError::DimensionMismatch => DimensionMismatchError::new_err(err.to_string()),
         SignalError::UnsortedEvents => UnsortedEventsError::new_err(err.to_string()),
+        SignalError::DegenerateSignal => DegenerateSignalError::new_err(err.to_string()),
     }
 }
 
@@ -58,6 +60,10 @@ pub fn register_errors(m: &Bound<'_, PyModule>) -> PyResult<()> {
     m.add(
         "UnsortedEventsError",
         m.py().get_type::<UnsortedEventsError>(),
+    )?;
+    m.add(
+        "DegenerateSignalError",
+        m.py().get_type::<DegenerateSignalError>(),
     )?;
     m.add(
         "InsufficientSamplesError",
