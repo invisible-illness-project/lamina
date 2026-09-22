@@ -1,0 +1,1522 @@
+[
+  {
+    "kind": "lowpass",
+    "cutoffs": [
+      8.0
+    ],
+    "order": 4,
+    "fs": 125.0,
+    "signal_name": "sine",
+    "signal_length": 625,
+    "metrics": {
+      "max_abs_error": 4.6629367034256575e-15,
+      "rmse": 1.4541145013730558e-15,
+      "relative_error": 2.0563914129549168e-15,
+      "finiteness": true
+    },
+    "status": "PASS"
+  },
+  {
+    "kind": "lowpass",
+    "cutoffs": [
+      8.0
+    ],
+    "order": 4,
+    "fs": 125.0,
+    "signal_name": "multitone",
+    "signal_length": 625,
+    "metrics": {
+      "max_abs_error": 3.552713678800501e-15,
+      "rmse": 1.2774328565169277e-15,
+      "relative_error": 1.805943683298436e-15,
+      "finiteness": true
+    },
+    "status": "PASS"
+  },
+  {
+    "kind": "lowpass",
+    "cutoffs": [
+      8.0
+    ],
+    "order": 4,
+    "fs": 125.0,
+    "signal_name": "impulse",
+    "signal_length": 625,
+    "metrics": {
+      "max_abs_error": 3.0531133177191805e-16,
+      "rmse": 2.8420224679278736e-17,
+      "relative_error": 2.0941827286080296e-15,
+      "finiteness": true
+    },
+    "status": "PASS"
+  },
+  {
+    "kind": "lowpass",
+    "cutoffs": [
+      8.0
+    ],
+    "order": 4,
+    "fs": 125.0,
+    "signal_name": "step",
+    "signal_length": 625,
+    "metrics": {
+      "max_abs_error": 3.552713678800501e-15,
+      "rmse": 1.3213326119601683e-15,
+      "relative_error": 1.5268048384281684e-15,
+      "finiteness": true
+    },
+    "status": "PASS"
+  },
+  {
+    "kind": "lowpass",
+    "cutoffs": [
+      8.0
+    ],
+    "order": 4,
+    "fs": 125.0,
+    "signal_name": "chirp",
+    "signal_length": 625,
+    "metrics": {
+      "max_abs_error": 2.7755575615628914e-15,
+      "rmse": 5.315815199101724e-16,
+      "relative_error": 1.8802182898544567e-15,
+      "finiteness": true
+    },
+    "status": "PASS"
+  },
+  {
+    "kind": "lowpass",
+    "cutoffs": [
+      8.0
+    ],
+    "order": 4,
+    "fs": 125.0,
+    "signal_name": "white_noise",
+    "signal_length": 625,
+    "metrics": {
+      "max_abs_error": 2.55351295663786e-15,
+      "rmse": 6.84733806542851e-16,
+      "relative_error": 1.988388323112893e-15,
+      "finiteness": true
+    },
+    "status": "PASS"
+  },
+  {
+    "kind": "lowpass",
+    "cutoffs": [
+      8.0
+    ],
+    "order": 4,
+    "fs": 125.0,
+    "signal_name": "dc_offset",
+    "signal_length": 625,
+    "metrics": {
+      "max_abs_error": 5.968558980384842e-13,
+      "rmse": 2.0563651826099798e-13,
+      "relative_error": 2.0563138564595774e-15,
+      "finiteness": true
+    },
+    "status": "PASS"
+  },
+  {
+    "kind": "lowpass",
+    "cutoffs": [
+      8.0
+    ],
+    "order": 4,
+    "fs": 125.0,
+    "signal_name": "short_signal",
+    "signal_length": 35,
+    "metrics": {
+      "max_abs_error": 2.3314683517128287e-15,
+      "rmse": 1.1314607754119072e-15,
+      "relative_error": 1.6872042546908213e-15,
+      "finiteness": true
+    },
+    "status": "PASS"
+  },
+  {
+    "kind": "lowpass",
+    "cutoffs": [
+      8.0
+    ],
+    "order": 1,
+    "fs": 125.0,
+    "signal_name": "sine",
+    "signal_length": 625,
+    "metrics": {
+      "max_abs_error": 1.1102230246251565e-15,
+      "rmse": 6.268399658682274e-16,
+      "relative_error": 9.404274003620833e-16,
+      "finiteness": true
+    },
+    "status": "PASS"
+  },
+  {
+    "kind": "lowpass",
+    "cutoffs": [
+      8.0
+    ],
+    "order": 1,
+    "fs": 125.0,
+    "signal_name": "multitone",
+    "signal_length": 625,
+    "metrics": {
+      "max_abs_error": 1.3322676295501878e-15,
+      "rmse": 6.997485025620449e-16,
+      "relative_error": 9.982093032768103e-16,
+      "finiteness": true
+    },
+    "status": "PASS"
+  },
+  {
+    "kind": "lowpass",
+    "cutoffs": [
+      8.0
+    ],
+    "order": 1,
+    "fs": 125.0,
+    "signal_name": "impulse",
+    "signal_length": 625,
+    "metrics": {
+      "max_abs_error": 1.3877787807814457e-16,
+      "rmse": 1.2026138841131056e-17,
+      "relative_error": 9.55603629886954e-16,
+      "finiteness": true
+    },
+    "status": "PASS"
+  },
+  {
+    "kind": "lowpass",
+    "cutoffs": [
+      8.0
+    ],
+    "order": 1,
+    "fs": 125.0,
+    "signal_name": "step",
+    "signal_length": 625,
+    "metrics": {
+      "max_abs_error": 9.992007221626409e-16,
+      "rmse": 8.430451446938809e-16,
+      "relative_error": 9.75119782320885e-16,
+      "finiteness": true
+    },
+    "status": "PASS"
+  },
+  {
+    "kind": "lowpass",
+    "cutoffs": [
+      8.0
+    ],
+    "order": 1,
+    "fs": 125.0,
+    "signal_name": "chirp",
+    "signal_length": 625,
+    "metrics": {
+      "max_abs_error": 1.2212453270876722e-15,
+      "rmse": 2.280799259867596e-16,
+      "relative_error": 8.649410265296272e-16,
+      "finiteness": true
+    },
+    "status": "PASS"
+  },
+  {
+    "kind": "lowpass",
+    "cutoffs": [
+      8.0
+    ],
+    "order": 1,
+    "fs": 125.0,
+    "signal_name": "white_noise",
+    "signal_length": 625,
+    "metrics": {
+      "max_abs_error": 7.771561172376096e-16,
+      "rmse": 2.4472655443269143e-16,
+      "relative_error": 8.136372182907878e-16,
+      "finiteness": true
+    },
+    "status": "PASS"
+  },
+  {
+    "kind": "lowpass",
+    "cutoffs": [
+      8.0
+    ],
+    "order": 1,
+    "fs": 125.0,
+    "signal_name": "dc_offset",
+    "signal_length": 625,
+    "metrics": {
+      "max_abs_error": 1.4210854715202004e-13,
+      "rmse": 9.989412140462136e-14,
+      "relative_error": 9.989196807597742e-16,
+      "finiteness": true
+    },
+    "status": "PASS"
+  },
+  {
+    "kind": "lowpass",
+    "cutoffs": [
+      8.0
+    ],
+    "order": 1,
+    "fs": 125.0,
+    "signal_name": "short_signal",
+    "signal_length": 35,
+    "metrics": {
+      "max_abs_error": 8.881784197001252e-16,
+      "rmse": 4.976885071484396e-16,
+      "relative_error": 7.873111549061024e-16,
+      "finiteness": true
+    },
+    "status": "PASS"
+  },
+  {
+    "kind": "lowpass",
+    "cutoffs": [
+      8.0
+    ],
+    "order": 2,
+    "fs": 125.0,
+    "signal_name": "sine",
+    "signal_length": 625,
+    "metrics": {
+      "max_abs_error": 4.9960036108132044e-15,
+      "rmse": 2.686807088920759e-15,
+      "relative_error": 3.814037749811193e-15,
+      "finiteness": true
+    },
+    "status": "PASS"
+  },
+  {
+    "kind": "lowpass",
+    "cutoffs": [
+      8.0
+    ],
+    "order": 2,
+    "fs": 125.0,
+    "signal_name": "multitone",
+    "signal_length": 625,
+    "metrics": {
+      "max_abs_error": 5.218048215738236e-15,
+      "rmse": 2.6708629855219936e-15,
+      "relative_error": 3.775045059216773e-15,
+      "finiteness": true
+    },
+    "status": "PASS"
+  },
+  {
+    "kind": "lowpass",
+    "cutoffs": [
+      8.0
+    ],
+    "order": 2,
+    "fs": 125.0,
+    "signal_name": "impulse",
+    "signal_length": 625,
+    "metrics": {
+      "max_abs_error": 4.163336342344337e-16,
+      "rmse": 4.8645188856455186e-17,
+      "relative_error": 3.7239151885880156e-15,
+      "finiteness": true
+    },
+    "status": "PASS"
+  },
+  {
+    "kind": "lowpass",
+    "cutoffs": [
+      8.0
+    ],
+    "order": 2,
+    "fs": 125.0,
+    "signal_name": "step",
+    "signal_length": 625,
+    "metrics": {
+      "max_abs_error": 5.10702591327572e-15,
+      "rmse": 3.769677373858214e-15,
+      "relative_error": 4.3567267499923195e-15,
+      "finiteness": true
+    },
+    "status": "PASS"
+  },
+  {
+    "kind": "lowpass",
+    "cutoffs": [
+      8.0
+    ],
+    "order": 2,
+    "fs": 125.0,
+    "signal_name": "chirp",
+    "signal_length": 625,
+    "metrics": {
+      "max_abs_error": 5.440092820663267e-15,
+      "rmse": 9.835380716965637e-16,
+      "relative_error": 3.6017600735054024e-15,
+      "finiteness": true
+    },
+    "status": "PASS"
+  },
+  {
+    "kind": "lowpass",
+    "cutoffs": [
+      8.0
+    ],
+    "order": 2,
+    "fs": 125.0,
+    "signal_name": "white_noise",
+    "signal_length": 625,
+    "metrics": {
+      "max_abs_error": 4.3298697960381105e-15,
+      "rmse": 9.78320341816892e-16,
+      "relative_error": 3.241855790047362e-15,
+      "finiteness": true
+    },
+    "status": "PASS"
+  },
+  {
+    "kind": "lowpass",
+    "cutoffs": [
+      8.0
+    ],
+    "order": 2,
+    "fs": 125.0,
+    "signal_name": "dc_offset",
+    "signal_length": 625,
+    "metrics": {
+      "max_abs_error": 6.110667527536862e-13,
+      "rmse": 3.6844358900326757e-13,
+      "relative_error": 3.684341409081985e-15,
+      "finiteness": true
+    },
+    "status": "PASS"
+  },
+  {
+    "kind": "lowpass",
+    "cutoffs": [
+      8.0
+    ],
+    "order": 2,
+    "fs": 125.0,
+    "signal_name": "short_signal",
+    "signal_length": 35,
+    "metrics": {
+      "max_abs_error": 3.219646771412954e-15,
+      "rmse": 2.179693680943889e-15,
+      "relative_error": 3.2600173899417396e-15,
+      "finiteness": true
+    },
+    "status": "PASS"
+  },
+  {
+    "kind": "lowpass",
+    "cutoffs": [
+      8.0
+    ],
+    "order": 3,
+    "fs": 125.0,
+    "signal_name": "sine",
+    "signal_length": 625,
+    "metrics": {
+      "max_abs_error": 2.220446049250313e-15,
+      "rmse": 7.862713775685859e-16,
+      "relative_error": 1.1121833429229817e-15,
+      "finiteness": true
+    },
+    "status": "PASS"
+  },
+  {
+    "kind": "lowpass",
+    "cutoffs": [
+      8.0
+    ],
+    "order": 3,
+    "fs": 125.0,
+    "signal_name": "multitone",
+    "signal_length": 625,
+    "metrics": {
+      "max_abs_error": 2.886579864025407e-15,
+      "rmse": 8.168254763353406e-16,
+      "relative_error": 1.154782380235662e-15,
+      "finiteness": true
+    },
+    "status": "PASS"
+  },
+  {
+    "kind": "lowpass",
+    "cutoffs": [
+      8.0
+    ],
+    "order": 3,
+    "fs": 125.0,
+    "signal_name": "impulse",
+    "signal_length": 625,
+    "metrics": {
+      "max_abs_error": 1.3877787807814457e-16,
+      "rmse": 1.513964441984094e-17,
+      "relative_error": 1.131678899614586e-15,
+      "finiteness": true
+    },
+    "status": "PASS"
+  },
+  {
+    "kind": "lowpass",
+    "cutoffs": [
+      8.0
+    ],
+    "order": 3,
+    "fs": 125.0,
+    "signal_name": "step",
+    "signal_length": 625,
+    "metrics": {
+      "max_abs_error": 2.55351295663786e-15,
+      "rmse": 7.807713233653255e-16,
+      "relative_error": 9.022348597791408e-16,
+      "finiteness": true
+    },
+    "status": "PASS"
+  },
+  {
+    "kind": "lowpass",
+    "cutoffs": [
+      8.0
+    ],
+    "order": 3,
+    "fs": 125.0,
+    "signal_name": "chirp",
+    "signal_length": 625,
+    "metrics": {
+      "max_abs_error": 2.55351295663786e-15,
+      "rmse": 3.248762691939296e-16,
+      "relative_error": 1.1643213532639586e-15,
+      "finiteness": true
+    },
+    "status": "PASS"
+  },
+  {
+    "kind": "lowpass",
+    "cutoffs": [
+      8.0
+    ],
+    "order": 3,
+    "fs": 125.0,
+    "signal_name": "white_noise",
+    "signal_length": 625,
+    "metrics": {
+      "max_abs_error": 1.4432899320127035e-15,
+      "rmse": 3.6270727600085503e-16,
+      "relative_error": 1.1490246793768084e-15,
+      "finiteness": true
+    },
+    "status": "PASS"
+  },
+  {
+    "kind": "lowpass",
+    "cutoffs": [
+      8.0
+    ],
+    "order": 3,
+    "fs": 125.0,
+    "signal_name": "dc_offset",
+    "signal_length": 625,
+    "metrics": {
+      "max_abs_error": 3.552713678800501e-13,
+      "rmse": 1.2006751064776322e-13,
+      "relative_error": 1.2006445934184409e-15,
+      "finiteness": true
+    },
+    "status": "PASS"
+  },
+  {
+    "kind": "lowpass",
+    "cutoffs": [
+      8.0
+    ],
+    "order": 3,
+    "fs": 125.0,
+    "signal_name": "short_signal",
+    "signal_length": 35,
+    "metrics": {
+      "max_abs_error": 2.1094237467877974e-15,
+      "rmse": 1.0224387596188496e-15,
+      "relative_error": 1.5237381768134377e-15,
+      "finiteness": true
+    },
+    "status": "PASS"
+  },
+  {
+    "kind": "lowpass",
+    "cutoffs": [
+      8.0
+    ],
+    "order": 5,
+    "fs": 125.0,
+    "signal_name": "sine",
+    "signal_length": 625,
+    "metrics": {
+      "max_abs_error": 4.3298697960381105e-15,
+      "rmse": 1.5961637093870032e-15,
+      "relative_error": 2.2572685703527707e-15,
+      "finiteness": true
+    },
+    "status": "PASS"
+  },
+  {
+    "kind": "lowpass",
+    "cutoffs": [
+      8.0
+    ],
+    "order": 5,
+    "fs": 125.0,
+    "signal_name": "multitone",
+    "signal_length": 625,
+    "metrics": {
+      "max_abs_error": 5.329070518200751e-15,
+      "rmse": 1.721024214567703e-15,
+      "relative_error": 2.4329667393943993e-15,
+      "finiteness": true
+    },
+    "status": "PASS"
+  },
+  {
+    "kind": "lowpass",
+    "cutoffs": [
+      8.0
+    ],
+    "order": 5,
+    "fs": 125.0,
+    "signal_name": "impulse",
+    "signal_length": 625,
+    "metrics": {
+      "max_abs_error": 1.457167719820518e-16,
+      "rmse": 2.115066981488013e-17,
+      "relative_error": 1.5439507123404188e-15,
+      "finiteness": true
+    },
+    "status": "PASS"
+  },
+  {
+    "kind": "lowpass",
+    "cutoffs": [
+      8.0
+    ],
+    "order": 5,
+    "fs": 125.0,
+    "signal_name": "step",
+    "signal_length": 625,
+    "metrics": {
+      "max_abs_error": 3.9968028886505635e-15,
+      "rmse": 1.4670573465303013e-15,
+      "relative_error": 1.695139225086916e-15,
+      "finiteness": true
+    },
+    "status": "PASS"
+  },
+  {
+    "kind": "lowpass",
+    "cutoffs": [
+      8.0
+    ],
+    "order": 5,
+    "fs": 125.0,
+    "signal_name": "chirp",
+    "signal_length": 625,
+    "metrics": {
+      "max_abs_error": 3.774758283725532e-15,
+      "rmse": 6.892565494175869e-16,
+      "relative_error": 2.4166619541905906e-15,
+      "finiteness": true
+    },
+    "status": "PASS"
+  },
+  {
+    "kind": "lowpass",
+    "cutoffs": [
+      8.0
+    ],
+    "order": 5,
+    "fs": 125.0,
+    "signal_name": "white_noise",
+    "signal_length": 625,
+    "metrics": {
+      "max_abs_error": 3.219646771412954e-15,
+      "rmse": 8.38694465886823e-16,
+      "relative_error": 2.3659704758117552e-15,
+      "finiteness": true
+    },
+    "status": "PASS"
+  },
+  {
+    "kind": "lowpass",
+    "cutoffs": [
+      8.0
+    ],
+    "order": 5,
+    "fs": 125.0,
+    "signal_name": "dc_offset",
+    "signal_length": 625,
+    "metrics": {
+      "max_abs_error": 5.400124791776761e-13,
+      "rmse": 2.1909875313834756e-13,
+      "relative_error": 2.1909331754301052e-15,
+      "finiteness": true
+    },
+    "status": "PASS"
+  },
+  {
+    "kind": "lowpass",
+    "cutoffs": [
+      8.0
+    ],
+    "order": 5,
+    "fs": 125.0,
+    "signal_name": "short_signal",
+    "signal_length": 35,
+    "metrics": {
+      "max_abs_error": 3.3306690738754696e-15,
+      "rmse": 1.6403373109822802e-15,
+      "relative_error": 2.4477549636085056e-15,
+      "finiteness": true
+    },
+    "status": "PASS"
+  },
+  {
+    "kind": "lowpass",
+    "cutoffs": [
+      8.0
+    ],
+    "order": 6,
+    "fs": 125.0,
+    "signal_name": "sine",
+    "signal_length": 625,
+    "metrics": {
+      "max_abs_error": 7.105427357601002e-15,
+      "rmse": 3.4878222016296525e-15,
+      "relative_error": 4.932489265132833e-15,
+      "finiteness": true
+    },
+    "status": "PASS"
+  },
+  {
+    "kind": "lowpass",
+    "cutoffs": [
+      8.0
+    ],
+    "order": 6,
+    "fs": 125.0,
+    "signal_name": "multitone",
+    "signal_length": 625,
+    "metrics": {
+      "max_abs_error": 7.438494264988549e-15,
+      "rmse": 3.582965896874144e-15,
+      "relative_error": 5.0650697522899655e-15,
+      "finiteness": true
+    },
+    "status": "PASS"
+  },
+  {
+    "kind": "lowpass",
+    "cutoffs": [
+      8.0
+    ],
+    "order": 6,
+    "fs": 125.0,
+    "signal_name": "impulse",
+    "signal_length": 625,
+    "metrics": {
+      "max_abs_error": 2.914335439641036e-16,
+      "rmse": 3.7558981383562014e-17,
+      "relative_error": 2.723694498924257e-15,
+      "finiteness": true
+    },
+    "status": "PASS"
+  },
+  {
+    "kind": "lowpass",
+    "cutoffs": [
+      8.0
+    ],
+    "order": 6,
+    "fs": 125.0,
+    "signal_name": "step",
+    "signal_length": 625,
+    "metrics": {
+      "max_abs_error": 9.103828801926284e-15,
+      "rmse": 4.458612200239308e-15,
+      "relative_error": 5.15169133634252e-15,
+      "finiteness": true
+    },
+    "status": "PASS"
+  },
+  {
+    "kind": "lowpass",
+    "cutoffs": [
+      8.0
+    ],
+    "order": 6,
+    "fs": 125.0,
+    "signal_name": "chirp",
+    "signal_length": 625,
+    "metrics": {
+      "max_abs_error": 6.5503158452884236e-15,
+      "rmse": 1.2786136876782268e-15,
+      "relative_error": 4.456318566496571e-15,
+      "finiteness": true
+    },
+    "status": "PASS"
+  },
+  {
+    "kind": "lowpass",
+    "cutoffs": [
+      8.0
+    ],
+    "order": 6,
+    "fs": 125.0,
+    "signal_name": "white_noise",
+    "signal_length": 625,
+    "metrics": {
+      "max_abs_error": 4.218847493575595e-15,
+      "rmse": 1.2564327548783704e-15,
+      "relative_error": 3.455930842034543e-15,
+      "finiteness": true
+    },
+    "status": "PASS"
+  },
+  {
+    "kind": "lowpass",
+    "cutoffs": [
+      8.0
+    ],
+    "order": 6,
+    "fs": 125.0,
+    "signal_name": "dc_offset",
+    "signal_length": 625,
+    "metrics": {
+      "max_abs_error": 9.094947017729282e-13,
+      "rmse": 5.059587977387708e-13,
+      "relative_error": 5.059462791070846e-15,
+      "finiteness": true
+    },
+    "status": "PASS"
+  },
+  {
+    "kind": "lowpass",
+    "cutoffs": [
+      8.0
+    ],
+    "order": 6,
+    "fs": 125.0,
+    "signal_name": "short_signal",
+    "signal_length": 35,
+    "metrics": {
+      "max_abs_error": 7.549516567451064e-15,
+      "rmse": 3.535886266554576e-15,
+      "relative_error": 5.27881396587941e-15,
+      "finiteness": true
+    },
+    "status": "PASS"
+  },
+  {
+    "kind": "highpass",
+    "cutoffs": [
+      0.5
+    ],
+    "order": 4,
+    "fs": 125.0,
+    "signal_name": "sine",
+    "signal_length": 625,
+    "metrics": {
+      "max_abs_error": 1.2393419623890622e-12,
+      "rmse": 5.049639438988669e-13,
+      "relative_error": 6.953703304838176e-13,
+      "finiteness": true
+    },
+    "status": "PASS"
+  },
+  {
+    "kind": "highpass",
+    "cutoffs": [
+      0.5
+    ],
+    "order": 4,
+    "fs": 125.0,
+    "signal_name": "multitone",
+    "signal_length": 625,
+    "metrics": {
+      "max_abs_error": 8.396616735240059e-13,
+      "rmse": 3.2498903596038036e-13,
+      "relative_error": 4.234262364531754e-13,
+      "finiteness": true
+    },
+    "status": "PASS"
+  },
+  {
+    "kind": "highpass",
+    "cutoffs": [
+      0.5
+    ],
+    "order": 4,
+    "fs": 125.0,
+    "signal_name": "impulse",
+    "signal_length": 625,
+    "metrics": {
+      "max_abs_error": 3.0574501264091225e-15,
+      "rmse": 9.853844288689476e-16,
+      "relative_error": 2.4750038601083426e-14,
+      "finiteness": true
+    },
+    "status": "PASS"
+  },
+  {
+    "kind": "highpass",
+    "cutoffs": [
+      0.5
+    ],
+    "order": 4,
+    "fs": 125.0,
+    "signal_name": "step",
+    "signal_length": 625,
+    "metrics": {
+      "max_abs_error": 3.3639757646142243e-14,
+      "rmse": 1.161793286227632e-14,
+      "relative_error": 8.638445930449172e-14,
+      "finiteness": true
+    },
+    "status": "PASS"
+  },
+  {
+    "kind": "highpass",
+    "cutoffs": [
+      0.5
+    ],
+    "order": 4,
+    "fs": 125.0,
+    "signal_name": "chirp",
+    "signal_length": 625,
+    "metrics": {
+      "max_abs_error": 1.3082868122182845e-12,
+      "rmse": 4.761452902678276e-13,
+      "relative_error": 6.671674087805891e-13,
+      "finiteness": true
+    },
+    "status": "PASS"
+  },
+  {
+    "kind": "highpass",
+    "cutoffs": [
+      0.5
+    ],
+    "order": 4,
+    "fs": 125.0,
+    "signal_name": "white_noise",
+    "signal_length": 625,
+    "metrics": {
+      "max_abs_error": 1.7212897773788427e-12,
+      "rmse": 6.588737035682584e-13,
+      "relative_error": 6.707879063558776e-13,
+      "finiteness": true
+    },
+    "status": "PASS"
+  },
+  {
+    "kind": "highpass",
+    "cutoffs": [
+      0.5
+    ],
+    "order": 4,
+    "fs": 125.0,
+    "signal_name": "dc_offset",
+    "signal_length": 625,
+    "metrics": {
+      "max_abs_error": 1.1329337468168887e-10,
+      "rmse": 2.4164073433654906e-11,
+      "relative_error": 3.32756030057364e-11,
+      "finiteness": true
+    },
+    "status": "PASS"
+  },
+  {
+    "kind": "highpass",
+    "cutoffs": [
+      0.5
+    ],
+    "order": 4,
+    "fs": 125.0,
+    "signal_name": "short_signal",
+    "signal_length": 35,
+    "metrics": {
+      "max_abs_error": 2.758238082378739e-12,
+      "rmse": 2.1809534783682733e-12,
+      "relative_error": 3.3610568211787148e-12,
+      "finiteness": true
+    },
+    "status": "PASS"
+  },
+  {
+    "kind": "highpass",
+    "cutoffs": [
+      2.0
+    ],
+    "order": 2,
+    "fs": 500.0,
+    "signal_name": "sine",
+    "signal_length": 2500,
+    "metrics": {
+      "max_abs_error": 2.27856622458944e-12,
+      "rmse": 3.73885198158126e-13,
+      "relative_error": 1.0825291381074603e-12,
+      "finiteness": true
+    },
+    "status": "PASS"
+  },
+  {
+    "kind": "highpass",
+    "cutoffs": [
+      2.0
+    ],
+    "order": 2,
+    "fs": 500.0,
+    "signal_name": "multitone",
+    "signal_length": 2500,
+    "metrics": {
+      "max_abs_error": 1.496885948526483e-12,
+      "rmse": 2.602561390147921e-13,
+      "relative_error": 7.292711554343726e-13,
+      "finiteness": true
+    },
+    "status": "PASS"
+  },
+  {
+    "kind": "highpass",
+    "cutoffs": [
+      2.0
+    ],
+    "order": 2,
+    "fs": 500.0,
+    "signal_name": "impulse",
+    "signal_length": 2500,
+    "metrics": {
+      "max_abs_error": 1.1102230246251565e-15,
+      "rmse": 1.772819951656539e-16,
+      "relative_error": 8.913733163899352e-15,
+      "finiteness": true
+    },
+    "status": "PASS"
+  },
+  {
+    "kind": "highpass",
+    "cutoffs": [
+      2.0
+    ],
+    "order": 2,
+    "fs": 500.0,
+    "signal_name": "step",
+    "signal_length": 2500,
+    "metrics": {
+      "max_abs_error": 1.8960093911557507e-14,
+      "rmse": 5.8676880123207594e-15,
+      "relative_error": 9.032547289641264e-14,
+      "finiteness": true
+    },
+    "status": "PASS"
+  },
+  {
+    "kind": "highpass",
+    "cutoffs": [
+      2.0
+    ],
+    "order": 2,
+    "fs": 500.0,
+    "signal_name": "chirp",
+    "signal_length": 2500,
+    "metrics": {
+      "max_abs_error": 2.887468042445107e-12,
+      "rmse": 4.920061402865407e-13,
+      "relative_error": 6.972723976683715e-13,
+      "finiteness": true
+    },
+    "status": "PASS"
+  },
+  {
+    "kind": "highpass",
+    "cutoffs": [
+      2.0
+    ],
+    "order": 2,
+    "fs": 500.0,
+    "signal_name": "white_noise",
+    "signal_length": 2500,
+    "metrics": {
+      "max_abs_error": 3.940903159360687e-12,
+      "rmse": 6.480197444825882e-13,
+      "relative_error": 6.618323917822605e-13,
+      "finiteness": true
+    },
+    "status": "PASS"
+  },
+  {
+    "kind": "highpass",
+    "cutoffs": [
+      2.0
+    ],
+    "order": 2,
+    "fs": 500.0,
+    "signal_name": "dc_offset",
+    "signal_length": 2500,
+    "metrics": {
+      "max_abs_error": 1.7273593666544684e-10,
+      "rmse": 1.379087316274283e-11,
+      "relative_error": 3.9929427835496166e-11,
+      "finiteness": true
+    },
+    "status": "PASS"
+  },
+  {
+    "kind": "highpass",
+    "cutoffs": [
+      2.0
+    ],
+    "order": 2,
+    "fs": 500.0,
+    "signal_name": "short_signal",
+    "signal_length": 35,
+    "metrics": {
+      "max_abs_error": 1.3961887201929812e-12,
+      "rmse": 1.0538666231223964e-12,
+      "relative_error": 1.677426219712401e-11,
+      "finiteness": true
+    },
+    "status": "PASS"
+  },
+  {
+    "kind": "bandpass",
+    "cutoffs": [
+      0.5,
+      8.0
+    ],
+    "order": 3,
+    "fs": 125.0,
+    "signal_name": "sine",
+    "signal_length": 625,
+    "metrics": {
+      "max_abs_error": 7.904787935331115e-14,
+      "rmse": 3.266442417778631e-14,
+      "relative_error": 4.500506247366247e-14,
+      "finiteness": true
+    },
+    "status": "PASS"
+  },
+  {
+    "kind": "bandpass",
+    "cutoffs": [
+      0.5,
+      8.0
+    ],
+    "order": 3,
+    "fs": 125.0,
+    "signal_name": "multitone",
+    "signal_length": 625,
+    "metrics": {
+      "max_abs_error": 4.568567746332519e-14,
+      "rmse": 1.9445329167343118e-14,
+      "relative_error": 2.7868919099766486e-14,
+      "finiteness": true
+    },
+    "status": "PASS"
+  },
+  {
+    "kind": "bandpass",
+    "cutoffs": [
+      0.5,
+      8.0
+    ],
+    "order": 3,
+    "fs": 125.0,
+    "signal_name": "impulse",
+    "signal_length": 625,
+    "metrics": {
+      "max_abs_error": 1.9506965487359196e-15,
+      "rmse": 7.328877377815046e-16,
+      "relative_error": 5.659721156381401e-14,
+      "finiteness": true
+    },
+    "status": "PASS"
+  },
+  {
+    "kind": "bandpass",
+    "cutoffs": [
+      0.5,
+      8.0
+    ],
+    "order": 3,
+    "fs": 125.0,
+    "signal_name": "step",
+    "signal_length": 625,
+    "metrics": {
+      "max_abs_error": 1.491862189340054e-14,
+      "rmse": 5.538935421621027e-15,
+      "relative_error": 4.309696061250513e-14,
+      "finiteness": true
+    },
+    "status": "PASS"
+  },
+  {
+    "kind": "bandpass",
+    "cutoffs": [
+      0.5,
+      8.0
+    ],
+    "order": 3,
+    "fs": 125.0,
+    "signal_name": "chirp",
+    "signal_length": 625,
+    "metrics": {
+      "max_abs_error": 1.940114735532461e-14,
+      "rmse": 6.522645236013648e-15,
+      "relative_error": 2.3810760340716444e-14,
+      "finiteness": true
+    },
+    "status": "PASS"
+  },
+  {
+    "kind": "bandpass",
+    "cutoffs": [
+      0.5,
+      8.0
+    ],
+    "order": 3,
+    "fs": 125.0,
+    "signal_name": "white_noise",
+    "signal_length": 625,
+    "metrics": {
+      "max_abs_error": 3.11972669919669e-14,
+      "rmse": 1.2669102825574159e-14,
+      "relative_error": 3.070313810206635e-14,
+      "finiteness": true
+    },
+    "status": "PASS"
+  },
+  {
+    "kind": "bandpass",
+    "cutoffs": [
+      0.5,
+      8.0
+    ],
+    "order": 3,
+    "fs": 125.0,
+    "signal_name": "dc_offset",
+    "signal_length": 625,
+    "metrics": {
+      "max_abs_error": 1.5187850976872141e-13,
+      "rmse": 7.407714809828704e-14,
+      "relative_error": 1.0206353737903631e-13,
+      "finiteness": true
+    },
+    "status": "PASS"
+  },
+  {
+    "kind": "bandpass",
+    "cutoffs": [
+      0.5,
+      8.0
+    ],
+    "order": 3,
+    "fs": 125.0,
+    "signal_name": "short_signal",
+    "signal_length": 35,
+    "metrics": {
+      "max_abs_error": 9.325873406851315e-15,
+      "rmse": 3.1146936167936838e-15,
+      "relative_error": 3.853168610947473e-15,
+      "finiteness": true
+    },
+    "status": "PASS"
+  },
+  {
+    "kind": "bandpass",
+    "cutoffs": [
+      5.0,
+      15.0
+    ],
+    "order": 2,
+    "fs": 500.0,
+    "signal_name": "sine",
+    "signal_length": 2500,
+    "metrics": {
+      "max_abs_error": 1.0109968417992832e-14,
+      "rmse": 2.546525487904772e-15,
+      "relative_error": 4.264073732963682e-13,
+      "finiteness": true
+    },
+    "status": "PASS"
+  },
+  {
+    "kind": "bandpass",
+    "cutoffs": [
+      5.0,
+      15.0
+    ],
+    "order": 2,
+    "fs": 500.0,
+    "signal_name": "multitone",
+    "signal_length": 2500,
+    "metrics": {
+      "max_abs_error": 2.5368596112684827e-14,
+      "rmse": 4.368985890071643e-15,
+      "relative_error": 2.456571734113725e-14,
+      "finiteness": true
+    },
+    "status": "PASS"
+  },
+  {
+    "kind": "bandpass",
+    "cutoffs": [
+      5.0,
+      15.0
+    ],
+    "order": 2,
+    "fs": 500.0,
+    "signal_name": "impulse",
+    "signal_length": 2500,
+    "metrics": {
+      "max_abs_error": 4.3021142204224816e-16,
+      "rmse": 4.5856467157372683e-17,
+      "relative_error": 1.2560504581689183e-14,
+      "finiteness": true
+    },
+    "status": "PASS"
+  },
+  {
+    "kind": "bandpass",
+    "cutoffs": [
+      5.0,
+      15.0
+    ],
+    "order": 2,
+    "fs": 500.0,
+    "signal_name": "step",
+    "signal_length": 2500,
+    "metrics": {
+      "max_abs_error": 7.077671781985373e-15,
+      "rmse": 1.7748399145407051e-15,
+      "relative_error": 5.2880095012110725e-14,
+      "finiteness": true
+    },
+    "status": "PASS"
+  },
+  {
+    "kind": "bandpass",
+    "cutoffs": [
+      5.0,
+      15.0
+    ],
+    "order": 2,
+    "fs": 500.0,
+    "signal_name": "chirp",
+    "signal_length": 2500,
+    "metrics": {
+      "max_abs_error": 5.0182080713057076e-14,
+      "rmse": 6.5159548229883104e-15,
+      "relative_error": 4.5007638520370927e-14,
+      "finiteness": true
+    },
+    "status": "PASS"
+  },
+  {
+    "kind": "bandpass",
+    "cutoffs": [
+      5.0,
+      15.0
+    ],
+    "order": 2,
+    "fs": 500.0,
+    "signal_name": "white_noise",
+    "signal_length": 2500,
+    "metrics": {
+      "max_abs_error": 1.5903944827755367e-14,
+      "rmse": 2.814799494797026e-15,
+      "relative_error": 1.5417998682103412e-14,
+      "finiteness": true
+    },
+    "status": "PASS"
+  },
+  {
+    "kind": "bandpass",
+    "cutoffs": [
+      5.0,
+      15.0
+    ],
+    "order": 2,
+    "fs": 500.0,
+    "signal_name": "dc_offset",
+    "signal_length": 2500,
+    "metrics": {
+      "max_abs_error": 2.5666552216918603e-12,
+      "rmse": 3.4867274392009496e-13,
+      "relative_error": 5.838411183436557e-11,
+      "finiteness": true
+    },
+    "status": "PASS"
+  },
+  {
+    "kind": "bandpass",
+    "cutoffs": [
+      5.0,
+      15.0
+    ],
+    "order": 2,
+    "fs": 500.0,
+    "signal_name": "short_signal",
+    "signal_length": 35,
+    "metrics": {
+      "max_abs_error": 1.2607970223399434e-14,
+      "rmse": 1.0485396420802606e-14,
+      "relative_error": 3.275503053070134e-13,
+      "finiteness": true
+    },
+    "status": "PASS"
+  },
+  {
+    "kind": "notch",
+    "cutoffs": [
+      59.0,
+      61.0
+    ],
+    "order": 2,
+    "fs": 500.0,
+    "signal_name": "sine",
+    "signal_length": 2500,
+    "metrics": {
+      "max_abs_error": 5.551115123125783e-15,
+      "rmse": 1.7460601424045533e-15,
+      "relative_error": 2.4693018477677104e-15,
+      "finiteness": true
+    },
+    "status": "PASS"
+  },
+  {
+    "kind": "notch",
+    "cutoffs": [
+      59.0,
+      61.0
+    ],
+    "order": 2,
+    "fs": 500.0,
+    "signal_name": "multitone",
+    "signal_length": 2500,
+    "metrics": {
+      "max_abs_error": 7.327471962526033e-15,
+      "rmse": 1.828786894679182e-15,
+      "relative_error": 2.313252914091022e-15,
+      "finiteness": true
+    },
+    "status": "PASS"
+  },
+  {
+    "kind": "notch",
+    "cutoffs": [
+      59.0,
+      61.0
+    ],
+    "order": 2,
+    "fs": 500.0,
+    "signal_name": "impulse",
+    "signal_length": 2500,
+    "metrics": {
+      "max_abs_error": 1.0009354456386177e-15,
+      "rmse": 1.144880007094368e-16,
+      "relative_error": 5.756453144228535e-15,
+      "finiteness": true
+    },
+    "status": "PASS"
+  },
+  {
+    "kind": "notch",
+    "cutoffs": [
+      59.0,
+      61.0
+    ],
+    "order": 2,
+    "fs": 500.0,
+    "signal_name": "step",
+    "signal_length": 2500,
+    "metrics": {
+      "max_abs_error": 7.105427357601002e-15,
+      "rmse": 2.246917304811852e-15,
+      "relative_error": 2.5945308023354896e-15,
+      "finiteness": true
+    },
+    "status": "PASS"
+  },
+  {
+    "kind": "notch",
+    "cutoffs": [
+      59.0,
+      61.0
+    ],
+    "order": 2,
+    "fs": 500.0,
+    "signal_name": "chirp",
+    "signal_length": 2500,
+    "metrics": {
+      "max_abs_error": 2.55351295663786e-14,
+      "rmse": 4.300092889104784e-15,
+      "relative_error": 6.0996494794322944e-15,
+      "finiteness": true
+    },
+    "status": "PASS"
+  },
+  {
+    "kind": "notch",
+    "cutoffs": [
+      59.0,
+      61.0
+    ],
+    "order": 2,
+    "fs": 500.0,
+    "signal_name": "white_noise",
+    "signal_length": 2500,
+    "metrics": {
+      "max_abs_error": 1.5654144647214707e-14,
+      "rmse": 5.233966835757935e-15,
+      "relative_error": 5.267446035709369e-15,
+      "finiteness": true
+    },
+    "status": "PASS"
+  },
+  {
+    "kind": "notch",
+    "cutoffs": [
+      59.0,
+      61.0
+    ],
+    "order": 2,
+    "fs": 500.0,
+    "signal_name": "dc_offset",
+    "signal_length": 2500,
+    "metrics": {
+      "max_abs_error": 8.384404281969182e-13,
+      "rmse": 2.567221485186193e-13,
+      "relative_error": 2.5671573201521075e-15,
+      "finiteness": true
+    },
+    "status": "PASS"
+  },
+  {
+    "kind": "notch",
+    "cutoffs": [
+      59.0,
+      61.0
+    ],
+    "order": 2,
+    "fs": 500.0,
+    "signal_name": "short_signal",
+    "signal_length": 35,
+    "metrics": {
+      "max_abs_error": 2.220446049250313e-15,
+      "rmse": 1.0445994522044712e-15,
+      "relative_error": 2.26704397705531e-15,
+      "finiteness": true
+    },
+    "status": "PASS"
+  }
+]

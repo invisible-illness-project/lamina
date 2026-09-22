@@ -1,0 +1,787 @@
+{
+  "differential_tests": [
+    {
+      "up": 125,
+      "down": 250,
+      "signal_name": "sine_5hz",
+      "input_len": 1000,
+      "expected_len": 500,
+      "actual_len": 500,
+      "length_correct": true,
+      "metrics": {
+        "max_abs_error": 8.881784197001252e-16,
+        "rmse": 2.529372224860852e-16,
+        "relative_error": 3.575735139366184e-16,
+        "finiteness": true
+      },
+      "status": "PASS"
+    },
+    {
+      "up": 125,
+      "down": 250,
+      "signal_name": "multitone",
+      "input_len": 1000,
+      "expected_len": 500,
+      "actual_len": 500,
+      "length_correct": true,
+      "metrics": {
+        "max_abs_error": 1.1102230246251565e-15,
+        "rmse": 2.823961246523392e-16,
+        "relative_error": 3.571246257269033e-16,
+        "finiteness": true
+      },
+      "status": "PASS"
+    },
+    {
+      "up": 125,
+      "down": 250,
+      "signal_name": "impulse",
+      "input_len": 1000,
+      "expected_len": 500,
+      "actual_len": 500,
+      "length_correct": true,
+      "metrics": {
+        "max_abs_error": 2.220446049250313e-16,
+        "rmse": 9.930136612989092e-18,
+        "relative_error": 4.43859525596785e-16,
+        "finiteness": true
+      },
+      "status": "PASS"
+    },
+    {
+      "up": 125,
+      "down": 250,
+      "signal_name": "step",
+      "input_len": 1000,
+      "expected_len": 500,
+      "actual_len": 500,
+      "length_correct": true,
+      "metrics": {
+        "max_abs_error": 6.661338147750939e-16,
+        "rmse": 3.9740713307413406e-16,
+        "relative_error": 4.444413679307968e-16,
+        "finiteness": true
+      },
+      "status": "PASS"
+    },
+    {
+      "up": 125,
+      "down": 250,
+      "signal_name": "chirp",
+      "input_len": 1000,
+      "expected_len": 500,
+      "actual_len": 500,
+      "length_correct": true,
+      "metrics": {
+        "max_abs_error": 5.551115123125783e-16,
+        "rmse": 1.9392132517373048e-16,
+        "relative_error": 2.7277801795603066e-16,
+        "finiteness": true
+      },
+      "status": "PASS"
+    },
+    {
+      "up": 125,
+      "down": 250,
+      "signal_name": "noise",
+      "input_len": 1000,
+      "expected_len": 500,
+      "actual_len": 500,
+      "length_correct": true,
+      "metrics": {
+        "max_abs_error": 8.881784197001252e-16,
+        "rmse": 2.794515887058287e-16,
+        "relative_error": 3.9766221487620143e-16,
+        "finiteness": true
+      },
+      "status": "PASS"
+    },
+    {
+      "up": 125,
+      "down": 500,
+      "signal_name": "sine_5hz",
+      "input_len": 1000,
+      "expected_len": 250,
+      "actual_len": 250,
+      "length_correct": true,
+      "metrics": {
+        "max_abs_error": 7.771561172376096e-16,
+        "rmse": 2.688490367492481e-16,
+        "relative_error": 3.7977341687273176e-16,
+        "finiteness": true
+      },
+      "status": "PASS"
+    },
+    {
+      "up": 125,
+      "down": 500,
+      "signal_name": "multitone",
+      "input_len": 1000,
+      "expected_len": 250,
+      "actual_len": 250,
+      "length_correct": true,
+      "metrics": {
+        "max_abs_error": 1.1102230246251565e-15,
+        "rmse": 3.096037196127015e-16,
+        "relative_error": 3.9148739183399127e-16,
+        "finiteness": true
+      },
+      "status": "PASS"
+    },
+    {
+      "up": 125,
+      "down": 500,
+      "signal_name": "impulse",
+      "input_len": 1000,
+      "expected_len": 250,
+      "actual_len": 250,
+      "length_correct": true,
+      "metrics": {
+        "max_abs_error": 5.551115123125783e-17,
+        "rmse": 5.370809709359493e-18,
+        "relative_error": 3.53320008113434e-16,
+        "finiteness": true
+      },
+      "status": "PASS"
+    },
+    {
+      "up": 125,
+      "down": 500,
+      "signal_name": "step",
+      "input_len": 1000,
+      "expected_len": 250,
+      "actual_len": 250,
+      "length_correct": true,
+      "metrics": {
+        "max_abs_error": 6.661338147750939e-16,
+        "rmse": 8.117204025584727e-17,
+        "relative_error": 9.083134134737722e-17,
+        "finiteness": true
+      },
+      "status": "PASS"
+    },
+    {
+      "up": 125,
+      "down": 500,
+      "signal_name": "chirp",
+      "input_len": 1000,
+      "expected_len": 250,
+      "actual_len": 250,
+      "length_correct": true,
+      "metrics": {
+        "max_abs_error": 1.3322676295501878e-15,
+        "rmse": 3.0746848393011023e-16,
+        "relative_error": 4.332043984500497e-16,
+        "finiteness": true
+      },
+      "status": "PASS"
+    },
+    {
+      "up": 125,
+      "down": 500,
+      "signal_name": "noise",
+      "input_len": 1000,
+      "expected_len": 250,
+      "actual_len": 250,
+      "length_correct": true,
+      "metrics": {
+        "max_abs_error": 6.661338147750939e-16,
+        "rmse": 2.2270803588349555e-16,
+        "relative_error": 4.45783235735365e-16,
+        "finiteness": true
+      },
+      "status": "PASS"
+    },
+    {
+      "up": 125,
+      "down": 1000,
+      "signal_name": "sine_5hz",
+      "input_len": 1000,
+      "expected_len": 125,
+      "actual_len": 125,
+      "length_correct": true,
+      "metrics": {
+        "max_abs_error": 1.4432899320127035e-15,
+        "rmse": 4.752430662111617e-16,
+        "relative_error": 6.718548274223503e-16,
+        "finiteness": true
+      },
+      "status": "PASS"
+    },
+    {
+      "up": 125,
+      "down": 1000,
+      "signal_name": "multitone",
+      "input_len": 1000,
+      "expected_len": 125,
+      "actual_len": 125,
+      "length_correct": true,
+      "metrics": {
+        "max_abs_error": 1.5543122344752192e-15,
+        "rmse": 5.173549032971688e-16,
+        "relative_error": 6.538184657599805e-16,
+        "finiteness": true
+      },
+      "status": "PASS"
+    },
+    {
+      "up": 125,
+      "down": 1000,
+      "signal_name": "impulse",
+      "input_len": 1000,
+      "expected_len": 125,
+      "actual_len": 125,
+      "length_correct": true,
+      "metrics": {
+        "max_abs_error": 5.551115123125783e-17,
+        "rmse": 5.420909488576541e-18,
+        "relative_error": 4.941528858767768e-16,
+        "finiteness": true
+      },
+      "status": "PASS"
+    },
+    {
+      "up": 125,
+      "down": 1000,
+      "signal_name": "step",
+      "input_len": 1000,
+      "expected_len": 125,
+      "actual_len": 125,
+      "length_correct": true,
+      "metrics": {
+        "max_abs_error": 8.881784197001252e-16,
+        "rmse": 3.969709805731701e-16,
+        "relative_error": 4.447277188545679e-16,
+        "finiteness": true
+      },
+      "status": "PASS"
+    },
+    {
+      "up": 125,
+      "down": 1000,
+      "signal_name": "chirp",
+      "input_len": 1000,
+      "expected_len": 125,
+      "actual_len": 125,
+      "length_correct": true,
+      "metrics": {
+        "max_abs_error": 1.1102230246251565e-15,
+        "rmse": 3.8989441003477995e-16,
+        "relative_error": 7.05977650306368e-16,
+        "finiteness": true
+      },
+      "status": "PASS"
+    },
+    {
+      "up": 125,
+      "down": 1000,
+      "signal_name": "noise",
+      "input_len": 1000,
+      "expected_len": 125,
+      "actual_len": 125,
+      "length_correct": true,
+      "metrics": {
+        "max_abs_error": 9.992007221626409e-16,
+        "rmse": 2.2879128438733915e-16,
+        "relative_error": 6.440513933652561e-16,
+        "finiteness": true
+      },
+      "status": "PASS"
+    },
+    {
+      "up": 125,
+      "down": 256,
+      "signal_name": "sine_5hz",
+      "input_len": 1000,
+      "expected_len": 489,
+      "actual_len": 489,
+      "length_correct": true,
+      "metrics": {
+        "max_abs_error": 4.3298697960381105e-15,
+        "rmse": 2.719944843666795e-15,
+        "relative_error": 3.847481902800182e-15,
+        "finiteness": true
+      },
+      "status": "PASS"
+    },
+    {
+      "up": 125,
+      "down": 256,
+      "signal_name": "multitone",
+      "input_len": 1000,
+      "expected_len": 489,
+      "actual_len": 489,
+      "length_correct": true,
+      "metrics": {
+        "max_abs_error": 6.217248937900877e-15,
+        "rmse": 3.028369078186575e-15,
+        "relative_error": 3.8323103543673344e-15,
+        "finiteness": true
+      },
+      "status": "PASS"
+    },
+    {
+      "up": 125,
+      "down": 256,
+      "signal_name": "impulse",
+      "input_len": 1000,
+      "expected_len": 489,
+      "actual_len": 489,
+      "length_correct": true,
+      "metrics": {
+        "max_abs_error": 1.3322676295501878e-15,
+        "rmse": 8.003103236882128e-17,
+        "relative_error": 3.7587338286371895e-15,
+        "finiteness": true
+      },
+      "status": "PASS"
+    },
+    {
+      "up": 125,
+      "down": 256,
+      "signal_name": "step",
+      "input_len": 1000,
+      "expected_len": 489,
+      "actual_len": 489,
+      "length_correct": true,
+      "metrics": {
+        "max_abs_error": 4.6629367034256575e-15,
+        "rmse": 3.401617531797954e-15,
+        "relative_error": 3.806759850897983e-15,
+        "finiteness": true
+      },
+      "status": "PASS"
+    },
+    {
+      "up": 125,
+      "down": 256,
+      "signal_name": "chirp",
+      "input_len": 1000,
+      "expected_len": 489,
+      "actual_len": 489,
+      "length_correct": true,
+      "metrics": {
+        "max_abs_error": 4.884981308350689e-15,
+        "rmse": 2.742066738688532e-15,
+        "relative_error": 3.859022843203461e-15,
+        "finiteness": true
+      },
+      "status": "PASS"
+    },
+    {
+      "up": 125,
+      "down": 256,
+      "signal_name": "noise",
+      "input_len": 1000,
+      "expected_len": 489,
+      "actual_len": 489,
+      "length_correct": true,
+      "metrics": {
+        "max_abs_error": 8.881784197001252e-15,
+        "rmse": 2.6951373657935183e-15,
+        "relative_error": 3.863761682021707e-15,
+        "finiteness": true
+      },
+      "status": "PASS"
+    },
+    {
+      "up": 125,
+      "down": 128,
+      "signal_name": "sine_5hz",
+      "input_len": 1000,
+      "expected_len": 977,
+      "actual_len": 977,
+      "length_correct": true,
+      "metrics": {
+        "max_abs_error": 2.7755575615628914e-15,
+        "rmse": 1.1726575939892533e-15,
+        "relative_error": 1.6585312949455448e-15,
+        "finiteness": true
+      },
+      "status": "PASS"
+    },
+    {
+      "up": 125,
+      "down": 128,
+      "signal_name": "multitone",
+      "input_len": 1000,
+      "expected_len": 977,
+      "actual_len": 977,
+      "length_correct": true,
+      "metrics": {
+        "max_abs_error": 3.1086244689504383e-15,
+        "rmse": 1.3011434905849755e-15,
+        "relative_error": 1.6458626840338832e-15,
+        "finiteness": true
+      },
+      "status": "PASS"
+    },
+    {
+      "up": 125,
+      "down": 128,
+      "signal_name": "impulse",
+      "input_len": 1000,
+      "expected_len": 977,
+      "actual_len": 977,
+      "length_correct": true,
+      "metrics": {
+        "max_abs_error": 1.3322676295501878e-15,
+        "rmse": 4.4763844930205744e-17,
+        "relative_error": 1.4465727991815279e-15,
+        "finiteness": true
+      },
+      "status": "PASS"
+    },
+    {
+      "up": 125,
+      "down": 128,
+      "signal_name": "step",
+      "input_len": 1000,
+      "expected_len": 977,
+      "actual_len": 977,
+      "length_correct": true,
+      "metrics": {
+        "max_abs_error": 2.7755575615628914e-15,
+        "rmse": 1.517278701499636e-15,
+        "relative_error": 1.6967949122745467e-15,
+        "finiteness": true
+      },
+      "status": "PASS"
+    },
+    {
+      "up": 125,
+      "down": 128,
+      "signal_name": "chirp",
+      "input_len": 1000,
+      "expected_len": 977,
+      "actual_len": 977,
+      "length_correct": true,
+      "metrics": {
+        "max_abs_error": 2.7755575615628914e-15,
+        "rmse": 1.1863554065418019e-15,
+        "relative_error": 1.6681442072527808e-15,
+        "finiteness": true
+      },
+      "status": "PASS"
+    },
+    {
+      "up": 125,
+      "down": 128,
+      "signal_name": "noise",
+      "input_len": 1000,
+      "expected_len": 977,
+      "actual_len": 977,
+      "length_correct": true,
+      "metrics": {
+        "max_abs_error": 6.217248937900877e-15,
+        "rmse": 1.6234817573042603e-15,
+        "relative_error": 1.6713353468118825e-15,
+        "finiteness": true
+      },
+      "status": "PASS"
+    },
+    {
+      "up": 250,
+      "down": 125,
+      "signal_name": "sine_5hz",
+      "input_len": 1000,
+      "expected_len": 2000,
+      "actual_len": 2000,
+      "length_correct": true,
+      "metrics": {
+        "max_abs_error": 6.661338147750939e-16,
+        "rmse": 2.4461252018605036e-16,
+        "relative_error": 3.4589805504564814e-16,
+        "finiteness": true
+      },
+      "status": "PASS"
+    },
+    {
+      "up": 250,
+      "down": 125,
+      "signal_name": "multitone",
+      "input_len": 1000,
+      "expected_len": 2000,
+      "actual_len": 2000,
+      "length_correct": true,
+      "metrics": {
+        "max_abs_error": 1.1102230246251565e-15,
+        "rmse": 2.9736204211761273e-16,
+        "relative_error": 3.7607841385119816e-16,
+        "finiteness": true
+      },
+      "status": "PASS"
+    },
+    {
+      "up": 250,
+      "down": 125,
+      "signal_name": "impulse",
+      "input_len": 1000,
+      "expected_len": 2000,
+      "actual_len": 2000,
+      "length_correct": true,
+      "metrics": {
+        "max_abs_error": 4.440892098500626e-16,
+        "rmse": 1.0136143428666652e-17,
+        "relative_error": 3.2670949612926437e-16,
+        "finiteness": true
+      },
+      "status": "PASS"
+    },
+    {
+      "up": 250,
+      "down": 125,
+      "signal_name": "step",
+      "input_len": 1000,
+      "expected_len": 2000,
+      "actual_len": 2000,
+      "length_correct": true,
+      "metrics": {
+        "max_abs_error": 4.440892098500626e-16,
+        "rmse": 3.1442998537543647e-16,
+        "relative_error": 3.515480710539125e-16,
+        "finiteness": true
+      },
+      "status": "PASS"
+    },
+    {
+      "up": 250,
+      "down": 125,
+      "signal_name": "chirp",
+      "input_len": 1000,
+      "expected_len": 2000,
+      "actual_len": 2000,
+      "length_correct": true,
+      "metrics": {
+        "max_abs_error": 8.881784197001252e-16,
+        "rmse": 2.521466949334363e-16,
+        "relative_error": 3.5456066670427543e-16,
+        "finiteness": true
+      },
+      "status": "PASS"
+    },
+    {
+      "up": 250,
+      "down": 125,
+      "signal_name": "noise",
+      "input_len": 1000,
+      "expected_len": 2000,
+      "actual_len": 2000,
+      "length_correct": true,
+      "metrics": {
+        "max_abs_error": 1.7763568394002505e-15,
+        "rmse": 3.651401124320393e-16,
+        "relative_error": 3.714422922777805e-16,
+        "finiteness": true
+      },
+      "status": "PASS"
+    },
+    {
+      "up": 300,
+      "down": 200,
+      "signal_name": "sine_5hz",
+      "input_len": 1000,
+      "expected_len": 1500,
+      "actual_len": 1500,
+      "length_correct": true,
+      "metrics": {
+        "max_abs_error": 6.661338147750939e-16,
+        "rmse": 2.9772864616013514e-16,
+        "relative_error": 4.2100056793475617e-16,
+        "finiteness": true
+      },
+      "status": "PASS"
+    },
+    {
+      "up": 300,
+      "down": 200,
+      "signal_name": "multitone",
+      "input_len": 1000,
+      "expected_len": 1500,
+      "actual_len": 1500,
+      "length_correct": true,
+      "metrics": {
+        "max_abs_error": 8.881784197001252e-16,
+        "rmse": 3.121920884085726e-16,
+        "relative_error": 3.948241760717718e-16,
+        "finiteness": true
+      },
+      "status": "PASS"
+    },
+    {
+      "up": 300,
+      "down": 200,
+      "signal_name": "impulse",
+      "input_len": 1000,
+      "expected_len": 1500,
+      "actual_len": 1500,
+      "length_correct": true,
+      "metrics": {
+        "max_abs_error": 4.440892098500626e-16,
+        "rmse": 1.1980353200566745e-17,
+        "relative_error": 3.861180416495249e-16,
+        "finiteness": true
+      },
+      "status": "PASS"
+    },
+    {
+      "up": 300,
+      "down": 200,
+      "signal_name": "step",
+      "input_len": 1000,
+      "expected_len": 1500,
+      "actual_len": 1500,
+      "length_correct": true,
+      "metrics": {
+        "max_abs_error": 4.440892098500626e-16,
+        "rmse": 2.4354068778578294e-16,
+        "relative_error": 2.7228979468164243e-16,
+        "finiteness": true
+      },
+      "status": "PASS"
+    },
+    {
+      "up": 300,
+      "down": 200,
+      "signal_name": "chirp",
+      "input_len": 1000,
+      "expected_len": 1500,
+      "actual_len": 1500,
+      "length_correct": true,
+      "metrics": {
+        "max_abs_error": 6.661338147750939e-16,
+        "rmse": 2.4316167975424886e-16,
+        "relative_error": 3.4187501008916757e-16,
+        "finiteness": true
+      },
+      "status": "PASS"
+    },
+    {
+      "up": 300,
+      "down": 200,
+      "signal_name": "noise",
+      "input_len": 1000,
+      "expected_len": 1500,
+      "actual_len": 1500,
+      "length_correct": true,
+      "metrics": {
+        "max_abs_error": 1.7763568394002505e-15,
+        "rmse": 3.5244100302598423e-16,
+        "relative_error": 3.5841711478188025e-16,
+        "finiteness": true
+      },
+      "status": "PASS"
+    },
+    {
+      "up": 125,
+      "down": 125,
+      "signal_name": "sine_5hz",
+      "input_len": 1000,
+      "expected_len": 1000,
+      "actual_len": 1000,
+      "length_correct": true,
+      "metrics": {
+        "max_abs_error": 0.0,
+        "rmse": 0.0,
+        "relative_error": 0.0,
+        "finiteness": true
+      },
+      "status": "PASS"
+    },
+    {
+      "up": 125,
+      "down": 125,
+      "signal_name": "multitone",
+      "input_len": 1000,
+      "expected_len": 1000,
+      "actual_len": 1000,
+      "length_correct": true,
+      "metrics": {
+        "max_abs_error": 0.0,
+        "rmse": 0.0,
+        "relative_error": 0.0,
+        "finiteness": true
+      },
+      "status": "PASS"
+    },
+    {
+      "up": 125,
+      "down": 125,
+      "signal_name": "impulse",
+      "input_len": 1000,
+      "expected_len": 1000,
+      "actual_len": 1000,
+      "length_correct": true,
+      "metrics": {
+        "max_abs_error": 0.0,
+        "rmse": 0.0,
+        "relative_error": 0.0,
+        "finiteness": true
+      },
+      "status": "PASS"
+    },
+    {
+      "up": 125,
+      "down": 125,
+      "signal_name": "step",
+      "input_len": 1000,
+      "expected_len": 1000,
+      "actual_len": 1000,
+      "length_correct": true,
+      "metrics": {
+        "max_abs_error": 0.0,
+        "rmse": 0.0,
+        "relative_error": 0.0,
+        "finiteness": true
+      },
+      "status": "PASS"
+    },
+    {
+      "up": 125,
+      "down": 125,
+      "signal_name": "chirp",
+      "input_len": 1000,
+      "expected_len": 1000,
+      "actual_len": 1000,
+      "length_correct": true,
+      "metrics": {
+        "max_abs_error": 0.0,
+        "rmse": 0.0,
+        "relative_error": 0.0,
+        "finiteness": true
+      },
+      "status": "PASS"
+    },
+    {
+      "up": 125,
+      "down": 125,
+      "signal_name": "noise",
+      "input_len": 1000,
+      "expected_len": 1000,
+      "actual_len": 1000,
+      "length_correct": true,
+      "metrics": {
+        "max_abs_error": 0.0,
+        "rmse": 0.0,
+        "relative_error": 0.0,
+        "finiteness": true
+      },
+      "status": "PASS"
+    }
+  ],
+  "alias_rejection_test": {
+    "input_fs": 500.0,
+    "target_fs": 125.0,
+    "input_components_hz": [
+      10.0,
+      30.0,
+      100.0
+    ],
+    "target_nyquist_hz": 62.5,
+    "aliased_freq_in_output_hz": 25.0,
+    "input_100hz_amplitude": 0.8,
+    "output_25hz_amplitude": 0.0012782300656522545,
+    "attenuation_db": -55.929619169637505,
+    "sufficiently_suppressed": true
+  }
+}

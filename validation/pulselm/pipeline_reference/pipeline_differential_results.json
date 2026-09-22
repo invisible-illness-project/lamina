@@ -1,0 +1,35 @@
+[
+  {
+    "input_fs": 250.0,
+    "duration_sec": 35.0,
+    "input_length": 8750,
+    "expected_window_count": 3,
+    "actual_window_count": 3,
+    "count_match": true,
+    "max_abs_error": 1.9018120411828932e-13,
+    "mean_rmse": 4.037069663796276e-14,
+    "status": "PASS"
+  },
+  {
+    "input_fs": 500.0,
+    "duration_sec": 35.0,
+    "input_length": 17500,
+    "expected_window_count": 3,
+    "actual_window_count": 3,
+    "count_match": true,
+    "max_abs_error": 1.6575629757653587e-13,
+    "mean_rmse": 3.2128783337787554e-14,
+    "status": "PASS"
+  },
+  {
+    "input_fs": 1000.0,
+    "duration_sec": 35.0,
+    "input_length": 35000,
+    "expected_window_count": 3,
+    "actual_window_count": 3,
+    "count_match": true,
+    "max_abs_error": 1.4527268277220173e-13,
+    "mean_rmse": 3.1166945842255116e-14,
+    "status": "PASS"
+  }
+]

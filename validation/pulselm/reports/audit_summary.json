@@ -1,0 +1,103 @@
+{
+  "summary": {
+    "commit": "179d69f14b9fb4b09769cc28d987302478c7c5e2",
+    "filter_max_abs_error": 1.7273593666544684e-10,
+    "resample_max_abs_error": 8.881784197001252e-15,
+    "resample_alias_attenuation_db": -55.929619169637505,
+    "pipeline_max_abs_error": 1.9018120411828932e-13,
+    "spec_sha256_hash": "adcb34b4d0e822ce7b4a7920c984b3d54a46c56d95da29d31a5e3ab9002d365a"
+  },
+  "edge_cases": [
+    {
+      "case_name": "empty_resample",
+      "expected_error_class": "EMPTY_SIGNAL",
+      "outcome": "CORRECT_ERROR_RAISED",
+      "error_message": "Signal array is empty",
+      "status": "PASS"
+    },
+    {
+      "case_name": "zero_rate_resample",
+      "expected_error_class": "INVALID_SAMPLING_RATE",
+      "outcome": "CORRECT_ERROR_RAISED",
+      "error_message": "Invalid sampling rate: 0 Hz (must be > 0.0 and finite)",
+      "status": "PASS"
+    },
+    {
+      "case_name": "nan_resample",
+      "expected_error_class": "NON_FINITE_INPUT",
+      "outcome": "CORRECT_ERROR_RAISED",
+      "error_message": "Input signal contains non-finite values (NaN or Infinity)",
+      "status": "PASS"
+    },
+    {
+      "case_name": "empty_filter",
+      "expected_error_class": "EMPTY_SIGNAL",
+      "outcome": "CORRECT_ERROR_RAISED",
+      "error_message": "Signal array is empty",
+      "status": "PASS"
+    },
+    {
+      "case_name": "zero_rate_filter",
+      "expected_error_class": "INVALID_SAMPLING_RATE",
+      "outcome": "CORRECT_ERROR_RAISED",
+      "error_message": "Invalid sampling rate: 0 Hz (must be > 0.0 and finite)",
+      "status": "PASS"
+    },
+    {
+      "case_name": "invalid_cutoff_above_nyquist",
+      "expected_error_class": "INVALID_CUTOFF",
+      "outcome": "CORRECT_ERROR_RAISED",
+      "error_message": "Invalid cutoff frequency: Cutoff frequency (60) must be > 0.0 and strictly below Nyquist frequency (50)",
+      "status": "PASS"
+    },
+    {
+      "case_name": "short_signal_filter",
+      "expected_error_class": "INSUFFICIENT_SAMPLES",
+      "outcome": "CORRECT_ERROR_RAISED",
+      "error_message": "Insufficient signal length: requires at least 16 samples, provided 10",
+      "status": "PASS"
+    },
+    {
+      "case_name": "empty_segment",
+      "expected_error_class": "EMPTY_SIGNAL",
+      "outcome": "CORRECT_ERROR_RAISED",
+      "error_message": "Signal array is empty",
+      "status": "PASS"
+    },
+    {
+      "case_name": "zero_window_segment",
+      "expected_error_class": "INVALID_WINDOW_SIZE",
+      "outcome": "CORRECT_ERROR_RAISED",
+      "error_message": "Invalid window size: 0 (must be > 0)",
+      "status": "PASS"
+    },
+    {
+      "case_name": "empty_dc",
+      "expected_error_class": "EMPTY_SIGNAL",
+      "outcome": "CORRECT_ERROR_RAISED",
+      "error_message": "Signal array is empty",
+      "status": "PASS"
+    },
+    {
+      "case_name": "nan_dc",
+      "expected_error_class": "NON_FINITE_INPUT",
+      "outcome": "CORRECT_ERROR_RAISED",
+      "error_message": "Input signal contains non-finite values (NaN or Infinity)",
+      "status": "PASS"
+    },
+    {
+      "case_name": "empty_minmax",
+      "expected_error_class": "EMPTY_SIGNAL",
+      "outcome": "CORRECT_ERROR_RAISED",
+      "error_message": "Signal array is empty",
+      "status": "PASS"
+    },
+    {
+      "case_name": "degenerate_error_minmax",
+      "expected_error_class": "DEGENERATE_SIGNAL",
+      "outcome": "CORRECT_ERROR_RAISED",
+      "error_message": "Degenerate flat or zero-variance signal segment",
+      "status": "PASS"
+    }
+  ]
+}
